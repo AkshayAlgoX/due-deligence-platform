@@ -15,4 +15,4 @@ public interface PropertyService {
 
     List<PropertyResponse> searchByCity(String city);
 
-}
+}   
