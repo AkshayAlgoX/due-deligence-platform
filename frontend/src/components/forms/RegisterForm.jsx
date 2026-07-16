@@ -20,13 +20,7 @@ import Link from "next/link";
 import { Input }    from "@/components/ui/input";
 import { Button }   from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
+
 
 // ── project utilities ─────────────────────────────────────────────────────────
 import { useAuth }              from "@/hooks/useAuth";
@@ -154,8 +148,8 @@ export default function RegisterForm() {
   const passwordStrength = getPasswordStrength(form.password);
 
   return (
-    <Card className="w-full border-0 shadow-none bg-transparent">
-      <CardHeader className="px-0 pb-4">
+    <Card className="w-full rounded-3xl bg-white shadow-xl border border-gray-100">
+      <CardHeader className="px-6 pt-6 pb-4">
         {/* Brand */}
         <div className="flex items-center gap-2 mb-2">
           <div className="w-8 h-8 bg-green-500 rounded-lg flex items-center justify-center shadow-md shadow-green-200">
@@ -172,7 +166,7 @@ export default function RegisterForm() {
         </CardDescription>
       </CardHeader>
 
-      <CardContent className="px-0 space-y-4">
+      <CardContent className="px-6 pb-6 space-y-4">
 
         {/* ── Success / Error alerts ── */}
         {success && (
@@ -308,29 +302,47 @@ export default function RegisterForm() {
             </div>
           </Field>
 
-          {/* Role */}
-          <Field label="Select Role" htmlFor="role" error={fieldErrors.role} required>
-            <Select
-              value={form.role}
-              onValueChange={handleRoleChange}
-              disabled={loading}
-            >
-              <SelectTrigger
-                id="role"
-                aria-invalid={!!fieldErrors.role}
-                className="w-full"
-              >
-                <SelectValue placeholder="Choose your role" />
-              </SelectTrigger>
-              <SelectContent>
-                {ROLES.map((r) => (
-                  <SelectItem key={r.value} value={r.value}>
-                    {r.label}
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
-          </Field>
+         {/* Role */}
+<Field
+  label="Select Role"
+  htmlFor="role"
+  error={fieldErrors.role}
+  required
+>
+  <select
+    id="role"
+    value={form.role}
+    onChange={(e) => handleRoleChange(e.target.value)}
+    disabled={loading}
+    className="
+      w-full
+      h-11
+      rounded-lg
+      border
+      border-gray-300
+      bg-white
+      px-3
+      text-sm
+      text-gray-800
+      focus:outline-none
+      focus:ring-2
+      focus:ring-green-500
+      focus:border-green-500
+      disabled:bg-gray-100
+    "
+  >
+    <option value="">Choose your role</option>
+
+    {ROLES.map((role) => (
+      <option
+        key={role.value}
+        value={role.value}
+      >
+        {role.label}
+      </option>
+    ))}
+  </select>
+</Field>
 
           {/* Submit */}
           <Button

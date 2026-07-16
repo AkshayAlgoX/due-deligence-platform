@@ -38,6 +38,7 @@ export default function Select({
           id={id}
           value={value}
           onChange={onChange}
+          size={1}
           disabled={disabled}
           required={required}
           aria-invalid={!!error}
