@@ -1,128 +1,56 @@
-"use client";
+'use client';
 
-import { BadgeCheck, MapPin, Ruler, LandPlot, Calendar, Home } from "lucide-react";
+import React from 'react';
+import { MapPin, Home, DollarSign, Maximize, ChevronRight } from 'lucide-react';
+import Card from '../common/Card';  // Import Card from common folder
 
-export default function PropertyCard() {
+export default function PropertyCard({ property, isSelected, onSelect }) {
   return (
-    <div className="mt-6 rounded-2xl border bg-white shadow-sm overflow-hidden">
-
-      <div className="grid grid-cols-12">
-
-        {/* Left Image */}
-        <div className="col-span-4">
-          <div className="relative h-full min-h-[360px]">
-
-            <img
-                src="https://images.unsplash.com/photo-1460317442991-0ec209397118?w=900"
-                alt="Property"
-                className="absolute inset-0 h-full w-full object-cover"
-            />
-
-            <div className="absolute left-4 top-4 rounded-full bg-white px-3 py-1 text-xs font-semibold shadow flex items-center gap-2">
-              <BadgeCheck className="text-green-600" size={14} />
-              Verified Property
+    <div
+      onClick={() => onSelect(property)}
+      className={`cursor-pointer transition-all hover:shadow-md ${
+        isSelected ? 'ring-2 ring-blue-500' : ''
+      }`}
+    >
+      <Card className={`p-4 ${isSelected ? 'border-blue-500' : 'border-gray-200'}`}>
+        <div className="flex items-start justify-between">
+          <div className="flex-1">
+            <div className="flex items-start space-x-2">
+              <Home className="h-4 w-4 text-gray-400 mt-0.5 flex-shrink-0" />
+              <div>
+                <h3 className="font-semibold text-gray-800 line-clamp-1">
+                  {property.address}
+                </h3>
+                <p className="text-sm text-gray-500 flex items-center">
+                  <MapPin className="h-3 w-3 mr-1" />
+                  {property.city}, {property.state} {property.zipCode}
+                </p>
+              </div>
             </div>
 
+            <div className="mt-3 grid grid-cols-2 gap-2">
+              <div className="flex items-center text-sm text-gray-600">
+                <DollarSign className="h-3 w-3 mr-1 text-green-600" />
+                <span>${property.marketValue?.toLocaleString()}</span>
+              </div>
+              <div className="flex items-center text-sm text-gray-600">
+                <Maximize className="h-3 w-3 mr-1 text-blue-600" />
+                <span>{property.area || 'N/A'} sqft</span>
+              </div>
+            </div>
+
+            {property.propertyType && (
+              <span className="mt-2 inline-block px-2 py-0.5 bg-gray-100 text-gray-600 text-xs rounded-full">
+                {property.propertyType}
+              </span>
+            )}
           </div>
+
+          <ChevronRight className={`h-5 w-5 flex-shrink-0 transition ${
+            isSelected ? 'text-blue-500' : 'text-gray-300'
+          }`} />
         </div>
-
-        {/* Right */}
-        <div className="col-span-8 p-8">
-
-          <p className="text-green-600 font-semibold text-sm uppercase">
-            Single Family Residence
-          </p>
-
-          <div className="mt-2 flex justify-between">
-
-            <div>
-
-              <h2 className="text-[42px] leading-[48px] font-extrabold">
-                742 Evergreen Terrace,
-                <br />
-                Springfield, OR 97477
-              </h2>
-
-            </div>
-
-            <div className="text-right">
-
-              <p className="text-[56px] font-extrabold">
-                $1,450,000
-              </p>
-
-              <p className="text-gray-500">
-                Estimated Market Value
-              </p>
-
-            </div>
-
-          </div>
-
-          {/* Stats */}
-
-          <div className="mt-10 grid grid-cols-4 gap-10 border-t pt-8">
-
-            <div>
-              <Ruler className="mb-2 text-gray-500" size={18} />
-              <p className="text-gray-500 text-xs uppercase">
-                Square Footage
-              </p>
-              <h3 className="font-bold text-xl">
-                3,250 sqft
-              </h3>
-            </div>
-
-            <div>
-              <LandPlot className="mb-2 text-gray-500" size={18} />
-              <p className="text-gray-500 text-xs uppercase">
-                Lot Size
-              </p>
-              <h3 className="font-bold text-xl">
-                0.45 Acres
-              </h3>
-            </div>
-
-            <div>
-              <Calendar className="mb-2 text-gray-500" size={18} />
-              <p className="text-gray-500 text-xs uppercase">
-                Year Built
-              </p>
-              <h3 className="font-bold text-xl">
-                1994
-              </h3>
-            </div>
-
-            <div>
-              <Home className="mb-2 text-gray-500" size={18} />
-              <p className="text-gray-500 text-xs uppercase">
-                Zoning
-              </p>
-              <h3 className="font-bold text-xl">
-                R-1
-              </h3>
-            </div>
-
-          </div>
-
-          {/* Buttons */}
-
-          <div className="mt-10 flex gap-5 border-t pt-8">
-
-            <button className="rounded-xl border px-6 py-3 hover:bg-gray-100">
-              Compare Property
-            </button>
-
-            <button className="rounded-xl bg-green-600 px-6 py-3 text-white hover:bg-green-700">
-              Generate Due Diligence Report
-            </button>
-
-          </div>
-
-        </div>
-
-      </div>
-
+      </Card>
     </div>
   );
 }

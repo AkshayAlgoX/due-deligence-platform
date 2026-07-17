@@ -1,54 +1,52 @@
-"use client";
+'use client';
 
-import { Search, MapPin } from "lucide-react";
-import { Button } from "@/components/ui/button";
-import { Card } from "@/components/ui/card";
-import { Input } from "@/components/ui/input";
+import React, { useState } from 'react';
+import { Search, X } from 'lucide-react';
 
-export default function SearchBar() {
+export default function SearchBar({ onSearch, initialValue = '' }) {
+  const [query, setQuery] = useState(initialValue);
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    if (query.trim()) {
+      onSearch(query);
+    }
+  };
+
+  const handleClear = () => {
+    setQuery('');
+    onSearch('');
+  };
+
   return (
-    <Card className="rounded-2xl border bg-white p-6 shadow-sm">
-      <div className="space-y-6">
-
-        <div>
-          <h1 className="text-3xl font-bold text-gray-900">
-            Property Search
-          </h1>
-
-          <p className="mt-2 text-gray-500">
-            Validate property addresses and retrieve comprehensive ownership,
-            tax and structural data.
-          </p>
+    <form onSubmit={handleSubmit} className="mb-6">
+      <div className="relative flex items-center">
+        <div className="absolute left-3 text-gray-400">
+          <Search className="h-5 w-5" />
         </div>
-
-        <div className="flex gap-4">
-
-          <div className="relative flex-1">
-
-            <MapPin
-              size={18}
-              className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400"
-            />
-
-            <Input
-              placeholder="742 Evergreen Terrace, Springfield, OR 97477"
-              className="h-14 rounded-xl pl-11"
-            />
-
-          </div>
-
-          <Button
-            className="h-14 rounded-xl bg-green-600 px-8 hover:bg-green-700"
+        <input
+          type="text"
+          value={query}
+          onChange={(e) => setQuery(e.target.value)}
+          placeholder="Search by address, city, state, or ZIP code..."
+          className="w-full pl-10 pr-24 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+        />
+        {query && (
+          <button
+            type="button"
+            onClick={handleClear}
+            className="absolute right-20 text-gray-400 hover:text-gray-600"
           >
-            <Search className="mr-2 h-5 w-5" />
-
-            Validate Address
-
-          </Button>
-
-        </div>
-
+            <X className="h-5 w-5" />
+          </button>
+        )}
+        <button
+          type="submit"
+          className="absolute right-1 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition"
+        >
+          Search
+        </button>
       </div>
-    </Card>
+    </form>
   );
 }
