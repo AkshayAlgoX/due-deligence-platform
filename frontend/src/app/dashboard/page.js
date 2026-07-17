@@ -21,7 +21,7 @@ export default function DashboardPage() {
             <Calendar size={16} />
             <span>Oct 24, 2023</span>
           </button>
-          <button className="flex items-center gap-2 px-5 py-2.5 bg-blue-500 hover:bg-blue-600 rounded-xl text-sm font-medium text-white transition shadow-sm">
+          <button className="flex items-center gap-2 px-5 py-2.5 bg-[#22C55E] hover:bg-[#16a34a] rounded-xl text-sm font-medium text-white transition shadow-sm">
             <Plus size={18} />
             <span>Add Property</span>
           </button>

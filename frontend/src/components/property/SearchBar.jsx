@@ -1,52 +1,59 @@
-'use client';
+"use client";
 
-import React, { useState } from 'react';
-import { Search, X } from 'lucide-react';
+import React, { useState } from "react";
+import { MapPin, Search, X } from "lucide-react";
 
-export default function SearchBar({ onSearch, initialValue = '' }) {
+export default function SearchBar({ onSearch, initialValue = "" }) {
   const [query, setQuery] = useState(initialValue);
 
   const handleSubmit = (e) => {
     e.preventDefault();
     if (query.trim()) {
-      onSearch(query);
+      onSearch?.(query);
     }
   };
 
   const handleClear = () => {
-    setQuery('');
-    onSearch('');
+    setQuery("");
+    onSearch?.("");
   };
 
   return (
-    <form onSubmit={handleSubmit} className="mb-6">
-      <div className="relative flex items-center">
-        <div className="absolute left-3 text-gray-400">
-          <Search className="h-5 w-5" />
-        </div>
+    <form onSubmit={handleSubmit} className="flex flex-col gap-3 sm:flex-row">
+
+      {/* Input with pin icon */}
+      <div className="relative flex-1">
+        <MapPin className="absolute left-4 top-1/2 h-4 w-4 -translate-y-1/2 text-gray-400" />
+
         <input
           type="text"
           value={query}
           onChange={(e) => setQuery(e.target.value)}
-          placeholder="Search by address, city, state, or ZIP code..."
-          className="w-full pl-10 pr-24 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+          placeholder="742 Evergreen Terrace, Springfield, OR 97477"
+          className="h-14 w-full rounded-xl border border-gray-200 bg-white pl-11 pr-11 text-sm outline-none focus:border-[#22C55E] focus:ring-2 focus:ring-green-100 transition"
         />
+
         {query && (
           <button
             type="button"
             onClick={handleClear}
-            className="absolute right-20 text-gray-400 hover:text-gray-600"
+            className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600"
+            aria-label="Clear"
           >
-            <X className="h-5 w-5" />
+            <X className="h-4 w-4" />
           </button>
         )}
-        <button
-          type="submit"
-          className="absolute right-1 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition"
-        >
-          Search
-        </button>
       </div>
+
+      {/* Green validate button */}
+      <button
+        type="submit"
+        className="flex items-center justify-center gap-2 rounded-xl bg-[#22C55E] px-8 py-3 text-sm font-semibold text-white shadow-[0_8px_20px_rgba(34,197,94,0.3)] transition hover:bg-[#16a34a]"
+      >
+        <Search className="h-4 w-4" />
+        Validate Address
+      </button>
+
     </form>
   );
 }

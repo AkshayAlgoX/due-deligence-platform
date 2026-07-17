@@ -1,4 +1,6 @@
 import { Geist, Geist_Mono } from "next/font/google";
+import { Toaster } from "sonner";
+
 import "./globals.css";
 
 const geistSans = Geist({
@@ -13,7 +15,8 @@ const geistMono = Geist_Mono({
 
 export const metadata = {
   title: "Real Estate Due Diligence Agent",
-  description: "Enterprise property due diligence platform for buyers, agents, and institutions.",
+  description:
+    "Enterprise property due diligence platform for buyers, agents, and institutions.",
 };
 
 export default function RootLayout({ children }) {
@@ -22,7 +25,17 @@ export default function RootLayout({ children }) {
       lang="en"
       className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`}
     >
-      <body className="min-h-full flex flex-col">{children}</body>
+      <body className="min-h-full flex flex-col">
+        {children}
+
+        {/* Global toast notifications — shown across all pages */}
+        <Toaster
+          position="top-right"
+          richColors
+          closeButton
+          duration={3500}
+        />
+      </body>
     </html>
   );
 }

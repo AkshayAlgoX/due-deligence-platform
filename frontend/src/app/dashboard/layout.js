@@ -1,6 +1,13 @@
-import React from 'react';
-import MainLayout from '@/components/layout/MainLayout';
+"use client";
+
+import React from "react";
+import AuthGuard from "@/components/AuthGuard";
+import MainLayout from "@/components/layout/MainLayout";
 
 export default function DashboardLayout({ children }) {
-  return <MainLayout>{children}</MainLayout>;
+  return (
+    <AuthGuard>
+      <MainLayout>{children}</MainLayout>
+    </AuthGuard>
+  );
 }

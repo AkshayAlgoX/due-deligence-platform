@@ -1,143 +1,176 @@
-'use client';
+"use client";
 
-import React from 'react';
-import { useRouter } from 'next/navigation';
-import { 
-  Home, MapPin, DollarSign, Maximize, 
-  User, FileText, ArrowRight,
-  Building, Tag, Hash, CheckCircle, XCircle
-} from 'lucide-react';
+import React from "react";
+import { useRouter } from "next/navigation";
+import {
+  BadgeCheck,
+  Ruler,
+  MapPinned,
+  Calendar,
+  Home,
+  FileText,
+  ArrowRight,
+} from "lucide-react";
 
-export default function PropertyDetails({ property }) {
+/**
+ * Big hero-style property card matching the Figma design.
+ * Shows image, price, address, stats grid, and action buttons.
+ */
+export default function PropertyDetails({ property, onCompare }) {
   const router = useRouter();
 
   if (!property) return null;
 
-  const handleGenerateReport = () => {
-    router.push(`/property/${property.id}/report`);
-  };
+  const {
+    id,
+    address = "Unknown Address",
+    city = "",
+    state = "",
+    zipCode = "",
+    propertyType = "Property",
+    marketValue,
+    area,
+    lotSize = "0.45 Acres",
+    yearBuilt = "1994",
+    zoning = "R-1",
+    imageUrl,
+    verified = true,
+  } = property;
 
-  const mockDetails = {
-    ownership: {
-      owner: 'Simpson Family Trust',
-      ownerSince: 'June 12, 1998',
-      parcelId: '88-01-23-456-789',
-      legalDescription: 'Lot 24, Block 3, Evergreen Heights Sub'
-    },
-    taxHistory: [
-      { year: 2023, assessedValue: 1380000, taxAmount: 14250, status: 'Paid' },
-      { year: 2022, assessedValue: 1320000, taxAmount: 13800, status: 'Paid' }
-    ],
-    buildingInfo: {
-      structureType: 'Wood Frame / Stucco',
-      condition: 'Excellent',
-      stories: '2',
-      bedrooms: 4,
-      bathrooms: 3
+  const locationLine = [city, state].filter(Boolean).join(", ");
+  const fullAddress = `${address}${locationLine ? `, ${locationLine}` : ""}${zipCode ? ` ${zipCode}` : ""}`;
+
+  const handleGenerateReport = () => {
+    if (id) {
+      router.push(`/property/${id}/report`);
     }
   };
 
   return (
-    <div className="bg-white rounded-lg shadow-sm border border-gray-200 overflow-hidden sticky top-6">
-      <div className="bg-gradient-to-r from-blue-600 to-blue-700 px-4 py-4">
-        <h3 className="text-white font-semibold text-lg">Property Details</h3>
-        <p className="text-blue-100 text-sm">Complete property information</p>
-      </div>
+    <div className="overflow-hidden rounded-2xl border border-gray-100 bg-white shadow-sm">
+      <div className="grid grid-cols-1 lg:grid-cols-2">
 
-      <div className="p-4 space-y-4 max-h-[600px] overflow-y-auto">
-        <div className="border-b border-gray-200 pb-4">
-          <h4 className="font-semibold text-gray-800">{property.address}</h4>
-          <p className="text-sm text-gray-500 flex items-center">
-            <MapPin className="h-3 w-3 mr-1" />
-            {property.city}, {property.state} {property.zipCode}
+        {/* ── LEFT: Property Image ── */}
+        <div className="relative min-h-[380px]">
+          <img
+            src={
+              imageUrl ||
+              "https://images.unsplash.com/photo-1545324418-cc1a3fa10c00?w=1200&q=80"
+            }
+            alt={address}
+            className="absolute inset-0 h-full w-full object-cover"
+          />
+
+          {/* Verified badge */}
+          {verified && (
+            <div className="absolute top-4 left-4 flex items-center gap-1.5 rounded-full bg-white/95 px-3 py-1.5 shadow-md backdrop-blur-sm">
+              <BadgeCheck className="h-4 w-4 text-[#22C55E]" strokeWidth={2.5} />
+              <span className="text-xs font-bold text-gray-800">
+                Verified Property
+              </span>
+            </div>
+          )}
+        </div>
+
+        {/* ── RIGHT: Details ── */}
+        <div className="flex flex-col p-8">
+
+          {/* Type tag */}
+          <p className="text-xs font-bold uppercase tracking-widest text-[#22C55E]">
+            {propertyType}
           </p>
-          <div className="mt-2 flex flex-wrap gap-3">
-            <span className="text-sm bg-blue-50 text-blue-700 px-2 py-1 rounded-full flex items-center">
-              <Tag className="h-3 w-3 mr-1" />
-              {property.propertyType || 'N/A'}
-            </span>
-            <span className="text-sm bg-green-50 text-green-700 px-2 py-1 rounded-full flex items-center">
-              <DollarSign className="h-3 w-3 mr-1" />
-              ${property.marketValue?.toLocaleString()}
-            </span>
-            <span className="text-sm bg-purple-50 text-purple-700 px-2 py-1 rounded-full flex items-center">
-              <Maximize className="h-3 w-3 mr-1" />
-              {property.area || 'N/A'} sqft
-            </span>
-          </div>
-        </div>
 
-        <div className="border-b border-gray-200 pb-4">
-          <h4 className="font-semibold text-gray-700 flex items-center mb-2">
-            <User className="h-4 w-4 mr-2 text-blue-600" />
-            Ownership Information
-          </h4>
-          <div className="space-y-1 text-sm">
-            <p><span className="text-gray-500">Owner:</span> {mockDetails.ownership.owner}</p>
-            <p><span className="text-gray-500">Since:</span> {mockDetails.ownership.ownerSince}</p>
-            <p><span className="text-gray-500">Parcel ID:</span> {mockDetails.ownership.parcelId}</p>
-            <p className="text-gray-500 text-xs">{mockDetails.ownership.legalDescription}</p>
-          </div>
-        </div>
+          {/* Address + Price */}
+          <div className="mt-3 flex items-start justify-between gap-6">
+            <h2 className="text-[26px] font-black leading-[30px] tracking-tight text-gray-900">
+              {fullAddress}
+            </h2>
 
-        <div className="border-b border-gray-200 pb-4">
-          <h4 className="font-semibold text-gray-700 flex items-center mb-2">
-            <Building className="h-4 w-4 mr-2 text-blue-600" />
-            Building Information
-          </h4>
-          <div className="grid grid-cols-2 gap-1 text-sm">
-            <div>
-              <span className="text-gray-500">Structure:</span>
-              <p className="font-medium">{mockDetails.buildingInfo.structureType}</p>
-            </div>
-            <div>
-              <span className="text-gray-500">Condition:</span>
-              <p className="font-medium text-green-600">{mockDetails.buildingInfo.condition}</p>
-            </div>
-            <div>
-              <span className="text-gray-500">Stories:</span>
-              <p className="font-medium">{mockDetails.buildingInfo.stories}</p>
-            </div>
-            <div>
-              <span className="text-gray-500">Bed/Bath:</span>
-              <p className="font-medium">{mockDetails.buildingInfo.bedrooms} / {mockDetails.buildingInfo.bathrooms}</p>
-            </div>
-          </div>
-        </div>
-
-        <div className="border-b border-gray-200 pb-4">
-          <h4 className="font-semibold text-gray-700 flex items-center mb-2">
-            <Hash className="h-4 w-4 mr-2 text-blue-600" />
-            Recent Tax History
-          </h4>
-          <div className="space-y-1 text-sm">
-            {mockDetails.taxHistory.map((tax, index) => (
-              <div key={index} className="flex justify-between items-center">
-                <span className="text-gray-600">{tax.year}</span>
-                <span className="font-medium">${tax.assessedValue.toLocaleString()}</span>
-                <span className={`flex items-center text-xs ${
-                  tax.status === 'Paid' ? 'text-green-600' : 'text-red-600'
-                }`}>
-                  {tax.status === 'Paid' ? (
-                    <CheckCircle className="h-3 w-3 mr-1" />
-                  ) : (
-                    <XCircle className="h-3 w-3 mr-1" />
-                  )}
-                  {tax.status}
-                </span>
+            {marketValue != null && (
+              <div className="flex-shrink-0 text-right">
+                <p className="text-[30px] font-black leading-none tracking-tight text-gray-900">
+                  ${marketValue.toLocaleString()}
+                </p>
+                <p className="mt-1 text-xs text-gray-500">
+                  Estimated Market Value
+                </p>
               </div>
-            ))}
+            )}
           </div>
-        </div>
 
-        <button
-          onClick={handleGenerateReport}
-          className="w-full bg-blue-600 hover:bg-blue-700 text-white py-3 rounded-lg font-semibold flex items-center justify-center transition group"
-        >
-          <FileText className="h-4 w-4 mr-2" />
-          Generate Due Diligence Report
-          <ArrowRight className="h-4 w-4 ml-2 group-hover:translate-x-1 transition" />
-        </button>
+          {/* Divider */}
+          <div className="my-6 h-px bg-gray-100" />
+
+          {/* Stats grid */}
+          <div className="grid grid-cols-2 gap-6 sm:grid-cols-4">
+
+            <div>
+              <Ruler className="h-4 w-4 text-gray-400" />
+              <p className="mt-2 text-[10px] font-semibold uppercase tracking-wider text-gray-500">
+                Square Footage
+              </p>
+              <p className="mt-1 text-base font-bold text-gray-900">
+                {area ? `${area.toLocaleString()} sqft` : "N/A"}
+              </p>
+            </div>
+
+            <div>
+              <MapPinned className="h-4 w-4 text-gray-400" />
+              <p className="mt-2 text-[10px] font-semibold uppercase tracking-wider text-gray-500">
+                Lot Size
+              </p>
+              <p className="mt-1 text-base font-bold text-gray-900">
+                {lotSize}
+              </p>
+            </div>
+
+            <div>
+              <Calendar className="h-4 w-4 text-gray-400" />
+              <p className="mt-2 text-[10px] font-semibold uppercase tracking-wider text-gray-500">
+                Year Built
+              </p>
+              <p className="mt-1 text-base font-bold text-gray-900">
+                {yearBuilt}
+              </p>
+            </div>
+
+            <div>
+              <Home className="h-4 w-4 text-gray-400" />
+              <p className="mt-2 text-[10px] font-semibold uppercase tracking-wider text-gray-500">
+                Zoning
+              </p>
+              <p className="mt-1 text-base font-bold text-gray-900">
+                {zoning}
+              </p>
+            </div>
+
+          </div>
+
+          {/* Divider */}
+          <div className="my-6 h-px bg-gray-100" />
+
+          {/* Action buttons */}
+          <div className="flex flex-wrap gap-3">
+            <button
+              type="button"
+              onClick={onCompare}
+              className="rounded-xl border border-gray-200 bg-white px-6 py-3 text-sm font-semibold text-gray-800 transition hover:bg-gray-50"
+            >
+              Compare Property
+            </button>
+
+            <button
+              type="button"
+              onClick={handleGenerateReport}
+              className="group flex flex-1 items-center justify-center gap-2 rounded-xl bg-[#22C55E] px-6 py-3 text-sm font-semibold text-white shadow-[0_8px_20px_rgba(34,197,94,0.3)] transition hover:bg-[#16a34a]"
+            >
+              <FileText className="h-4 w-4" />
+              Generate Due Diligence Report
+              <ArrowRight className="h-4 w-4 transition group-hover:translate-x-1" />
+            </button>
+          </div>
+
+        </div>
       </div>
     </div>
   );

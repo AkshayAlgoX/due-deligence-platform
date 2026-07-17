@@ -3,9 +3,12 @@
  *
  * No baseURL needed. All API_ROUTES use relative paths (/api/...)
  * which Next.js proxies to http://localhost:8080 via next.config.mjs.
+ *
+ * 401 → auto-logout + redirect to /login (session expired handler).
  */
 import axios from "axios";
-import { getToken } from "@/utils/helpers";
+import { toast } from "sonner";
+import { getToken, removeToken } from "@/utils/helpers";
 
 const api = axios.create({
   headers: {
@@ -14,6 +17,28 @@ const api = axios.create({
   timeout: 15000,
 });
 
+// ── Prevent multiple session-expired toasts from stacking ────────────────────
+let sessionExpiredHandled = false;
+
+/** Fully logs the user out and redirects them to /login. */
+const handleSessionExpired = () => {
+  if (sessionExpiredHandled) return;
+  sessionExpiredHandled = true;
+
+  removeToken();
+  toast.error("Session expired. Please log in again.");
+
+  // Reset the guard shortly after so future 401s (on next session) can toast again
+  setTimeout(() => {
+    sessionExpiredHandled = false;
+  }, 3000);
+
+  if (typeof window !== "undefined") {
+    // Use a hard redirect so any in-memory state is cleared.
+    window.location.href = "/login";
+  }
+};
+
 // ── Request interceptor ───────────────────────────────────────────────────────
 api.interceptors.request.use(
   (config) => {
@@ -21,7 +46,6 @@ api.interceptors.request.use(
     if (token) {
       config.headers.Authorization = `Bearer ${token}`;
     }
-    // Log every outgoing request so you can see exactly what is being sent
     if (process.env.NODE_ENV === "development") {
       console.log(`[API] ${config.method?.toUpperCase()} ${config.url}`, config.data);
     }
@@ -34,10 +58,10 @@ api.interceptors.request.use(
 api.interceptors.response.use(
   (response) => response,
   (error) => {
-    const status  = error?.response?.status;
-    const data    = error?.response?.data;
+    const status = error?.response?.status;
+    const data = error?.response?.data;
+    const requestUrl = error?.config?.url || "";
 
-    // Log full error details in dev so nothing is hidden
     if (process.env.NODE_ENV === "development") {
       console.error(`[API ERROR] Status: ${status}`, data);
     }
@@ -45,8 +69,6 @@ api.interceptors.response.use(
     let message;
 
     if (status === 400) {
-      // GlobalExceptionHandler returns { success, message, errors: { field: msg } }
-      // Show the first field-level error if present, otherwise the top-level message
       const fieldErrors = data?.errors;
       if (fieldErrors && typeof fieldErrors === "object") {
         message = Object.values(fieldErrors)[0];
@@ -54,19 +76,25 @@ api.interceptors.response.use(
         message = data?.message || "Invalid input. Please check your details.";
       }
     } else if (status === 401) {
-      message = "Invalid email or password.";
+      // If 401 came from the /login endpoint itself → just wrong credentials
+      // Otherwise → the session has expired mid-usage.
+      const isLoginRequest = requestUrl.includes("/login");
+      if (isLoginRequest) {
+        message = "Invalid email or password.";
+      } else {
+        message = "Session expired. Please log in again.";
+        handleSessionExpired();
+      }
     } else if (status === 403) {
       message = "You do not have permission to perform this action.";
     } else if (status === 409) {
       message = "An account with this email already exists.";
     } else if (status === 500) {
-      // Backend threw an unhandled exception (RuntimeException, enum parse error, etc.)
-      // Give the user a clean message — the real cause is in the backend logs
       message = data?.message || "Something went wrong on the server. Please try again.";
     } else {
       message =
         data?.message ||
-        data?.error  ||
+        data?.error ||
         error?.message ||
         "An unexpected error occurred.";
     }
