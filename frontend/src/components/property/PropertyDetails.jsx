@@ -11,6 +11,7 @@ import {
   FileText,
   ArrowRight,
 } from "lucide-react";
+import { formatINRFull } from "@/utils/currency";
 
 /**
  * Big hero-style property card matching the Figma design.
@@ -87,10 +88,10 @@ export default function PropertyDetails({ property, onCompare }) {
             </h2>
 
             {marketValue != null && (
-              <div className="flex-shrink-0 text-right">
-                <p className="text-[30px] font-black leading-none tracking-tight text-gray-900">
-                  ${marketValue.toLocaleString()}
-                </p>
+               <div className="flex-shrink-0 text-right">
+    <p className="text-[30px] font-black leading-none tracking-tight text-gray-900">
+      {formatINRFull(marketValue)}
+    </p>
                 <p className="mt-1 text-xs text-gray-500">
                   Estimated Market Value
                 </p>

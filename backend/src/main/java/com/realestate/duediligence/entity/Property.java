@@ -10,6 +10,8 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
+import jakarta.persistence.PrePersist;
+import jakarta.persistence.PreUpdate;
 import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -47,6 +49,38 @@ public class Property {
     @Column
     private Double marketValue;
 
+    // ── NEW FIELDS ─────────────────────────────────────────────────
+    @Column(name = "year_built")
+    private Integer yearBuilt;
+
+    @Column(name = "lot_size")
+    private Double lotSize;              // in acres
+
+    @Column
+    private String zoning;               // e.g., "R-1", "C-2"
+
+    @Column(name = "image_url", length = 500)
+    private String imageUrl;
+
+    @Column
+    private Boolean verified = false;
+
+    @Column
+    private Integer bedrooms;
+
+    @Column
+    private Integer bathrooms;
+
+    @Column
+    private Integer stories;
+
+    @Column(name = "structure_type")
+    private String structureType;        // e.g., "Wood Frame", "Concrete"
+
+    @Column
+    private String condition;            // e.g., "Excellent", "Good"
+    // ── END NEW FIELDS ─────────────────────────────────────────────
+
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "created_by")
     private User createdBy;
@@ -57,4 +91,16 @@ public class Property {
     @Column(name = "updated_at")
     private LocalDateTime updatedAt;
 
+    // Auto-set timestamps
+    @PrePersist
+    protected void onCreate() {
+        this.createdAt = LocalDateTime.now();
+        this.updatedAt = LocalDateTime.now();
+        if (this.verified == null) this.verified = false;
+    }
+
+    @PreUpdate
+    protected void onUpdate() {
+        this.updatedAt = LocalDateTime.now();
+    }
 }

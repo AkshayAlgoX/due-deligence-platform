@@ -13,6 +13,6 @@ public interface PropertyService {
 
     PropertyResponse getPropertyById(Long id);
 
-    List<PropertyResponse> searchByCity(String city);
+    List<PropertyResponse> searchProperties(String query);
 
 }   

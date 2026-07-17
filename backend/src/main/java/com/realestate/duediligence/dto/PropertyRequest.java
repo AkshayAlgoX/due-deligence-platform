@@ -27,4 +27,15 @@ public class PropertyRequest {
     @NotNull(message = "Market value is required")
     private Double marketValue;
 
+    // ── NEW OPTIONAL FIELDS ────────────────────────────────────────
+    private Integer yearBuilt;
+    private Double lotSize;
+    private String zoning;
+    private String imageUrl;
+    private Boolean verified;
+    private Integer bedrooms;
+    private Integer bathrooms;
+    private Integer stories;
+    private String structureType;
+    private String condition;
 }

@@ -14,8 +14,14 @@ export const API_ROUTES = {
   LOGIN:    "/api/auth/login",
 
   // ── Properties ────────────────────────────────────────────────────────────
-  PROPERTIES:     "/api/properties",
-  PROPERTY_BY_ID: (id) => `/api/properties/${id}`,
+  PROPERTIES:      "/api/properties",
+  PROPERTY_BY_ID:  (id) => `/api/properties/${id}`,
+  PROPERTY_SEARCH: "/api/properties/search",
+
+  // ── Dashboard ─────────────────────────────────────────────────────────────
+  DASHBOARD_STATS:  "/api/dashboard/stats",
+  BUYER_DASHBOARD:  "/api/buyer/dashboard",
+  ADMIN_DASHBOARD:  "/api/admin/dashboard",
 
   // ── Admin ─────────────────────────────────────────────────────────────────
   ADMIN_USERS: "/api/admin/users",

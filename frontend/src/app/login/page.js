@@ -293,8 +293,8 @@ function LoginPageInner() {
                 <p className="mt-1 text-[10px] uppercase tracking-[0.2em] text-white/70">Reports</p>
               </div>
               <div>
-                <h3 className="text-2xl font-bold">$40B</h3>
-                <p className="mt-1 text-[10px] uppercase tracking-[0.2em] text-white/70">Audited</p>
+             <h3 className="text-2xl font-bold">₹4,000 Cr</h3>
+<p className="mt-1 text-[10px] uppercase tracking-[0.2em] text-white/70">Audited</p>
               </div>
             </div>
           </div>

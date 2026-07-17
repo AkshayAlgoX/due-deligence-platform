@@ -25,30 +25,26 @@ public class PropertyController {
     private final PropertyService propertyService;
 
     @PostMapping
-    public PropertyResponse addProperty(
-            @Valid @RequestBody PropertyRequest request) {
-
+    public PropertyResponse addProperty(@Valid @RequestBody PropertyRequest request) {
         return propertyService.addProperty(request);
     }
 
     @GetMapping
     public List<PropertyResponse> getAllProperties() {
-
         return propertyService.getAllProperties();
     }
 
     @GetMapping("/{id}")
-    public PropertyResponse getPropertyById(
-            @PathVariable Long id) {
-
+    public PropertyResponse getPropertyById(@PathVariable Long id) {
         return propertyService.getPropertyById(id);
     }
 
+    /**
+     * Smart search across address, city, state, zipCode, propertyType.
+     * @param query — search keyword (matches any field)
+     */
     @GetMapping("/search")
-    public List<PropertyResponse> searchByCity(
-            @RequestParam String city) {
-
-        return propertyService.searchByCity(city);
+    public List<PropertyResponse> searchProperties(@RequestParam String query) {
+        return propertyService.searchProperties(query);
     }
-
 }
