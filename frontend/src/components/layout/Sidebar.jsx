@@ -28,7 +28,7 @@ const menuItems = [
 
 export default function Sidebar() {
   return (
-    <aside className="w-64 bg-white border-r min-h-[calc(100vh-80px)] flex flex-col">
+    <aside className="w-64 bg-white border-r flex flex-col h-full">
 
       <nav className="flex-1 px-4 py-6">
 
@@ -64,4 +64,4 @@ export default function Sidebar() {
 
     </aside>
   );
-}
+}   
