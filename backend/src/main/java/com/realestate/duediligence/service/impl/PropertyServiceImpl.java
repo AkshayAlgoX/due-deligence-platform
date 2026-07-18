@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.realestate.duediligence.dto.PropertyRequest;
 import com.realestate.duediligence.dto.PropertyResponse;
@@ -12,6 +13,7 @@ import com.realestate.duediligence.entity.Property;
 import com.realestate.duediligence.integration.AddressValidationService;
 import com.realestate.duediligence.repository.PropertyRepository;
 import com.realestate.duediligence.service.PropertyService;
+import com.realestate.duediligence.service.PropertyVerificationService;
 
 import lombok.RequiredArgsConstructor;
 
@@ -21,6 +23,7 @@ public class PropertyServiceImpl implements PropertyService {
 
     private final AddressValidationService addressValidationService;
     private final PropertyRepository propertyRepository;
+    private final PropertyVerificationService verificationService;
 
     @Override
     public PropertyResponse addProperty(PropertyRequest request) {
@@ -29,29 +32,34 @@ public class PropertyServiceImpl implements PropertyService {
         }
 
         Property property = new Property();
+        applyRequestToEntity(request, property);
 
-        // Existing fields
-        property.setAddress(request.getAddress());
-        property.setCity(request.getCity());
-        property.setState(request.getState());
-        property.setZipCode(request.getZipCode());
-        property.setPropertyType(request.getPropertyType());
-        property.setArea(request.getArea());
-        property.setMarketValue(request.getMarketValue());
-
-        // ── NEW FIELDS (optional in request) ─────────────────────────
-        property.setYearBuilt(request.getYearBuilt());
-        property.setLotSize(request.getLotSize());
-        property.setZoning(request.getZoning());
-        property.setImageUrl(request.getImageUrl());
-        property.setVerified(request.getVerified() != null ? request.getVerified() : true);
-        property.setBedrooms(request.getBedrooms());
-        property.setBathrooms(request.getBathrooms());
-        property.setStories(request.getStories());
-        property.setStructureType(request.getStructureType());
-        property.setCondition(request.getCondition());
+        // ── Auto-verify based on data completeness ──────────────────
+        // Rules run automatically — the "verified" flag from request is ignored
+        verificationService.verify(property);
 
         property.setCreatedAt(LocalDateTime.now());
+        property.setUpdatedAt(LocalDateTime.now());
+
+        Property saved = propertyRepository.save(property);
+        return mapToResponse(saved);
+    }
+
+    /**
+     * Update an existing property. Re-runs verification automatically —
+     * this powers the "Pending → Edit → Verified" user flow.
+     */
+    @Override
+    @Transactional
+    public PropertyResponse updateProperty(Long id, PropertyRequest request) {
+        Property property = propertyRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Property not found"));
+
+        applyRequestToEntity(request, property);
+
+        // ── Re-verify with updated data ────────────────────────────
+        verificationService.verify(property);
+
         property.setUpdatedAt(LocalDateTime.now());
 
         Property saved = propertyRepository.save(property);
@@ -73,16 +81,11 @@ public class PropertyServiceImpl implements PropertyService {
         return mapToResponse(property);
     }
 
-    /**
-     * Smart search across address, city, state, zipCode, propertyType.
-     * Falls back to returning all properties if query is empty.
-     */
     @Override
     public List<PropertyResponse> searchProperties(String query) {
         if (query == null || query.trim().isEmpty()) {
             return getAllProperties();
         }
-
         String q = query.toLowerCase().trim();
         return propertyRepository.searchByKeyword(q)
                 .stream()
@@ -90,11 +93,50 @@ public class PropertyServiceImpl implements PropertyService {
                 .collect(Collectors.toList());
     }
 
-    // ── Helper: Entity → Response DTO (ALL fields) ──────────────────
+    /**
+     * Admin-only: re-verify ALL existing properties.
+     * Used once after deploying the verification engine to fix legacy data
+     * where every property was blindly marked as verified.
+     */
+    @Override
+    @Transactional
+    public int reverifyAllProperties() {
+        List<Property> all = propertyRepository.findAll();
+        int verifiedCount = 0;
+
+        for (Property p : all) {
+            boolean passed = verificationService.verify(p);
+            if (passed) verifiedCount++;
+        }
+
+        propertyRepository.saveAll(all);
+        return verifiedCount;
+    }
+
+    // ── Helper: Request → Entity (used by both create & update) ────
+    private void applyRequestToEntity(PropertyRequest request, Property property) {
+        property.setAddress(request.getAddress());
+        property.setCity(request.getCity());
+        property.setState(request.getState());
+        property.setZipCode(request.getZipCode());
+        property.setPropertyType(request.getPropertyType());
+        property.setArea(request.getArea());
+        property.setMarketValue(request.getMarketValue());
+        property.setYearBuilt(request.getYearBuilt());
+        property.setLotSize(request.getLotSize());
+        property.setZoning(request.getZoning());
+        property.setImageUrl(request.getImageUrl());
+        property.setBedrooms(request.getBedrooms());
+        property.setBathrooms(request.getBathrooms());
+        property.setStories(request.getStories());
+        property.setStructureType(request.getStructureType());
+        property.setCondition(request.getCondition());
+        // Note: verified flag is set by verificationService, NOT copied from request
+    }
+
+    // ── Helper: Entity → Response DTO ──────────────────────────────
     private PropertyResponse mapToResponse(Property property) {
         PropertyResponse response = new PropertyResponse();
-
-        // Existing fields
         response.setId(property.getId());
         response.setAddress(property.getAddress());
         response.setCity(property.getCity());
@@ -103,8 +145,6 @@ public class PropertyServiceImpl implements PropertyService {
         response.setPropertyType(property.getPropertyType());
         response.setArea(property.getArea());
         response.setMarketValue(property.getMarketValue());
-
-        // New fields
         response.setYearBuilt(property.getYearBuilt());
         response.setLotSize(property.getLotSize());
         response.setZoning(property.getZoning());
@@ -115,6 +155,10 @@ public class PropertyServiceImpl implements PropertyService {
         response.setStories(property.getStories());
         response.setStructureType(property.getStructureType());
         response.setCondition(property.getCondition());
+
+        // ── Include missing fields for transparency ─────────────────
+        response.setMissingFields(verificationService.findMissingFields(property));
+        response.setTotalChecks(verificationService.getTotalChecks());
 
         return response;
     }

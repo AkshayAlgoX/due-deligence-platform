@@ -28,16 +28,20 @@ public class Property {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    // ✅ Still required (minimum viable property)
     @Column(nullable = false)
     private String address;
 
+    // ✅ Still required
     @Column(nullable = false)
     private String city;
 
-    @Column(nullable = false)
+    // ✅ NOW OPTIONAL (required only for verification, not creation)
+    @Column(nullable = true)
     private String state;
 
-    @Column(nullable = false)
+    // ✅ NOW OPTIONAL (required only for verification, not creation)
+    @Column(name = "zip_code", nullable = true)
     private String zipCode;
 
     @Column
@@ -49,15 +53,14 @@ public class Property {
     @Column
     private Double marketValue;
 
-    // ── NEW FIELDS ─────────────────────────────────────────────────
     @Column(name = "year_built")
     private Integer yearBuilt;
 
     @Column(name = "lot_size")
-    private Double lotSize;              // in acres
+    private Double lotSize;
 
     @Column
-    private String zoning;               // e.g., "R-1", "C-2"
+    private String zoning;
 
     @Column(name = "image_url", length = 500)
     private String imageUrl;
@@ -75,11 +78,10 @@ public class Property {
     private Integer stories;
 
     @Column(name = "structure_type")
-    private String structureType;        // e.g., "Wood Frame", "Concrete"
+    private String structureType;
 
     @Column
-    private String condition;            // e.g., "Excellent", "Good"
-    // ── END NEW FIELDS ─────────────────────────────────────────────
+    private String condition;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "created_by")
@@ -91,7 +93,6 @@ public class Property {
     @Column(name = "updated_at")
     private LocalDateTime updatedAt;
 
-    // Auto-set timestamps
     @PrePersist
     protected void onCreate() {
         this.createdAt = LocalDateTime.now();

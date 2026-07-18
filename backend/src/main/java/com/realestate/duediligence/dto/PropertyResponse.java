@@ -1,5 +1,7 @@
 package com.realestate.duediligence.dto;
 
+import java.util.List;
+
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -29,4 +31,7 @@ public class PropertyResponse {
     private Integer stories;
     private String structureType;
     private String condition;
+
+    private List<String> missingFields;
+    private Integer totalChecks;
 }
