@@ -3,7 +3,6 @@ package com.realestate.duediligence.security;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.http.SessionCreationPolicy;
@@ -33,7 +32,17 @@ public class SecurityConfig {
                         session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
 
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/api/auth/**").permitAll()
+                        .requestMatchers(
+                                "/api/auth/register",
+                                "/api/auth/login",
+                                "/api/auth/google",
+                                "/api/auth/complete-google-signup",
+                                "/api/auth/forgot-password",
+                                "/api/auth/verify-otp",
+                                "/api/auth/reset-password")
+                        .permitAll()
+
+                        .requestMatchers("/error").permitAll()
 
                         .requestMatchers("/api/properties/**")
                         .authenticated()
@@ -54,9 +63,11 @@ public class SecurityConfig {
 
                 .addFilterBefore(
                         jwtAuthenticationFilter,
-                        UsernamePasswordAuthenticationFilter.class)
-
-                .httpBasic(Customizer.withDefaults());
+                        UsernamePasswordAuthenticationFilter.class);
+                
+                // 🔥 REMOVED: .httpBasic(Customizer.withDefaults())
+                // This was causing the browser popup on 401 errors.
+                // JWT handles auth — no need for basic auth prompts.
 
         return http.build();
     }

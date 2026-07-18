@@ -34,10 +34,12 @@ public class User {
     @Column(nullable = false, unique = true)
     private String email;
 
-    @Column(nullable = false)
+    // Password now nullable — Google-only users don't have one
+    @Column
     private String password;
 
-    @Column(name = "phone_number", nullable = false)
+    // Phone now nullable — Google users may not provide it
+    @Column(name = "phone_number")
     private String phoneNumber;
 
     @ManyToOne(fetch = FetchType.EAGER)
@@ -50,4 +52,29 @@ public class User {
     @Column(name = "updated_at")
     private LocalDateTime updatedAt;
 
+    // ── Password Reset ────────────────────────────────────────────
+    @Column(name = "reset_otp", length = 6)
+    private String resetOtp;
+
+    @Column(name = "reset_otp_expiry")
+    private LocalDateTime resetOtpExpiry;
+
+    // ── Google OAuth ──────────────────────────────────────────────
+    /**
+     * Google's unique user ID (sub claim). Null for email/password users.
+     * Used to link account when user signs in with Google.
+     */
+    @Column(name = "google_id", unique = true)
+    private String googleId;
+
+    /**
+     * Auth provider: "LOCAL" (email/password) or "GOOGLE".
+     * Users can link both by having same email.
+     */
+    @Column(name = "auth_provider", length = 20)
+    private String authProvider;
+
+    /** Profile picture URL from Google (nullable). */
+    @Column(name = "profile_picture", length = 500)
+    private String profilePicture;
 }
