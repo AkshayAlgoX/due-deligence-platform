@@ -9,24 +9,21 @@ import { API_ROUTES } from "@/constants/apiRoutes";
 
 /** Fetch real dashboard KPI stats from backend. */
 export const getDashboardStats = async () => {
-  try {
-    const response = await api.get(API_ROUTES.DASHBOARD_STATS);
-    return response.data;
-  } catch (err) {
-    // Fallback on error
-    return {
-      totalProperties: 0,
-      reportsGenerated: 0,
-      avgRiskScore: 0,
-      activeAlerts: 0,
-      trends: {
-        propertiesGrowth: 0,
-        reportsGrowth: 0,
-        riskChange: 0,
-        alertsChange: 0,
-      },
-    };
-  }
+  const { data } = await api.get(API_ROUTES.DASHBOARD_STATS);
+
+  return {
+    totalProperties: data.totalProperties ?? 0,
+    reportsGenerated: data.reportsGenerated ?? 0,
+    avgRiskScore: data.avgRiskScore ?? 0,
+    activeAlerts: data.activeAlerts ?? 0,
+    totalUsers: data.totalUsers ?? 0,
+    trends: {
+      propertiesGrowth: data.trends?.propertiesGrowth ?? 0,
+      reportsGrowth: data.trends?.reportsGrowth ?? 0,
+      riskChange: data.trends?.riskChange ?? 0,
+      alertsChange: data.trends?.alertsChange ?? 0,
+    },
+  };
 };
 
 /** Buyer welcome message. */
