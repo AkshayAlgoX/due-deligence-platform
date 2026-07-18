@@ -297,7 +297,7 @@ function LoginPageInner() {
                   onCheckedChange={(checked) => setRememberMe(!!checked)}
                 />
                 <label htmlFor="rememberMe" className="cursor-pointer text-xs text-gray-600">
-                  Remember this device for 30 days
+                  Keep me signed in on this browser
                 </label>
               </div>
 
