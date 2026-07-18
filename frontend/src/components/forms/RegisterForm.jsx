@@ -180,58 +180,66 @@ export default function RegisterForm() {
     }
   };
 
+  // ── Submit handler with min 400ms loader (Stripe pattern) ────────────────
   const handleSubmit = async (e) => {
-    e.preventDefault();
+  e.preventDefault();
 
-    const errors = validateRegisterForm(form);
-    if (Object.keys(errors).length > 0) {
-      setFieldErrors(errors);
-      return;
-    }
+  const errors = validateRegisterForm(form);
+  if (Object.keys(errors).length > 0) {
+    setFieldErrors(errors);
+    return;
+  }
 
-    setFieldErrors({});
+  setFieldErrors({});
 
-    try {
-      const result = await register({
+  const minDuration = new Promise((resolve) => setTimeout(resolve, 400));
+
+  try {
+    await Promise.all([
+      register({
         fullName: form.fullName.trim(),
         email: form.email.trim().toLowerCase(),
         password: form.password,
         phoneNumber: form.phoneNumber.trim(),
         role: form.role,
+      }),
+      minDuration,
+    ]);
+
+    // Auto-login: user is already authenticated, go straight to dashboard
+    setJustRegistered(true);
+    toast.success("Welcome aboard", {
+      description: "Your account is ready. Redirecting…",
+    });
+
+    setTimeout(() => {
+      window.location.href = "/dashboard";
+    }, 800);
+  } catch (err) {
+    await minDuration;
+
+    const backendMsg = err?.message || "";
+
+    if (
+      backendMsg.toLowerCase().includes("email") &&
+      backendMsg.toLowerCase().includes("exist")
+    ) {
+      setFieldErrors({ email: "An account with this email already exists." });
+      toast.error("Email already registered", {
+        description: "Try signing in instead, or use a different email.",
       });
-
-      if (result?.success !== false) {
-        setJustRegistered(true);
-        toast.success("Account created", {
-          description: "Redirecting to sign in…",
-        });
-        setTimeout(() => {
-          window.location.href = "/login";
-        }, 2000);
-      }
-    } catch (err) {
-      const backendMsg = err?.message || "";
-
-      if (
-        backendMsg.toLowerCase().includes("email") &&
-        backendMsg.toLowerCase().includes("exist")
-      ) {
-        setFieldErrors({ email: "An account with this email already exists." });
-        toast.error("Email already registered", {
-          description: "Try signing in instead, or use a different email.",
-        });
-      } else if (err?.errors && typeof err.errors === "object") {
-        setFieldErrors(err.errors);
-        toast.error("Please check your details", {
-          description: "Some fields need attention.",
-        });
-      } else {
-        toast.error("Registration failed", {
-          description: backendMsg || "Please try again.",
-        });
-      }
+    } else if (err?.errors && typeof err.errors === "object") {
+      setFieldErrors(err.errors);
+      toast.error("Please check your details", {
+        description: "Some fields need attention.",
+      });
+    } else {
+      toast.error("Registration failed", {
+        description: backendMsg || "Please try again.",
+      });
     }
-  };
+  }
+};
 
   const passwordStrength = getPasswordStrength(form.password);
 
@@ -443,89 +451,82 @@ export default function RegisterForm() {
             </Field>
 
             <Field label="Role" htmlFor="role" error={fieldErrors.role} required>
-  <div className="relative">
-    <span className="absolute inset-y-0 left-3 flex items-center text-gray-400 pointer-events-none z-10">
-      <BriefcaseIcon />
-    </span>
-    <Select
-      value={form.role}
-      onValueChange={handleRoleChange}
-      disabled={loading || justRegistered}
-    >
-    <SelectTrigger
-  hideIcon
-  id="role"
-  className="h-10 w-full rounded-xl border border-gray-200 bg-white pl-9 pr-3 text-sm focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-offset-0 focus:border-transparent data-[placeholder]:text-gray-400"
-  aria-invalid={!!fieldErrors.role}
->
-  <div className="flex w-full items-center justify-between gap-2">
-    <span className="truncate text-left">
-      {form.role
-        ? ROLES.find((r) => r.value === form.role)?.label
-        : "Choose role"}
-    </span>
+              <div className="relative">
+                <span className="absolute inset-y-0 left-3 flex items-center text-gray-400 pointer-events-none z-10">
+                  <BriefcaseIcon />
+                </span>
+                <Select
+                  value={form.role}
+                  onValueChange={handleRoleChange}
+                  disabled={loading || justRegistered}
+                >
+                  <SelectTrigger
+                    hideIcon
+                    id="role"
+                    className="h-10 w-full rounded-xl border border-gray-200 bg-white pl-9 pr-3 text-sm focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-offset-0 focus:border-transparent data-[placeholder]:text-gray-400"
+                    aria-invalid={!!fieldErrors.role}
+                  >
+                    <div className="flex w-full items-center justify-between gap-2">
+                      <span className="truncate text-left">
+                        {form.role
+                          ? ROLES.find((r) => r.value === form.role)?.label
+                          : "Choose role"}
+                      </span>
 
-    <svg
-      xmlns="http://www.w3.org/2000/svg"
-      className="h-4 w-4 flex-shrink-0 text-gray-400"
-      viewBox="0 0 24 24"
-      fill="none"
-      stroke="currentColor"
-      strokeWidth="2"
-      strokeLinecap="round"
-      strokeLinejoin="round"
-      aria-hidden="true"
-    >
-      <polyline points="6 9 12 15 18 9" />
-    </svg>
-  </div>
-</SelectTrigger>
-      
-      <SelectContent
-        className="z-50 rounded-xl border border-gray-200 bg-white shadow-xl w-[min(380px,calc(100vw-2rem))]"
-        position="popper"
-        side="bottom"
-        align="end"
-        sideOffset={6}
-      >
-        {ROLES.map((role) => {
-          const RoleIcon = role.icon;
-          return (
-            <SelectItem
-              key={role.value}
-              value={role.value}
-              className="relative flex w-full cursor-pointer select-none items-center rounded-lg py-3 pl-3 pr-9 text-sm outline-none focus:bg-green-50 focus:text-green-700 data-[disabled]:pointer-events-none data-[disabled]:opacity-50 data-[state=checked]:bg-green-50 data-[state=checked]:text-green-700"
-            >
-              <div className="flex items-start gap-3">
-                {/* Role icon square */}
-                <div className="flex-shrink-0 mt-0.5 w-8 h-8 rounded-lg bg-gray-100 flex items-center justify-center group-focus:bg-green-100">
-                  <RoleIcon className="h-4 w-4 text-gray-600" strokeWidth={2} />
-                </div>
+                      <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        className="h-4 w-4 flex-shrink-0 text-gray-400"
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        stroke="currentColor"
+                        strokeWidth="2"
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        aria-hidden="true"
+                      >
+                        <polyline points="6 9 12 15 18 9" />
+                      </svg>
+                    </div>
+                  </SelectTrigger>
 
-                {/* Text Content */}
-                <div className="flex flex-col gap-0.5 min-w-0">
-                  <span className="text-sm font-semibold leading-tight">
-                    {role.label}
-                  </span>
-                  {role.description && (
-                    <span className="text-[11px] text-gray-500 font-normal leading-snug">
-                      {role.description}
-                    </span>
-                  )}
-                </div>
+                  <SelectContent
+                    className="z-50 rounded-xl border border-gray-200 bg-white shadow-xl w-[min(380px,calc(100vw-2rem))]"
+                    position="popper"
+                    side="bottom"
+                    align="end"
+                    sideOffset={6}
+                  >
+                    {ROLES.map((role) => {
+                      const RoleIcon = role.icon;
+                      return (
+                        <SelectItem
+                          key={role.value}
+                          value={role.value}
+                          className="relative flex w-full cursor-pointer select-none items-center rounded-lg py-3 pl-3 pr-9 text-sm outline-none focus:bg-green-50 focus:text-green-700 data-[disabled]:pointer-events-none data-[disabled]:opacity-50 data-[state=checked]:bg-green-50 data-[state=checked]:text-green-700"
+                        >
+                          <div className="flex items-start gap-3">
+                            <div className="flex-shrink-0 mt-0.5 w-8 h-8 rounded-lg bg-gray-100 flex items-center justify-center group-focus:bg-green-100">
+                              <RoleIcon className="h-4 w-4 text-gray-600" strokeWidth={2} />
+                            </div>
+
+                            <div className="flex flex-col gap-0.5 min-w-0">
+                              <span className="text-sm font-semibold leading-tight">
+                                {role.label}
+                              </span>
+                              {role.description && (
+                                <span className="text-[11px] text-gray-500 font-normal leading-snug">
+                                  {role.description}
+                                </span>
+                              )}
+                            </div>
+                          </div>
+                        </SelectItem>
+                      );
+                    })}
+                  </SelectContent>
+                </Select>
               </div>
-              
-              {/* 
-                  The checkmark (SelectItemIndicator) is handled by your ui/select.js. 
-                  If it's misaligned, the 'pr-9' and 'items-center' on SelectItem will help center it.
-              */}
-            </SelectItem>
-          );
-        })}
-      </SelectContent>
-    </Select>
-  </div>
-</Field>
+            </Field>
           </div>
 
           {/* Submit */}
@@ -542,9 +543,9 @@ export default function RegisterForm() {
                 </svg>
                 Please wait…
               </span>
-            ) : justRegistered ? (
-              <span>Account created ✓</span>
-            ) : (
+           ) : justRegistered ? (
+  <span>Welcome ✓</span>
+) : (
               <>
                 Create account
                 <span className="ml-2">

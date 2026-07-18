@@ -23,8 +23,10 @@ import { saveToken, saveUser, removeToken } from "@/utils/helpers";
 
 /**
  * Register a new user.
+ * Backend now returns AuthResponse { token } and logs the user in immediately.
+ *
  * @param {{ fullName, email, password, phoneNumber, role }} payload
- * @returns {Promise<{ success: boolean, message: string }>}
+ * @returns {Promise<{ token: string }>}
  */
 export const registerUser = async ({
   fullName,
@@ -33,24 +35,24 @@ export const registerUser = async ({
   phoneNumber,
   role,
 }) => {
-  // Exact payload the backend's RegisterRequest.java expects
   const payload = {
-    fullName,       // @NotBlank @Size(min=3, max=100)
-    email,          // @NotBlank @Email
-    password,       // @NotBlank @Size(min=8, max=20)
-    phoneNumber,    // @NotBlank @Pattern(^[6-9]\d{9}$)
-    role,           // @NotNull  RoleType enum string
+    fullName,
+    email,
+    password,
+    phoneNumber,
+    role,
   };
 
   const response = await api.post(API_ROUTES.REGISTER, payload);
+  const { token } = response.data;
 
-  // Backend returns HTTP 200 even when email already exists:
-  //   { success: false, message: "Email already exists" }
-  if (response.data.success === false) {
-    throw new Error(response.data.message || "Registration failed.");
+  // Auto-login: save token immediately so user goes straight to dashboard
+  if (token) {
+    saveToken(token, true); // rememberMe = true by default on register
+    saveUser({ email, fullName }, true);
   }
 
-  return response.data; // { success: true, message: "User registered successfully" }
+  return response.data; // { token }
 };
 
 /**

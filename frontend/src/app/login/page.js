@@ -80,44 +80,50 @@ function LoginPageInner() {
 
   // ── Main login handler ────────────────────────────────────────────────────
   const handleLogin = async (e) => {
-    e.preventDefault();
+  e.preventDefault();
 
-    const errors = validate();
-    if (Object.keys(errors).length > 0) {
-      setFieldErrors(errors);
-      return;
-    }
+  const errors = validate();
+  if (Object.keys(errors).length > 0) {
+    setFieldErrors(errors);
+    return;
+  }
 
-    setFieldErrors({});
-    setLoading(true);
+  setFieldErrors({});
+  setLoading(true);
 
-    try {
-      await loginUser({
+  const minDuration = new Promise((resolve) => setTimeout(resolve, 400));
+
+  try {
+    await Promise.all([
+      loginUser({
         email: email.trim().toLowerCase(),
         password,
         rememberMe,
-      });
-      toast.success("Welcome back", {
-        description: "Redirecting to your dashboard.",
-      });
-      router.push("/dashboard");
-    } catch (err) {
-      if (err.errors && typeof err.errors === "object") {
-        setFieldErrors(err.errors);
-        toast.error("Please check your details", {
-          description: "Some fields need attention.",
-        });
-      } else {
-        toast.error("Sign in failed", {
-          description:
-            err.message || "Please check your credentials and try again.",
-        });
-      }
-    } finally {
-      setLoading(false);
-    }
-  };
+      }),
+      minDuration,
+    ]);
+    toast.success("Welcome back", {
+      description: "Redirecting to your dashboard.",
+    });
+    router.push("/dashboard");
+  } catch (err) {
+    await minDuration;
 
+    if (err.errors && typeof err.errors === "object") {
+      setFieldErrors(err.errors);
+      toast.error("Please check your details", {
+        description: "Some fields need attention.",
+      });
+    } else {
+      toast.error("Sign in failed", {
+        description:
+          err.message || "Please check your credentials and try again.",
+      });
+    }
+  } finally {
+    setLoading(false);
+  }
+};
   const handleEmailChange = (e) => {
     setEmail(e.target.value);
     if (fieldErrors.email) {
@@ -373,13 +379,15 @@ function LoginPageInner() {
               </div>
             </div>
 
-            {/* Honest security footer */}
-            <div className="mt-4 border-t border-gray-200 pt-3 text-[10px] uppercase tracking-widest text-gray-400">
-              <p>Secure by design</p>
-              <p className="mt-1 normal-case tracking-normal text-[11px] text-gray-400">
-                JWT authentication · BCrypt hashing · Role-based access control
-              </p>
-            </div>
+            {/* Honest security footer — matches register page */}
+<div className="mt-4 border-t border-gray-200 pt-3 text-center">
+  <p className="text-[10px] uppercase tracking-widest text-gray-400">
+    Secure by design
+  </p>
+  <p className="mt-1 text-[11px] text-gray-400">
+    JWT authentication · BCrypt hashing · Role-based access control
+  </p>
+</div>
           </div>
         </section>
 

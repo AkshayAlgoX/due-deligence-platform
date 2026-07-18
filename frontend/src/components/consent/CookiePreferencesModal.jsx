@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { X, ShieldCheck, BarChart3, Megaphone } from "lucide-react";
+import { X, ShieldCheck, BarChart3 } from "lucide-react";
 
 function Switch({ checked, onChange, disabled }) {
   return (
@@ -36,17 +36,14 @@ export default function CookiePreferencesModal({
   onAcceptAll,
   onRejectAll,
   initialAnalytics = false,
-  initialMarketing = false,
 }) {
   const [analytics, setAnalytics] = useState(initialAnalytics);
-  const [marketing, setMarketing] = useState(initialMarketing);
 
   useEffect(() => {
     if (open) {
       setAnalytics(initialAnalytics);
-      setMarketing(initialMarketing);
     }
-  }, [open, initialAnalytics, initialMarketing]);
+  }, [open, initialAnalytics]);
 
   useEffect(() => {
     if (!open) return;
@@ -62,19 +59,29 @@ export default function CookiePreferencesModal({
   if (!open) return null;
 
   return (
-    <div className="fixed inset-0 z-[90] flex items-center justify-center px-4 py-8" role="dialog" aria-modal="true">
-      <div className="absolute inset-0 bg-slate-900/50 backdrop-blur-sm animate-in fade-in duration-150" onClick={onClose} />
+    <div
+      className="fixed inset-0 z-[90] flex items-center justify-center px-4 py-8"
+      role="dialog"
+      aria-modal="true"
+      aria-labelledby="cookie-prefs-title"
+    >
+      <div
+        className="absolute inset-0 bg-slate-900/50 backdrop-blur-sm animate-in fade-in duration-150"
+        onClick={onClose}
+      />
 
       <div className="relative w-full max-w-lg rounded-2xl bg-white shadow-[0_30px_80px_rgba(0,0,0,0.25)] overflow-hidden animate-in fade-in zoom-in-95 duration-200">
-
         {/* Header */}
         <div className="flex items-center justify-between border-b border-gray-100 px-6 py-4">
           <div>
-            <h2 className="text-lg font-bold text-gray-900 tracking-tight">
+            <h2
+              id="cookie-prefs-title"
+              className="text-lg font-bold text-gray-900 tracking-tight"
+            >
               Cookie preferences
             </h2>
             <p className="text-xs text-gray-500 mt-0.5">
-              Choose which cookies you're comfortable with.
+              You control what data we collect.
             </p>
           </div>
 
@@ -91,23 +98,16 @@ export default function CookiePreferencesModal({
         <div className="p-6 space-y-3">
           <PreferenceRow
             title="Essential"
-            description="Required for authentication and core features. Cannot be disabled."
+            description="Required for authentication, session management, and security. Cannot be disabled."
             icon={<ShieldCheck className="h-4 w-4 text-gray-700" strokeWidth={2.2} />}
             right={<Switch checked={true} disabled onChange={() => {}} />}
           />
 
           <PreferenceRow
             title="Analytics"
-            description="Anonymized usage data to help us improve the product."
+            description="Google Analytics 4 — anonymized page views and events. Helps us understand which features get used. Off by default."
             icon={<BarChart3 className="h-4 w-4 text-gray-700" strokeWidth={2.2} />}
             right={<Switch checked={analytics} onChange={setAnalytics} />}
-          />
-
-          <PreferenceRow
-            title="Marketing"
-            description="For personalized communications. Off by default."
-            icon={<Megaphone className="h-4 w-4 text-gray-700" strokeWidth={2.2} />}
-            right={<Switch checked={marketing} onChange={setMarketing} />}
           />
         </div>
 
@@ -132,7 +132,7 @@ export default function CookiePreferencesModal({
 
             <button
               type="button"
-              onClick={() => onSave({ analytics, marketing })}
+              onClick={() => onSave({ analytics })}
               className="rounded-lg bg-gray-900 px-4 py-2 text-sm font-bold text-white hover:bg-gray-800 transition"
             >
               Save choices

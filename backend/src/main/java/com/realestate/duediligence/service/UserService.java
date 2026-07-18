@@ -13,7 +13,7 @@ import com.realestate.duediligence.dto.VerifyOtpRequest;
 
 public interface UserService {
 
-    ApiResponse register(RegisterRequest request);
+    AuthResponse register(RegisterRequest request);
 
     AuthResponse login(LoginRequest request);
 

@@ -61,31 +61,43 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public ApiResponse register(RegisterRequest request) {
-        if (userRepository.existsByEmail(request.getEmail())) {
-            return new ApiResponse(false, "Email already exists");
-        }
-
-        Role role = roleRepository.findByRoleName(request.getRole())
-                .orElseThrow(() -> new RuntimeException("Role not found"));
-
-        User user = new User();
-        user.setFullName(request.getFullName());
-        user.setEmail(request.getEmail());
-        user.setPassword(passwordEncoder.encode(request.getPassword()));
-        user.setPhoneNumber(request.getPhoneNumber());
-        user.setRole(role);
-        user.setAuthProvider("LOCAL");
-        user.setCreatedAt(LocalDateTime.now());
-        user.setUpdatedAt(LocalDateTime.now());
-
-        userRepository.save(user);
-
-        emailService.sendWelcomeEmail(user.getEmail(), user.getFullName());
-
-        return new ApiResponse(true, "User registered successfully");
+public AuthResponse register(RegisterRequest request) {
+    // Duplicate email check — throw instead of returning success:false
+    // Your global exception handler will convert this to a proper 409 response
+    if (userRepository.existsByEmail(request.getEmail())) {
+        throw new IllegalArgumentException("Email already exists");
     }
 
+    // Fetch role
+    Role role = roleRepository.findByRoleName(request.getRole())
+            .orElseThrow(() -> new RuntimeException("Role not found"));
+
+    // Create user
+    User user = new User();
+    user.setFullName(request.getFullName());
+    user.setEmail(request.getEmail());
+    user.setPassword(passwordEncoder.encode(request.getPassword()));
+    user.setPhoneNumber(request.getPhoneNumber());
+    user.setRole(role);
+    user.setAuthProvider("LOCAL");
+    user.setCreatedAt(LocalDateTime.now());
+    user.setUpdatedAt(LocalDateTime.now());
+
+    userRepository.save(user);
+
+    // Send welcome email (async, non-blocking)
+    emailService.sendWelcomeEmail(user.getEmail(), user.getFullName());
+
+    // Generate JWT — user is now logged in
+    String token = jwtService.generateToken(user.getEmail());
+
+    // Optional: send login alert since this is effectively a login
+    // (Uncomment if you want new users to also get the "new login" email)
+    // emailService.sendLoginAlert(user.getEmail(), user.getFullName(),
+    //         getClientIp(), getUserAgent());
+
+    return new AuthResponse(token);
+}
     @Override
     public AuthResponse login(LoginRequest request) {
         authenticationManager.authenticate(

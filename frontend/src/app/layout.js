@@ -4,6 +4,7 @@ import { Toaster } from "sonner";
 import Providers from "./providers";
 import "./globals.css";
 import CookieConsentRoot from "@/components/consent/CookieConsentRoot";
+import PageTracker from "@/components/PageTracker";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -54,8 +55,12 @@ export default function RootLayout({ children }) {
             className: "font-medium",
           }}
         />
+{/* Route change tracking (consent-aware) */}
+        <PageTracker />
 
+        {/* Cookie CMP */}
         <CookieConsentRoot />
+
       </body>
     </html>
   );

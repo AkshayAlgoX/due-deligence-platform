@@ -16,16 +16,15 @@ import TrackingScripts from "./TrackingScripts";
  */
 
 const CONSENT_KEY = "cookie-consent";
-const CONSENT_VERSION = 1;
+const CONSENT_VERSION = 2; // bumped: removed marketing category
 
-function buildConsent({ analytics = false, marketing = false }) {
+function buildConsent({ analytics = false }) {
   return {
     version: CONSENT_VERSION,
     updatedAt: new Date().toISOString(),
     categories: {
       necessary: true, // always on — required for the app to function
       analytics,
-      marketing,
     },
   };
 }
@@ -68,20 +67,20 @@ export default function CookieConsentRoot() {
   const shouldShowBanner = ready && !consent && !prefsOpen;
 
   const handleAcceptAll = () => {
-    const c = buildConsent({ analytics: true, marketing: true });
+    const c = buildConsent({ analytics: true });
     saveConsent(c);
     setConsent(c);
   };
 
   const handleRejectAll = () => {
-    const c = buildConsent({ analytics: false, marketing: false });
+    const c = buildConsent({ analytics: false });
     saveConsent(c);
     setConsent(c);
     setPrefsOpen(false);
   };
 
-  const handleSavePreferences = ({ analytics, marketing }) => {
-    const c = buildConsent({ analytics, marketing });
+  const handleSavePreferences = ({ analytics }) => {
+    const c = buildConsent({ analytics });
     saveConsent(c);
     setConsent(c);
     setPrefsOpen(false);
@@ -103,7 +102,6 @@ export default function CookieConsentRoot() {
       <CookiePreferencesModal
         open={prefsOpen}
         initialAnalytics={consent?.categories?.analytics ?? false}
-        initialMarketing={consent?.categories?.marketing ?? false}
         onClose={() => setPrefsOpen(false)}
         onSave={handleSavePreferences}
         onAcceptAll={handleAcceptAll}
