@@ -1,21 +1,41 @@
 package com.realestate.duediligence.security;
 
+import java.util.List;
+
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
+import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.web.cors.CorsConfiguration;
+import org.springframework.web.cors.CorsConfigurationSource;
+import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
 import com.realestate.duediligence.service.impl.CustomUserDetailsService;
 
 import lombok.RequiredArgsConstructor;
 
+/**
+ * SecurityConfig — the security backbone.
+ *
+ * Key decisions:
+ *  - Stateless (JWT only, no server sessions)
+ *  - CSRF disabled (JWT doesn't need it)
+ *  - Method-level security ENABLED (@PreAuthorize now works)
+ *  - CORS whitelist for localhost:3000 (dev frontend)
+ *  - Clean 401/403 JSON responses (no HTML error pages)
+ */
 @Configuration
+@EnableMethodSecurity  // ← CRITICAL: activates @PreAuthorize on methods
 @RequiredArgsConstructor
 public class SecurityConfig {
 
@@ -26,50 +46,96 @@ public class SecurityConfig {
     SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
 
         http
-                .csrf(csrf -> csrf.disable())
+            .csrf(csrf -> csrf.disable())
 
-                .sessionManagement(session ->
-                        session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+            // Enable CORS with our custom config
+            .cors(cors -> cors.configurationSource(corsConfigurationSource()))
 
-                .authorizeHttpRequests(auth -> auth
-                        .requestMatchers(
-                                "/api/auth/register",
-                                "/api/auth/login",
-                                "/api/auth/google",
-                                "/api/auth/complete-google-signup",
-                                "/api/auth/forgot-password",
-                                "/api/auth/verify-otp",
-                                "/api/auth/reset-password")
-                        .permitAll()
+            .sessionManagement(session ->
+                session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
 
-                        .requestMatchers("/error").permitAll()
+            .authorizeHttpRequests(auth -> auth
+                // ── Public endpoints (auth flow) ──────────────────────
+                .requestMatchers(
+                    "/api/auth/register",
+                    "/api/auth/login",
+                    "/api/auth/google",
+                    "/api/auth/complete-google-signup",
+                    "/api/auth/forgot-password",
+                    "/api/auth/verify-otp",
+                    "/api/auth/reset-password"
+                ).permitAll()
 
-                        .requestMatchers("/api/properties/**")
-                        .authenticated()
+                .requestMatchers("/error").permitAll()
 
-                        .requestMatchers("/api/admin/**")
-                        .hasRole("ADMIN")
+                // Preflight OPTIONS for CORS
+                .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()
 
-                        .requestMatchers("/api/buyer/**")
-                        .hasRole("BUYER")
+                // ── Role-gated endpoints ──────────────────────────────
+                .requestMatchers("/api/admin/**").hasRole("ADMIN")
+                .requestMatchers("/api/buyer/**").hasRole("BUYER")
+                .requestMatchers("/api/agent/**").hasRole("REAL_ESTATE_AGENT")
+                .requestMatchers("/api/legal/**").hasRole("LEGAL_REVIEWER")
+                .requestMatchers("/api/financial/**").hasRole("FINANCIAL_INSTITUTION")
 
-                        .requestMatchers("/api/agent/**")
-                        .hasRole("REAL_ESTATE_AGENT")
+                // ── Everything else: authenticated ────────────────────
+                .anyRequest().authenticated()
+            )
 
-                        .anyRequest()
-                        .authenticated())
+            // Custom 401/403 responses in clean JSON (no HTML)
+            .exceptionHandling(exceptions -> exceptions
+                .authenticationEntryPoint((request, response, authException) -> {
+                    response.setStatus(HttpStatus.UNAUTHORIZED.value());
+                    response.setContentType(MediaType.APPLICATION_JSON_VALUE);
+                    response.getWriter().write(
+                        "{\"success\":false,\"message\":\"Authentication required\",\"status\":401}"
+                    );
+                })
+                .accessDeniedHandler((request, response, accessDeniedException) -> {
+                    response.setStatus(HttpStatus.FORBIDDEN.value());
+                    response.setContentType(MediaType.APPLICATION_JSON_VALUE);
+                    response.getWriter().write(
+                        "{\"success\":false,\"message\":\"Access denied - insufficient permissions\",\"status\":403}"
+                    );
+                })
+            )
 
-                .userDetailsService(customUserDetailsService)
+            .userDetailsService(customUserDetailsService)
 
-                .addFilterBefore(
-                        jwtAuthenticationFilter,
-                        UsernamePasswordAuthenticationFilter.class);
-                
-                // 🔥 REMOVED: .httpBasic(Customizer.withDefaults())
-                // This was causing the browser popup on 401 errors.
-                // JWT handles auth — no need for basic auth prompts.
+            .addFilterBefore(
+                jwtAuthenticationFilter,
+                UsernamePasswordAuthenticationFilter.class
+            );
 
         return http.build();
+    }
+
+    /**
+     * CORS whitelist — only allow trusted frontend origins.
+     *
+     * Production TODO: add your deployed frontend URL here (e.g. "https://yourdomain.com")
+     * Never use "*" — that defeats the purpose of CORS.
+     */
+    @Bean
+    CorsConfigurationSource corsConfigurationSource() {
+        CorsConfiguration cors = new CorsConfiguration();
+
+        // Frontend origins (dev + future prod)
+        cors.setAllowedOrigins(List.of(
+            "http://localhost:3000",
+            "http://localhost:3001"  // sometimes Next.js falls back to 3001
+            // "https://your-production-domain.com"  // uncomment when deploying
+        ));
+
+        cors.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS"));
+        cors.setAllowedHeaders(List.of("*"));
+        cors.setExposedHeaders(List.of("Authorization"));
+        cors.setAllowCredentials(true);
+        cors.setMaxAge(3600L);  // cache preflight 1 hour
+
+        UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
+        source.registerCorsConfiguration("/**", cors);
+        return source;
     }
 
     @Bean
@@ -79,9 +145,7 @@ public class SecurityConfig {
 
     @Bean
     AuthenticationManager authenticationManager(
-            AuthenticationConfiguration configuration)
-            throws Exception {
-
+            AuthenticationConfiguration configuration) throws Exception {
         return configuration.getAuthenticationManager();
     }
 }

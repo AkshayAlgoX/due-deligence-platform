@@ -9,10 +9,10 @@ import lombok.Data;
 public class VerifyOtpRequest {
 
     @NotBlank(message = "Email is required")
-    @Email(message = "Please provide a valid email")
+    @Email(message = "Invalid email format")
     private String email;
 
     @NotBlank(message = "OTP is required")
-    @Pattern(regexp = "^\\d{6}$", message = "OTP must be exactly 6 digits")
+    @Pattern(regexp = "^\\d{6}$", message = "OTP must be 6 digits")
     private String otp;
 }
