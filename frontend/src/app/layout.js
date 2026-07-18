@@ -1,7 +1,9 @@
 import { Geist, Geist_Mono } from "next/font/google";
 import { Toaster } from "sonner";
 
+import Providers from "./providers";
 import "./globals.css";
+import CookieConsentRoot from "@/components/consent/CookieConsentRoot";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -26,7 +28,9 @@ export default function RootLayout({ children }) {
       className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`}
     >
       <body className="min-h-full flex flex-col">
-        {children}
+        <Providers>
+          {children}
+        </Providers>
 
         {/* Global toast notifications — shown across all pages */}
         <Toaster
@@ -35,6 +39,7 @@ export default function RootLayout({ children }) {
           closeButton
           duration={3500}
         />
+        <CookieConsentRoot />
       </body>
     </html>
   );

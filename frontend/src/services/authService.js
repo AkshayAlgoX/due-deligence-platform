@@ -76,3 +76,105 @@ export const loginUser = async ({ email, password, rememberMe = true }) => {
 export const logoutUser = () => {
   removeToken();
 };
+
+// ── Password Reset Flow ──────────────────────────────────────────
+
+/**
+ * Request a password reset OTP for the given email.
+ * @param {string} email
+ * @returns {Promise<{ success: boolean, message: string }>}
+ */
+export const forgotPassword = async (email) => {
+  const response = await api.post(API_ROUTES.FORGOT_PASSWORD, { email });
+  if (response.data.success === false) {
+    throw new Error(response.data.message || "Failed to send reset code.");
+  }
+  return response.data;
+};
+
+/**
+ * Verify OTP code sent to email.
+ * @param {{ email, otp }} payload
+ * @returns {Promise<{ success: boolean, message: string }>}
+ */
+export const verifyResetOtp = async ({ email, otp }) => {
+  const response = await api.post(API_ROUTES.VERIFY_OTP, { email, otp });
+  if (response.data.success === false) {
+    throw new Error(response.data.message || "Invalid or expired code.");
+  }
+  return response.data;
+};
+
+/**
+ * Reset password using verified OTP.
+ * @param {{ email, otp, newPassword }} payload
+ * @returns {Promise<{ success: boolean, message: string }>}
+ */
+export const resetPassword = async ({ email, otp, newPassword }) => {
+  const response = await api.post(API_ROUTES.RESET_PASSWORD, {
+    email,
+    otp,
+    newPassword,
+  });
+  if (response.data.success === false) {
+    throw new Error(response.data.message || "Failed to reset password.");
+  }
+  return response.data;
+};
+
+// ── Google Sign-In ──────────────────────────────────────────────
+
+/**
+ * Login (or auto-register) with a Google credential JWT.
+ * @param {string} credential - Google ID token from GoogleLogin button
+ */
+// ── Google Sign-In (2-step) ─────────────────────────────────────────
+
+/**
+ * Step 1: Sign in with Google.
+ * @returns {Promise<{status, token?, email, name, picture}>}
+ *   - status="AUTHENTICATED" → existing user, token returned, ready to redirect
+ *   - status="PROFILE_INCOMPLETE" → new user, must complete profile
+ */
+export const loginWithGoogle = async (credential) => {
+  const response = await api.post(API_ROUTES.GOOGLE_LOGIN, { credential });
+  const data = response.data;
+
+  // If existing user → save token immediately
+  if (data.status === "AUTHENTICATED" && data.token) {
+    saveToken(data.token, true);
+    saveUser({ email: data.email, fullName: data.name }, true);
+  }
+
+  return data;
+};
+
+/**
+ * Step 2: Complete Google signup with role + phone.
+ * @param {{ credential, role, phoneNumber }} payload
+ */
+export const completeGoogleSignup = async ({ credential, role, phoneNumber }) => {
+  const response = await api.post(API_ROUTES.COMPLETE_GOOGLE_SIGNUP, {
+    credential,
+    role,
+    phoneNumber,
+  });
+
+  const { token } = response.data;
+  if (token) {
+    saveToken(token, true);
+  }
+
+  return response.data;
+};
+
+/** Extract email claim from JWT payload (best-effort). */
+function extractEmailFromJwt(token) {
+  try {
+    const payload = token.split(".")[1];
+    const decoded = JSON.parse(atob(payload));
+    return decoded.sub || decoded.email || null;
+  } catch {
+    return null;
+  }
+}

@@ -10,6 +10,7 @@ import axios from "axios";
 import { toast } from "sonner";
 import { getToken, removeToken } from "@/utils/helpers";
 
+
 const api = axios.create({
   headers: {
     "Content-Type": "application/json",
@@ -75,19 +76,27 @@ api.interceptors.response.use(
       } else {
         message = data?.message || "Invalid input. Please check your details.";
       }
-    } else if (status === 401) {
-      // If 401 came from the /login endpoint itself → just wrong credentials
-      // Otherwise → the session has expired mid-usage.
-      const isLoginRequest = requestUrl.includes("/login");
-      if (isLoginRequest) {
-        message = "Invalid email or password.";
-      } else {
-        message = "Session expired. Please log in again.";
-        handleSessionExpired();
-      }
-    } else if (status === 403) {
-      message = "You do not have permission to perform this action.";
-    } else if (status === 409) {
+   } else if (status === 401) {
+  // If 401 came from /login endpoint → wrong credentials
+  // Otherwise → session expired
+  const isLoginRequest = requestUrl.includes("/login") ||
+                         requestUrl.includes("/google") ||
+                         requestUrl.includes("/register");
+  if (isLoginRequest) {
+    message = "Invalid credentials or session issue. Please try again.";
+  } else {
+    message = "Session expired. Please log in again.";
+    handleSessionExpired();
+  }
+} else if (status === 403) {
+  const isAuthEndpoint = requestUrl.includes("/auth/");
+
+  if (isAuthEndpoint) {
+    message = data?.message || "Authentication failed. Please try again.";
+  } else {
+    message = "You do not have permission to perform this action.";
+  }
+} else if (status === 409) {
       message = "An account with this email already exists.";
     } else if (status === 500) {
       message = data?.message || "Something went wrong on the server. Please try again.";

@@ -6,6 +6,7 @@ import { toast } from "sonner";
 
 import { loginUser } from "@/services/authService";
 import GuestGuard from "@/components/GuestGuard";
+import GoogleSignInButton from "@/components/auth/GoogleSignInButton";
 
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
@@ -18,7 +19,6 @@ import {
   Eye,
   EyeOff,
   ArrowRight,
-  Globe,
   Headphones,
   CheckCircle,
   Loader2,
@@ -49,23 +49,11 @@ function LoginPageInner() {
     }
   };
 
-  // ── Feature-coming-soon handlers (professional UX) ─────────────────────────
   const handleForgotPassword = () => {
-    toast.info(
-      "Password reset via email is coming soon. Please contact support for now.",
-      { duration: 4000 }
-    );
-  };
-
-  const handleSSOLogin = () => {
-    toast.info(
-      "Single Sign-On (Google & Microsoft) is coming soon. Please use email & password for now.",
-      { duration: 4000 }
-    );
+    router.push("/forgot-password");
   };
 
   const handleContactSupport = () => {
-    // Opens user's default email client
     const subject = encodeURIComponent(
       "Support Request — Real Estate Due Diligence Agent"
     );
@@ -176,7 +164,7 @@ function LoginPageInner() {
                 </label>
               </div>
 
-              {/* Submit — spinner keeps button size fixed */}
+              {/* Submit */}
               <Button
                 type="submit"
                 disabled={loading}
@@ -199,22 +187,17 @@ function LoginPageInner() {
                 <div className="h-px flex-1 bg-gray-200"></div>
               </div>
 
-              {/* Secondary buttons */}
-              <div className="grid grid-cols-2 gap-3">
-                <Button
-                  type="button"
-                  variant="outline"
-                  onClick={handleSSOLogin}
-                  className="h-10 rounded-xl border-gray-200 bg-white text-xs transition hover:bg-gray-50"
-                >
-                  <Globe className="mr-1.5 h-3.5 w-3.5" />
-                  SSO Login
-                </Button>
+              {/* ── Google Sign-In + Contact Support ── */}
+              <div className="space-y-2.5">
+                {/* Real Google Sign-In button (full width) */}
+                <GoogleSignInButton />
+
+                {/* Contact Support */}
                 <Button
                   type="button"
                   variant="outline"
                   onClick={handleContactSupport}
-                  className="h-10 rounded-xl border-gray-200 bg-white text-xs transition hover:bg-gray-50"
+                  className="h-10 w-full rounded-xl border-gray-200 bg-white text-xs transition hover:bg-gray-50"
                 >
                   <Headphones className="mr-1.5 h-3.5 w-3.5" />
                   Contact Support
@@ -293,8 +276,8 @@ function LoginPageInner() {
                 <p className="mt-1 text-[10px] uppercase tracking-[0.2em] text-white/70">Reports</p>
               </div>
               <div>
-             <h3 className="text-2xl font-bold">₹4,000 Cr</h3>
-<p className="mt-1 text-[10px] uppercase tracking-[0.2em] text-white/70">Audited</p>
+                <h3 className="text-2xl font-bold">₹4,000 Cr</h3>
+                <p className="mt-1 text-[10px] uppercase tracking-[0.2em] text-white/70">Audited</p>
               </div>
             </div>
           </div>
@@ -304,7 +287,6 @@ function LoginPageInner() {
   );
 }
 
-// Export wrapped in GuestGuard so logged-in users skip this page.
 export default function LoginPage() {
   return (
     <GuestGuard>

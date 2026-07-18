@@ -12,6 +12,12 @@ export const API_ROUTES = {
   // ── Auth ──────────────────────────────────────────────────────────────────
   REGISTER: "/api/auth/register",
   LOGIN:    "/api/auth/login",
+  GOOGLE_LOGIN: "/api/auth/google",
+  COMPLETE_GOOGLE_SIGNUP: "/api/auth/complete-google-signup",
+  FORGOT_PASSWORD: "/api/auth/forgot-password",
+  VERIFY_OTP: "/api/auth/verify-otp",
+  RESET_PASSWORD: "/api/auth/reset-password",
+
 
   // ── Properties ────────────────────────────────────────────────────────────
   PROPERTIES:      "/api/properties",
