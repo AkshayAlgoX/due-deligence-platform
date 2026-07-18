@@ -2,29 +2,33 @@
 
 import RegisterForm from "@/components/forms/RegisterForm";
 import GuestGuard from "@/components/GuestGuard";
-import { ShieldCheck, TrendingUp, Users, Award } from "lucide-react";
+import { ShieldCheck, ListChecks, KeyRound, Users } from "lucide-react";
 
-// Honest feature cards — no fake numbers, real value props
+// ── Honest feature cards — every claim maps to actual working code ──────────
 const TRUST_ITEMS = [
   {
-    icon: ShieldCheck,
-    title: "Bank-Grade Security",
-    description: "256-bit AES encryption on every document and transaction record.",
+    icon: ListChecks,
+    title: "Verification-first listings",
+    description:
+      "Every property runs through a seven-point data-quality engine before it's marked verified.",
   },
   {
-    icon: TrendingUp,
-    title: "Real-Time Risk Analysis",
-    description: "Instant flags on ownership disputes, encumbrances & title gaps.",
-  },
-  {
-    icon: Award,
-    title: "Verified Data Sources",
-    description: "Cross-referenced against government registries and municipal records.",
+    icon: KeyRound,
+    title: "Secure by default",
+    description:
+      "JWT sessions, BCrypt password hashing, and role-based access on every endpoint.",
   },
   {
     icon: Users,
-    title: "Multi-Role Collaboration",
-    description: "Buyers, agents, legal reviewers & financial institutions — one platform.",
+    title: "Built for real teams",
+    description:
+      "Five distinct roles — buyer, agent, legal reviewer, financial institution, and admin.",
+  },
+  {
+    icon: ShieldCheck,
+    title: "Consent-first analytics",
+    description:
+      "Nothing loads until you opt in. Cookie preferences are honored strictly.",
   },
 ];
 
@@ -41,12 +45,6 @@ function RegisterPageInner() {
         min-h-screen
         overflow-y-auto
       ">
-        {/*
-          This inner div is what centers the form card.
-          - flex-1 + flex + items-center + justify-center handles true centering
-          - py-10 gives breathing room when form is taller than viewport
-          - px-6 / md:px-12 / lg:px-16 for responsive gutters
-        */}
         <div className="
           flex flex-1 items-center justify-center
           px-6 py-10
@@ -82,21 +80,16 @@ function RegisterPageInner() {
           aria-hidden="true"
         />
 
-        {/* Top-right system status badge */}
+        {/* ── Top-right platform status badge (matches login) ── */}
         <div className="absolute top-6 right-6 z-20">
-          <span className="
-            inline-flex items-center gap-1.5
-            rounded-full bg-white/10 backdrop-blur-md
-            border border-white/20
-            px-4 py-1.5
-            text-[10px] font-bold tracking-widest uppercase text-white
-          ">
-            <span className="w-1.5 h-1.5 rounded-full bg-green-400 animate-pulse" />
-            Live Platform
-          </span>
+          <div className="flex items-center gap-2 rounded-full border border-white/30 bg-white/10 px-5 py-2 text-xs font-semibold text-white backdrop-blur-md">
+            <span className="relative flex h-2 w-2">
+              <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-green-400 opacity-75"></span>
+              <span className="relative inline-flex h-2 w-2 rounded-full bg-green-400"></span>
+            </span>
+            Platform online
+          </div>
         </div>
-
-        
 
         {/* Bottom content card */}
         <div className="relative z-10 m-8 xl:m-12 w-full max-w-sm">
@@ -109,10 +102,10 @@ function RegisterPageInner() {
           ">
             {/* Headline */}
             <p className="text-[11px] font-bold tracking-widest uppercase text-green-400 mb-3">
-              Why choose us
+              Why this platform
             </p>
             <h2 className="text-white font-black text-[22px] leading-tight tracking-tight mb-6">
-              Everything you need for confident property decisions
+              Honest tooling for property due diligence
             </h2>
 
             {/* Feature list */}

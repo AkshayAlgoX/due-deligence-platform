@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useRef, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
 
@@ -22,6 +22,9 @@ import {
   Headphones,
   CheckCircle,
   Loader2,
+  KeyRound,
+  UserCheck,
+  AlertCircle,
 } from "lucide-react";
 
 function LoginPageInner() {
@@ -32,20 +35,100 @@ function LoginPageInner() {
   const [showPassword, setShowPassword] = useState(false);
   const [rememberMe, setRememberMe] = useState(true);
   const [loading, setLoading] = useState(false);
+  const [fieldErrors, setFieldErrors] = useState({});
+  const [capsLockOn, setCapsLockOn] = useState(false);
+  const [passwordFocused, setPasswordFocused] = useState(false);
 
-  // ── Main login handler ─────────────────────────────────────────────────────
+  // Refs for autofocus on validation error
+  const emailRef = useRef(null);
+  const passwordRef = useRef(null);
+
+  // ── Client-side validation ────────────────────────────────────────────────
+  const validate = () => {
+    const errors = {};
+    const trimmedEmail = email.trim();
+
+    if (!trimmedEmail) {
+      errors.email = "Enter your email";
+    } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(trimmedEmail)) {
+      errors.email = "Enter a valid email address";
+    }
+
+    if (!password) {
+      errors.password = "Enter your password";
+    }
+
+    return errors;
+  };
+
+  // ── Autofocus first field with error after validation fails ───────────────
+  useEffect(() => {
+    if (fieldErrors.email && emailRef.current) {
+      emailRef.current.focus();
+    } else if (fieldErrors.password && passwordRef.current) {
+      passwordRef.current.focus();
+    }
+  }, [fieldErrors]);
+
+  // ── Detect Caps Lock while typing in password field ───────────────────────
+  const handlePasswordKeyEvent = (e) => {
+    // getModifierState works on keydown/keyup only
+    if (typeof e.getModifierState === "function") {
+      setCapsLockOn(e.getModifierState("CapsLock"));
+    }
+  };
+
+  // ── Main login handler ────────────────────────────────────────────────────
   const handleLogin = async (e) => {
     e.preventDefault();
+
+    const errors = validate();
+    if (Object.keys(errors).length > 0) {
+      setFieldErrors(errors);
+      return;
+    }
+
+    setFieldErrors({});
     setLoading(true);
 
     try {
-      await loginUser({ email, password, rememberMe });
-      toast.success("Welcome back! Redirecting to dashboard…");
+      await loginUser({
+        email: email.trim().toLowerCase(),
+        password,
+        rememberMe,
+      });
+      toast.success("Welcome back", {
+        description: "Redirecting to your dashboard.",
+      });
       router.push("/dashboard");
     } catch (err) {
-      toast.error(err.message || "Login failed. Please try again.");
+      if (err.errors && typeof err.errors === "object") {
+        setFieldErrors(err.errors);
+        toast.error("Please check your details", {
+          description: "Some fields need attention.",
+        });
+      } else {
+        toast.error("Sign in failed", {
+          description:
+            err.message || "Please check your credentials and try again.",
+        });
+      }
     } finally {
       setLoading(false);
+    }
+  };
+
+  const handleEmailChange = (e) => {
+    setEmail(e.target.value);
+    if (fieldErrors.email) {
+      setFieldErrors((prev) => ({ ...prev, email: "" }));
+    }
+  };
+
+  const handlePasswordChange = (e) => {
+    setPassword(e.target.value);
+    if (fieldErrors.password) {
+      setFieldErrors((prev) => ({ ...prev, password: "" }));
     }
   };
 
@@ -53,17 +136,24 @@ function LoginPageInner() {
     router.push("/forgot-password");
   };
 
-  const handleContactSupport = () => {
-    const subject = encodeURIComponent(
-      "Support Request — Real Estate Due Diligence Agent"
-    );
-    const body = encodeURIComponent(
-      "Hi Support Team,\n\nI need help with:\n\n\n---\nSent from the login page"
-    );
-    window.location.href = `mailto:duedeligence8@gmail.com?subject=${subject}&body=${body}`;
-
-    toast.success("Opening your email client…");
+  const handleContactSupport = async () => {
+    const supportEmail = "duedeligence8@gmail.com";
+    try {
+      await navigator.clipboard.writeText(supportEmail);
+      toast.success("Support email copied", {
+        description: supportEmail,
+      });
+    } catch {
+      window.location.href = `mailto:${supportEmail}`;
+    }
   };
+
+  const getInputClasses = (hasError) =>
+    `h-10 rounded-xl pl-10 text-sm focus-visible:ring-2 transition-colors ${
+      hasError
+        ? "border-red-300 focus-visible:ring-red-400"
+        : "border-gray-200 focus-visible:ring-green-500"
+    }`;
 
   return (
     <main className="h-screen overflow-hidden bg-[#edf7f3]">
@@ -71,7 +161,6 @@ function LoginPageInner() {
 
         {/* Left Section */}
         <section className="flex w-full flex-col items-center bg-[#f8fffb] px-8 py-6 lg:w-[40%]">
-
           <div className="flex w-full max-w-[420px] flex-col">
 
             {/* Logo */}
@@ -87,7 +176,7 @@ function LoginPageInner() {
             {/* Welcome */}
             <div className="mt-5">
               <h2 className="text-[36px] font-black leading-[40px] tracking-tight text-[#111827]">
-                Welcome Back
+                Welcome back
               </h2>
               <p className="mt-2 text-sm leading-5 text-gray-500">
                 Sign in to manage your property portfolio risks.
@@ -97,6 +186,7 @@ function LoginPageInner() {
             {/* Login form */}
             <form
               onSubmit={handleLogin}
+              noValidate
               className="mt-4 w-full rounded-[28px] border border-white bg-white p-5 shadow-[0_20px_60px_rgba(0,0,0,0.08)]"
             >
               {/* Email */}
@@ -107,14 +197,26 @@ function LoginPageInner() {
                 <div className="relative">
                   <Mail className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-gray-400" />
                   <Input
+                    ref={emailRef}
                     id="email"
                     type="email"
                     value={email}
-                    onChange={(e) => setEmail(e.target.value)}
+                    onChange={handleEmailChange}
                     placeholder="name@company.com"
-                    className="h-10 rounded-xl border-gray-200 pl-10 text-sm focus-visible:ring-2 focus-visible:ring-green-500"
+                    aria-invalid={!!fieldErrors.email}
+                    aria-describedby={fieldErrors.email ? "email-error" : undefined}
+                    className={getInputClasses(!!fieldErrors.email)}
                   />
                 </div>
+                {fieldErrors.email && (
+                  <p
+                    id="email-error"
+                    role="alert"
+                    className="text-[11px] text-red-500 leading-tight pl-1"
+                  >
+                    {fieldErrors.email}
+                  </p>
+                )}
               </div>
 
               {/* Password */}
@@ -128,28 +230,63 @@ function LoginPageInner() {
                     onClick={handleForgotPassword}
                     className="text-xs font-semibold text-green-500 hover:underline"
                   >
-                    Forgot Password?
+                    Forgot password?
                   </button>
                 </div>
                 <div className="relative">
                   <Lock className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-gray-400" />
                   <Input
+                    ref={passwordRef}
                     id="password"
                     type={showPassword ? "text" : "password"}
                     value={password}
-                    onChange={(e) => setPassword(e.target.value)}
+                    onChange={handlePasswordChange}
+                    onKeyDown={handlePasswordKeyEvent}
+                    onKeyUp={handlePasswordKeyEvent}
+                    onFocus={() => setPasswordFocused(true)}
+                    onBlur={() => setPasswordFocused(false)}
                     placeholder="••••••••"
-                    className="h-10 rounded-xl border-gray-200 pl-10 pr-10 text-sm focus-visible:ring-2 focus-visible:ring-green-500"
+                    aria-invalid={!!fieldErrors.password}
+                    aria-describedby={
+                      fieldErrors.password
+                        ? "password-error"
+                        : capsLockOn && passwordFocused
+                        ? "caps-lock-warning"
+                        : undefined
+                    }
+                    className={`${getInputClasses(!!fieldErrors.password)} pr-10`}
                   />
                   <button
                     type="button"
                     onClick={() => setShowPassword(!showPassword)}
                     className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600"
                     tabIndex={-1}
+                    aria-label={showPassword ? "Hide password" : "Show password"}
                   >
                     {showPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
                   </button>
                 </div>
+
+                {/* Caps Lock warning — only when password focused and caps on */}
+                {capsLockOn && passwordFocused && !fieldErrors.password && (
+                  <p
+                    id="caps-lock-warning"
+                    className="flex items-center gap-1 text-[11px] text-amber-600 leading-tight pl-1"
+                  >
+                    <AlertCircle className="h-3 w-3" strokeWidth={2.5} />
+                    Caps Lock is on
+                  </p>
+                )}
+
+                {fieldErrors.password && (
+                  <p
+                    id="password-error"
+                    role="alert"
+                    className="text-[11px] text-red-500 leading-tight pl-1"
+                  >
+                    {fieldErrors.password}
+                  </p>
+                )}
               </div>
 
               {/* Remember Me */}
@@ -174,7 +311,7 @@ function LoginPageInner() {
                   <Loader2 className="h-4 w-4 animate-spin" />
                 ) : (
                   <>
-                    Sign In to Platform
+                    Sign in
                     <ArrowRight className="ml-2 h-4 w-4" />
                   </>
                 )}
@@ -187,12 +324,9 @@ function LoginPageInner() {
                 <div className="h-px flex-1 bg-gray-200"></div>
               </div>
 
-              {/* ── Google Sign-In + Contact Support ── */}
+              {/* Google Sign-In + Contact Support */}
               <div className="space-y-2.5">
-                {/* Real Google Sign-In button (full width) */}
                 <GoogleSignInButton />
-
-                {/* Contact Support */}
                 <Button
                   type="button"
                   variant="outline"
@@ -200,7 +334,7 @@ function LoginPageInner() {
                   className="h-10 w-full rounded-xl border-gray-200 bg-white text-xs transition hover:bg-gray-50"
                 >
                   <Headphones className="mr-1.5 h-3.5 w-3.5" />
-                  Contact Support
+                  Contact support
                 </Button>
               </div>
             </form>
@@ -213,7 +347,7 @@ function LoginPageInner() {
                 onClick={() => router.push("/register")}
                 className="ml-1 font-semibold text-green-500 hover:underline"
               >
-                Create a Free Account
+                Create a free account
               </button>
             </div>
 
@@ -223,28 +357,29 @@ function LoginPageInner() {
                 <div className="flex h-6 w-6 items-center justify-center rounded-full bg-green-100">
                   <CheckCircle className="h-3.5 w-3.5 text-green-600" />
                 </div>
-                <span className="text-xs">Comprehensive Property Analysis</span>
+                <span className="text-xs">Comprehensive property analysis</span>
               </div>
               <div className="flex items-center gap-3">
                 <div className="flex h-6 w-6 items-center justify-center rounded-full bg-green-100">
                   <CheckCircle className="h-3.5 w-3.5 text-green-600" />
                 </div>
-                <span className="text-xs">Secure Due Diligence Auditing</span>
+                <span className="text-xs">Secure due diligence auditing</span>
               </div>
               <div className="flex items-center gap-3">
                 <div className="flex h-6 w-6 items-center justify-center rounded-full bg-green-100">
                   <CheckCircle className="h-3.5 w-3.5 text-green-600" />
                 </div>
-                <span className="text-xs">Automated Risk Assessment</span>
+                <span className="text-xs">Automated risk assessment</span>
               </div>
             </div>
 
-            {/* Footer */}
+            {/* Honest security footer */}
             <div className="mt-4 border-t border-gray-200 pt-3 text-[10px] uppercase tracking-widest text-gray-400">
-              <p>Enterprise Grade Compliance & Security</p>
-              <p className="mt-1">ISO 27001 Certified • SOC2 Type II Compliant</p>
+              <p>Secure by design</p>
+              <p className="mt-1 normal-case tracking-normal text-[11px] text-gray-400">
+                JWT authentication · BCrypt hashing · Role-based access control
+              </p>
             </div>
-
           </div>
         </section>
 
@@ -257,27 +392,48 @@ function LoginPageInner() {
           />
           <div className="absolute inset-0 bg-gradient-to-br from-sky-900/70 via-sky-700/50 to-blue-500/40" />
 
-          <div className="absolute right-8 top-8 rounded-full border border-white/30 bg-white/10 px-6 py-2 text-xs font-bold tracking-widest text-white backdrop-blur-md">
-            SYSTEM ONLINE
+          <div className="absolute right-8 top-8 flex items-center gap-2 rounded-full border border-white/30 bg-white/10 px-5 py-2 text-xs font-semibold text-white backdrop-blur-md">
+            <span className="relative flex h-2 w-2">
+              <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-green-400 opacity-75"></span>
+              <span className="relative inline-flex h-2 w-2 rounded-full bg-green-400"></span>
+            </span>
+            Platform online
           </div>
 
           <div className="absolute bottom-8 left-8 w-[420px] rounded-3xl border border-white/20 bg-white/10 p-8 text-white shadow-2xl backdrop-blur-2xl">
-            <h2 className="text-2xl font-bold">Trusted Intelligence</h2>
-            <p className="mt-3 text-sm text-white/90">
-              Empowering over 2,500 real estate institutions worldwide with actionable due diligence.
+            <h2 className="text-2xl font-bold tracking-tight">Built for trust</h2>
+            <p className="mt-3 text-sm leading-relaxed text-white/85">
+              A verification-first platform for property intelligence — every listing
+              passes seven data-quality checks before it goes live.
             </p>
-            <div className="mt-6 flex justify-between">
-              <div>
-                <h3 className="text-2xl font-bold">98%</h3>
-                <p className="mt-1 text-[10px] uppercase tracking-[0.2em] text-white/70">Accuracy</p>
+
+            <div className="mt-6 space-y-3">
+              <div className="flex items-center gap-3">
+                <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-white/15">
+                  <ShieldCheck className="h-4 w-4 text-white" />
+                </div>
+                <div>
+                  <p className="text-xs font-semibold">Verified listings only</p>
+                  <p className="text-[11px] text-white/70">Seven-point data-quality engine</p>
+                </div>
               </div>
-              <div>
-                <h3 className="text-2xl font-bold">12M+</h3>
-                <p className="mt-1 text-[10px] uppercase tracking-[0.2em] text-white/70">Reports</p>
+              <div className="flex items-center gap-3">
+                <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-white/15">
+                  <KeyRound className="h-4 w-4 text-white" />
+                </div>
+                <div>
+                  <p className="text-xs font-semibold">Secure by default</p>
+                  <p className="text-[11px] text-white/70">JWT sessions, hashed passwords</p>
+                </div>
               </div>
-              <div>
-                <h3 className="text-2xl font-bold">₹4,000 Cr</h3>
-                <p className="mt-1 text-[10px] uppercase tracking-[0.2em] text-white/70">Audited</p>
+              <div className="flex items-center gap-3">
+                <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-white/15">
+                  <UserCheck className="h-4 w-4 text-white" />
+                </div>
+                <div>
+                  <p className="text-xs font-semibold">Role-based access</p>
+                  <p className="text-[11px] text-white/70">Buyer, agent, reviewer, admin</p>
+                </div>
               </div>
             </div>
           </div>

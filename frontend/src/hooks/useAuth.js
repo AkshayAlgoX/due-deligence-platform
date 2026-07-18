@@ -1,14 +1,19 @@
 "use client";
 
 /**
- * useAuth hook
- * Manages async state for register / login / logout.
- * All API shapes match the actual Spring Boot backend.
+ * useAuth hook — thin wrapper around auth services.
  *
- * Also emits toast notifications via sonner:
- *   • Register success / failure
- *   • Login    success / failure
- *   • Logout   success
+ * Responsibilities:
+ *   - Track loading state
+ *   - Call the service
+ *   - Throw on error (so forms can handle field-level UX)
+ *   - Return data on success (so forms can decide what to do next)
+ *
+ * NOT responsible for:
+ *   - Toasts (forms handle their own — allows per-form messaging)
+ *   - Navigation (forms handle their own — allows different post-auth flows)
+ *
+ * This keeps the hook reusable across login page, register page, modals, etc.
  */
 import { useState } from "react";
 import { useRouter } from "next/navigation";
@@ -18,44 +23,18 @@ import { registerUser, loginUser, logoutUser } from "@/services/authService";
 
 export function useAuth() {
   const router = useRouter();
-
   const [loading, setLoading] = useState(false);
-  const [error, setError]     = useState("");
-  const [success, setSuccess] = useState("");
 
   /**
    * Register a new user.
-   * Backend response: ApiResponse { success: boolean, message: string }
-   * On success → navigate to /login (user still needs to log in to get a token)
+   * @returns {Promise<{success, message}>} backend response on success
+   * @throws {Error} enriched error from api.js (has .status, .errors, .data)
    */
   const register = async (formData) => {
     setLoading(true);
-    setError("");
-    setSuccess("");
-
     try {
       const data = await registerUser(formData);
-
-      const msg =
-        data.message || "Account created successfully! Please sign in.";
-
-      setSuccess(msg);
-      toast.success(msg);
-
-      // Navigate to login after a short delay so user can read the toast
-      setTimeout(() => router.push("/login"), 2000);
-    } catch (err) {
-      const raw = err.message || "Registration failed. Please try again.";
-
-      // Friendlier message when email is already taken
-      const finalMsg =
-        raw.toLowerCase().includes("already") ||
-        raw.toLowerCase().includes("exists")
-          ? "An account with this email already exists. Please sign in."
-          : raw;
-
-      setError(finalMsg);
-      toast.error(finalMsg);
+      return data;
     } finally {
       setLoading(false);
     }
@@ -63,39 +42,27 @@ export function useAuth() {
 
   /**
    * Login an existing user.
-   * Backend response: AuthResponse { token: string }
-   * On success → navigate to /dashboard
-   *
-   * @param {{ email, password, rememberMe? }} formData
+   * @returns {Promise<{token}>} auth response on success
+   * @throws {Error} enriched error from api.js
    */
   const login = async (formData) => {
     setLoading(true);
-    setError("");
-    setSuccess("");
-
     try {
-      await loginUser(formData); // supports rememberMe flag
-
-      const msg = "Login successful! Redirecting…";
-      setSuccess(msg);
-      toast.success(msg);
-
-      setTimeout(() => router.push("/dashboard"), 1000);
-    } catch (err) {
-      const msg = err.message || "Login failed. Please check your credentials.";
-      setError(msg);
-      toast.error(msg);
+      const data = await loginUser(formData);
+      return data;
     } finally {
       setLoading(false);
     }
   };
 
-  /** Logout and return to login page. */
+  /** Logout — clears session and redirects to /login. */
   const logout = () => {
     logoutUser();
-    toast.success("Logged out successfully.");
+    toast.success("Signed out", {
+      description: "You've been logged out successfully.",
+    });
     router.push("/login");
   };
 
-  return { loading, error, success, register, login, logout };
+  return { loading, register, login, logout };
 }

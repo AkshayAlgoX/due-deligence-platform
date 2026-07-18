@@ -258,7 +258,7 @@ public class EmailService {
                                 Real Estate Due Diligence
                             </h1>
                             <p style="margin: 8px 0 0; color: rgba(255,255,255,0.9); font-size: 13px; font-weight: 500;">
-                                Enterprise-Grade Property Intelligence
+                                Secure Property Intelligence
                             </p>
                         </td>
                     </tr>
@@ -277,7 +277,7 @@ public class EmailService {
                                 Real Estate Due Diligence Agent
                             </p>
                             <p style="margin: 0; color: #9ca3af; font-size: 11px;">
-                                © 2026 · ISO 27001 Certified · SOC2 Type II Compliant
+                                © 2026 · All rights reserved
                             </p>
                             <p style="margin: 12px 0 0; color: #9ca3af; font-size: 10px;">
                                 This is an automated message. Please do not reply directly.

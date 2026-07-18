@@ -1,17 +1,10 @@
 "use client";
 
-/**
- * RegisterForm — Premium compact version matching Login page aesthetic.
- *
- * Uses shadcn/ui components throughout for consistency.
- * Uses lucide-react's ShieldCheck for perfect brand consistency with Login.
- */
-
-import { useState } from "react";
+import { useState, useRef, useEffect } from "react";
 import Link from "next/link";
-import { ShieldCheck } from "lucide-react";
+import { toast } from "sonner";
+import { ShieldCheck, AlertCircle } from "lucide-react";
 
-// ── shadcn/ui components ──────────────────────────────────────────────────────
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import {
@@ -22,14 +15,14 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 
-// ── project utilities ─────────────────────────────────────────────────────────
 import { useAuth } from "@/hooks/useAuth";
 import { validateRegisterForm } from "@/utils/validators";
 import { getPasswordStrength } from "@/utils/helpers";
 import { ROLES } from "@/constants/roles";
 import { APP_NAME } from "@/constants/appConstants";
+import GoogleSignInButton from "@/components/auth/GoogleSignInButton";
 
-// ── Inline SVG icons ──────────────────────────────────────────────────────────
+// ── Inline SVG icons ─────────────────────────────────────────────────────────
 const UserIcon = () => (
   <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24"
     fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
@@ -76,12 +69,6 @@ const EyeOffIcon = () => (
     <line x1="1" y1="1" x2="23" y2="23"/>
   </svg>
 );
-const CheckIcon = () => (
-  <svg xmlns="http://www.w3.org/2000/svg" width="9" height="9" viewBox="0 0 24 24"
-    fill="none" stroke="#16a34a" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round">
-    <polyline points="20 6 9 17 4 12"/>
-  </svg>
-);
 const ArrowRight = () => (
   <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24"
     fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
@@ -109,7 +96,7 @@ function Field({ label, htmlFor, error, required, children }) {
   );
 }
 
-// ── Compact password strength bar ─────────────────────────────────────────────
+// ── Password strength bar ─────────────────────────────────────────────────────
 function StrengthBar({ strength }) {
   if (!strength) return null;
   const colors = {
@@ -137,7 +124,7 @@ function StrengthBar({ strength }) {
 
 // ── Main Component ────────────────────────────────────────────────────────────
 export default function RegisterForm() {
-  const { loading, error, success, register } = useAuth();
+  const { loading, register } = useAuth();
 
   const [form, setForm] = useState({
     fullName: "",
@@ -150,6 +137,18 @@ export default function RegisterForm() {
   const [fieldErrors, setFieldErrors] = useState({});
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+  const [justRegistered, setJustRegistered] = useState(false);
+  const [capsLockOn, setCapsLockOn] = useState(false);
+  const [passwordFocused, setPasswordFocused] = useState(false);
+
+  // Refs — for autofocus on first error field
+  const refs = {
+    fullName: useRef(null),
+    email: useRef(null),
+    password: useRef(null),
+    confirmPassword: useRef(null),
+    phoneNumber: useRef(null),
+  };
 
   const handleChange = (field) => (e) => {
     setForm((prev) => ({ ...prev, [field]: e.target.value }));
@@ -161,33 +160,92 @@ export default function RegisterForm() {
     if (fieldErrors.role) setFieldErrors((prev) => ({ ...prev, role: "" }));
   };
 
+  // ── Autofocus first field with error (in DOM order) ──────────────────────
+  useEffect(() => {
+    const order = ["fullName", "email", "password", "confirmPassword", "phoneNumber"];
+    for (const key of order) {
+      if (fieldErrors[key] && refs[key]?.current) {
+        refs[key].current.focus();
+        break;
+      }
+    }
+    // Note: role is a Select — can't focus programmatically the same way.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [fieldErrors]);
+
+  // ── Caps Lock detection ──────────────────────────────────────────────────
+  const handlePasswordKeyEvent = (e) => {
+    if (typeof e.getModifierState === "function") {
+      setCapsLockOn(e.getModifierState("CapsLock"));
+    }
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
+
     const errors = validateRegisterForm(form);
     if (Object.keys(errors).length > 0) {
       setFieldErrors(errors);
       return;
     }
+
     setFieldErrors({});
-    await register({
-      fullName: form.fullName.trim(),
-      email: form.email.trim().toLowerCase(),
-      password: form.password,
-      phoneNumber: form.phoneNumber.trim(),
-      role: form.role,
-    });
+
+    try {
+      const result = await register({
+        fullName: form.fullName.trim(),
+        email: form.email.trim().toLowerCase(),
+        password: form.password,
+        phoneNumber: form.phoneNumber.trim(),
+        role: form.role,
+      });
+
+      if (result?.success !== false) {
+        setJustRegistered(true);
+        toast.success("Account created", {
+          description: "Redirecting to sign in…",
+        });
+        setTimeout(() => {
+          window.location.href = "/login";
+        }, 2000);
+      }
+    } catch (err) {
+      const backendMsg = err?.message || "";
+
+      if (
+        backendMsg.toLowerCase().includes("email") &&
+        backendMsg.toLowerCase().includes("exist")
+      ) {
+        setFieldErrors({ email: "An account with this email already exists." });
+        toast.error("Email already registered", {
+          description: "Try signing in instead, or use a different email.",
+        });
+      } else if (err?.errors && typeof err.errors === "object") {
+        setFieldErrors(err.errors);
+        toast.error("Please check your details", {
+          description: "Some fields need attention.",
+        });
+      } else {
+        toast.error("Registration failed", {
+          description: backendMsg || "Please try again.",
+        });
+      }
+    }
   };
 
   const passwordStrength = getPasswordStrength(form.password);
 
-  // Shared input classes matching Login page
-  const inputClasses =
-    "h-10 rounded-xl border-gray-200 pl-9 text-sm focus-visible:ring-2 focus-visible:ring-green-500";
+  const getInputClasses = (hasError) =>
+    `h-10 rounded-xl pl-9 text-sm focus-visible:ring-2 transition-colors ${
+      hasError
+        ? "border-red-300 focus-visible:ring-red-400"
+        : "border-gray-200 focus-visible:ring-green-500"
+    }`;
 
   return (
     <div className="w-full">
 
-      {/* ── Brand Header (matches Login exactly) ── */}
+      {/* Brand Header */}
       <div className="flex items-center gap-3 mb-4">
         <div className="flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-full bg-[#22C55E] shadow-md">
           <ShieldCheck className="h-5 w-5 text-white" strokeWidth={2.5} />
@@ -197,49 +255,36 @@ export default function RegisterForm() {
         </h1>
       </div>
 
-      {/* ── Title (matches Login typography) ── */}
+      {/* Title */}
       <h2 className="mt-5 text-[36px] font-black leading-[40px] tracking-tight text-[#111827]">
-        Create Your Account
+        Create your account
       </h2>
       <p className="mt-2 text-sm leading-5 text-gray-500">
         Join the platform to begin secure due diligence.
       </p>
 
-      {/* ── Form Card ── */}
+      {/* Form Card */}
       <div className="mt-4 w-full rounded-[24px] border border-white bg-white p-5 shadow-[0_20px_60px_rgba(0,0,0,0.08)]">
-
-        {/* Success / Error alerts */}
-        {success && (
-          <div className="mb-3 rounded-lg bg-green-50 border border-green-200 px-3 py-2 text-xs text-green-700 flex items-center gap-2">
-            <CheckIcon />
-            {success}
-          </div>
-        )}
-        {error && (
-          <div className="mb-3 rounded-lg bg-red-50 border border-red-200 px-3 py-2 text-xs text-red-600">
-            {error}
-          </div>
-        )}
-
         <form onSubmit={handleSubmit} noValidate className="space-y-3">
 
           {/* Row 1: Full Name + Email */}
           <div className="grid grid-cols-2 gap-3">
-            <Field label="Full Name" htmlFor="fullName" error={fieldErrors.fullName} required>
+            <Field label="Full name" htmlFor="fullName" error={fieldErrors.fullName} required>
               <div className="relative">
                 <span className="absolute inset-y-0 left-3 flex items-center text-gray-400 pointer-events-none z-10">
                   <UserIcon />
                 </span>
                 <Input
+                  ref={refs.fullName}
                   id="fullName"
                   type="text"
                   placeholder="John Smith"
                   value={form.fullName}
                   onChange={handleChange("fullName")}
-                  disabled={loading}
+                  disabled={loading || justRegistered}
                   aria-invalid={!!fieldErrors.fullName}
                   autoComplete="name"
-                  className={inputClasses}
+                  className={getInputClasses(!!fieldErrors.fullName)}
                 />
               </div>
             </Field>
@@ -250,21 +295,22 @@ export default function RegisterForm() {
                   <MailIcon />
                 </span>
                 <Input
+                  ref={refs.email}
                   id="email"
                   type="email"
                   placeholder="name@company.com"
                   value={form.email}
                   onChange={handleChange("email")}
-                  disabled={loading}
+                  disabled={loading || justRegistered}
                   aria-invalid={!!fieldErrors.email}
                   autoComplete="email"
-                  className={inputClasses}
+                  className={getInputClasses(!!fieldErrors.email)}
                 />
               </div>
             </Field>
           </div>
 
-          {/* Row 2: Password + Confirm Password */}
+          {/* Row 2: Password + Confirm */}
           <div className="grid grid-cols-2 gap-3">
             <Field label="Password" htmlFor="password" error={fieldErrors.password} required>
               <div className="relative">
@@ -272,15 +318,20 @@ export default function RegisterForm() {
                   <LockIcon />
                 </span>
                 <Input
+                  ref={refs.password}
                   id="password"
                   type={showPassword ? "text" : "password"}
                   placeholder="Min. 8 chars"
                   value={form.password}
                   onChange={handleChange("password")}
-                  disabled={loading}
+                  onKeyDown={handlePasswordKeyEvent}
+                  onKeyUp={handlePasswordKeyEvent}
+                  onFocus={() => setPasswordFocused(true)}
+                  onBlur={() => setPasswordFocused(false)}
+                  disabled={loading || justRegistered}
                   aria-invalid={!!fieldErrors.password}
                   autoComplete="new-password"
-                  className={`${inputClasses} pr-9`}
+                  className={`${getInputClasses(!!fieldErrors.password)} pr-9`}
                 />
                 <button
                   type="button"
@@ -293,6 +344,14 @@ export default function RegisterForm() {
                 </button>
               </div>
               {form.password && <StrengthBar strength={passwordStrength} />}
+
+              {/* Caps Lock warning under password */}
+              {capsLockOn && passwordFocused && !fieldErrors.password && (
+                <p className="flex items-center gap-1 text-[10px] text-amber-600 leading-tight mt-1">
+                  <AlertCircle className="h-3 w-3" strokeWidth={2.5} />
+                  Caps Lock is on
+                </p>
+              )}
             </Field>
 
             <Field
@@ -306,15 +365,16 @@ export default function RegisterForm() {
                   <LockIcon />
                 </span>
                 <Input
+                  ref={refs.confirmPassword}
                   id="confirmPassword"
                   type={showConfirmPassword ? "text" : "password"}
                   placeholder="Re-enter"
                   value={form.confirmPassword}
                   onChange={handleChange("confirmPassword")}
-                  disabled={loading}
+                  disabled={loading || justRegistered}
                   aria-invalid={!!fieldErrors.confirmPassword}
                   autoComplete="new-password"
-                  className={`${inputClasses} pr-9`}
+                  className={`${getInputClasses(!!fieldErrors.confirmPassword)} pr-9`}
                 />
                 <button
                   type="button"
@@ -329,108 +389,180 @@ export default function RegisterForm() {
             </Field>
           </div>
 
-          {/* Row 3: Phone + Role (shadcn Select) */}
+          {/* Row 3: Phone (+91 prefix) + Role */}
           <div className="grid grid-cols-2 gap-3">
             <Field
-              label="Phone Number"
+              label="Phone number"
               htmlFor="phoneNumber"
               error={fieldErrors.phoneNumber}
               required
             >
-              <div className="relative">
-                <span className="absolute inset-y-0 left-3 flex items-center text-gray-400 pointer-events-none z-10">
-                  <PhoneIcon />
-                </span>
+              <div className="relative flex">
+                <div
+                  className={`
+                    flex items-center gap-1 h-10 px-3
+                    rounded-l-xl border border-r-0
+                    bg-gray-50 text-xs font-semibold text-gray-600
+                    select-none
+                    ${fieldErrors.phoneNumber ? "border-red-300" : "border-gray-200"}
+                  `}
+                  aria-hidden="true"
+                >
+                  <span className="text-sm">🇮🇳</span>
+                  <span>+91</span>
+                </div>
                 <Input
+                  ref={refs.phoneNumber}
                   id="phoneNumber"
                   type="tel"
+                  inputMode="numeric"
+                  maxLength={10}
                   placeholder="9876543210"
                   value={form.phoneNumber}
-                  onChange={handleChange("phoneNumber")}
-                  disabled={loading}
+                  onChange={(e) => {
+                    const digitsOnly = e.target.value.replace(/\D/g, "");
+                    setForm((prev) => ({ ...prev, phoneNumber: digitsOnly }));
+                    if (fieldErrors.phoneNumber) {
+                      setFieldErrors((prev) => ({ ...prev, phoneNumber: "" }));
+                    }
+                  }}
+                  disabled={loading || justRegistered}
                   aria-invalid={!!fieldErrors.phoneNumber}
-                  autoComplete="tel"
-                  className={inputClasses}
+                  autoComplete="tel-national"
+                  className={`
+                    h-10 rounded-l-none rounded-r-xl text-sm
+                    focus-visible:ring-2 transition-colors
+                    ${
+                      fieldErrors.phoneNumber
+                        ? "border-red-300 focus-visible:ring-red-400"
+                        : "border-gray-200 focus-visible:ring-green-500"
+                    }
+                  `}
                 />
               </div>
             </Field>
 
             <Field label="Role" htmlFor="role" error={fieldErrors.role} required>
-              <div className="relative">
-                <span className="absolute inset-y-0 left-3 flex items-center text-gray-400 pointer-events-none z-10">
-                  <BriefcaseIcon />
-                </span>
-                <Select
-                  value={form.role}
-                  onValueChange={handleRoleChange}
-                  disabled={loading}
-                >
-                  <SelectTrigger
-                    id="role"
-                    className="h-10 w-full rounded-xl border border-gray-200 bg-white pl-9 pr-3 text-sm text-left focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-offset-0 focus:border-transparent data-[placeholder]:text-gray-400 [&>span]:truncate"
-                    aria-invalid={!!fieldErrors.role}
-                  >
-                    <SelectValue placeholder="Choose role" />
-                  </SelectTrigger>
-                  <SelectContent
-                    className="z-50 rounded-xl border border-gray-200 bg-white shadow-xl"
-                    position="popper"
-                    sideOffset={4}
-                  >
-                    {ROLES.map((role) => (
-                      <SelectItem
-                        key={role.value}
-                        value={role.value}
-                        className="rounded-lg text-sm cursor-pointer py-2 px-3 my-0.5 focus:bg-green-50 focus:text-green-700 data-[state=checked]:bg-green-100 data-[state=checked]:text-green-700"
-                      >
-                        {role.label}
-                      </SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
+  <div className="relative">
+    <span className="absolute inset-y-0 left-3 flex items-center text-gray-400 pointer-events-none z-10">
+      <BriefcaseIcon />
+    </span>
+    <Select
+      value={form.role}
+      onValueChange={handleRoleChange}
+      disabled={loading || justRegistered}
+    >
+    <SelectTrigger
+  hideIcon
+  id="role"
+  className="h-10 w-full rounded-xl border border-gray-200 bg-white pl-9 pr-3 text-sm focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-offset-0 focus:border-transparent data-[placeholder]:text-gray-400"
+  aria-invalid={!!fieldErrors.role}
+>
+  <div className="flex w-full items-center justify-between gap-2">
+    <span className="truncate text-left">
+      {form.role
+        ? ROLES.find((r) => r.value === form.role)?.label
+        : "Choose role"}
+    </span>
+
+    <svg
+      xmlns="http://www.w3.org/2000/svg"
+      className="h-4 w-4 flex-shrink-0 text-gray-400"
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="2"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      aria-hidden="true"
+    >
+      <polyline points="6 9 12 15 18 9" />
+    </svg>
+  </div>
+</SelectTrigger>
+      
+      <SelectContent
+        className="z-50 rounded-xl border border-gray-200 bg-white shadow-xl w-[min(380px,calc(100vw-2rem))]"
+        position="popper"
+        side="bottom"
+        align="end"
+        sideOffset={6}
+      >
+        {ROLES.map((role) => {
+          const RoleIcon = role.icon;
+          return (
+            <SelectItem
+              key={role.value}
+              value={role.value}
+              className="relative flex w-full cursor-pointer select-none items-center rounded-lg py-3 pl-3 pr-9 text-sm outline-none focus:bg-green-50 focus:text-green-700 data-[disabled]:pointer-events-none data-[disabled]:opacity-50 data-[state=checked]:bg-green-50 data-[state=checked]:text-green-700"
+            >
+              <div className="flex items-start gap-3">
+                {/* Role icon square */}
+                <div className="flex-shrink-0 mt-0.5 w-8 h-8 rounded-lg bg-gray-100 flex items-center justify-center group-focus:bg-green-100">
+                  <RoleIcon className="h-4 w-4 text-gray-600" strokeWidth={2} />
+                </div>
+
+                {/* Text Content */}
+                <div className="flex flex-col gap-0.5 min-w-0">
+                  <span className="text-sm font-semibold leading-tight">
+                    {role.label}
+                  </span>
+                  {role.description && (
+                    <span className="text-[11px] text-gray-500 font-normal leading-snug">
+                      {role.description}
+                    </span>
+                  )}
+                </div>
               </div>
-            </Field>
+              
+              {/* 
+                  The checkmark (SelectItemIndicator) is handled by your ui/select.js. 
+                  If it's misaligned, the 'pr-9' and 'items-center' on SelectItem will help center it.
+              */}
+            </SelectItem>
+          );
+        })}
+      </SelectContent>
+    </Select>
+  </div>
+</Field>
           </div>
 
-          {/* Submit Button — matches Login exactly */}
+          {/* Submit */}
           <Button
             type="submit"
-            disabled={loading || !!success}
-            className="mt-2 flex h-10 w-full items-center justify-center rounded-xl bg-[#22C55E] text-sm font-bold shadow-[0_12px_30px_rgba(34,197,94,0.35)] transition-all hover:scale-[1.02] hover:bg-[#16a34a]"
+            disabled={loading || justRegistered}
+            className="mt-2 flex h-10 w-full items-center justify-center rounded-xl bg-[#22C55E] text-sm font-bold shadow-[0_12px_30px_rgba(34,197,94,0.35)] transition-all hover:scale-[1.02] hover:bg-[#16a34a] disabled:opacity-70 disabled:hover:scale-100"
           >
             {loading ? (
               <span className="flex items-center gap-2">
-                <svg
-                  className="animate-spin h-4 w-4"
-                  xmlns="http://www.w3.org/2000/svg"
-                  fill="none"
-                  viewBox="0 0 24 24"
-                >
-                  <circle
-                    className="opacity-25"
-                    cx="12"
-                    cy="12"
-                    r="10"
-                    stroke="currentColor"
-                    strokeWidth="4"
-                  />
-                  <path
-                    className="opacity-75"
-                    fill="currentColor"
-                    d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"
-                  />
+                <svg className="animate-spin h-4 w-4" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                  <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
+                  <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z" />
                 </svg>
                 Please wait…
               </span>
+            ) : justRegistered ? (
+              <span>Account created ✓</span>
             ) : (
               <>
-                Create Account
+                Create account
                 <span className="ml-2">
                   <ArrowRight />
                 </span>
               </>
             )}
           </Button>
+
+          {/* Divider */}
+          <div className="my-4 flex items-center">
+            <div className="h-px flex-1 bg-gray-200"></div>
+            <span className="mx-3 text-[10px] text-gray-500">OR CONTINUE WITH</span>
+            <div className="h-px flex-1 bg-gray-200"></div>
+          </div>
+
+          {/* Google Sign-In */}
+          <GoogleSignInButton />
         </form>
       </div>
 
@@ -441,14 +573,18 @@ export default function RegisterForm() {
           href="/login"
           className="font-semibold text-green-600 hover:text-green-700 hover:underline transition-colors"
         >
-          Sign In
+          Sign in
         </Link>
       </p>
 
-      {/* Compact footer */}
-      <div className="mt-4 border-t border-gray-200 pt-3 text-[10px] uppercase tracking-widest text-gray-400 text-center">
-        <p>Enterprise Grade Compliance &amp; Security</p>
-        <p className="mt-0.5">ISO 27001 Certified · SOC2 Type II Compliant</p>
+      {/* Honest security footer */}
+      <div className="mt-4 border-t border-gray-200 pt-3 text-center">
+        <p className="text-[10px] uppercase tracking-widest text-gray-400">
+          Secure by design
+        </p>
+        <p className="mt-1 text-[11px] text-gray-400">
+          JWT authentication · BCrypt hashing · Role-based access control
+        </p>
       </div>
 
     </div>
