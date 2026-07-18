@@ -12,10 +12,11 @@ import {
   ArrowRight,
 } from "lucide-react";
 import { formatINRFull } from "@/utils/currency";
+import { getPropertyHeroImage } from "@/constants/propertyImages";
+import PropertyImagePlaceholder from "./PropertyImagePlaceholder";
 
 /**
  * Big hero-style property card matching the Figma design.
- * Shows image, price, address, stats grid, and action buttons.
  */
 export default function PropertyDetails({ property, onCompare }) {
   const router = useRouter();
@@ -34,7 +35,6 @@ export default function PropertyDetails({ property, onCompare }) {
     lotSize = "0.45 Acres",
     yearBuilt = "1994",
     zoning = "R-1",
-    imageUrl,
     verified = true,
   } = property;
 
@@ -51,18 +51,18 @@ export default function PropertyDetails({ property, onCompare }) {
     <div className="overflow-hidden rounded-2xl border border-gray-100 bg-white shadow-sm">
       <div className="grid grid-cols-1 lg:grid-cols-2">
 
-        {/* ── LEFT: Property Image ── */}
+        {/* LEFT: Property Image */}
         <div className="relative min-h-[380px]">
-          <img
-            src={
-              imageUrl ||
-              "https://images.unsplash.com/photo-1545324418-cc1a3fa10c00?w=1200&q=80"
-            }
-            alt={address}
-            className="absolute inset-0 h-full w-full object-cover"
-          />
+         {getPropertyHeroImage(property) ? (
+  <img
+    src={getPropertyHeroImage(property)}
+    alt={address}
+    className="absolute inset-0 h-full w-full object-cover"
+  />
+) : (
+  <PropertyImagePlaceholder propertyType={propertyType} size="hero" />
+)}
 
-          {/* Verified badge */}
           {verified && (
             <div className="absolute top-4 left-4 flex items-center gap-1.5 rounded-full bg-white/95 px-3 py-1.5 shadow-md backdrop-blur-sm">
               <BadgeCheck className="h-4 w-4 text-[#22C55E]" strokeWidth={2.5} />
@@ -73,25 +73,23 @@ export default function PropertyDetails({ property, onCompare }) {
           )}
         </div>
 
-        {/* ── RIGHT: Details ── */}
+        {/* RIGHT: Details */}
         <div className="flex flex-col p-8">
 
-          {/* Type tag */}
           <p className="text-xs font-bold uppercase tracking-widest text-[#22C55E]">
             {propertyType}
           </p>
 
-          {/* Address + Price */}
           <div className="mt-3 flex items-start justify-between gap-6">
             <h2 className="text-[26px] font-black leading-[30px] tracking-tight text-gray-900">
               {fullAddress}
             </h2>
 
             {marketValue != null && (
-               <div className="flex-shrink-0 text-right">
-    <p className="text-[30px] font-black leading-none tracking-tight text-gray-900">
-      {formatINRFull(marketValue)}
-    </p>
+              <div className="flex-shrink-0 text-right">
+                <p className="text-[30px] font-black leading-none tracking-tight text-gray-900">
+                  {formatINRFull(marketValue)}
+                </p>
                 <p className="mt-1 text-xs text-gray-500">
                   Estimated Market Value
                 </p>
@@ -99,10 +97,8 @@ export default function PropertyDetails({ property, onCompare }) {
             )}
           </div>
 
-          {/* Divider */}
           <div className="my-6 h-px bg-gray-100" />
 
-          {/* Stats grid */}
           <div className="grid grid-cols-2 gap-6 sm:grid-cols-4">
 
             <div>
@@ -147,10 +143,8 @@ export default function PropertyDetails({ property, onCompare }) {
 
           </div>
 
-          {/* Divider */}
           <div className="my-6 h-px bg-gray-100" />
 
-          {/* Action buttons */}
           <div className="flex flex-wrap gap-3">
             <button
               type="button"

@@ -1,13 +1,35 @@
 "use client";
 
-import { BadgeCheck, MapPin, Maximize, ArrowUpRight, Home } from "lucide-react";
+import {
+  BadgeCheck,
+  MapPin,
+  Maximize,
+  ArrowUpRight,
+  Home,
+  AlertTriangle,
+  Pencil,
+} from "lucide-react";
 import { formatINR } from "@/utils/currency";
+import { getPropertyImage } from "@/constants/propertyImages";
+import PropertyImagePlaceholder from "./PropertyImagePlaceholder";
 
-export default function PropertyResultCard({ property, isSelected, onClick }) {
+/**
+ * PropertyResultCard — the search result grid card.
+ *
+ * Now shows honest verification state:
+ *  - Verified badge (green): all 7 data quality checks passed
+ *  - Pending badge (amber): shows how many checks passed with tooltip
+ *  - Edit button appears on pending cards → triggers onEdit prop
+ */
+export default function PropertyResultCard({
+  property,
+  isSelected,
+  onClick,
+  onEdit,
+}) {
   if (!property) return null;
 
   const {
-    id,
     address = "Unknown Address",
     city = "",
     state = "",
@@ -17,17 +39,18 @@ export default function PropertyResultCard({ property, isSelected, onClick }) {
     area,
     bedrooms,
     bathrooms,
+    verified,
+    missingFields = [],
+    totalChecks = 7,
   } = property;
 
-  const thumbnails = [
-    "https://images.unsplash.com/photo-1545324418-cc1a3fa10c00?w=600&q=80",
-    "https://images.unsplash.com/photo-1560518883-ce09059eeffa?w=600&q=80",
-    "https://images.unsplash.com/photo-1568605114967-8130f3a36994?w=600&q=80",
-    "https://images.unsplash.com/photo-1570129477492-45c003edd2be?w=600&q=80",
-    "https://images.unsplash.com/photo-1512917774080-9991f1c4c750?w=600&q=80",
-    "https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=600&q=80",
-  ];
-  const thumbnail = thumbnails[(id - 1) % thumbnails.length];
+  const thumbnail = getPropertyImage(property);
+  const passedChecks = totalChecks - missingFields.length;
+
+  const handleEditClick = (e) => {
+    e.stopPropagation();
+    onEdit?.(property);
+  };
 
   return (
     <button
@@ -40,22 +63,47 @@ export default function PropertyResultCard({ property, isSelected, onClick }) {
       }`}
     >
       <div className="relative h-44 overflow-hidden">
-        <img
-          src={thumbnail}
-          alt={address}
-          className="h-full w-full object-cover transition-transform duration-700 group-hover:scale-110"
-        />
+        {thumbnail ? (
+          <img
+            src={thumbnail}
+            alt={address}
+            className="h-full w-full object-cover transition-transform duration-700 group-hover:scale-110"
+            loading="lazy"
+          />
+        ) : (
+          <PropertyImagePlaceholder propertyType={propertyType} />
+        )}
 
-        <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-black/10 to-transparent" />
+        {thumbnail && (
+          <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-black/10 to-transparent" />
+        )}
 
-        <div className="absolute top-3 left-3 flex items-center gap-1.5 rounded-full bg-white/95 pl-2 pr-3 py-1.5 shadow-xl backdrop-blur-md ring-1 ring-white/40">
-          <div className="flex h-4 w-4 items-center justify-center rounded-full bg-gradient-to-br from-[#22C55E] to-[#16a34a]">
-            <BadgeCheck className="h-3 w-3 text-white" strokeWidth={3} />
+        {/* ── VERIFICATION BADGE — now honest ──────────────────────── */}
+        {verified ? (
+          <div
+            className="group/badge absolute top-3 left-3 flex items-center gap-1.5 rounded-full bg-white/95 pl-2 pr-3 py-1.5 shadow-xl backdrop-blur-md ring-1 ring-white/40 cursor-help"
+            title={`Verified — all ${totalChecks} data quality checks passed`}
+          >
+            <div className="flex h-4 w-4 items-center justify-center rounded-full bg-gradient-to-br from-[#22C55E] to-[#16a34a]">
+              <BadgeCheck className="h-3 w-3 text-white" strokeWidth={3} />
+            </div>
+            <span className="text-[10px] font-black uppercase tracking-wider text-gray-900">
+              Verified
+            </span>
           </div>
-          <span className="text-[10px] font-black uppercase tracking-wider text-gray-900">
-            Verified
-          </span>
-        </div>
+        ) : (
+          <div
+            className="group/badge absolute top-3 left-3 flex items-center gap-1.5 rounded-full bg-white/95 pl-2 pr-3 py-1.5 shadow-xl backdrop-blur-md ring-1 ring-amber-200 cursor-help"
+            title={`Pending — ${passedChecks} of ${totalChecks} checks passed.\nMissing: ${missingFields.join(", ")}`}
+          >
+            <div className="flex h-4 w-4 items-center justify-center rounded-full bg-gray-300">
+              <AlertTriangle className="h-2.5 w-2.5 text-white" strokeWidth={3} />
+            </div>
+            <span className="text-[10px] font-semibold uppercase tracking-wider text-gray-700">
+  Incomplete · {passedChecks}/{totalChecks}
+</span>
+          </div>
+        )}
 
         <div className="absolute top-3 right-3 rounded-full bg-gradient-to-r from-[#22C55E] to-[#16a34a] px-3 py-1.5 shadow-xl shadow-green-500/50 ring-1 ring-white/30">
           <span className="text-[10px] font-black uppercase tracking-wider text-white">
@@ -134,6 +182,23 @@ export default function PropertyResultCard({ property, isSelected, onClick }) {
             </div>
           )}
         </div>
+
+        {/* ── PENDING → EDIT PROMPT ────────────────────────────────── */}
+        {!verified && (
+          <div className="mt-4 rounded-xl border border-amber-200 bg-amber-50/50 p-3">
+            <p className="text-[11px] font-semibold text-amber-800 leading-tight">
+              Missing: {missingFields.slice(0, 2).join(", ")}
+              {missingFields.length > 2 && ` +${missingFields.length - 2} more`}
+            </p>
+            <span
+              onClick={handleEditClick}
+              className="mt-2 inline-flex items-center gap-1.5 rounded-lg bg-amber-500 px-2.5 py-1 text-[11px] font-bold text-white transition hover:bg-amber-600 cursor-pointer"
+            >
+              <Pencil className="h-3 w-3" />
+              Complete to Verify
+            </span>
+          </div>
+        )}
       </div>
 
       {isSelected && (
