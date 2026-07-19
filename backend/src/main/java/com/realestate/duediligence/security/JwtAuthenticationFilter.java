@@ -1,7 +1,10 @@
 package com.realestate.duediligence.security;
 
 import java.io.IOException;
+import java.time.LocalDateTime;
 
+import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.lang.NonNull;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -13,12 +16,23 @@ import org.springframework.web.filter.OncePerRequestFilter;
 import com.realestate.duediligence.service.impl.CustomUserDetailsService;
 import com.realestate.duediligence.util.JwtService;
 
+import io.jsonwebtoken.ExpiredJwtException;
+import io.jsonwebtoken.MalformedJwtException;
+import io.jsonwebtoken.UnsupportedJwtException;
+import io.jsonwebtoken.security.SignatureException;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 
+/**
+ * JWT authentication filter.
+ *
+ * Extracts and validates the Bearer token on every request. If the token is
+ * malformed, expired, or signed incorrectly, returns a clean 401 JSON
+ * response (instead of letting Spring bubble it to a generic 500).
+ */
 @Component
 @RequiredArgsConstructor
 public class JwtAuthenticationFilter extends OncePerRequestFilter {
@@ -35,38 +49,81 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
         final String authHeader = request.getHeader("Authorization");
 
+        // No Bearer token — let request continue (public endpoints handle it)
         if (authHeader == null || !authHeader.startsWith("Bearer ")) {
             filterChain.doFilter(request, response);
             return;
         }
 
-        String jwt = authHeader.substring(7);
+        final String jwt = authHeader.substring(7);
 
-        String email = jwtService.extractUsername(jwt);
+        try {
+            final String email = jwtService.extractUsername(jwt);
 
-        if (email != null &&
-                SecurityContextHolder.getContext().getAuthentication() == null) {
+            if (email != null &&
+                    SecurityContextHolder.getContext().getAuthentication() == null) {
 
-            UserDetails userDetails =
-                    userDetailsService.loadUserByUsername(email);
+                UserDetails userDetails = userDetailsService.loadUserByUsername(email);
 
-            if (jwtService.isTokenValid(jwt, userDetails.getUsername())) {
+                if (jwtService.isTokenValid(jwt, userDetails.getUsername())) {
+                    UsernamePasswordAuthenticationToken authToken =
+                            new UsernamePasswordAuthenticationToken(
+                                    userDetails,
+                                    null,
+                                    userDetails.getAuthorities());
 
-                UsernamePasswordAuthenticationToken authToken =
-                        new UsernamePasswordAuthenticationToken(
-                                userDetails,
-                                null,
-                                userDetails.getAuthorities());
+                    authToken.setDetails(
+                            new WebAuthenticationDetailsSource().buildDetails(request));
 
-                authToken.setDetails(
-                        new WebAuthenticationDetailsSource()
-                                .buildDetails(request));
-
-                SecurityContextHolder.getContext()
-                        .setAuthentication(authToken);
+                    SecurityContextHolder.getContext().setAuthentication(authToken);
+                }
             }
-        }
 
-        filterChain.doFilter(request, response);
+            filterChain.doFilter(request, response);
+
+        } catch (ExpiredJwtException ex) {
+            writeError(response, HttpStatus.UNAUTHORIZED,
+                    "TOKEN_EXPIRED",
+                    "Your session has expired. Please log in again.");
+        } catch (MalformedJwtException | UnsupportedJwtException | SignatureException ex) {
+            writeError(response, HttpStatus.UNAUTHORIZED,
+                    "TOKEN_INVALID",
+                    "Authentication token is invalid.");
+        } catch (Exception ex) {
+            // Defensive: any other JWT parsing issue → still 401, not 500
+            writeError(response, HttpStatus.UNAUTHORIZED,
+                    "TOKEN_ERROR",
+                    "Authentication failed.");
+        }
+    }
+
+    /**
+     * Write a clean JSON error response manually (no ObjectMapper dependency).
+     * Shape matches what the frontend expects from api.js.
+     */
+    private void writeError(HttpServletResponse response,
+                            HttpStatus status,
+                            String code,
+                            String message) throws IOException {
+
+        response.setStatus(status.value());
+        response.setContentType(MediaType.APPLICATION_JSON_VALUE);
+        response.setCharacterEncoding("UTF-8");
+
+        String json = String.format(
+                "{\"timestamp\":\"%s\",\"status\":%d,\"error\":\"%s\",\"message\":\"%s\"}",
+                LocalDateTime.now().toString(),
+                status.value(),
+                escape(code),
+                escape(message)
+        );
+
+        response.getWriter().write(json);
+    }
+
+    /** Minimal JSON string escaping — safe for our controlled inputs. */
+    private String escape(String s) {
+        if (s == null) return "";
+        return s.replace("\\", "\\\\").replace("\"", "\\\"");
     }
 }

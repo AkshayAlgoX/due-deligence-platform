@@ -3,25 +3,12 @@ package com.realestate.duediligence.service.impl;
 import org.springframework.stereotype.Service;
 
 import com.realestate.duediligence.dto.DashboardStatsResponse;
-import com.realestate.duediligence.dto.DashboardStatsResponse.Trends;
 import com.realestate.duediligence.repository.PropertyRepository;
 import com.realestate.duediligence.repository.UserRepository;
 import com.realestate.duediligence.service.DashboardService;
 
 import lombok.RequiredArgsConstructor;
 
-/**
- * DashboardServiceImpl — computes real stats from the database.
- *
- * Design decisions:
- *  - reportsGenerated: no Report table exists yet → return 0 honestly
- *  - avgRiskScore: no RiskScore table exists yet → return 0 honestly
- *  - activeAlerts: no Alert table exists yet → return 0 honestly
- *  - trends: no historical snapshots exist → return 0 (no fake percentages)
- *
- * When you add Report/RiskAssessment/Alert tables later, replace the
- * zero-returning stubs with real repository calls.
- */
 @Service
 @RequiredArgsConstructor
 public class DashboardServiceImpl implements DashboardService {
@@ -31,32 +18,25 @@ public class DashboardServiceImpl implements DashboardService {
 
     @Override
     public DashboardStatsResponse getStats() {
-
-        // ── Real data from DB ────────────────────────────────────────────────
+        // ── Real DB counts — no invented numbers ──────────────────────
         long totalProperties = propertyRepository.count();
-        long totalUsers      = userRepository.count();
+        long verifiedProperties = propertyRepository.countByVerifiedTrue();
+        long pendingProperties = propertyRepository.countByVerifiedFalse();
+        long totalUsers = userRepository.count();
 
-        // ── Honest zeros until the backing tables exist ──────────────────────
-        // TODO: replace when Report entity is added
-        long reportsGenerated = 0L;
-
-        // TODO: replace when RiskAssessment entity is added
-        int avgRiskScore = 0;
-
-        // TODO: replace when Alert entity is added
-        int activeAlerts = 0;
-
-        // ── Trends — zero until we have historical snapshots ─────────────────
-        // TODO: compare against last-month snapshot when audit log table exists
-        Trends trends = new Trends(0, 0, 0, 0);
-
-        return new DashboardStatsResponse(
-                totalProperties,
-                reportsGenerated,
-                avgRiskScore,
-                activeAlerts,
-                totalUsers,
-                trends
-        );
+        return DashboardStatsResponse.builder()
+                .totalProperties(totalProperties)
+                .verifiedProperties(verifiedProperties)
+                .pendingProperties(pendingProperties)
+                .totalUsers(totalUsers)
+                .reportsGenerated(0) // Reports module not built in Milestone 1
+                .activeAlerts(0)     // Alerts module not built in Milestone 1
+                .trends(DashboardStatsResponse.DashboardTrends.builder()
+                        .propertiesGrowth(0) // Historical tracking not built yet
+                        .reportsGrowth(0)
+                        .riskChange(0)
+                        .alertsChange(0)
+                        .build())
+                .build();
     }
 }

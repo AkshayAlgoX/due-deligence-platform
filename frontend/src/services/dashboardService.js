@@ -2,7 +2,7 @@
  * Dashboard service — talks to real Spring Boot backend.
  *
  * Backend endpoint: GET /api/dashboard/stats
- * Returns: { totalProperties, reportsGenerated, avgRiskScore, activeAlerts, trends }
+ * Every field is a real DB count. No invented numbers.
  */
 import api from "./api";
 import { API_ROUTES } from "@/constants/apiRoutes";
@@ -13,10 +13,11 @@ export const getDashboardStats = async () => {
 
   return {
     totalProperties: data.totalProperties ?? 0,
-    reportsGenerated: data.reportsGenerated ?? 0,
-    avgRiskScore: data.avgRiskScore ?? 0,
-    activeAlerts: data.activeAlerts ?? 0,
+    verifiedProperties: data.verifiedProperties ?? 0,   // NEW
+    pendingProperties: data.pendingProperties ?? 0,     // NEW
     totalUsers: data.totalUsers ?? 0,
+    reportsGenerated: data.reportsGenerated ?? 0,
+    activeAlerts: data.activeAlerts ?? 0,
     trends: {
       propertiesGrowth: data.trends?.propertiesGrowth ?? 0,
       reportsGrowth: data.trends?.reportsGrowth ?? 0,

@@ -17,6 +17,8 @@ public interface PropertyService {
 
     List<PropertyResponse> searchProperties(String query);
 
-    /** Admin-only: re-run verification on all existing properties */
     int reverifyAllProperties();
+
+    // ── NEW ────────────────────────────────────────────────────
+    List<PropertyResponse> getRecentProperties();
 }

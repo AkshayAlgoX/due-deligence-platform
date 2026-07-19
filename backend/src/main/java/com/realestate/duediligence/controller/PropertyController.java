@@ -52,6 +52,16 @@ public class PropertyController {
         return propertyService.searchProperties(query);
     }
 
+    /**
+     * GET /api/properties/recent
+     * Returns the 5 most recently added properties (newest first).
+     * Used by dashboard "Recent properties" table.
+     */
+    @GetMapping("/recent")
+    public ResponseEntity<List<PropertyResponse>> getRecentProperties() {
+        return ResponseEntity.ok(propertyService.getRecentProperties());
+    }
+
     @PutMapping("/{id}")
     public ResponseEntity<PropertyResponse> updateProperty(
             @PathVariable Long id,

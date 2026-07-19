@@ -1,5 +1,7 @@
 "use client";
 
+import Link from "next/link";
+
 import RegisterForm from "@/components/forms/RegisterForm";
 import GuestGuard from "@/components/GuestGuard";
 import { ShieldCheck, ListChecks, KeyRound, Users } from "lucide-react";
@@ -53,6 +55,19 @@ function RegisterPageInner() {
         ">
           <div className="w-full max-w-[480px]">
             <RegisterForm />
+
+            {/* ── Security footer — matches login page ──────────── */}
+            <div className="mt-4 border-t border-gray-200 pt-3 text-center">
+              <p className="text-[10px] text-gray-500">
+                Secure by design ·{" "}
+                <Link
+                  href="/security"
+                  className="underline hover:text-[#22C55E] transition"
+                >
+                  Learn how
+                </Link>
+              </p>
+            </div>
           </div>
         </div>
       </section>

@@ -2,6 +2,7 @@
 
 import { useState, useRef, useEffect } from "react";
 import { useRouter } from "next/navigation";
+import Link from "next/link";
 import { toast } from "sonner";
 
 import { loginUser } from "@/services/authService";
@@ -381,11 +382,11 @@ function LoginPageInner() {
 
             {/* Honest security footer — matches register page */}
 <div className="mt-4 border-t border-gray-200 pt-3 text-center">
-  <p className="text-[10px] uppercase tracking-widest text-gray-400">
-    Secure by design
-  </p>
-  <p className="mt-1 text-[11px] text-gray-400">
-    JWT authentication · BCrypt hashing · Role-based access control
+  <p className="text-[10px] text-gray-500">
+    Secure by design ·{" "}
+    <Link href="/security" className="underline hover:text-[#22C55E] transition">
+      Learn how
+    </Link>
   </p>
 </div>
           </div>

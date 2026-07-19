@@ -13,13 +13,6 @@ import { removeToken } from "@/utils/helpers";
  *
  * Uses Google Identity Services (GIS) directly via window.google.accounts.id,
  * which is loaded by @react-oauth/google's <GoogleOAuthProvider>.
- *
- * Why not <GoogleLogin />?
- *   - Google's rendered button is an iframe — CSS can't fully style it.
- *   - Height, font, padding all fixed by Google → clashes with our design system.
- *
- * This custom button gives us pixel-perfect control while still using
- * the official ID token flow that our backend expects.
  */
 export default function GoogleSignInButton() {
   const router = useRouter();
@@ -29,14 +22,32 @@ export default function GoogleSignInButton() {
 
   const clientId = process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID;
 
+  // ── Suppress Google FedCM Dev Overlay ─────────────────────────────────────
+  useEffect(() => {
+    const originalError = console.error;
+    console.error = (...args) => {
+      const msg = typeof args[0] === "string" ? args[0] : "";
+      if (msg.includes("[GSI_LOGGER]") && msg.includes("FedCM")) {
+        // Downgrade to warning so Next.js doesn't show the red error overlay.
+        // The fallback popup flow will still work correctly.
+        console.warn("[GSI_LOGGER] FedCM blocked or failed. Using fallback.", ...args);
+        return;
+      }
+      originalError(...args);
+    };
+
+    return () => {
+      console.error = originalError;
+    };
+  }, []);
+
   // ── Handle ID token response from Google ──────────────────────────────────
   const handleCredentialResponse = async (response) => {
-    // Prevent double-firing (Google sometimes calls twice)
     if (handledRef.current) return;
     handledRef.current = true;
 
     setLoading(true);
-    removeToken(); // clear any stale token before login
+    removeToken();
 
     try {
       const result = await loginWithGoogle(response.credential);
@@ -103,8 +114,6 @@ export default function GoogleSignInButton() {
       }
     };
 
-    // GIS script is loaded by <GoogleOAuthProvider> in providers.jsx.
-    // Poll until it's ready (usually <500ms).
     initGIS();
     if (!gisReady) {
       interval = setInterval(initGIS, 100);
@@ -121,14 +130,11 @@ export default function GoogleSignInButton() {
     if (!gisReady || loading) return;
     handledRef.current = false;
 
-    // Use One Tap prompt as the trigger — user picks account from popup
     window.google.accounts.id.prompt((notification) => {
-      // If prompt is suppressed or skipped, fall back to popup flow
       if (
         notification.isNotDisplayed?.() ||
         notification.isSkippedMoment?.()
       ) {
-        // Fallback: render a hidden button and click it programmatically
         openPopupFallback();
       }
     });
@@ -136,8 +142,6 @@ export default function GoogleSignInButton() {
 
   // ── Popup fallback (if One Tap is blocked by browser) ─────────────────────
   const openPopupFallback = () => {
-    // Create a temporary hidden container and render Google's button into it,
-    // then trigger a click. This uses Google's own popup flow.
     const container = document.createElement("div");
     container.style.position = "absolute";
     container.style.left = "-9999px";
@@ -147,16 +151,14 @@ export default function GoogleSignInButton() {
       type: "standard",
       theme: "outline",
       size: "large",
-      click_listener: () => {}, // no-op
+      click_listener: () => {}, 
     });
 
-    // Click the hidden Google button
     const googleBtn = container.querySelector('div[role="button"]');
     if (googleBtn) {
       googleBtn.click();
     }
 
-    // Clean up after a delay
     setTimeout(() => {
       if (document.body.contains(container)) {
         document.body.removeChild(container);
@@ -164,7 +166,6 @@ export default function GoogleSignInButton() {
     }, 500);
   };
 
-  // ── Render our custom button (pixel-perfect match with Contact Support) ──
   return (
     <button
       type="button"
@@ -187,11 +188,6 @@ export default function GoogleSignInButton() {
   );
 }
 
-/**
- * Official Google "G" logo (4-color).
- * Permitted use per Google Branding Guidelines when linking to Google Sign-In.
- * https://developers.google.com/identity/branding-guidelines
- */
 function GoogleGlyph() {
   return (
     <svg

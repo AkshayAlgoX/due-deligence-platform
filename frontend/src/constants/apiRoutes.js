@@ -23,6 +23,7 @@ export const API_ROUTES = {
   PROPERTIES:      "/api/properties",
   PROPERTY_BY_ID:  (id) => `/api/properties/${id}`,
   PROPERTY_SEARCH: "/api/properties/search",
+  PROPERTIES_RECENT: "/api/properties/recent",   // NEW
 
   // ── Dashboard ─────────────────────────────────────────────────────────────
   DASHBOARD_STATS:  "/api/dashboard/stats",

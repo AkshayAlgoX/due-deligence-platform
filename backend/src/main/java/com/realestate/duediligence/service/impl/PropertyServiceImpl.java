@@ -113,6 +113,13 @@ public class PropertyServiceImpl implements PropertyService {
         return verifiedCount;
     }
 
+    @Override
+public List<PropertyResponse> getRecentProperties() {
+    return propertyRepository.findTop5ByOrderByCreatedAtDesc()
+            .stream()
+            .map(this::mapToResponse)
+            .collect(Collectors.toList());
+}
     // ── Helper: Request → Entity (used by both create & update) ────
     private void applyRequestToEntity(PropertyRequest request, Property property) {
         property.setAddress(request.getAddress());

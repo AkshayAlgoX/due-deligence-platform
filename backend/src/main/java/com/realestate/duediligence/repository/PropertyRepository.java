@@ -20,4 +20,16 @@ public interface PropertyRepository extends JpaRepository<Property, Long> {
            "LOWER(p.zipCode)      LIKE %:q% OR " +
            "LOWER(p.propertyType) LIKE %:q%")
     List<Property> searchByKeyword(@Param("q") String q);
+
+    /**
+     * NEW: Fetch the 5 most recently created properties.
+     */
+    List<Property> findTop5ByOrderByCreatedAtDesc();
+
+    /**
+     * NEW: Dashboard KPI counts.
+     */
+    long countByVerifiedTrue();
+
+    long countByVerifiedFalse();
 }
