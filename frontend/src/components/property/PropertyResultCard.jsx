@@ -8,6 +8,8 @@ import {
   Home,
   AlertTriangle,
   Pencil,
+  Camera,
+  ImagePlus,
 } from "lucide-react";
 import { formatINR } from "@/utils/currency";
 import { getPropertyImage } from "@/constants/propertyImages";
@@ -16,16 +18,22 @@ import PropertyImagePlaceholder from "./PropertyImagePlaceholder";
 /**
  * PropertyResultCard — the search result grid card.
  *
- * Now shows honest verification state:
- *  - Verified badge (green): all 7 data quality checks passed
- *  - Pending badge (amber): shows how many checks passed with tooltip
- *  - Edit button appears on pending cards → triggers onEdit prop
+ * Props:
+ *   property        - property object
+ *   isSelected      - highlight state
+ *   onClick         - card click (view details)
+ *   onEdit          - opens Edit modal for missing fields
+ *   onQuickPhoto    - opens QuickImageUploadModal (photo-only edit)
+ *
+ * Note: Card itself is a <button>, so nested interactive elements
+ * use <div role="button"> to avoid invalid nested-button HTML.
  */
 export default function PropertyResultCard({
   property,
   isSelected,
   onClick,
   onEdit,
+  onQuickPhoto,
 }) {
   if (!property) return null;
 
@@ -42,14 +50,29 @@ export default function PropertyResultCard({
     verified,
     missingFields = [],
     totalChecks = 7,
+    imageUrl,
   } = property;
 
   const thumbnail = getPropertyImage(property);
   const passedChecks = totalChecks - missingFields.length;
+  const hasRealImage = Boolean(imageUrl);
 
   const handleEditClick = (e) => {
     e.stopPropagation();
     onEdit?.(property);
+  };
+
+  const handleQuickPhotoClick = (e) => {
+    e.stopPropagation();
+    onQuickPhoto?.(property);
+  };
+
+  // Keyboard handler for div-as-button
+  const handleKeyActivate = (fn) => (e) => {
+    if (e.key === "Enter" || e.key === " ") {
+      e.preventDefault();
+      fn(e);
+    }
   };
 
   return (
@@ -78,10 +101,10 @@ export default function PropertyResultCard({
           <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-black/10 to-transparent" />
         )}
 
-        {/* ── VERIFICATION BADGE — now honest ──────────────────────── */}
+        {/* ── VERIFICATION BADGE ───────────────────────────────────── */}
         {verified ? (
           <div
-            className="group/badge absolute top-3 left-3 flex items-center gap-1.5 rounded-full bg-white/95 pl-2 pr-3 py-1.5 shadow-xl backdrop-blur-md ring-1 ring-white/40 cursor-help"
+            className="absolute top-3 left-3 flex items-center gap-1.5 rounded-full bg-white/95 pl-2 pr-3 py-1.5 shadow-xl backdrop-blur-md ring-1 ring-white/40 cursor-help"
             title={`Verified — all ${totalChecks} data quality checks passed`}
           >
             <div className="flex h-4 w-4 items-center justify-center rounded-full bg-gradient-to-br from-[#22C55E] to-[#16a34a]">
@@ -93,26 +116,77 @@ export default function PropertyResultCard({
           </div>
         ) : (
           <div
-            className="group/badge absolute top-3 left-3 flex items-center gap-1.5 rounded-full bg-white/95 pl-2 pr-3 py-1.5 shadow-xl backdrop-blur-md ring-1 ring-amber-200 cursor-help"
+            className="absolute top-3 left-3 flex items-center gap-1.5 rounded-full bg-white/95 pl-2 pr-3 py-1.5 shadow-xl backdrop-blur-md ring-1 ring-amber-200 cursor-help"
             title={`Pending — ${passedChecks} of ${totalChecks} checks passed.\nMissing: ${missingFields.join(", ")}`}
           >
             <div className="flex h-4 w-4 items-center justify-center rounded-full bg-gray-300">
               <AlertTriangle className="h-2.5 w-2.5 text-white" strokeWidth={3} />
             </div>
             <span className="text-[10px] font-semibold uppercase tracking-wider text-gray-700">
-  Incomplete · {passedChecks}/{totalChecks}
-</span>
+              Incomplete · {passedChecks}/{totalChecks}
+            </span>
           </div>
         )}
 
-        <div className="absolute top-3 right-3 rounded-full bg-gradient-to-r from-[#22C55E] to-[#16a34a] px-3 py-1.5 shadow-xl shadow-green-500/50 ring-1 ring-white/30">
-          <span className="text-[10px] font-black uppercase tracking-wider text-white">
-            {propertyType}
-          </span>
+        {/* ── TOP-RIGHT: change photo + property type ──────────────── */}
+        <div className="absolute top-3 right-3 flex items-center gap-1.5">
+          {/* Quick photo action — shows on hover when image exists */}
+          {hasRealImage && onQuickPhoto && (
+            <div
+              role="button"
+              tabIndex={0}
+              onClick={handleQuickPhotoClick}
+              onKeyDown={handleKeyActivate(handleQuickPhotoClick)}
+              className="
+                flex h-7 w-7 items-center justify-center rounded-full
+                bg-white/95 shadow-lg ring-1 ring-white/40 backdrop-blur-md
+                opacity-0 group-hover:opacity-100
+                transition-all duration-200
+                hover:bg-white hover:scale-110
+                cursor-pointer
+              "
+              title="Change photo"
+              aria-label="Change photo"
+            >
+              <Camera className="h-3.5 w-3.5 text-gray-700" strokeWidth={2.5} />
+            </div>
+          )}
+
+          <div className="rounded-full bg-gradient-to-r from-[#22C55E] to-[#16a34a] px-3 py-1.5 shadow-xl shadow-green-500/50 ring-1 ring-white/30">
+            <span className="text-[10px] font-black uppercase tracking-wider text-white">
+              {propertyType}
+            </span>
+          </div>
         </div>
 
+                {/* ── "ADD PHOTO" PILL — contained button, not full overlay ── */}
+        {!hasRealImage && onQuickPhoto && (
+          <div
+            role="button"
+            tabIndex={0}
+            onClick={handleQuickPhotoClick}
+            onKeyDown={handleKeyActivate(handleQuickPhotoClick)}
+            className="
+              absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2
+              flex items-center gap-2 rounded-xl
+              bg-white/95 px-4 py-2 shadow-xl backdrop-blur-md ring-1 ring-white/40
+              opacity-0 group-hover:opacity-100
+              transition-all duration-300 hover:scale-105
+              cursor-pointer
+            "
+            title="Add photo"
+            aria-label="Add photo"
+          >
+            <ImagePlus className="h-4 w-4 text-[#16a34a]" strokeWidth={2.5} />
+            <span className="text-xs font-black uppercase tracking-wider text-gray-900">
+              Add photo
+            </span>
+          </div>
+        )}
+
+        {/* ── MARKET VALUE STRIP ───────────────────────────────────── */}
         {marketValue != null && (
-          <div className="absolute bottom-3 left-3 right-3 flex items-end justify-between">
+          <div className="absolute bottom-3 left-3 right-3 flex items-end justify-between pointer-events-none">
             <div className="rounded-2xl bg-white/95 px-3 py-2 shadow-xl backdrop-blur-md ring-1 ring-white/40">
               <p className="text-[9px] font-bold uppercase tracking-widest text-gray-500">
                 Market Value
@@ -191,11 +265,14 @@ export default function PropertyResultCard({
               {missingFields.length > 2 && ` +${missingFields.length - 2} more`}
             </p>
             <span
+              role="button"
+              tabIndex={0}
               onClick={handleEditClick}
+              onKeyDown={handleKeyActivate(handleEditClick)}
               className="mt-2 inline-flex items-center gap-1.5 rounded-lg bg-amber-500 px-2.5 py-1 text-[11px] font-bold text-white transition hover:bg-amber-600 cursor-pointer"
             >
               <Pencil className="h-3 w-3" />
-              Complete to Verify
+              Complete to verify
             </span>
           </div>
         )}

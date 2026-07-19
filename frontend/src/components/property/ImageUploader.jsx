@@ -102,11 +102,11 @@ export default function ImageUploader({ value, onChange, disabled = false }) {
     e.target.value = ""; // Allow re-selecting same file
   };
 
-  const handleRemove = () => {
+    const handleRemove = () => {
     setPreviewFile(null);
     setError("");
     onChange?.(null);
-    toast.success("Image removed");
+    // No toast — parent decides when to persist and confirm.
   };
 
   const openFilePicker = () => {

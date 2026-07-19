@@ -22,6 +22,7 @@ import TransactionHistoryTable from "@/components/property/TransactionHistoryTab
 import ActionButtons from "@/components/property/ActionButtons";
 import AddPropertyModal from "@/components/property/AddPropertyModal";
 import EditPropertyModal from "@/components/property/EditPropertyModal";
+import QuickImageUploadModal from "@/components/property/QuickImageUploadModal";
 import FilterPanel from "@/components/property/FilterPanel";
 import ActiveFilterChips from "@/components/property/ActiveFilterChips";
 import ErrorBoundary from "@/components/ErrorBoundary";
@@ -56,12 +57,13 @@ function PropertySearchInner() {
   const [modalOpen, setModalOpen] = useState(false);
   const [editModalOpen, setEditModalOpen] = useState(false);
   const [propertyToEdit, setPropertyToEdit] = useState(null);
+  const [quickPhotoModalOpen, setQuickPhotoModalOpen] = useState(false);
+  const [propertyForQuickPhoto, setPropertyForQuickPhoto] = useState(null);
   const [filterPanelOpen, setFilterPanelOpen] = useState(false);
   const [searchValue, setSearchValue] = useState("");
   const [lastSyncedAt, setLastSyncedAt] = useState(null);
   const [, forceTick] = useState(0);
 
-  // ── Filter engine — applied to `results` ────────────────────────
   const {
     filters,
     filtered: displayedResults,
@@ -191,8 +193,14 @@ function PropertySearchInner() {
     setEditModalOpen(true);
   }, []);
 
-  const handleEditSuccess = useCallback((updated) => {
-    // Update in both results and allProperties
+  // ── Quick photo flow ─────────────────────────────────────────────
+  const handleQuickPhoto = useCallback((property) => {
+    setPropertyForQuickPhoto(property);
+    setQuickPhotoModalOpen(true);
+  }, []);
+
+  // Shared success handler — used by both Edit and QuickPhoto modals
+  const handleUpdateSuccess = useCallback((updated) => {
     setResults((prev) => prev.map((p) => (p.id === updated.id ? updated : p)));
     setAllProperties((prev) => prev.map((p) => (p.id === updated.id ? updated : p)));
     if (selectedProperty?.id === updated.id) {
@@ -201,7 +209,6 @@ function PropertySearchInner() {
     setLastSyncedAt(new Date());
   }, [selectedProperty]);
 
-  // ── Derived stats for header data strip ────────────────────────
   const stats = useMemo(() => {
     const total = allProperties.length;
     const uniqueCities = new Set(allProperties.map((p) => p.city?.trim()).filter(Boolean)).size;
@@ -309,7 +316,7 @@ function PropertySearchInner() {
         </>
       )}
 
-      {/* Empty state (no results at all) */}
+      {/* Empty state */}
       {!loading && !searching && results.length === 0 && (
         <div className="flex flex-col items-center justify-center rounded-2xl border border-gray-100 bg-white py-20 px-6 text-center">
           <div className="w-16 h-16 rounded-2xl bg-gray-50 border border-gray-100 flex items-center justify-center mb-4">
@@ -324,12 +331,12 @@ function PropertySearchInner() {
             className="mt-6 flex items-center gap-2 rounded-xl bg-[#22C55E] px-5 py-2.5 text-sm font-bold text-white shadow-[0_8px_20px_rgba(34,197,94,0.3)] transition hover:bg-[#16a34a]"
           >
             <Plus className="h-4 w-4" />
-            Add Your First Property
+            Add your first property
           </button>
         </div>
       )}
 
-      {/* Results grid + filters */}
+      {/* Results grid */}
       {!loading && results.length > 0 && (
         <div className="rounded-2xl border border-gray-100 bg-white p-6 shadow-sm">
           <div className="mb-5 flex items-center justify-between flex-wrap gap-3">
@@ -368,14 +375,12 @@ function PropertySearchInner() {
             </button>
           </div>
 
-          {/* Active filter chips */}
           <ActiveFilterChips
             filters={filters}
             removeFilter={removeFilter}
             clearAll={clearAll}
           />
 
-          {/* Filtered empty state */}
           {displayedResults.length === 0 ? (
             <div className="flex flex-col items-center justify-center py-16 text-center">
               <SearchX className="h-10 w-10 text-gray-200 mb-3" />
@@ -401,6 +406,7 @@ function PropertySearchInner() {
                   isSelected={selectedProperty?.id === p.id}
                   onClick={() => handleSelectResult(p)}
                   onEdit={handleEditProperty}
+                  onQuickPhoto={handleQuickPhoto}
                 />
               ))}
             </div>
@@ -408,7 +414,7 @@ function PropertySearchInner() {
         </div>
       )}
 
-      {/* Property hero + detail sections */}
+      {/* Property detail sections */}
       {!loading && selectedProperty && (
         <ErrorBoundary>
           <div id="property-hero">
@@ -453,7 +459,14 @@ function PropertySearchInner() {
         isOpen={editModalOpen}
         onClose={() => setEditModalOpen(false)}
         property={propertyToEdit}
-        onSuccess={handleEditSuccess}
+        onSuccess={handleUpdateSuccess}
+      />
+
+      <QuickImageUploadModal
+        isOpen={quickPhotoModalOpen}
+        onClose={() => setQuickPhotoModalOpen(false)}
+        property={propertyForQuickPhoto}
+        onSuccess={handleUpdateSuccess}
       />
 
       <FilterPanel
