@@ -2,6 +2,9 @@ package com.realestate.duediligence.entity;
 
 import java.time.LocalDateTime;
 
+import org.hibernate.annotations.OnDelete;
+import org.hibernate.annotations.OnDeleteAction;
+
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
@@ -28,19 +31,15 @@ public class Property {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    // ✅ Still required (minimum viable property)
     @Column(nullable = false)
     private String address;
 
-    // ✅ Still required
     @Column(nullable = false)
     private String city;
 
-    // ✅ NOW OPTIONAL (required only for verification, not creation)
     @Column(nullable = true)
     private String state;
 
-    // ✅ NOW OPTIONAL (required only for verification, not creation)
     @Column(name = "zip_code", nullable = true)
     private String zipCode;
 
@@ -83,8 +82,10 @@ public class Property {
     @Column
     private String condition;
 
+    // ── NEW: cascade delete when user is deleted ─────────────
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "created_by")
+    @OnDelete(action = OnDeleteAction.CASCADE)
     private User createdBy;
 
     @Column(name = "created_at")

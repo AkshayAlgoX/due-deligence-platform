@@ -1,4 +1,4 @@
-import Link from "next/link";
+import BackButton from "@/components/BackButton";
 import {
   Shield,
   Lock,
@@ -24,13 +24,7 @@ export default function SecurityPage() {
     <div className="min-h-screen bg-gradient-to-br from-white via-[#f8fffb] to-[#edf7f3]">
       {/* ── Back link ─────────────────────────────────────────────────── */}
       <div className="mx-auto max-w-4xl px-6 pt-8">
-        <Link
-          href="/login"
-          className="inline-flex items-center gap-1.5 text-sm font-medium text-gray-500 transition hover:text-gray-900"
-        >
-          <ArrowLeft className="h-4 w-4" />
-          Back
-        </Link>
+       <BackButton fallback="/login" />
       </div>
 
       {/* ── Hero ──────────────────────────────────────────────────────── */}

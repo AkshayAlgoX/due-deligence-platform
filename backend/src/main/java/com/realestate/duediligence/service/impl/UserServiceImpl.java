@@ -11,7 +11,10 @@ import org.springframework.stereotype.Service;
 import com.google.api.client.googleapis.auth.oauth2.GoogleIdToken.Payload;
 import com.realestate.duediligence.dto.ApiResponse;
 import com.realestate.duediligence.dto.AuthResponse;
+import com.realestate.duediligence.dto.CompleteGoogleSignupRequest;
+import com.realestate.duediligence.dto.DeleteAccountRequest;
 import com.realestate.duediligence.dto.ForgotPasswordRequest;
+import com.realestate.duediligence.dto.GoogleAuthResponse;
 import com.realestate.duediligence.dto.GoogleLoginRequest;
 import com.realestate.duediligence.dto.LoginRequest;
 import com.realestate.duediligence.dto.RegisterRequest;
@@ -25,8 +28,7 @@ import com.realestate.duediligence.service.EmailService;
 import com.realestate.duediligence.service.GoogleTokenVerifier;
 import com.realestate.duediligence.service.UserService;
 import com.realestate.duediligence.util.JwtService;
-import com.realestate.duediligence.dto.CompleteGoogleSignupRequest;
-import com.realestate.duediligence.dto.GoogleAuthResponse;
+import com.realestate.duediligence.dto.UserProfileResponse;
 
 @Service
 public class UserServiceImpl implements UserService {
@@ -60,44 +62,41 @@ public class UserServiceImpl implements UserService {
         this.googleTokenVerifier = googleTokenVerifier;
     }
 
+    // ══════════════════════════════════════════════════════════════
+    //  REGISTER
+    // ══════════════════════════════════════════════════════════════
+
     @Override
-public AuthResponse register(RegisterRequest request) {
-    // Duplicate email check — throw instead of returning success:false
-    // Your global exception handler will convert this to a proper 409 response
-    if (userRepository.existsByEmail(request.getEmail())) {
-        throw new IllegalArgumentException("Email already exists");
+    public AuthResponse register(RegisterRequest request) {
+        if (userRepository.existsByEmail(request.getEmail())) {
+            throw new IllegalArgumentException("Email already exists");
+        }
+
+        Role role = roleRepository.findByRoleName(request.getRole())
+                .orElseThrow(() -> new RuntimeException("Role not found"));
+
+        User user = new User();
+        user.setFullName(request.getFullName());
+        user.setEmail(request.getEmail());
+        user.setPassword(passwordEncoder.encode(request.getPassword()));
+        user.setPhoneNumber(request.getPhoneNumber());
+        user.setRole(role);
+        user.setAuthProvider("LOCAL");
+        user.setCreatedAt(LocalDateTime.now());
+        user.setUpdatedAt(LocalDateTime.now());
+
+        userRepository.save(user);
+
+        emailService.sendWelcomeEmail(user.getEmail(), user.getFullName());
+
+        String token = jwtService.generateToken(user.getEmail());
+        return new AuthResponse(token);
     }
 
-    // Fetch role
-    Role role = roleRepository.findByRoleName(request.getRole())
-            .orElseThrow(() -> new RuntimeException("Role not found"));
+    // ══════════════════════════════════════════════════════════════
+    //  LOGIN
+    // ══════════════════════════════════════════════════════════════
 
-    // Create user
-    User user = new User();
-    user.setFullName(request.getFullName());
-    user.setEmail(request.getEmail());
-    user.setPassword(passwordEncoder.encode(request.getPassword()));
-    user.setPhoneNumber(request.getPhoneNumber());
-    user.setRole(role);
-    user.setAuthProvider("LOCAL");
-    user.setCreatedAt(LocalDateTime.now());
-    user.setUpdatedAt(LocalDateTime.now());
-
-    userRepository.save(user);
-
-    // Send welcome email (async, non-blocking)
-    emailService.sendWelcomeEmail(user.getEmail(), user.getFullName());
-
-    // Generate JWT — user is now logged in
-    String token = jwtService.generateToken(user.getEmail());
-
-    // Optional: send login alert since this is effectively a login
-    // (Uncomment if you want new users to also get the "new login" email)
-    // emailService.sendLoginAlert(user.getEmail(), user.getFullName(),
-    //         getClientIp(), getUserAgent());
-
-    return new AuthResponse(token);
-}
     @Override
     public AuthResponse login(LoginRequest request) {
         authenticationManager.authenticate(
@@ -118,140 +117,101 @@ public AuthResponse register(RegisterRequest request) {
     }
 
     // ══════════════════════════════════════════════════════════════
-//  GOOGLE SIGN-IN — 2-STEP FLOW
-// ══════════════════════════════════════════════════════════════
+    //  GOOGLE SIGN-IN — 2-STEP FLOW
+    // ══════════════════════════════════════════════════════════════
 
-/**
- * Step 1: Google Sign-In (called from frontend after Google popup).
- *
- * - Existing user → return AUTHENTICATED + JWT
- * - New user      → return PROFILE_INCOMPLETE (frontend shows role picker)
- */
-@Override
-public GoogleAuthResponse loginWithGoogle(GoogleLoginRequest request) {
-    // 1. Verify token with Google
-    Payload payload = googleTokenVerifier.verify(request.getCredential());
+    @Override
+    public GoogleAuthResponse loginWithGoogle(GoogleLoginRequest request) {
+        Payload payload = googleTokenVerifier.verify(request.getCredential());
 
-    String email = payload.getEmail();
-    String googleId = payload.getSubject();
-    String name = (String) payload.get("name");
-    String picture = (String) payload.get("picture");
-    Boolean emailVerified = payload.getEmailVerified();
+        String email = payload.getEmail();
+        String googleId = payload.getSubject();
+        String name = (String) payload.get("name");
+        String picture = (String) payload.get("picture");
+        Boolean emailVerified = payload.getEmailVerified();
 
-    if (email == null || Boolean.FALSE.equals(emailVerified)) {
-        throw new IllegalArgumentException("Google email is not verified");
-    }
+        if (email == null || Boolean.FALSE.equals(emailVerified)) {
+            throw new IllegalArgumentException("Google email is not verified");
+        }
 
-    // 2. Check if user exists
-    var existingUser = userRepository.findByEmail(email);
+        var existingUser = userRepository.findByEmail(email);
 
-    if (existingUser.isEmpty()) {
-        // 🆕 NEW USER → frontend must show profile completion form
-        System.out.println("\n🆕 New Google user detected: " + email + " — requesting profile completion\n");
+        if (existingUser.isEmpty()) {
+            return new GoogleAuthResponse(
+                    "PROFILE_INCOMPLETE",
+                    null,
+                    email,
+                    name,
+                    picture
+            );
+        }
+
+        User user = existingUser.get();
+
+        if (user.getGoogleId() == null) {
+            user.setGoogleId(googleId);
+            user.setProfilePicture(picture);
+            user.setAuthProvider("LOCAL_AND_GOOGLE");
+            user.setUpdatedAt(LocalDateTime.now());
+            userRepository.save(user);
+        }
+
+        String token = jwtService.generateToken(email);
+
+        emailService.sendLoginAlert(user.getEmail(), user.getFullName(),
+                getClientIp(), getUserAgent());
 
         return new GoogleAuthResponse(
-                "PROFILE_INCOMPLETE",
-                null,       // no token yet
+                "AUTHENTICATED",
+                token,
                 email,
-                name,
-                picture
+                user.getFullName(),
+                user.getProfilePicture()
         );
     }
 
-    // ✅ EXISTING USER → login immediately
-    User user = existingUser.get();
+    @Override
+    public AuthResponse completeGoogleSignup(CompleteGoogleSignupRequest request) {
+        Payload payload = googleTokenVerifier.verify(request.getCredential());
 
-    // Link Google to existing local account if needed
-    if (user.getGoogleId() == null) {
+        String email = payload.getEmail();
+        String googleId = payload.getSubject();
+        String name = (String) payload.get("name");
+        String picture = (String) payload.get("picture");
+
+        if (userRepository.existsByEmail(email)) {
+            throw new IllegalArgumentException(
+                    "An account with this email already exists. Please sign in.");
+        }
+
+        Role role = roleRepository.findByRoleName(request.getRole())
+                .orElseThrow(() -> new RuntimeException("Invalid role selected"));
+
+        User user = new User();
+        user.setEmail(email);
+        user.setFullName(name != null ? name : email.split("@")[0]);
+        user.setPhoneNumber(request.getPhoneNumber());
         user.setGoogleId(googleId);
         user.setProfilePicture(picture);
-        user.setAuthProvider("LOCAL_AND_GOOGLE");
+        user.setAuthProvider("GOOGLE");
+        user.setRole(role);
+        user.setCreatedAt(LocalDateTime.now());
         user.setUpdatedAt(LocalDateTime.now());
+
         userRepository.save(user);
+
+        emailService.sendWelcomeEmail(user.getEmail(), user.getFullName());
+
+        String token = jwtService.generateToken(email);
+
+        emailService.sendLoginAlert(user.getEmail(), user.getFullName(),
+                getClientIp(), getUserAgent());
+
+        return new AuthResponse(token);
     }
 
-    // Generate JWT
-    String token = jwtService.generateToken(email);
-
-    // Send login alert
-    String ip = getClientIp();
-    String userAgent = getUserAgent();
-    emailService.sendLoginAlert(user.getEmail(), user.getFullName(), ip, userAgent);
-
-    return new GoogleAuthResponse(
-            "AUTHENTICATED",
-            token,
-            email,
-            user.getFullName(),
-            user.getProfilePicture()
-    );
-}
-
-/**
- * Step 2: Complete Google signup with role + phone.
- * Creates account and returns JWT (user is now logged in).
- */
-@Override
-public AuthResponse completeGoogleSignup(CompleteGoogleSignupRequest request) {
-    // 1. Re-verify Google token (security)
-    Payload payload = googleTokenVerifier.verify(request.getCredential());
-
-    String email = payload.getEmail();
-    String googleId = payload.getSubject();
-    String name = (String) payload.get("name");
-    String picture = (String) payload.get("picture");
-
-    // 2. Double-check user still doesn't exist (defensive)
-    if (userRepository.existsByEmail(email)) {
-        throw new IllegalArgumentException(
-                "An account with this email already exists. Please sign in.");
-    }
-
-    // 3. Fetch role
-    Role role = roleRepository.findByRoleName(request.getRole())
-            .orElseThrow(() -> new RuntimeException("Invalid role selected"));
-
-    // 4. Create new user
-    User user = new User();
-    user.setEmail(email);
-    user.setFullName(name != null ? name : email.split("@")[0]);
-    user.setPhoneNumber(request.getPhoneNumber());
-    user.setGoogleId(googleId);
-    user.setProfilePicture(picture);
-    user.setAuthProvider("GOOGLE");
-    user.setRole(role);
-    user.setCreatedAt(LocalDateTime.now());
-    user.setUpdatedAt(LocalDateTime.now());
-
-    userRepository.save(user);
-
-    // 5. Send welcome email
-    emailService.sendWelcomeEmail(user.getEmail(), user.getFullName());
-
-    System.out.println("\n✨ NEW Google user completed signup: " + email +
-            " (role: " + request.getRole() + ")\n");
-
-    // 6. Generate JWT and log them in
-    String token = jwtService.generateToken(email);
-
-    // 7. Send login alert
-    emailService.sendLoginAlert(user.getEmail(), user.getFullName(),
-            getClientIp(), getUserAgent());
-
-    return new AuthResponse(token);
-}
-
     // ══════════════════════════════════════════════════════════════
-    //  GOOGLE SIGN-IN
-    // ══════════════════════════════════════════════════════════════
-
-    /**
-     * Handle Google Sign-In.
-     * - If user exists → login → send login alert
-     * - If new user → auto-create account → send welcome email
-     */
-    // ══════════════════════════════════════════════════════════════
-    //  PASSWORD RESET FLOW (unchanged)
+    //  PASSWORD RESET FLOW
     // ══════════════════════════════════════════════════════════════
 
     @Override
@@ -259,7 +219,6 @@ public AuthResponse completeGoogleSignup(CompleteGoogleSignupRequest request) {
         User user = userRepository.findByEmail(request.getEmail()).orElse(null);
 
         if (user != null) {
-            // Block Google-only users (they don't have a password)
             if ("GOOGLE".equals(user.getAuthProvider())) {
                 return new ApiResponse(false,
                     "This account uses Google Sign-In. Please continue with Google.");
@@ -271,15 +230,10 @@ public AuthResponse completeGoogleSignup(CompleteGoogleSignupRequest request) {
             user.setUpdatedAt(LocalDateTime.now());
             userRepository.save(user);
 
-            System.out.println("\n" + "━".repeat(50));
-            System.out.println("🔐 PASSWORD RESET OTP");
-            System.out.println("   Email:   " + user.getEmail());
-            System.out.println("   OTP:     " + otp);
-            System.out.println("━".repeat(50) + "\n");
-
             emailService.sendPasswordResetOtp(user.getEmail(), otp, user.getFullName());
         }
 
+        // Same response whether email exists or not (prevents account enumeration)
         return new ApiResponse(true,
                 "If an account exists with this email, a reset code has been sent.");
     }
@@ -327,6 +281,13 @@ public AuthResponse completeGoogleSignup(CompleteGoogleSignupRequest request) {
             return new ApiResponse(false, "Invalid code.");
         }
 
+        // Reject reuse of current password (BCrypt.matches handles salt)
+        if (user.getPassword() != null &&
+            passwordEncoder.matches(request.getNewPassword(), user.getPassword())) {
+            return new ApiResponse(false,
+                "New password cannot be the same as your current password.");
+        }
+
         user.setPassword(passwordEncoder.encode(request.getNewPassword()));
         user.setResetOtp(null);
         user.setResetOtpExpiry(null);
@@ -334,6 +295,54 @@ public AuthResponse completeGoogleSignup(CompleteGoogleSignupRequest request) {
         userRepository.save(user);
 
         return new ApiResponse(true, "Password reset successfully. You can now sign in.");
+    }
+
+    // ══════════════════════════════════════════════════════════════
+    //  ACCOUNT DELETION (GDPR / DPDP right to erasure)
+    // ══════════════════════════════════════════════════════════════
+
+    @Override
+    public ApiResponse deleteAccount(String email, DeleteAccountRequest request) {
+        // 1. Confirmation phrase check
+        if (!"DELETE".equals(request.getConfirmation())) {
+            return new ApiResponse(false, "Please type DELETE exactly to confirm.");
+        }
+
+        User user = userRepository.findByEmail(email)
+                .orElseThrow(() -> new RuntimeException("Account not found"));
+
+        // 2. Password / email verification
+        boolean isGoogleOnly = "GOOGLE".equals(user.getAuthProvider());
+
+        if (isGoogleOnly) {
+            // Google-only users type their email to confirm (no local password exists)
+            if (!email.equalsIgnoreCase(request.getPassword())) {
+                return new ApiResponse(false,
+                        "Please type your email address to confirm.");
+            }
+        } else {
+            // Local + hybrid users must provide current password
+            if (user.getPassword() == null ||
+                !passwordEncoder.matches(request.getPassword(), user.getPassword())) {
+                return new ApiResponse(false,
+                        "Incorrect password. Account was not deleted.");
+            }
+        }
+
+        // 3. Capture data before delete (for farewell email)
+        String userName = user.getFullName();
+
+        // 4. Delete (cascade removes their properties via @OnDelete)
+        userRepository.delete(user);
+
+        // 5. Send farewell email (best effort)
+        try {
+            emailService.sendAccountDeletionEmail(email, userName);
+        } catch (Exception e) {
+            System.err.println("Failed to send deletion email: " + e.getMessage());
+        }
+
+        return new ApiResponse(true, "Your account has been permanently deleted.");
     }
 
     // ══════════════════════════════════════════════════════════════
@@ -355,7 +364,6 @@ public AuthResponse completeGoogleSignup(CompleteGoogleSignupRequest request) {
                 return xForwarded.split(",")[0].trim();
             }
             String ip = request.getRemoteAddr();
-            // Pretty IPv6 localhost
             if ("0:0:0:0:0:0:0:1".equals(ip)) return "127.0.0.1 (localhost)";
             return ip;
         } catch (Exception e) {
@@ -373,4 +381,21 @@ public AuthResponse completeGoogleSignup(CompleteGoogleSignupRequest request) {
             return "Unknown";
         }
     }
+
+    @Override
+public UserProfileResponse getCurrentUserProfile(String email) {
+    User user = userRepository.findByEmail(email)
+            .orElseThrow(() -> new RuntimeException("User not found"));
+
+    return UserProfileResponse.builder()
+            .id(user.getId())
+            .fullName(user.getFullName())
+            .email(user.getEmail())
+            .phoneNumber(user.getPhoneNumber())
+            .role(user.getRole() != null ? user.getRole().getRoleName().toString() : null)
+            .authProvider(user.getAuthProvider())
+            .profilePicture(user.getProfilePicture())
+            .createdAt(user.getCreatedAt() != null ? user.getCreatedAt().toString() : null)
+            .build();
+}
 }

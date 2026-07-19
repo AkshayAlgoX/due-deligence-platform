@@ -1,5 +1,8 @@
 package com.realestate.duediligence.controller;
 
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -8,6 +11,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.realestate.duediligence.dto.ApiResponse;
 import com.realestate.duediligence.dto.AuthResponse;
 import com.realestate.duediligence.dto.CompleteGoogleSignupRequest;
+import com.realestate.duediligence.dto.DeleteAccountRequest;
 import com.realestate.duediligence.dto.ForgotPasswordRequest;
 import com.realestate.duediligence.dto.GoogleAuthResponse;
 import com.realestate.duediligence.dto.GoogleLoginRequest;
@@ -16,6 +20,8 @@ import com.realestate.duediligence.dto.RegisterRequest;
 import com.realestate.duediligence.dto.ResetPasswordRequest;
 import com.realestate.duediligence.dto.VerifyOtpRequest;
 import com.realestate.duediligence.service.UserService;
+import org.springframework.web.bind.annotation.GetMapping;
+import com.realestate.duediligence.dto.UserProfileResponse;
 
 import jakarta.validation.Valid;
 
@@ -30,9 +36,9 @@ public class AuthController {
     }
 
     @PostMapping("/register")
-public AuthResponse register(@Valid @RequestBody RegisterRequest request) {
-    return userService.register(request);
-}
+    public AuthResponse register(@Valid @RequestBody RegisterRequest request) {
+        return userService.register(request);
+    }
 
     @PostMapping("/login")
     public AuthResponse login(@Valid @RequestBody LoginRequest request) {
@@ -65,4 +71,41 @@ public AuthResponse register(@Valid @RequestBody RegisterRequest request) {
     public ApiResponse resetPassword(@Valid @RequestBody ResetPasswordRequest request) {
         return userService.resetPassword(request);
     }
+
+    // ══════════════════════════════════════════════════════════════
+    //  ACCOUNT DELETION (NEW)
+    // ══════════════════════════════════════════════════════════════
+
+    /**
+     * DELETE /api/auth/account
+     * Permanently delete the currently authenticated user's account.
+     * Requires password confirmation + typing "DELETE".
+     */
+    @DeleteMapping("/account")
+    public ApiResponse deleteAccount(
+            @Valid @RequestBody DeleteAccountRequest request,
+            @AuthenticationPrincipal UserDetails principal) {
+
+        if (principal == null) {
+            return new ApiResponse(false, "Not authenticated");
+        }
+
+        return userService.deleteAccount(principal.getUsername(), request);
+    }
+
+    // ── inside AuthController class ──
+
+/**
+ * GET /api/auth/me
+ * Returns full profile of the currently authenticated user.
+ * Used by the profile page to display fresh data (not stale JWT contents).
+ */
+@GetMapping("/me")
+public UserProfileResponse getCurrentUser(
+        @AuthenticationPrincipal UserDetails principal) {
+    if (principal == null) {
+        throw new RuntimeException("Not authenticated");
+    }
+    return userService.getCurrentUserProfile(principal.getUsername());
+}
 }

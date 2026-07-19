@@ -20,9 +20,10 @@ import lombok.extern.slf4j.Slf4j;
  * All sends are @Async — non-blocking, runs on background thread.
  *
  * Templates:
- *   • sendPasswordResetOtp   → OTP for password reset
- *   • sendWelcomeEmail       → Welcome new users after registration
- *   • sendLoginAlert         → Notify user of new login (security)
+ *   • sendPasswordResetOtp        → OTP for password reset
+ *   • sendWelcomeEmail            → Welcome new users after registration
+ *   • sendLoginAlert              → Notify user of new login (security)
+ *   • sendAccountDeletionEmail    → Confirm account deletion (GDPR)
  */
 @Slf4j
 @Service
@@ -45,7 +46,7 @@ public class EmailService {
     public void sendPasswordResetOtp(String toEmail, String otp, String userName) {
         sendEmail(
                 toEmail,
-                "🔐 Your password reset code: " + otp,
+                "Your password reset code: " + otp,
                 buildResetEmailHtml(otp, userName),
                 "password reset"
         );
@@ -59,7 +60,7 @@ public class EmailService {
     public void sendWelcomeEmail(String toEmail, String userName) {
         sendEmail(
                 toEmail,
-                "🎉 Welcome to Real Estate Due Diligence!",
+                "Welcome to Real Estate Due Diligence",
                 buildWelcomeEmailHtml(userName),
                 "welcome"
         );
@@ -73,9 +74,23 @@ public class EmailService {
     public void sendLoginAlert(String toEmail, String userName, String ipAddress, String userAgent) {
         sendEmail(
                 toEmail,
-                "🔔 New login to your account",
+                "New login to your account",
                 buildLoginAlertHtml(userName, ipAddress, userAgent),
                 "login alert"
+        );
+    }
+
+    // ══════════════════════════════════════════════════════════════
+    //  4. ACCOUNT DELETION (NEW)
+    // ══════════════════════════════════════════════════════════════
+
+    @Async
+    public void sendAccountDeletionEmail(String toEmail, String userName) {
+        sendEmail(
+                toEmail,
+                "Your account has been deleted",
+                buildDeletionEmailHtml(userName, toEmail),
+                "account deletion"
         );
     }
 
@@ -94,10 +109,9 @@ public class EmailService {
             helper.setText(htmlBody, true);
 
             mailSender.send(message);
-            log.info("✉️  {} email sent to {}", label, toEmail);
+            log.info("Email sent — {} → {}", label, toEmail);
         } catch (MessagingException | UnsupportedEncodingException e) {
-            log.error("❌ Failed to send {} email to {}: {}", label, toEmail, e.getMessage());
-            // Don't throw — email failures shouldn't break the main flow
+            log.error("Failed to send {} email to {}: {}", label, toEmail, e.getMessage());
         }
     }
 
@@ -109,7 +123,7 @@ public class EmailService {
         String displayName = (userName != null && !userName.isBlank()) ? userName : "there";
         return emailWrapper("Password Reset", """
             <h2 style="margin: 0 0 16px; color: #111827; font-size: 24px; font-weight: 800;">
-                Hi %s 👋
+                Hi %s
             </h2>
             <p style="margin: 0 0 24px; color: #4b5563; font-size: 15px; line-height: 1.6;">
                 We received a request to reset the password for your account. Use the verification code below to continue:
@@ -123,7 +137,7 @@ public class EmailService {
                     %s
                 </p>
                 <p style="margin: 12px 0 0; color: #6b7280; font-size: 12px;">
-                    ⏱️ Expires in 10 minutes
+                    Expires in 10 minutes
                 </p>
             </div>
 
@@ -138,41 +152,32 @@ public class EmailService {
         String displayName = (userName != null && !userName.isBlank()) ? userName : "there";
         return emailWrapper("Welcome!", """
             <h2 style="margin: 0 0 16px; color: #111827; font-size: 26px; font-weight: 800;">
-                Welcome aboard, %s! 🎉
+                Welcome aboard, %s
             </h2>
             <p style="margin: 0 0 24px; color: #4b5563; font-size: 15px; line-height: 1.6;">
-                Thanks for joining <strong>Real Estate Due Diligence Agent</strong>! We're thrilled to have you on the platform.
+                Thanks for joining <strong>Real Estate Due Diligence Agent</strong>. We're glad to have you.
             </p>
 
             <div style="background: linear-gradient(135deg, #f0fdf4 0%%, #dcfce7 100%%); border-radius: 16px; padding: 24px; margin: 24px 0;">
                 <h3 style="margin: 0 0 16px; color: #16a34a; font-size: 16px; font-weight: 700;">
-                    🚀 What you can do now:
+                    What you can do now:
                 </h3>
                 <ul style="margin: 0; padding-left: 20px; color: #374151; font-size: 14px; line-height: 1.8;">
-                    <li><strong>Search properties</strong> across cities</li>
-                    <li><strong>Run due diligence</strong> reports instantly</li>
-                    <li><strong>Assess risks</strong> with AI-powered insights</li>
-                    <li><strong>Compare properties</strong> side-by-side</li>
-                    <li><strong>Track ownership</strong> history & tax records</li>
+                    <li>Search properties across cities</li>
+                    <li>Add and verify property listings</li>
+                    <li>Track ownership history and tax records</li>
                 </ul>
             </div>
 
             <div style="text-align: center; margin: 32px 0;">
                 <a href="http://localhost:3000/dashboard"
                    style="display: inline-block; padding: 14px 32px; background: linear-gradient(135deg, #22C55E 0%%, #16a34a 100%%); color: white; text-decoration: none; border-radius: 12px; font-weight: 700; font-size: 14px; box-shadow: 0 10px 30px rgba(34,197,94,0.3);">
-                    Open Dashboard →
+                    Open dashboard
                 </a>
             </div>
 
-            <div style="margin-top: 32px; padding: 20px; background: #f9fafb; border-radius: 12px; border-left: 4px solid #22C55E;">
-                <p style="margin: 0; color: #374151; font-size: 13px; line-height: 1.6;">
-                    <strong>💡 Pro Tip:</strong><br>
-                    Start by exploring the property search — try searching your own city to see live data!
-                </p>
-            </div>
-
             <p style="margin: 32px 0 0; color: #6b7280; font-size: 13px; line-height: 1.6;">
-                Questions? Just reply to this email or contact our support team.
+                Questions? Just reply to this email.
             </p>
             """.formatted(displayName));
     }
@@ -186,16 +191,16 @@ public class EmailService {
 
         return emailWrapper("New Login", """
             <h2 style="margin: 0 0 16px; color: #111827; font-size: 24px; font-weight: 800;">
-                Hi %s 🔔
+                Hi %s
             </h2>
             <p style="margin: 0 0 24px; color: #4b5563; font-size: 15px; line-height: 1.6;">
-                We noticed a new sign-in to your Real Estate Due Diligence account. Here are the details:
+                We noticed a new sign-in to your Real Estate Due Diligence account:
             </p>
 
             <table style="width: 100%%; border-collapse: collapse; background: #f9fafb; border-radius: 12px; overflow: hidden; margin: 24px 0;">
                 <tr>
                     <td style="padding: 14px 20px; border-bottom: 1px solid #e5e7eb; font-size: 12px; font-weight: 600; color: #6b7280; text-transform: uppercase; letter-spacing: 1px;">
-                        📅 Time
+                        Time
                     </td>
                     <td style="padding: 14px 20px; border-bottom: 1px solid #e5e7eb; font-size: 14px; color: #111827; font-weight: 600;">
                         %s
@@ -203,7 +208,7 @@ public class EmailService {
                 </tr>
                 <tr>
                     <td style="padding: 14px 20px; border-bottom: 1px solid #e5e7eb; font-size: 12px; font-weight: 600; color: #6b7280; text-transform: uppercase; letter-spacing: 1px;">
-                        🌐 IP Address
+                        IP address
                     </td>
                     <td style="padding: 14px 20px; border-bottom: 1px solid #e5e7eb; font-size: 14px; color: #111827; font-weight: 600; font-family: 'Courier New', monospace;">
                         %s
@@ -211,7 +216,7 @@ public class EmailService {
                 </tr>
                 <tr>
                     <td style="padding: 14px 20px; font-size: 12px; font-weight: 600; color: #6b7280; text-transform: uppercase; letter-spacing: 1px;">
-                        💻 Device
+                        Device
                     </td>
                     <td style="padding: 14px 20px; font-size: 14px; color: #111827; font-weight: 600;">
                         %s
@@ -221,15 +226,44 @@ public class EmailService {
 
             <div style="background: #fef3c7; border-left: 4px solid #f59e0b; border-radius: 8px; padding: 16px; margin: 24px 0;">
                 <p style="margin: 0; color: #92400e; font-size: 13px; line-height: 1.6;">
-                    <strong>⚠️ Was this you?</strong><br>
-                    If yes, no action needed. If you don't recognize this activity, please <strong>reset your password immediately</strong>.
+                    <strong>Was this you?</strong><br>
+                    If yes, no action needed. If not, please reset your password immediately.
+                </p>
+            </div>
+            """.formatted(displayName, timestamp, safeIp, safeAgent));
+    }
+
+    private String buildDeletionEmailHtml(String userName, String email) {
+        String displayName = (userName != null && !userName.isBlank()) ? userName : "there";
+        return emailWrapper("Account Deleted", """
+            <h2 style="margin: 0 0 16px; color: #111827; font-size: 24px; font-weight: 800;">
+                Goodbye, %s
+            </h2>
+            <p style="margin: 0 0 24px; color: #4b5563; font-size: 15px; line-height: 1.6;">
+                This confirms that your Real Estate Due Diligence Agent account
+                (<strong>%s</strong>) has been permanently deleted, along with all
+                associated properties and data.
+            </p>
+
+            <div style="background: #f9fafb; border-left: 4px solid #22C55E; border-radius: 8px; padding: 16px; margin: 24px 0;">
+                <p style="margin: 0; color: #374151; font-size: 13px; line-height: 1.6;">
+                    <strong>What was deleted:</strong><br>
+                    • Your profile and account credentials<br>
+                    • All properties you created<br>
+                    • Session data and reset tokens
                 </p>
             </div>
 
             <p style="margin: 24px 0 0; color: #6b7280; font-size: 13px; line-height: 1.6;">
-                We send these alerts to help keep your account secure. Stay safe out there! 🛡️
+                <strong style="color: #374151;">Didn't do this?</strong><br>
+                If you didn't request this deletion, please contact us immediately at
+                <a href="mailto:duedeligence8@gmail.com" style="color: #16a34a; font-weight: 600;">duedeligence8@gmail.com</a>
             </p>
-            """.formatted(displayName, timestamp, safeIp, safeAgent));
+
+            <p style="margin: 24px 0 0; color: #9ca3af; font-size: 12px;">
+                We're sorry to see you go. You're welcome back anytime.
+            </p>
+            """.formatted(displayName, email));
     }
 
     /**
@@ -251,14 +285,11 @@ public class EmailService {
                     <!-- Header -->
                     <tr>
                         <td style="background: linear-gradient(135deg, #22C55E 0%%, #16a34a 100%%); padding: 40px 30px; text-align: center;">
-                            <div style="display: inline-block; width: 64px; height: 64px; background: rgba(255,255,255,0.2); border-radius: 16px; line-height: 64px; margin-bottom: 16px;">
-                                <span style="font-size: 32px;">🛡️</span>
-                            </div>
                             <h1 style="margin: 0; color: #ffffff; font-size: 22px; font-weight: 800; letter-spacing: -0.5px;">
                                 Real Estate Due Diligence
                             </h1>
                             <p style="margin: 8px 0 0; color: rgba(255,255,255,0.9); font-size: 13px; font-weight: 500;">
-                                Secure Property Intelligence
+                                Secure property intelligence
                             </p>
                         </td>
                     </tr>
@@ -292,10 +323,6 @@ public class EmailService {
             """.formatted(previewText, bodyContent);
     }
 
-    /**
-     * Shorten user agent string to friendly device name.
-     * e.g., "Mozilla/5.0 ..." → "Chrome on Windows"
-     */
     private String shortenUserAgent(String userAgent) {
         if (userAgent == null) return "Unknown";
         String ua = userAgent.toLowerCase();

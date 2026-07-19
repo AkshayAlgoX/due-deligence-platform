@@ -180,3 +180,28 @@ function extractEmailFromJwt(token) {
     return null;
   }
 }
+/**
+ * Fetch the current user's fresh profile from the backend.
+ * Prefer this over decoding JWT — data is always current.
+ *
+ * Backend: GET /api/auth/me
+ * Response → UserProfileResponse {
+ *   id, fullName, email, phoneNumber, role, authProvider, profilePicture, createdAt
+ * }
+ */
+export async function getCurrentUser() {
+  const { data } = await api.get("/api/auth/me");
+  return data;
+}
+/**
+ * Permanently delete the current user's account.
+ * Requires password confirmation + typing "DELETE".
+ */
+export async function deleteAccount({ password, confirmation }) {
+  const { data } = await api.delete("/api/auth/account", {
+    data: { password, confirmation },
+  });
+  return data;
+}
+
+
