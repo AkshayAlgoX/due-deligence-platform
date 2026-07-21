@@ -44,19 +44,20 @@ export default function EditPropertyModal({
   property,
   onSuccess,
 }) {
-  const [form, setForm] = useState({
-    address: "",
-    city: "",
-    state: "",
-    zipCode: "",
-    propertyType: "",
-    area: "",
-    marketValue: "",
-    yearBuilt: "",
-    bedrooms: "",
-    bathrooms: "",
-    imageUrl: "",
-  });
+ const [form, setForm] = useState({
+  address: "",
+  city: "",
+  state: "",
+  zipCode: "",
+  propertyType: "",
+  area: "",
+  marketValue: "",
+  yearBuilt: "",
+  bedrooms: "",
+  bathrooms: "",
+  stories: "",
+  imageUrl: "",
+});
   const [errors, setErrors] = useState({});
   const [saving, setSaving] = useState(false);
   const [typeDropdownOpen, setTypeDropdownOpen] = useState(false);
@@ -64,23 +65,24 @@ export default function EditPropertyModal({
 
   // ── Hydrate form from property ─────────────────────────────────
   useEffect(() => {
-    if (property) {
-      setForm({
-        address: property.address ?? "",
-        city: property.city ?? "",
-        state: property.state ?? "",
-        zipCode: property.zipCode ?? "",
-        propertyType: property.propertyType ?? "",
-        area: property.area ?? "",
-        marketValue: property.marketValue ?? "",
-        yearBuilt: property.yearBuilt ?? "",
-        bedrooms: property.bedrooms ?? "",
-        bathrooms: property.bathrooms ?? "",
-        imageUrl: property.imageUrl ?? "",
-      });
-      setErrors({});
-    }
-  }, [property]);
+  if (property) {
+    setForm({
+      address: property.address ?? "",
+      city: property.city ?? "",
+      state: property.state ?? "",
+      zipCode: property.zipCode ?? "",
+      propertyType: property.propertyType ?? "",
+      area: property.area ?? "",
+      marketValue: property.marketValue ?? "",
+      yearBuilt: property.yearBuilt ?? "",
+      bedrooms: property.bedrooms ?? "",
+      bathrooms: property.bathrooms ?? "",
+      stories: property.stories ?? "",
+      imageUrl: property.imageUrl ?? "",
+    });
+    setErrors({});
+  }
+}, [property]);
 
   // ── Escape closes modal ────────────────────────────────────────
   useEffect(() => {
@@ -188,20 +190,20 @@ export default function EditPropertyModal({
 
     setSaving(true);
     try {
-      const payload = {
-        address: form.address.trim(),
-        city: form.city.trim(),
-        state: form.state.trim() || null,
-        zipCode: String(form.zipCode).trim() || null,
-        propertyType: form.propertyType || null,
-        area: form.area ? parseFloat(form.area) : null,
-        marketValue: form.marketValue ? parseFloat(form.marketValue) : null,
-        yearBuilt: form.yearBuilt ? parseInt(form.yearBuilt) : null,
-        bedrooms: form.bedrooms ? parseInt(form.bedrooms) : null,
-        bathrooms: form.bathrooms ? parseInt(form.bathrooms) : null,
-        imageUrl: form.imageUrl || null,
-      };
-
+     const payload = {
+  address: form.address.trim(),
+  city: form.city.trim(),
+  state: form.state.trim() || null,
+  zipCode: String(form.zipCode).trim() || null,
+  propertyType: form.propertyType || null,
+  area: form.area ? parseFloat(form.area) : null,
+  marketValue: form.marketValue ? parseFloat(form.marketValue) : null,
+  yearBuilt: form.yearBuilt ? parseInt(form.yearBuilt) : null,
+  bedrooms: form.bedrooms ? parseInt(form.bedrooms) : null,
+  bathrooms: form.bathrooms ? parseInt(form.bathrooms) : null,
+  stories: form.stories ? parseInt(form.stories) : null,
+  imageUrl: form.imageUrl || null,
+};
       const updated = await updateProperty(property.id, payload);
 
       if (updated.verified) {
@@ -538,44 +540,58 @@ export default function EditPropertyModal({
           </FormSection>
 
           {/* ── SECTION: Extra details (optional) ─────────────── */}
-          <FormSection title="Extra details" subtitle="Optional — helps with reports later">
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-              <Field label="Year built" optional>
-                <input
-                  type="number"
-                  value={form.yearBuilt}
-                  onChange={handleChange("yearBuilt")}
-                  placeholder="2015"
-                  min="1800"
-                  max={new Date().getFullYear()}
-                  disabled={saving}
-                  className={inputClsNoIcon()}
-                />
-              </Field>
-              <Field label="Bedrooms" optional>
-                <input
-                  type="number"
-                  value={form.bedrooms}
-                  onChange={handleChange("bedrooms")}
-                  placeholder="3"
-                  min="0"
-                  disabled={saving}
-                  className={inputClsNoIcon()}
-                />
-              </Field>
-              <Field label="Bathrooms" optional>
-                <input
-                  type="number"
-                  value={form.bathrooms}
-                  onChange={handleChange("bathrooms")}
-                  placeholder="2"
-                  min="0"
-                  disabled={saving}
-                  className={inputClsNoIcon()}
-                />
-              </Field>
-            </div>
-          </FormSection>
+<FormSection title="Extra details" subtitle="Optional — helps with reports and comparisons">
+  <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+    <Field label="Year built" optional>
+      <input
+        type="number"
+        value={form.yearBuilt}
+        onChange={handleChange("yearBuilt")}
+        placeholder="2015"
+        min="1800"
+        max={new Date().getFullYear()}
+        disabled={saving}
+        className={inputClsNoIcon()}
+      />
+    </Field>
+    <Field label="Bedrooms" optional>
+      <input
+        type="number"
+        value={form.bedrooms}
+        onChange={handleChange("bedrooms")}
+        placeholder="3"
+        min="0"
+        max="20"
+        disabled={saving}
+        className={inputClsNoIcon()}
+      />
+    </Field>
+    <Field label="Bathrooms" optional>
+      <input
+        type="number"
+        value={form.bathrooms}
+        onChange={handleChange("bathrooms")}
+        placeholder="2"
+        min="0"
+        max="20"
+        disabled={saving}
+        className={inputClsNoIcon()}
+      />
+    </Field>
+    <Field label="Stories" optional>
+      <input
+        type="number"
+        value={form.stories}
+        onChange={handleChange("stories")}
+        placeholder="2"
+        min="1"
+        max="200"
+        disabled={saving}
+        className={inputClsNoIcon()}
+      />
+    </Field>
+  </div>
+</FormSection>
         </form>
 
         {/* ── Footer actions ───────────────────────────────────── */}

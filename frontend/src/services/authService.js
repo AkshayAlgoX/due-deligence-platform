@@ -204,4 +204,30 @@ export async function deleteAccount({ password, confirmation }) {
   return data;
 }
 
+/**
+ * Update the current user's profile.
+ * Only fullName and phoneNumber can be edited.
+ *
+ * @param {{ fullName?: string, phoneNumber?: string }} payload
+ * @returns Updated UserProfileResponse
+ */
+export async function updateProfile(payload) {
+  const { data } = await api.put("/api/auth/me", payload);
+  return data;
+}
+
+/**
+ * Change password for authenticated user.
+ * Requires current password + new password.
+ * Not available for Google-only accounts.
+ *
+ * @param {{ currentPassword, newPassword }} payload
+ */
+export async function changePassword(payload) {
+  const { data } = await api.post("/api/auth/change-password", payload);
+  if (data.success === false) {
+    throw new Error(data.message || "Failed to change password.");
+  }
+  return data;
+}
 

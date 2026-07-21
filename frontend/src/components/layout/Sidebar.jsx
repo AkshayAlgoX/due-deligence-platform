@@ -35,7 +35,7 @@ const menuSections = [
     label: "Insights",
     items: [
       { title: "Reports",       href: "/dashboard/reports",       icon: FileText,      badge: null },
-      { title: "Notifications", href: "/dashboard/notifications", icon: Bell,          badge: "3"  },
+     { title: "Notifications", href: "/dashboard/notifications", icon: Bell,          badge: null },
       { title: "Audit Logs",    href: "/dashboard/audit-logs",    icon: ClipboardList, badge: null },
     ],
   },

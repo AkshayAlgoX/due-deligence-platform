@@ -17,11 +17,14 @@ export const API_ROUTES = {
   FORGOT_PASSWORD: "/api/auth/forgot-password",
   VERIFY_OTP: "/api/auth/verify-otp",
   RESET_PASSWORD: "/api/auth/reset-password",
+  UPDATE_PROFILE: "/api/auth/me",
+CHANGE_PASSWORD: "/api/auth/change-password",
 
 
   // ── Properties ────────────────────────────────────────────────────────────
   PROPERTIES:      "/api/properties",
   PROPERTY_BY_ID:  (id) => `/api/properties/${id}`,
+  PROPERTY_AGGREGATED: (id) => `/api/properties/${id}/aggregated`,
   PROPERTY_SEARCH: "/api/properties/search",
   PROPERTIES_RECENT: "/api/properties/recent",   // NEW
 

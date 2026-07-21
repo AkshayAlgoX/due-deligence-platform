@@ -11,6 +11,7 @@ import org.springframework.stereotype.Service;
 import com.google.api.client.googleapis.auth.oauth2.GoogleIdToken.Payload;
 import com.realestate.duediligence.dto.ApiResponse;
 import com.realestate.duediligence.dto.AuthResponse;
+import com.realestate.duediligence.dto.ChangePasswordRequest;
 import com.realestate.duediligence.dto.CompleteGoogleSignupRequest;
 import com.realestate.duediligence.dto.DeleteAccountRequest;
 import com.realestate.duediligence.dto.ForgotPasswordRequest;
@@ -19,6 +20,8 @@ import com.realestate.duediligence.dto.GoogleLoginRequest;
 import com.realestate.duediligence.dto.LoginRequest;
 import com.realestate.duediligence.dto.RegisterRequest;
 import com.realestate.duediligence.dto.ResetPasswordRequest;
+import com.realestate.duediligence.dto.UpdateProfileRequest;
+import com.realestate.duediligence.dto.UserProfileResponse;
 import com.realestate.duediligence.dto.VerifyOtpRequest;
 import com.realestate.duediligence.entity.Role;
 import com.realestate.duediligence.entity.User;
@@ -28,7 +31,6 @@ import com.realestate.duediligence.service.EmailService;
 import com.realestate.duediligence.service.GoogleTokenVerifier;
 import com.realestate.duediligence.service.UserService;
 import com.realestate.duediligence.util.JwtService;
-import com.realestate.duediligence.dto.UserProfileResponse;
 
 @Service
 public class UserServiceImpl implements UserService {
@@ -398,4 +400,80 @@ public UserProfileResponse getCurrentUserProfile(String email) {
             .createdAt(user.getCreatedAt() != null ? user.getCreatedAt().toString() : null)
             .build();
 }
+    // ══════════════════════════════════════════════════════════════
+    //  UPDATE PROFILE (fullName + phoneNumber only)
+    // ══════════════════════════════════════════════════════════════
+
+    @Override
+    public UserProfileResponse updateProfile(String email, UpdateProfileRequest request) {
+        User user = userRepository.findByEmail(email)
+                .orElseThrow(() -> new RuntimeException("User not found"));
+
+        boolean changed = false;
+
+        if (request.getFullName() != null && !request.getFullName().isBlank()) {
+            String trimmed = request.getFullName().trim();
+            if (!trimmed.equals(user.getFullName())) {
+                user.setFullName(trimmed);
+                changed = true;
+            }
+        }
+
+        if (request.getPhoneNumber() != null && !request.getPhoneNumber().isBlank()) {
+            if (!request.getPhoneNumber().equals(user.getPhoneNumber())) {
+                user.setPhoneNumber(request.getPhoneNumber());
+                changed = true;
+            }
+        }
+
+        if (changed) {
+            user.setUpdatedAt(LocalDateTime.now());
+            userRepository.save(user);
+        }
+
+        return UserProfileResponse.builder()
+                .id(user.getId())
+                .fullName(user.getFullName())
+                .email(user.getEmail())
+                .phoneNumber(user.getPhoneNumber())
+                .role(user.getRole() != null ? user.getRole().getRoleName().toString() : null)
+                .authProvider(user.getAuthProvider())
+                .profilePicture(user.getProfilePicture())
+                .createdAt(user.getCreatedAt() != null ? user.getCreatedAt().toString() : null)
+                .build();
+    }
+
+    // ══════════════════════════════════════════════════════════════
+    //  CHANGE PASSWORD (authenticated user, knows current password)
+    // ══════════════════════════════════════════════════════════════
+
+    @Override
+    public ApiResponse changePassword(String email, ChangePasswordRequest request) {
+        User user = userRepository.findByEmail(email)
+                .orElseThrow(() -> new RuntimeException("User not found"));
+
+        // Google-only accounts have no local password to change
+        if ("GOOGLE".equals(user.getAuthProvider()) || user.getPassword() == null) {
+            return new ApiResponse(false,
+                    "This account signs in with Google. Password change is not available.");
+        }
+
+        // Verify current password
+        if (!passwordEncoder.matches(request.getCurrentPassword(), user.getPassword())) {
+            return new ApiResponse(false, "Current password is incorrect.");
+        }
+
+        // Reject same password
+        if (passwordEncoder.matches(request.getNewPassword(), user.getPassword())) {
+            return new ApiResponse(false,
+                    "New password cannot be the same as your current password.");
+        }
+
+        user.setPassword(passwordEncoder.encode(request.getNewPassword()));
+        user.setUpdatedAt(LocalDateTime.now());
+        userRepository.save(user);
+
+        return new ApiResponse(true, "Password changed successfully.");
+    }
+    
 }

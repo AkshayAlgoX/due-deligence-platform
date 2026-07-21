@@ -4,12 +4,14 @@ import { useEffect, useState } from "react";
 import { toast } from "sonner";
 import {
   Building2,
-  FileText,
-  AlertCircle,
+  ShieldCheck,
+  Clock,
   Plus,
   RefreshCw,
   Users,
+  ArrowRight,
 } from "lucide-react";
+import Link from "next/link";
 
 import StatsCard from "@/components/dashboard/StatsCard";
 import RecentPropertiesTable from "@/components/dashboard/RecentPropertiesTable";
@@ -18,7 +20,7 @@ import ErrorBoundary from "@/components/ErrorBoundary";
 import { StatsCardSkeleton } from "@/components/ui/Skeleton";
 
 import { getDashboardStats } from "@/services/dashboardService";
-import { getUser } from "@/utils/helpers";
+import { getCurrentUser } from "@/services/authService";
 
 export default function DashboardPage() {
   const [stats, setStats] = useState(null);
@@ -28,9 +30,18 @@ export default function DashboardPage() {
   const [modalOpen, setModalOpen] = useState(false);
 
   useEffect(() => {
-    setUser(getUser());
+    loadUser();
     loadStats();
   }, []);
+
+  const loadUser = async () => {
+    try {
+      const data = await getCurrentUser();
+      setUser(data);
+    } catch {
+      // Silent — dashboard still works without user context
+    }
+  };
 
   const loadStats = async (silent = false) => {
     try {
@@ -49,7 +60,12 @@ export default function DashboardPage() {
     }
   };
 
-  const firstName = user?.fullName?.split(" ")[0] ?? user?.email?.split("@")[0] ?? "";
+  const firstName =
+    user?.fullName?.split(" ")[0] ?? user?.email?.split("@")[0] ?? "";
+  const isAdmin = user?.role === "ADMIN";
+  const subtitle = isAdmin ? "Platform overview" : "Your portfolio at a glance";
+
+  const isEmpty = stats && stats.totalProperties === 0;
 
   return (
     <div className="mx-auto w-full max-w-[1400px] space-y-8">
@@ -60,6 +76,7 @@ export default function DashboardPage() {
             {getGreeting()}
             {firstName ? <span className="text-[#22C55E]">, {firstName}</span> : ""}
           </h1>
+          <p className="mt-1 text-sm text-gray-500">{subtitle}</p>
         </div>
 
         <div className="flex gap-3">
@@ -103,47 +120,117 @@ export default function DashboardPage() {
         <div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-4">
           <StatsCard
             title="Total properties"
-            value={stats.totalProperties > 0 ? stats.totalProperties.toLocaleString() : "—"}
-            subtitle={stats.totalProperties === 0 ? "No properties added" : undefined}
+            value={
+              stats.totalProperties > 0
+                ? stats.totalProperties.toLocaleString()
+                : "—"
+            }
+            subtitle={
+              stats.totalProperties === 0 ? "No properties added" : undefined
+            }
             icon={<Building2 size={20} strokeWidth={2.5} />}
             trendValue={null}
           />
 
           <StatsCard
+            title="Verified"
+            value={
+              stats.verifiedProperties > 0
+                ? stats.verifiedProperties.toLocaleString()
+                : "—"
+            }
+            subtitle={
+              stats.totalProperties > 0
+                ? `${Math.round(
+                    (stats.verifiedProperties / stats.totalProperties) * 100
+                  )}% of total`
+                : "Nothing to verify yet"
+            }
+            icon={<ShieldCheck size={20} strokeWidth={2.5} />}
+            trendValue={null}
+          />
+
+          <StatsCard
+            title="Pending"
+            value={
+              stats.pendingProperties > 0
+                ? stats.pendingProperties.toLocaleString()
+                : "—"
+            }
+            subtitle={
+              stats.pendingProperties > 0
+                ? "Awaiting verification"
+                : "All caught up"
+            }
+            icon={<Clock size={20} strokeWidth={2.5} />}
+            trendValue={null}
+          />
+
+          <StatsCard
             title="Platform users"
-            value={stats.totalUsers > 0 ? stats.totalUsers.toLocaleString() : "—"}
+            value={
+              stats.totalUsers > 0 ? stats.totalUsers.toLocaleString() : "—"
+            }
             icon={<Users size={20} strokeWidth={2.5} />}
-            trendValue={null}
-          />
-
-          <StatsCard
-            title="Reports generated"
-            value="—"
-            subtitle="Not built in Milestone 1"
-            icon={<FileText size={20} strokeWidth={2.5} />}
-            trendValue={null}
-          />
-
-          <StatsCard
-            title="Active alerts"
-            value="—"
-            subtitle="Coming soon"
-            icon={<AlertCircle size={20} strokeWidth={2.5} />}
             trendValue={null}
           />
         </div>
       )}
 
-      {/* ── Real Database Table ──────────────────────────────────────────── */}
-      <ErrorBoundary>
-        <RecentPropertiesTable />
-      </ErrorBoundary>
+      {/* ── Empty state OR Recent properties table ─────────────────────── */}
+      {!loading && isEmpty ? (
+        <EmptyState onAddClick={() => setModalOpen(true)} />
+      ) : (
+        <ErrorBoundary>
+          <RecentPropertiesTable />
+        </ErrorBoundary>
+      )}
 
       <AddPropertyModal
         isOpen={modalOpen}
         onClose={() => setModalOpen(false)}
         onSuccess={() => loadStats(true)}
       />
+    </div>
+  );
+}
+
+// ── Empty state ─────────────────────────────────────────────────
+function EmptyState({ onAddClick }) {
+  return (
+    <div className="rounded-2xl border border-gray-100 bg-white p-10 shadow-sm">
+      <div className="mx-auto flex max-w-md flex-col items-center text-center">
+        <div className="flex h-16 w-16 items-center justify-center rounded-2xl bg-[#edf7f3]">
+          <Building2 className="h-7 w-7 text-[#16a34a]" strokeWidth={2} />
+        </div>
+
+        <h2 className="mt-5 text-lg font-bold text-gray-900">
+          No properties yet
+        </h2>
+        <p className="mt-2 text-sm text-gray-500 leading-relaxed">
+          Add your first property to see verification results, and portfolio
+          insights here.
+        </p>
+
+        <div className="mt-6 flex flex-wrap items-center justify-center gap-3">
+          <button
+            type="button"
+            onClick={onAddClick}
+            className="flex items-center gap-2 rounded-lg bg-gradient-to-r from-[#22C55E] to-[#16a34a] px-4 py-2.5 text-sm font-semibold text-white shadow-[0_4px_12px_rgba(34,197,94,0.3)] transition hover:opacity-95"
+          >
+            <Plus size={16} strokeWidth={2.5} />
+            Add your first property
+          </button>
+
+          <Link
+            href="/dashboard/property-search"
+            className="flex items-center gap-1.5 rounded-lg border border-gray-200 bg-white px-4 py-2.5 text-sm font-semibold text-gray-700 transition hover:border-[#22C55E] hover:text-[#16a34a]"
+          >
+            Browse properties
+            <ArrowRight size={14} strokeWidth={2.5} />
+          </Link>
+        </div>
+      </div>
     </div>
   );
 }

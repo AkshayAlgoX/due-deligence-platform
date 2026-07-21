@@ -5,18 +5,34 @@ import { useRouter } from "next/navigation";
 import {
   BadgeCheck,
   Ruler,
-  MapPinned,
   Calendar,
-  Home,
+  Building,
+  Bed,
+  Bath,
+  Layers,
   FileText,
   ArrowRight,
+  GitCompare,
+  UserRound,
 } from "lucide-react";
 import { formatINRFull } from "@/utils/currency";
 import { getPropertyHeroImage } from "@/constants/propertyImages";
 import PropertyImagePlaceholder from "./PropertyImagePlaceholder";
 
 /**
- * Big hero-style property card matching the Figma design.
+ * Hero card for property details.
+ *
+ * Design principle: HONEST DATA
+ *  - Never invent values (no "0.45 Acres" default)
+ *  - Only render fields that have real backend data
+ *  - Grid auto-adapts to available fields (2/3/4 cols)
+ *  - Bedrooms/bathrooms shown Zillow-style: "4 bd · 2 ba · 1,848 sqft"
+ *  - Empty means empty. No ghost labels.
+ *
+ * Milestone 2 note:
+ *  - lotSize, zoning, yearBuilt currently user-entered
+ *  - After aggregation lands, they may come from land-registry service
+ *  - "Data source" pill will differentiate MANUAL vs AGGREGATED
  */
 export default function PropertyDetails({ property, onCompare }) {
   const router = useRouter();
@@ -25,49 +41,105 @@ export default function PropertyDetails({ property, onCompare }) {
 
   const {
     id,
-    address = "Unknown Address",
-    city = "",
-    state = "",
-    zipCode = "",
-    propertyType = "Property",
+    address,
+    city,
+    state,
+    zipCode,
+    propertyType,
     marketValue,
     area,
-    lotSize = "0.45 Acres",
-    yearBuilt = "1994",
-    zoning = "R-1",
-    verified = true,
+    lotSize,
+    yearBuilt,
+    zoning,
+    bedrooms,
+    bathrooms,
+    stories,
+    verified,
   } = property;
 
   const locationLine = [city, state].filter(Boolean).join(", ");
-  const fullAddress = `${address}${locationLine ? `, ${locationLine}` : ""}${zipCode ? ` ${zipCode}` : ""}`;
+  const fullAddress = [
+    address,
+    locationLine || null,
+    zipCode || null,
+  ]
+    .filter(Boolean)
+    .join(", ")
+    .replace(/, ([\d]{6})$/, " $1"); // PIN sits after location without comma
 
   const handleGenerateReport = () => {
-    if (id) {
-      router.push(`/property/${id}/report`);
-    }
+    if (id) router.push(`/property/${id}/report`);
   };
+
+  // ── Zillow-style quick facts pill ────────────────────────────────
+  // Only shown if at least one exists
+  const quickFacts = [
+    bedrooms != null && { icon: Bed, value: `${bedrooms} bd` },
+    bathrooms != null && { icon: Bath, value: `${bathrooms} ba` },
+    area != null && area > 0 && {
+      icon: Ruler,
+      value: `${area.toLocaleString()} sqft`,
+    },
+  ].filter(Boolean);
+
+  // ── Hero stat blocks (grid) ──────────────────────────────────────
+  // Only show if data exists. No "N/A", no defaults.
+  const stats = [
+    yearBuilt != null && {
+      icon: Calendar,
+      label: "Year built",
+      value: String(yearBuilt),
+    },
+    stories != null && {
+      icon: Layers,
+      label: "Stories",
+      value: String(stories),
+    },
+    lotSize != null && lotSize > 0 && {
+      icon: Ruler,
+      label: "Lot size",
+      value: `${lotSize.toLocaleString()} sqft`,
+    },
+    zoning && {
+      icon: Building,
+      label: "Zoning",
+      value: zoning,
+    },
+  ].filter(Boolean);
 
   return (
     <div className="overflow-hidden rounded-2xl border border-gray-100 bg-white shadow-sm">
       <div className="grid grid-cols-1 lg:grid-cols-2">
-
-        {/* LEFT: Property Image */}
+        {/* LEFT: Image */}
         <div className="relative min-h-[380px]">
-         {getPropertyHeroImage(property) ? (
-  <img
-    src={getPropertyHeroImage(property)}
-    alt={address}
-    className="absolute inset-0 h-full w-full object-cover"
-  />
-) : (
-  <PropertyImagePlaceholder propertyType={propertyType} size="hero" />
-)}
+          {getPropertyHeroImage(property) ? (
+            <img
+              src={getPropertyHeroImage(property)}
+              alt={address || "Property"}
+              className="absolute inset-0 h-full w-full object-cover"
+            />
+          ) : (
+            <PropertyImagePlaceholder
+              propertyType={propertyType}
+              size="hero"
+            />
+          )}
 
+          {/* Verification badge — REAL backend value */}
           {verified && (
             <div className="absolute top-4 left-4 flex items-center gap-1.5 rounded-full bg-white/95 px-3 py-1.5 shadow-md backdrop-blur-sm">
               <BadgeCheck className="h-4 w-4 text-[#22C55E]" strokeWidth={2.5} />
               <span className="text-xs font-bold text-gray-800">
-                Verified Property
+                Verified property
+              </span>
+            </div>
+          )}
+
+          {!verified && (
+            <div className="absolute top-4 left-4 flex items-center gap-1.5 rounded-full bg-amber-50 px-3 py-1.5 shadow-md backdrop-blur-sm ring-1 ring-amber-200">
+              <span className="h-1.5 w-1.5 rounded-full bg-amber-500" />
+              <span className="text-xs font-bold text-amber-800">
+                Pending verification
               </span>
             </div>
           )}
@@ -75,83 +147,105 @@ export default function PropertyDetails({ property, onCompare }) {
 
         {/* RIGHT: Details */}
         <div className="flex flex-col p-8">
+          {/* Property type + data source pill */}
+          <div className="flex items-center gap-2 flex-wrap">
+            {propertyType && (
+              <p className="text-xs font-bold uppercase tracking-widest text-[#22C55E]">
+                {propertyType}
+              </p>
+            )}
+            <span className="inline-flex items-center gap-1 rounded-full bg-gray-50 px-2 py-0.5 text-[10px] font-semibold text-gray-500 ring-1 ring-gray-200">
+              <UserRound className="h-2.5 w-2.5" strokeWidth={2.5} />
+              User provided
+            </span>
+          </div>
 
-          <p className="text-xs font-bold uppercase tracking-widest text-[#22C55E]">
-            {propertyType}
-          </p>
-
+          {/* Address + price */}
           <div className="mt-3 flex items-start justify-between gap-6">
             <h2 className="text-[26px] font-black leading-[30px] tracking-tight text-gray-900">
               {fullAddress}
             </h2>
 
-            {marketValue != null && (
+            {marketValue != null && marketValue > 0 && (
               <div className="flex-shrink-0 text-right">
                 <p className="text-[30px] font-black leading-none tracking-tight text-gray-900">
                   {formatINRFull(marketValue)}
                 </p>
                 <p className="mt-1 text-xs text-gray-500">
-                  Estimated Market Value
+                  Estimated market value
                 </p>
               </div>
             )}
           </div>
 
+          {/* Zillow-style quick facts */}
+          {quickFacts.length > 0 && (
+            <div className="mt-5 flex flex-wrap items-center gap-x-4 gap-y-2">
+              {quickFacts.map((fact, idx) => {
+                const Icon = fact.icon;
+                return (
+                  <React.Fragment key={fact.value}>
+                    <div className="flex items-center gap-1.5">
+                      <Icon
+                        className="h-4 w-4 text-gray-400"
+                        strokeWidth={2}
+                      />
+                      <span className="text-sm font-bold text-gray-900">
+                        {fact.value}
+                      </span>
+                    </div>
+                    {idx < quickFacts.length - 1 && (
+                      <span className="text-gray-300">·</span>
+                    )}
+                  </React.Fragment>
+                );
+              })}
+            </div>
+          )}
+
+          {/* Stats grid — only if any exists */}
+          {stats.length > 0 && (
+            <>
+              <div className="my-6 h-px bg-gray-100" />
+              <div
+                className={`grid gap-6 ${
+                  stats.length === 1
+                    ? "grid-cols-1"
+                    : stats.length === 2
+                    ? "grid-cols-2"
+                    : stats.length === 3
+                    ? "grid-cols-3"
+                    : "grid-cols-2 sm:grid-cols-4"
+                }`}
+              >
+                {stats.map((stat) => {
+                  const Icon = stat.icon;
+                  return (
+                    <div key={stat.label}>
+                      <Icon className="h-4 w-4 text-gray-400" strokeWidth={2} />
+                      <p className="mt-2 text-[10px] font-semibold uppercase tracking-wider text-gray-500">
+                        {stat.label}
+                      </p>
+                      <p className="mt-1 text-base font-bold text-gray-900">
+                        {stat.value}
+                      </p>
+                    </div>
+                  );
+                })}
+              </div>
+            </>
+          )}
+
+          {/* Actions */}
           <div className="my-6 h-px bg-gray-100" />
-
-          <div className="grid grid-cols-2 gap-6 sm:grid-cols-4">
-
-            <div>
-              <Ruler className="h-4 w-4 text-gray-400" />
-              <p className="mt-2 text-[10px] font-semibold uppercase tracking-wider text-gray-500">
-                Square Footage
-              </p>
-              <p className="mt-1 text-base font-bold text-gray-900">
-                {area ? `${area.toLocaleString()} sqft` : "N/A"}
-              </p>
-            </div>
-
-            <div>
-              <MapPinned className="h-4 w-4 text-gray-400" />
-              <p className="mt-2 text-[10px] font-semibold uppercase tracking-wider text-gray-500">
-                Lot Size
-              </p>
-              <p className="mt-1 text-base font-bold text-gray-900">
-                {lotSize}
-              </p>
-            </div>
-
-            <div>
-              <Calendar className="h-4 w-4 text-gray-400" />
-              <p className="mt-2 text-[10px] font-semibold uppercase tracking-wider text-gray-500">
-                Year Built
-              </p>
-              <p className="mt-1 text-base font-bold text-gray-900">
-                {yearBuilt}
-              </p>
-            </div>
-
-            <div>
-              <Home className="h-4 w-4 text-gray-400" />
-              <p className="mt-2 text-[10px] font-semibold uppercase tracking-wider text-gray-500">
-                Zoning
-              </p>
-              <p className="mt-1 text-base font-bold text-gray-900">
-                {zoning}
-              </p>
-            </div>
-
-          </div>
-
-          <div className="my-6 h-px bg-gray-100" />
-
           <div className="flex flex-wrap gap-3">
             <button
               type="button"
               onClick={onCompare}
-              className="rounded-xl border border-gray-200 bg-white px-6 py-3 text-sm font-semibold text-gray-800 transition hover:bg-gray-50"
+              className="flex items-center gap-1.5 rounded-xl border border-gray-200 bg-white px-5 py-3 text-sm font-semibold text-gray-800 transition hover:border-[#22C55E] hover:text-[#16a34a]"
             >
-              Compare Property
+              <GitCompare className="h-4 w-4" strokeWidth={2.2} />
+              Compare property
             </button>
 
             <button
@@ -159,12 +253,11 @@ export default function PropertyDetails({ property, onCompare }) {
               onClick={handleGenerateReport}
               className="group flex flex-1 items-center justify-center gap-2 rounded-xl bg-[#22C55E] px-6 py-3 text-sm font-semibold text-white shadow-[0_8px_20px_rgba(34,197,94,0.3)] transition hover:bg-[#16a34a]"
             >
-              <FileText className="h-4 w-4" />
-              Generate Due Diligence Report
+              <FileText className="h-4 w-4" strokeWidth={2.2} />
+              Generate due diligence report
               <ArrowRight className="h-4 w-4 transition group-hover:translate-x-1" />
             </button>
           </div>
-
         </div>
       </div>
     </div>

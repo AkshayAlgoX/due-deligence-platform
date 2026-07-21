@@ -15,11 +15,8 @@ import {
 import SearchBar from "@/components/property/SearchBar";
 import PropertyDetails from "@/components/property/PropertyDetails";
 import PropertyResultCard from "@/components/property/PropertyResultCard";
-import OwnershipCard from "@/components/property/OwnershipCard";
-import TaxHistoryTable from "@/components/property/TaxHistoryTable";
 import BuildingInformationCard from "@/components/property/BuildingInformationCard";
-import TransactionHistoryTable from "@/components/property/TransactionHistoryTable";
-import ActionButtons from "@/components/property/ActionButtons";
+import DataCompletenessCard from "@/components/property/aggregation/DataCompletenessCard";
 import AddPropertyModal from "@/components/property/AddPropertyModal";
 import EditPropertyModal from "@/components/property/EditPropertyModal";
 import QuickImageUploadModal from "@/components/property/QuickImageUploadModal";
@@ -31,7 +28,16 @@ import {
   PropertyHeroSkeleton,
 } from "@/components/ui/Skeleton";
 
+// ── Aggregation cards ──
+import OwnershipCard from "@/components/property/aggregation/OwnershipCard";
+import TaxHistorySection from "@/components/property/aggregation/TaxHistorySection";
+import ZoningCard from "@/components/property/aggregation/ZoningCard";
+import FloodZoneCard from "@/components/property/aggregation/FloodZoneCard";
+import PermitsSection from "@/components/property/aggregation/PermitsSection";
+import EnvironmentalCard from "@/components/property/aggregation/EnvironmentalCard";
+
 import { searchProperties, getPropertyById } from "@/services/propertyService";
+import { getAggregatedProperty } from "@/services/aggregationService";
 import { usePropertyFilters } from "@/hooks/usePropertyFilters";
 
 function timeAgo(date) {
@@ -52,6 +58,8 @@ function PropertySearchInner() {
   const [results, setResults] = useState([]);
   const [allProperties, setAllProperties] = useState([]);
   const [selectedProperty, setSelectedProperty] = useState(null);
+  const [aggregated, setAggregated] = useState(null);
+  const [loadingAggregated, setLoadingAggregated] = useState(false);
   const [loading, setLoading] = useState(true);
   const [searching, setSearching] = useState(false);
   const [modalOpen, setModalOpen] = useState(false);
@@ -79,6 +87,26 @@ function PropertySearchInner() {
     return () => clearInterval(interval);
   }, []);
 
+  // ── Load aggregation whenever a property is selected ──
+  const loadAggregation = useCallback(async (propertyId) => {
+    if (!propertyId) {
+      setAggregated(null);
+      return;
+    }
+    try {
+      setLoadingAggregated(true);
+      const data = await getAggregatedProperty(propertyId);
+      setAggregated(data);
+    } catch (err) {
+      toast.error("Could not load property details", {
+        description: err?.message || "Please try again.",
+      });
+      setAggregated(null);
+    } finally {
+      setLoadingAggregated(false);
+    }
+  }, []);
+
   const loadAll = useCallback(async () => {
     try {
       setLoading(true);
@@ -89,15 +117,17 @@ function PropertySearchInner() {
       if (list.length > 0) {
         const detail = await getPropertyById(list[0].id);
         setSelectedProperty(detail);
+        loadAggregation(detail.id);
       } else {
         setSelectedProperty(null);
+        setAggregated(null);
       }
     } catch (err) {
       toast.error(err.message || "Failed to load properties");
     } finally {
       setLoading(false);
     }
-  }, []);
+  }, [loadAggregation]);
 
   useEffect(() => {
     const urlQuery = searchParams.get("q") ?? "";
@@ -134,12 +164,14 @@ function PropertySearchInner() {
 
         if (list.length === 0) {
           setSelectedProperty(null);
+          setAggregated(null);
           if (!silent) toast.info("No properties found — try a different term.");
           return;
         }
 
         const detail = await getPropertyById(list[0].id);
         setSelectedProperty(detail);
+        loadAggregation(detail.id);
 
         if (!silent) {
           toast.success(
@@ -153,7 +185,7 @@ function PropertySearchInner() {
         setSearching(false);
       }
     },
-    [loadAll]
+    [loadAll, loadAggregation]
   );
 
   const handleSelectSuggestion = useCallback(async (property) => {
@@ -162,6 +194,7 @@ function PropertySearchInner() {
       const detail = await getPropertyById(property.id);
       setSelectedProperty(detail);
       setResults([property]);
+      loadAggregation(detail.id);
       setTimeout(() => {
         document.getElementById("property-hero")?.scrollIntoView({ behavior: "smooth", block: "start" });
       }, 100);
@@ -170,13 +203,14 @@ function PropertySearchInner() {
     } finally {
       setSearching(false);
     }
-  }, []);
+  }, [loadAggregation]);
 
   const handleSelectResult = useCallback(async (property) => {
     try {
       setSearching(true);
       const detail = await getPropertyById(property.id);
       setSelectedProperty(detail);
+      loadAggregation(detail.id);
       setTimeout(() => {
         document.getElementById("property-hero")?.scrollIntoView({ behavior: "smooth", block: "start" });
       }, 100);
@@ -185,29 +219,27 @@ function PropertySearchInner() {
     } finally {
       setSearching(false);
     }
-  }, []);
+  }, [loadAggregation]);
 
-  // ── Edit flow ────────────────────────────────────────────────────
   const handleEditProperty = useCallback((property) => {
     setPropertyToEdit(property);
     setEditModalOpen(true);
   }, []);
 
-  // ── Quick photo flow ─────────────────────────────────────────────
   const handleQuickPhoto = useCallback((property) => {
     setPropertyForQuickPhoto(property);
     setQuickPhotoModalOpen(true);
   }, []);
 
-  // Shared success handler — used by both Edit and QuickPhoto modals
   const handleUpdateSuccess = useCallback((updated) => {
     setResults((prev) => prev.map((p) => (p.id === updated.id ? updated : p)));
     setAllProperties((prev) => prev.map((p) => (p.id === updated.id ? updated : p)));
     if (selectedProperty?.id === updated.id) {
       setSelectedProperty(updated);
+      loadAggregation(updated.id);
     }
     setLastSyncedAt(new Date());
-  }, [selectedProperty]);
+  }, [selectedProperty, loadAggregation]);
 
   const stats = useMemo(() => {
     const total = allProperties.length;
@@ -224,7 +256,7 @@ function PropertySearchInner() {
         <div className="flex items-start justify-between gap-6 flex-wrap">
           <div className="min-w-0 flex-1">
             <h1 className="text-[32px] font-extrabold text-gray-900 tracking-tight">
-              Property Search
+              Property search
             </h1>
 
             <div className="mt-2.5 flex flex-wrap items-center gap-x-4 gap-y-2">
@@ -289,7 +321,7 @@ function PropertySearchInner() {
           >
             <span className="absolute inset-0 -translate-x-full bg-gradient-to-r from-transparent via-white/20 to-transparent transition-transform duration-700 group-hover:translate-x-full" />
             <Plus className="h-4 w-4 relative z-10" strokeWidth={2.5} />
-            <span className="relative z-10">Add Property</span>
+            <span className="relative z-10">Add property</span>
           </button>
         </div>
 
@@ -414,7 +446,7 @@ function PropertySearchInner() {
         </div>
       )}
 
-      {/* Property detail sections */}
+      {/* Hero */}
       {!loading && selectedProperty && (
         <ErrorBoundary>
           <div id="property-hero">
@@ -426,25 +458,56 @@ function PropertySearchInner() {
         </ErrorBoundary>
       )}
 
+            {/* Aggregation sections */}
       {!loading && selectedProperty && (
         <ErrorBoundary>
-          <div className="grid grid-cols-12 gap-6">
-            <div className="col-span-12 lg:col-span-4">
-              <OwnershipCard property={selectedProperty} />
+          <div className="space-y-6">
+            {/* Row 1: Ownership + Tax history */}
+            <div className="grid grid-cols-12 gap-6 items-stretch">
+              <div className="col-span-12 lg:col-span-5 flex">
+                <div className="w-full"><OwnershipCard section={aggregated?.ownership} /></div>
+              </div>
+              <div className="col-span-12 lg:col-span-7 flex">
+                <div className="w-full"><TaxHistorySection section={aggregated?.taxHistory} /></div>
+              </div>
             </div>
-            <div className="col-span-12 lg:col-span-8">
-              <TaxHistoryTable property={selectedProperty} />
+
+            {/* Row 2: Zoning + Flood zone */}
+            <div className="grid grid-cols-12 gap-6 items-stretch">
+              <div className="col-span-12 lg:col-span-6 flex">
+                <div className="w-full"><ZoningCard section={aggregated?.zoning} /></div>
+              </div>
+              <div className="col-span-12 lg:col-span-6 flex">
+                <div className="w-full"><FloodZoneCard section={aggregated?.floodZone} /></div>
+              </div>
+            </div>
+
+            {/* Row 3: Permits + Environmental */}
+            <div className="grid grid-cols-12 gap-6 items-stretch">
+              <div className="col-span-12 lg:col-span-7 flex">
+                <div className="w-full"><PermitsSection section={aggregated?.permits} /></div>
+              </div>
+              <div className="col-span-12 lg:col-span-5 flex">
+                <div className="w-full"><EnvironmentalCard section={aggregated?.environmental} /></div>
+              </div>
+            </div>
+
+            {/* Row 4: Building info + Data completeness summary */}
+            <div className="grid grid-cols-12 gap-6 items-stretch">
+              <div className="col-span-12 lg:col-span-6 flex">
+                <div className="w-full"><BuildingInformationCard property={selectedProperty} /></div>
+              </div>
+              <div className="col-span-12 lg:col-span-6 flex">
+                <div className="w-full">
+                  <DataCompletenessCard
+                    aggregated={aggregated}
+                    onRefresh={() => loadAggregation(selectedProperty.id)}
+                    refreshing={loadingAggregated}
+                  />
+                </div>
+              </div>
             </div>
           </div>
-          <div className="grid grid-cols-12 gap-6">
-            <div className="col-span-12 lg:col-span-4">
-              <BuildingInformationCard property={selectedProperty} />
-            </div>
-            <div className="col-span-12 lg:col-span-8">
-              <TransactionHistoryTable property={selectedProperty} />
-            </div>
-          </div>
-          <ActionButtons property={selectedProperty} />
         </ErrorBoundary>
       )}
 

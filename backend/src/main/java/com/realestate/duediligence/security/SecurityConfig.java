@@ -41,7 +41,7 @@ public class SecurityConfig {
 
     private final CustomUserDetailsService customUserDetailsService;
     private final JwtAuthenticationFilter jwtAuthenticationFilter;
-
+    private final RateLimitFilter rateLimitFilter;
     @Bean
     SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
 
@@ -102,9 +102,15 @@ public class SecurityConfig {
 
             .userDetailsService(customUserDetailsService)
 
-            .addFilterBefore(
+                       .addFilterBefore(
                 jwtAuthenticationFilter,
                 UsernamePasswordAuthenticationFilter.class
+            )
+            // Rate limiter runs BEFORE JWT filter — rejects flooding
+            // requests before any expensive auth work is done
+            .addFilterBefore(
+                rateLimitFilter,
+                JwtAuthenticationFilter.class
             );
 
         return http.build();
