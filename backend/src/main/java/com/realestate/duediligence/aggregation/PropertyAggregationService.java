@@ -11,6 +11,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 
 import com.realestate.duediligence.dto.PropertyResponse;
@@ -84,6 +85,7 @@ public class PropertyAggregationService {
         this.executor = executor;
     }
 
+    @Cacheable(value = "propertyAggregation", key = "#propertyId")
     public AggregatedPropertyResponse aggregate(Long propertyId) {
         long start = System.currentTimeMillis();
 

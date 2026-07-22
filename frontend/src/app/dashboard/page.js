@@ -51,7 +51,7 @@ export default function DashboardPage() {
       const data = await getDashboardStats();
       setStats(data);
 
-      if (silent) toast.success("Refreshed");
+      if (silent) toast.success("Stats updated", { duration: 1500 });
     } catch (err) {
       toast.error("Failed to load dashboard data");
     } finally {

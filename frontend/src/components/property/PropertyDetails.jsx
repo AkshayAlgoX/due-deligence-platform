@@ -1,7 +1,6 @@
 "use client";
 
 import React from "react";
-import { useRouter } from "next/navigation";
 import {
   BadgeCheck,
   Ruler,
@@ -10,9 +9,6 @@ import {
   Bed,
   Bath,
   Layers,
-  FileText,
-  ArrowRight,
-  GitCompare,
   UserRound,
 } from "lucide-react";
 import { formatINRFull } from "@/utils/currency";
@@ -34,8 +30,7 @@ import PropertyImagePlaceholder from "./PropertyImagePlaceholder";
  *  - After aggregation lands, they may come from land-registry service
  *  - "Data source" pill will differentiate MANUAL vs AGGREGATED
  */
-export default function PropertyDetails({ property, onCompare }) {
-  const router = useRouter();
+export default function PropertyDetails({ property }) {
 
   if (!property) return null;
 
@@ -67,9 +62,7 @@ export default function PropertyDetails({ property, onCompare }) {
     .join(", ")
     .replace(/, ([\d]{6})$/, " $1"); // PIN sits after location without comma
 
-  const handleGenerateReport = () => {
-    if (id) router.push(`/property/${id}/report`);
-  };
+  
 
   // ── Zillow-style quick facts pill ────────────────────────────────
   // Only shown if at least one exists
@@ -236,28 +229,7 @@ export default function PropertyDetails({ property, onCompare }) {
             </>
           )}
 
-          {/* Actions */}
-          <div className="my-6 h-px bg-gray-100" />
-          <div className="flex flex-wrap gap-3">
-            <button
-              type="button"
-              onClick={onCompare}
-              className="flex items-center gap-1.5 rounded-xl border border-gray-200 bg-white px-5 py-3 text-sm font-semibold text-gray-800 transition hover:border-[#22C55E] hover:text-[#16a34a]"
-            >
-              <GitCompare className="h-4 w-4" strokeWidth={2.2} />
-              Compare property
-            </button>
-
-            <button
-              type="button"
-              onClick={handleGenerateReport}
-              className="group flex flex-1 items-center justify-center gap-2 rounded-xl bg-[#22C55E] px-6 py-3 text-sm font-semibold text-white shadow-[0_8px_20px_rgba(34,197,94,0.3)] transition hover:bg-[#16a34a]"
-            >
-              <FileText className="h-4 w-4" strokeWidth={2.2} />
-              Generate due diligence report
-              <ArrowRight className="h-4 w-4 transition group-hover:translate-x-1" />
-            </button>
-          </div>
+          
         </div>
       </div>
     </div>

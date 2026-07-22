@@ -72,7 +72,7 @@ export default function ProfilePage() {
       LOCAL: "Email + password",
       GOOGLE: "Google",
       LOCAL_AND_GOOGLE: "Email + Google",
-    }[user.authProvider] || user.authProvider || "—";
+    }[user.authProvider] || "—";
 
   const roleLabel =
     {
@@ -81,7 +81,7 @@ export default function ProfilePage() {
       LEGAL_REVIEWER: "Legal reviewer",
       FINANCIAL_INSTITUTION: "Financial institution",
       ADMIN: "Administrator",
-    }[user.role] || user.role || "—";
+    }[user.role] || "—";
 
   const memberSince = user.createdAt
     ? new Date(user.createdAt).toLocaleDateString("en-US", {

@@ -89,13 +89,14 @@ function PropertySearchInner() {
 
   // ── Load aggregation whenever a property is selected ──
   const loadAggregation = useCallback(async (propertyId) => {
-    if (!propertyId) {
-      setAggregated(null);
-      return;
-    }
-    try {
-      setLoadingAggregated(true);
-      const data = await getAggregatedProperty(propertyId);
+  if (!propertyId) {
+    setAggregated(null);
+    return;
+  }
+  try {
+    setLoadingAggregated(true);
+    setAggregated(null);  // clear stale data immediately
+    const data = await getAggregatedProperty(propertyId);
       setAggregated(data);
     } catch (err) {
       toast.error("Could not load property details", {
@@ -262,8 +263,8 @@ function PropertySearchInner() {
             <div className="mt-2.5 flex flex-wrap items-center gap-x-4 gap-y-2">
               {loading ? (
                 <div className="flex items-center gap-2">
-                  <div className="w-1.5 h-1.5 rounded-full bg-gray-300 animate-pulse" />
-                  <span className="text-sm text-gray-400">Loading portfolio...</span>
+                  <div className="w-1.5 h-1.5 rounded-full bg-[#22C55E] animate-pulse" />
+                  <span className="text-sm text-gray-500">Loading portfolio...</span>
                 </div>
               ) : stats.total === 0 ? (
                 <div className="flex items-center gap-2">
@@ -450,10 +451,7 @@ function PropertySearchInner() {
       {!loading && selectedProperty && (
         <ErrorBoundary>
           <div id="property-hero">
-            <PropertyDetails
-              property={selectedProperty}
-              onCompare={() => toast.info("Property comparison — coming soon!")}
-            />
+            <PropertyDetails property={selectedProperty} />
           </div>
         </ErrorBoundary>
       )}

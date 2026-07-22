@@ -6,6 +6,8 @@ import java.time.Instant;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.retry.annotation.Backoff;
+import org.springframework.retry.annotation.Retryable;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
 
@@ -63,6 +65,11 @@ public class CpcbEnvironmentalProvider implements EnvironmentalProvider {
     }
 
     @Override
+    @Retryable(
+        retryFor = { Exception.class },
+        maxAttempts = 3,
+        backoff = @Backoff(delay = 500, multiplier = 2.0)
+    )
     public IntegrationResponse<EnvironmentalInfo> fetch(Property property) {
         long start = System.currentTimeMillis();
         String city = property.getCity();
