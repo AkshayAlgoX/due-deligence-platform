@@ -35,12 +35,12 @@ export default function SectionCard({
   const isNoData = section && section.status === "NO_DATA";
 
   return (
-    <div className="rounded-2xl border border-gray-100 bg-white shadow-sm flex flex-col w-full">
+    <div className="group rounded-2xl border border-gray-100 bg-white shadow-sm flex flex-col w-full transition-colors duration-200 hover:border-gray-200">
       {/* Header */}
       <div className="flex items-start justify-between gap-3 border-b border-gray-100 px-5 py-4">
         <div className="flex items-start gap-3 min-w-0">
           {Icon && (
-            <div className="flex h-9 w-9 flex-shrink-0 items-center justify-center rounded-xl bg-[#edf7f3]">
+            <div className="flex h-9 w-9 flex-shrink-0 items-center justify-center rounded-xl bg-[#edf7f3] transition-transform duration-200 group-hover:scale-110">
               <Icon className="h-4 w-4 text-[#16a34a]" strokeWidth={2.2} />
             </div>
           )}
@@ -69,7 +69,8 @@ export default function SectionCard({
           <div className="space-y-3">
             <div className="h-4 w-3/4 animate-pulse rounded bg-gray-100" />
             <div className="h-4 w-full animate-pulse rounded bg-gray-100" />
-            <div className="h-4 w-1/2 animate-pulse rounded bg-gray-100" />
+            <div className="h-4 w-5/6 animate-pulse rounded bg-gray-100" />
+            <div className="h-4 w-2/3 animate-pulse rounded bg-gray-100" />
           </div>
         ) : isError ? (
           <ErrorState reason={section.reason} />

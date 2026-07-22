@@ -24,12 +24,18 @@ export default function DeleteAccountModal({ isOpen, onClose, user }) {
     e.preventDefault();
 
     if (confirmation !== "DELETE") {
-      toast.error("Please type DELETE exactly to confirm");
+      toast.error("Confirmation required", {
+  description: "Type DELETE exactly to confirm this action.",
+});
       return;
     }
 
     if (!password.trim()) {
-      toast.error(isGoogleOnly ? "Enter your email" : "Enter your password");
+     toast.error(isGoogleOnly ? "Email required" : "Password required", {
+  description: isGoogleOnly
+    ? "Enter your email to confirm."
+    : "Enter your password to confirm.",
+});
       return;
     }
 
@@ -49,7 +55,9 @@ export default function DeleteAccountModal({ isOpen, onClose, user }) {
           window.location.href = "/login";
         }, 1500);
       } else {
-        toast.error(res.message || "Could not delete account");
+       toast.error("Could not delete account", {
+  description: res.message || "Please try again in a moment.",
+});
       }
     } catch (err) {
       toast.error("Could not delete account", {

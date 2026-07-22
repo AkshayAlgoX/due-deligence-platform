@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useEffect, useState } from 'react';
-import { Building2, ShieldCheck, Clock, Loader2 } from 'lucide-react';
+import { Building2, ShieldCheck, Clock } from 'lucide-react';
 import api from '@/services/api';
 import { API_ROUTES } from '@/constants/apiRoutes';
 
@@ -27,16 +27,35 @@ export default function RecentPropertiesTable() {
 
   if (loading) {
     return (
-      <div className="flex h-48 items-center justify-center rounded-2xl border border-gray-100 bg-white">
-        <Loader2 className="h-6 w-6 animate-spin text-gray-400" />
+      <div className="overflow-hidden rounded-2xl border border-gray-100 bg-white shadow-sm">
+        <div className="border-b border-gray-100 p-6">
+          <div className="h-5 w-40 animate-pulse rounded bg-gray-100" />
+          <div className="mt-2 h-3 w-56 animate-pulse rounded bg-gray-100" />
+        </div>
+        <div className="divide-y divide-gray-100">
+          {[1, 2, 3].map((i) => (
+            <div key={i} className="flex items-center gap-3 p-6">
+              <div className="h-8 w-8 animate-pulse rounded-lg bg-gray-100" />
+              <div className="flex-1 space-y-2">
+                <div className="h-3 w-1/3 animate-pulse rounded bg-gray-100" />
+                <div className="h-3 w-1/4 animate-pulse rounded bg-gray-100" />
+              </div>
+              <div className="h-6 w-20 animate-pulse rounded-full bg-gray-100" />
+            </div>
+          ))}
+        </div>
       </div>
     );
   }
 
   if (error) {
     return (
-      <div className="rounded-2xl border border-gray-100 bg-white p-8 text-center">
-        <p className="text-sm text-gray-500">Could not load recent properties.</p>
+      <div className="rounded-2xl border border-gray-100 bg-white p-10 text-center">
+        <div className="mx-auto mb-3 flex h-12 w-12 items-center justify-center rounded-full bg-gray-50">
+          <Building2 className="h-6 w-6 text-gray-300" />
+        </div>
+        <p className="text-sm font-semibold text-gray-900">Couldn't load properties</p>
+        <p className="mt-1 text-xs text-gray-500">Please refresh the page to try again.</p>
       </div>
     );
   }
@@ -71,7 +90,7 @@ export default function RecentPropertiesTable() {
             </thead>
             <tbody className="divide-y divide-gray-100">
               {properties.map((prop) => (
-                <tr key={prop.id} className="transition hover:bg-gray-50/50">
+                <tr key={prop.id} className="transition-colors duration-150 hover:bg-gray-50/40">
                   <td className="px-6 py-4">
                     <div className="flex items-center gap-3">
                       <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-green-50 text-[#22C55E]">

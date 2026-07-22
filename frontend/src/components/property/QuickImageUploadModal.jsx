@@ -95,7 +95,9 @@ export default function QuickImageUploadModal({
       onSuccess?.(updated);
       onClose();
     } catch (err) {
-      toast.error(err.message || "Failed to update photo");
+      toast.error("Couldn't update photo", {
+  description: err.message || "Please try again in a moment.",
+});
     } finally {
       setSaving(false);
     }

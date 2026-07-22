@@ -39,7 +39,9 @@ export default function ImageUploader({ value, onChange, disabled = false }) {
         validateImageFile(file);
       } catch (err) {
         setError(err.message);
-        toast.error(err.message);
+        toast.error("Upload failed", {
+  description: err.message || "Please try again in a moment.",
+});
         return;
       }
 
@@ -57,10 +59,14 @@ export default function ImageUploader({ value, onChange, disabled = false }) {
         });
 
         onChange?.(result.url);
-        toast.success("Image uploaded successfully! ✨");
+        toast.success("Photo uploaded", {
+  description: "Your property photo is now live.",
+});
       } catch (err) {
         setError(err.message);
-        toast.error(err.message);
+        toast.error("Upload failed", {
+  description: err.message || "Please try again in a moment.",
+});
         setPreviewFile(null);
       } finally {
         setUploading(false);

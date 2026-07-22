@@ -191,7 +191,9 @@ export default function AddPropertyModal({ isOpen, onClose, onSuccess }) {
     const errs = validate();
     if (Object.keys(errs).length > 0) {
       setErrors(errs);
-      toast.error("Please fix the errors below");
+      toast.error("Form has errors", {
+  description: "Please review the highlighted fields below.",
+});
       return;
     }
 
@@ -227,7 +229,9 @@ export default function AddPropertyModal({ isOpen, onClose, onSuccess }) {
       onSuccess?.();
       onClose();
     } catch (err) {
-      toast.error(err.message || "Failed to add property");
+      toast.error("Couldn't add property", {
+  description: err.message || "Please try again in a moment.",
+});
     } finally {
       setSubmitting(false);
     }

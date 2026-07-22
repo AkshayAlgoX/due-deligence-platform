@@ -58,7 +58,7 @@ export function useAuth() {
   /** Logout — clears session and redirects to /login. */
   const logout = () => {
     logoutUser();
-    toast.success("Signed out", {
+    toast.success("You're signed out", {
       description: "You've been logged out successfully.",
     });
     router.push("/login");

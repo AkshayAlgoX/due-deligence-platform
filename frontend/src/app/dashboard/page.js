@@ -53,7 +53,9 @@ export default function DashboardPage() {
 
       if (silent) toast.success("Stats updated", { duration: 1500 });
     } catch (err) {
-      toast.error("Failed to load dashboard data");
+      toast.error("Couldn't load dashboard", {
+  description: "Please refresh the page or try again.",
+});
     } finally {
       setLoading(false);
       setRefreshing(false);

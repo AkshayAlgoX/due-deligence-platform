@@ -79,10 +79,10 @@ export default function PropertyResultCard({
     <button
       type="button"
       onClick={onClick}
-      className={`group relative flex flex-col overflow-hidden rounded-3xl bg-white text-left transition-all duration-500 ${
+      className={`group relative flex flex-col overflow-hidden rounded-3xl bg-white text-left transition-all duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#22C55E] focus-visible:ring-offset-2 ${
         isSelected
           ? "shadow-[0_20px_60px_rgba(34,197,94,0.3)] ring-2 ring-[#22C55E] scale-[1.02]"
-          : "shadow-[0_2px_10px_rgba(0,0,0,0.04)] ring-1 ring-gray-100 hover:shadow-[0_20px_50px_rgba(0,0,0,0.12)] hover:-translate-y-2 hover:ring-gray-200"
+          : "shadow-[0_2px_10px_rgba(0,0,0,0.04)] ring-1 ring-gray-100 hover:shadow-[0_20px_50px_rgba(0,0,0,0.12)] hover:-translate-y-1 hover:ring-gray-200 active:translate-y-0 active:shadow-[0_2px_10px_rgba(0,0,0,0.04)]"
       }`}
     >
       <div className="relative h-44 overflow-hidden">

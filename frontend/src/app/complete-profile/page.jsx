@@ -67,7 +67,9 @@ export default function CompleteProfilePage() {
   useEffect(() => {
     const data = sessionStorage.getItem("googleSignupData");
     if (!data) {
-      toast.error("Signup session expired. Please try again.");
+      toast.error("Session expired", {
+  description: "Please sign in again to continue.",
+});
       router.push("/login");
       return;
     }
@@ -91,7 +93,9 @@ export default function CompleteProfilePage() {
       // silently ignore
     }
 
-    toast.info("Signed out");
+    toast.info("You're signed out", {
+  description: "Sign in again anytime.",
+});
     router.push("/");
   };
 
@@ -99,11 +103,15 @@ export default function CompleteProfilePage() {
     e.preventDefault();
 
     if (!selectedRole) {
-      toast.error("Please select your role");
+      toast.error("Role required", {
+  description: "Please pick a role to continue.",
+});
       return;
     }
     if (!/^[6-9]\d{9}$/.test(phoneNumber)) {
-      toast.error("Please enter a valid 10-digit Indian mobile number");
+      toast.error("Invalid phone number", {
+  description: "Enter a 10-digit Indian mobile starting with 6-9.",
+});
       return;
     }
 
@@ -126,7 +134,9 @@ export default function CompleteProfilePage() {
         window.location.href = "/dashboard";
       }, 800);
     } catch (err) {
-      toast.error(err.message || "Failed to complete signup");
+      toast.error("Signup couldn't be completed", {
+  description: err.message || "Please try again in a moment.",
+});
     } finally {
       setLoading(false);
     }

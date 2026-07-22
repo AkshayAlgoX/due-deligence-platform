@@ -6,9 +6,9 @@ import { TrendingUp, TrendingDown } from 'lucide-react';
 export default function StatsCard({ title, value, subtitle, icon, trendValue, trendUp }) {
   // Anti-AI Rule #2: One accent color (Green). Replaced blue.
   return (
-    <div className="rounded-2xl border border-gray-100 bg-white p-6 shadow-sm transition-all duration-300 hover:-translate-y-1 hover:shadow-md flex flex-col justify-between gap-6">
+    <div className="group rounded-2xl border border-gray-100 bg-white p-6 shadow-sm transition-colors duration-200 hover:border-gray-200 flex flex-col justify-between gap-6">
       <div className="flex items-start justify-between">
-        <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-green-50 text-[#22C55E] shadow-sm">
+       <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-green-50 text-[#22C55E] transition-transform duration-200 group-hover:scale-110">
           {icon}
         </div>
         

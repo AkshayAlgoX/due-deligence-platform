@@ -184,7 +184,9 @@ export default function EditPropertyModal({
     const errs = validate();
     if (Object.keys(errs).length > 0) {
       setErrors(errs);
-      toast.error("Please fix the errors below");
+      toast.error("Form has errors", {
+  description: "Please review the highlighted fields below.",
+});
       return;
     }
 
@@ -220,7 +222,9 @@ export default function EditPropertyModal({
       onSuccess?.(updated);
       onClose();
     } catch (err) {
-      toast.error(err.message || "Failed to save changes");
+      toast.error("Couldn't save changes", {
+  description: err.message || "Please try again in a moment.",
+});
     } finally {
       setSaving(false);
     }

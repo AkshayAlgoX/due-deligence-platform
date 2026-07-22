@@ -124,7 +124,9 @@ function PropertySearchInner() {
         setAggregated(null);
       }
     } catch (err) {
-      toast.error(err.message || "Failed to load properties");
+      toast.error("Couldn't load properties", {
+  description: err.message || "Please refresh the page.",
+});
     } finally {
       setLoading(false);
     }
@@ -166,7 +168,11 @@ function PropertySearchInner() {
         if (list.length === 0) {
           setSelectedProperty(null);
           setAggregated(null);
-          if (!silent) toast.info("No properties found — try a different term.");
+          if (!silent) {
+  toast.info("No matches", {
+    description: "Try a different city, address, or ZIP code.",
+  });
+}
           return;
         }
 
@@ -181,7 +187,9 @@ function PropertySearchInner() {
           );
         }
       } catch (err) {
-        toast.error(err.message || "Search failed — please try again.");
+        toast.error("Search failed", {
+  description: err.message || "Please try again in a moment.",
+});
       } finally {
         setSearching(false);
       }
@@ -200,7 +208,9 @@ function PropertySearchInner() {
         document.getElementById("property-hero")?.scrollIntoView({ behavior: "smooth", block: "start" });
       }, 100);
     } catch (err) {
-      toast.error(err.message || "Failed to load property details");
+      toast.error("Couldn't load property", {
+  description: err.message || "Please try again in a moment.",
+});
     } finally {
       setSearching(false);
     }
@@ -216,7 +226,9 @@ function PropertySearchInner() {
         document.getElementById("property-hero")?.scrollIntoView({ behavior: "smooth", block: "start" });
       }, 100);
     } catch (err) {
-      toast.error(err.message || "Failed to load property details");
+      toast.error("Couldn't load property", {
+  description: err.message || "Please try again in a moment.",
+});
     } finally {
       setSearching(false);
     }
