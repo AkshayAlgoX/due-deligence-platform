@@ -9,9 +9,7 @@ import {
   Plus,
   RefreshCw,
   Users,
-  ArrowRight,
 } from "lucide-react";
-import Link from "next/link";
 
 import StatsCard from "@/components/dashboard/StatsCard";
 import RecentPropertiesTable from "@/components/dashboard/RecentPropertiesTable";
@@ -210,28 +208,17 @@ function EmptyState({ onAddClick }) {
           No properties yet
         </h2>
         <p className="mt-2 text-sm text-gray-500 leading-relaxed">
-          Add your first property to see verification results, and portfolio
-          insights here.
+          Add your first property to see verification results and portfolio insights.
         </p>
 
-        <div className="mt-6 flex flex-wrap items-center justify-center gap-3">
-          <button
-            type="button"
-            onClick={onAddClick}
-            className="flex items-center gap-2 rounded-lg bg-gradient-to-r from-[#22C55E] to-[#16a34a] px-4 py-2.5 text-sm font-semibold text-white shadow-[0_4px_12px_rgba(34,197,94,0.3)] transition hover:opacity-95"
-          >
-            <Plus size={16} strokeWidth={2.5} />
-            Add your first property
-          </button>
-
-          <Link
-            href="/dashboard/property-search"
-            className="flex items-center gap-1.5 rounded-lg border border-gray-200 bg-white px-4 py-2.5 text-sm font-semibold text-gray-700 transition hover:border-[#22C55E] hover:text-[#16a34a]"
-          >
-            Browse properties
-            <ArrowRight size={14} strokeWidth={2.5} />
-          </Link>
-        </div>
+        <button
+          type="button"
+          onClick={onAddClick}
+          className="mt-6 flex items-center gap-2 rounded-lg bg-gradient-to-r from-[#22C55E] to-[#16a34a] px-4 py-2.5 text-sm font-semibold text-white shadow-[0_4px_12px_rgba(34,197,94,0.3)] transition-all duration-150 hover:opacity-95 active:scale-95"
+        >
+          <Plus size={16} strokeWidth={2.5} />
+          Add your first property
+        </button>
       </div>
     </div>
   );

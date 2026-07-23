@@ -18,6 +18,7 @@ import {
 
 import DeleteAccountModal from "@/components/profile/DeleteAccountModal";
 import ChangePasswordModal from "@/components/profile/ChangePasswordModal";
+import { ProfileSkeleton } from "@/components/ui/Skeleton";
 import { getCurrentUser, updateProfile } from "@/services/authService";
 
 export default function ProfilePage() {
@@ -49,12 +50,8 @@ export default function ProfilePage() {
     fetchProfile();
   }, []);
 
-  if (loading) {
-    return (
-      <div className="flex h-64 items-center justify-center">
-        <Loader2 className="h-6 w-6 animate-spin text-gray-400" />
-      </div>
-    );
+    if (loading) {
+    return <ProfileSkeleton />;
   }
 
   if (!user) {

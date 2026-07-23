@@ -2,13 +2,13 @@
 
 /**
  * Reusable skeleton loader components.
- * Way more premium than spinners — shows layout hint while loading.
+ * Match the shape of the real content — never generic bars.
  */
 
 export function Skeleton({ className = "" }) {
   return (
     <div
-      className={`animate-pulse rounded-lg bg-gray-200 ${className}`}
+      className={`animate-pulse rounded-lg bg-gray-100 ${className}`}
     />
   );
 }
@@ -21,7 +21,7 @@ export function StatsCardSkeleton() {
         <Skeleton className="h-10 w-10 rounded-xl" />
         <Skeleton className="h-6 w-14 rounded-full" />
       </div>
-      <Skeleton className="mt-4 h-4 w-24" />
+      <Skeleton className="mt-6 h-3.5 w-24" />
       <Skeleton className="mt-2 h-8 w-32" />
     </div>
   );
@@ -30,15 +30,19 @@ export function StatsCardSkeleton() {
 /** For property result cards in the grid */
 export function PropertyCardSkeleton() {
   return (
-    <div className="overflow-hidden rounded-2xl border border-gray-200 bg-white shadow-sm">
-      <Skeleton className="h-32 w-full rounded-none" />
-      <div className="p-4">
-        <Skeleton className="h-4 w-3/4" />
-        <Skeleton className="mt-2 h-3 w-full" />
-        <div className="my-3 h-px bg-gray-100" />
-        <div className="flex justify-between">
-          <Skeleton className="h-3 w-16" />
-          <Skeleton className="h-4 w-24" />
+    <div className="overflow-hidden rounded-3xl border border-gray-100 bg-white shadow-sm">
+      <Skeleton className="h-44 w-full rounded-none" />
+      <div className="p-5">
+        <div className="flex items-start gap-2">
+          <Skeleton className="h-5 w-5 rounded-md" />
+          <Skeleton className="h-4 flex-1" />
+        </div>
+        <Skeleton className="ml-7 mt-2 h-3 w-2/3" />
+        <div className="my-4 h-px bg-gray-100" />
+        <div className="flex gap-1.5">
+          <Skeleton className="h-6 w-20 rounded-full" />
+          <Skeleton className="h-6 w-14 rounded-full" />
+          <Skeleton className="h-6 w-14 rounded-full" />
         </div>
       </div>
     </div>
@@ -52,9 +56,19 @@ export function PropertyHeroSkeleton() {
       <div className="grid grid-cols-1 lg:grid-cols-2">
         <Skeleton className="h-[380px] rounded-none" />
         <div className="p-8">
-          <Skeleton className="h-3 w-32" />
-          <Skeleton className="mt-3 h-8 w-full" />
-          <Skeleton className="mt-2 h-8 w-3/4" />
+          <Skeleton className="h-3 w-24" />
+          <div className="mt-3 flex items-start justify-between gap-6">
+            <div className="flex-1 space-y-2">
+              <Skeleton className="h-7 w-full" />
+              <Skeleton className="h-7 w-3/4" />
+            </div>
+            <Skeleton className="h-8 w-28" />
+          </div>
+          <div className="mt-5 flex gap-4">
+            <Skeleton className="h-4 w-16" />
+            <Skeleton className="h-4 w-16" />
+            <Skeleton className="h-4 w-24" />
+          </div>
           <div className="my-6 h-px bg-gray-100" />
           <div className="grid grid-cols-4 gap-6">
             {[1, 2, 3, 4].map((i) => (
@@ -65,11 +79,33 @@ export function PropertyHeroSkeleton() {
               </div>
             ))}
           </div>
-          <div className="my-6 h-px bg-gray-100" />
-          <div className="flex gap-3">
-            <Skeleton className="h-11 w-40" />
-            <Skeleton className="h-11 flex-1" />
-          </div>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+/** For profile page — inline info rows */
+export function ProfileSkeleton() {
+  return (
+    <div className="mx-auto w-full max-w-3xl space-y-12">
+      <div>
+        <Skeleton className="h-8 w-32" />
+        <Skeleton className="mt-2 h-3 w-48" />
+      </div>
+
+      <div>
+        <Skeleton className="mb-4 h-3 w-20" />
+        <div className="divide-y divide-gray-100 rounded-2xl border border-gray-100 bg-white shadow-sm">
+          {[1, 2, 3, 4, 5, 6].map((i) => (
+            <div key={i} className="flex items-center gap-4 px-5 py-4">
+              <Skeleton className="h-8 w-8 rounded-lg" />
+              <div className="flex-1 space-y-2">
+                <Skeleton className="h-3 w-24" />
+                <Skeleton className="h-4 w-40" />
+              </div>
+            </div>
+          ))}
         </div>
       </div>
     </div>
