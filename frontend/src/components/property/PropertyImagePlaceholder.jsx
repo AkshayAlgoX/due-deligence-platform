@@ -67,12 +67,6 @@ export default function PropertyImagePlaceholder({ propertyType, size = "default
         </p>
       </div>
 
-      {/* Corner accent — property type tag (subtle, bottom-left) */}
-      {size !== "hero" && (
-        <div className="absolute bottom-2 left-2 rounded-md bg-white/70 px-1.5 py-0.5 text-[8px] font-bold uppercase tracking-wider text-gray-500 backdrop-blur-sm ring-1 ring-white/50">
-          {propertyType || "Property"}
-        </div>
-      )}
     </div>
   );
 }
