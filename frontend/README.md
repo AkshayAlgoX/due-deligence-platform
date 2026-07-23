@@ -1,36 +1,226 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
+# Real Estate Due Diligence Agent
 
-## Getting Started
+A property evaluation platform that automates the collection and analysis of public records, ownership history, tax data, and regulatory information for real estate due diligence.
 
-First, run the development server:
+---
+
+## 📋 Table of Contents
+
+- [Tech Stack](#tech-stack)
+- [Setup Instructions](#setup-instructions)
+- [Project Structure](#project-structure)
+- [Milestone 2 Features](#milestone-2-features)
+- [Team Members](#team-members)
+- [License](#license)
+
+---
+
+## 🛠️ Tech Stack
+
+### Backend
+
+- Java 21
+- Spring Boot 3.x
+- Spring MVC
+- Spring Data JPA
+- Spring Security
+- JWT / OAuth2
+
+### Frontend
+
+- React.js
+- Next.js
+- Tailwind CSS
+
+### Database & Cache
+
+- PostgreSQL 18
+- Redis
+
+### Infrastructure
+
+- Docker
+- GitHub Actions
+- Nginx
+- AWS / Azure
+
+### Libraries
+
+- Hibernate
+- Lombok
+- MapStruct
+- OpenAPI (Swagger)
+- JasperReports / iText PDF
+
+---
+
+## 📦 Setup Instructions
+
+### Prerequisites
+
+- Java 21
+- Node.js 18+
+- PostgreSQL 18
+- Maven
+
+### 1. Clone the Repository
 
 ```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+git clone https://github.com/springboardmentor198/team-03.git
+cd team-03
+git checkout develop
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+### 2. Backend Setup
 
-You can start editing the page by modifying `app/page.js`. The page auto-updates as you edit the file.
+#### Environment Configuration
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+Create a `.env` file in the backend root directory:
 
-## Learn More
+```env
+# Database
+DB_URL=jdbc:postgresql://localhost:5432/due_diligence_db
+DB_USERNAME=your_username
+DB_PASSWORD=your_password
 
-To learn more about Next.js, take a look at the following resources:
+# JWT
+JWT_SECRET=your_jwt_secret_key
+JWT_EXPIRATION=86400000
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+# External APIs (Milestone 2)
+PUBLIC_RECORDS_API_KEY=your_api_key
+TAX_HISTORY_API_URL=https://api.taxservice.com/v1
+FLOOD_ZONE_API_URL=https://api.floodzone.gov/v1
+ZONING_API_URL=https://api.zoningdata.com/v1
+ENVIRONMENTAL_API_URL=https://api.environmental.gov/v1
+PERMIT_API_URL=https://api.permitrecords.com/v1
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+# Redis
+REDIS_HOST=localhost
+REDIS_PORT=6379
+```
 
-## Deploy on Vercel
+#### Run Backend
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+```bash
+cd backend
+mvn spring-boot:run
+```
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+The backend will start at `http://localhost:8080`
+
+### 3. Frontend Setup
+
+```bash
+cd frontend
+npm install
+npm run dev
+```
+
+The frontend will start at `http://localhost:3000`
+
+### 4. Database Setup
+
+```bash
+# Create PostgreSQL database
+createdb due_diligence_db
+
+# Hibernate will auto-create tables on application startup
+```
+
+---
+
+## 📁 Project Structure
+
+```
+team-03/
+├── backend/
+│   ├── src/
+│   │   ├── main/
+│   │   │   ├── java/com/due_diligence/
+│   │   │   │   ├── config/
+│   │   │   │   ├── controller/
+│   │   │   │   ├── service/
+│   │   │   │   ├── repository/
+│   │   │   │   ├── model/
+│   │   │   │   ├── dto/
+│   │   │   │   ├── exception/
+│   │   │   │   └── util/
+│   │   │   └── resources/
+│   │   └── test/
+│   ├── Dockerfile
+│   ├── pom.xml
+│   └── .env.example
+├── frontend/
+│   ├── src/
+│   │   ├── components/
+│   │   ├── pages/
+│   │   ├── services/
+│   │   └── styles/
+│   ├── package.json
+│   └── Dockerfile
+├── docker-compose.yml
+├── README.md
+└── docs/
+    └── API.md
+```
+
+---
+
+## 🏗️ Milestone 2 Features
+
+### Property Information Aggregation
+
+The system now automatically retrieves and consolidates property data from multiple public sources:
+
+- **Ownership Records** - Land registry and ownership history
+- **Property Tax History** - Historical tax assessments and payments
+- **Zoning Information** - Current zoning classifications and regulations
+- **Flood Zone Verification** - FEMA flood zone designations
+- **Building Permits** - Historical permit records
+- **Environmental Records** - Environmental hazard information
+
+### External API Integration
+
+- Integrated with public land registry services
+- Tax history API connectivity
+- Flood zone data retrieval
+- Zoning information services
+- Permit record systems
+- Environmental record services
+
+### Data Management
+
+- Automated data aggregation workflows
+- Database storage for all retrieved information
+- API exception handling and retry mechanisms
+- Data synchronization reliability
+
+---
+
+## 📄 License
+
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+
+---
+
+## 📚 Additional Documentation
+
+- [API Documentation](docs/API.md) - Complete API reference with request/response examples
+
+---
+
+## 🚀 Next Steps (Milestone 3)
+
+The upcoming milestone will focus on:
+
+- Risk Assessment module implementation
+- Comparable Property Analysis
+- Due Diligence Report generation
+- PDF and Excel export functionality
+- Notification services
+- Audit logging and dashboards
+
+---
+
+**For detailed API documentation, refer to [docs/API.md](docs/API.md)**
