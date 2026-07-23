@@ -26,6 +26,7 @@ export const API_ROUTES = {
   PROPERTY_AGGREGATED: (id) => `/api/properties/${id}/aggregated`,
   PROPERTY_SEARCH: "/api/properties/search",
   PROPERTIES_RECENT: "/api/properties/recent",
+  PROPERTIES_GEO: "/api/properties/geo",
 
   // ── Dashboard ─────────────────────────────────────────────────────────────
   DASHBOARD_STATS:    "/api/dashboard/stats",
@@ -34,6 +35,8 @@ export const API_ROUTES = {
   DASHBOARD_TRENDS:   "/api/dashboard/trends",
   BUYER_DASHBOARD:    "/api/buyer/dashboard",
   ADMIN_DASHBOARD:    "/api/admin/dashboard",
+  DASHBOARD_HISTORY: "/api/dashboard/history",
+  DASHBOARD_RECOMMENDATIONS: "/api/dashboard/recommendations",
 
   // ── Admin ─────────────────────────────────────────────────────────────────
   ADMIN_USERS: "/api/admin/users",

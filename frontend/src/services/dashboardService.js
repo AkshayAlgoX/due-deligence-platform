@@ -95,6 +95,43 @@ export const getDashboardTrends = async () => {
   };
 };
 
+/**
+ * Fetch portfolio snapshot history for trend chart.
+ * days: 7 | 30 | 90
+ * Returns array of { date, totalValue, propertyCount, verifiedCount, totalCities }
+ */
+export const getPortfolioHistory = async (days = 30) => {
+  const { data } = await api.get(API_ROUTES.DASHBOARD_HISTORY, {
+    params: { days },
+  });
+
+  return (data ?? []).map((point) => ({
+    date: point.date ?? "",
+    totalValue: point.totalValue ?? 0,
+    propertyCount: point.propertyCount ?? 0,
+    verifiedCount: point.verifiedCount ?? 0,
+    totalCities: point.totalCities ?? 0,
+  }));
+};
+
+/**
+ * Fetch rule-based recommendations from real portfolio data.
+ * Returns array of { type, severity, title, description, propertyId, actionUrl, actionLabel }
+ */
+export const getDashboardRecommendations = async () => {
+  const { data } = await api.get(API_ROUTES.DASHBOARD_RECOMMENDATIONS);
+
+  return (data ?? []).map((r) => ({
+    type: r.type ?? "",
+    severity: r.severity ?? "LOW",
+    title: r.title ?? "",
+    description: r.description ?? "",
+    propertyId: r.propertyId ?? null,
+    actionUrl: r.actionUrl ?? null,
+    actionLabel: r.actionLabel ?? null,
+  }));
+};
+
 /** Buyer welcome message. */
 export const getBuyerDashboard = async () => {
   const response = await api.get(API_ROUTES.BUYER_DASHBOARD);

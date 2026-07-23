@@ -54,6 +54,8 @@ const INITIAL_FORM = {
   bathrooms: "",
   stories: "",
   imageUrl: null,
+  latitude: null,      // ← NEW
+  longitude: null,     // ← NEW
 };
 
 const VERIFICATION_FIELDS = [
@@ -124,6 +126,7 @@ export default function AddPropertyModal({ isOpen, onClose, onSuccess }) {
     setForm((prev) => ({ ...prev, [field]: e.target.value }));
     if (errors[field]) setErrors((prev) => ({ ...prev, [field]: "" }));
   };
+
   const handleAddressChange = (e) => {
     setForm((prev) => ({ ...prev, address: e.target.value }));
     if (errors.address) setErrors((prev) => ({ ...prev, address: "" }));
@@ -138,6 +141,8 @@ export default function AddPropertyModal({ isOpen, onClose, onSuccess }) {
       city: s.city || prev.city,
       state: s.state || prev.state,
       zipCode: s.zipCode || prev.zipCode,
+      latitude: s.lat ? parseFloat(s.lat) : null,   // ← NEW
+    longitude: s.lon ? parseFloat(s.lon) : null,  // ← NEW
     }));
     setAddressWasPicked(true);
     setAddressSuggestionsOpen(false);
@@ -244,6 +249,8 @@ export default function AddPropertyModal({ isOpen, onClose, onSuccess }) {
         bathrooms:    form.bathrooms ? parseInt(form.bathrooms) : null,
         stories:      form.stories ? parseInt(form.stories) : null,
         imageUrl:     form.imageUrl || null,
+        latitude:     form.latitude,      // ← NEW
+  longitude:    form.longitude,     // ← NEW
       });
 
       if (willBeVerified) {

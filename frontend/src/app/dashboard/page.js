@@ -25,6 +25,9 @@ import {
   getDashboardTrends,
 } from "@/services/dashboardService";
 import { getCurrentUser } from "@/services/authService";
+import PortfolioTrendChart from "@/components/dashboard/PortfolioTrendChart";
+import RecommendationsPanel from "@/components/dashboard/RecommendationsPanel";
+import PortfolioMap from "@/components/dashboard/PortfolioMap";
 
 export default function DashboardPage() {
   const [stats, setStats] = useState(null);
@@ -132,13 +135,34 @@ export default function DashboardPage() {
       </div>
 
       {/* ── Hero Strip (only when properties exist) ─────────────── */}
-      {!isEmpty && (
-        <ErrorBoundary>
-          <HeroStrip stats={stats} loading={loading} key={`hero-${refreshKey}`} />
-        </ErrorBoundary>
-      )}
+{!isEmpty && (
+  <ErrorBoundary>
+    <HeroStrip stats={stats} loading={loading} key={`hero-${refreshKey}`} />
+  </ErrorBoundary>
+)}
 
-      {/* ── KPI Cards ───────────────────────────────────────────── */}
+{/* ── Portfolio trend chart ───────────────────────────────── */}
+{!isEmpty && (
+  <ErrorBoundary>
+    <PortfolioTrendChart key={`trend-${refreshKey}`} refreshKey={refreshKey} />
+  </ErrorBoundary>
+)}
+
+{/* ── Recommendations ─────────────────────────────────────── */}
+{!isEmpty && (
+  <ErrorBoundary>
+    <RecommendationsPanel key={`rec-${refreshKey}`} refreshKey={refreshKey} />
+  </ErrorBoundary>
+)}
+
+{/* ── Portfolio map ───────────────────────────────────────── */}
+{!isEmpty && (
+  <ErrorBoundary>
+    <PortfolioMap key={`map-${refreshKey}`} refreshKey={refreshKey} />
+  </ErrorBoundary>
+)}
+
+{/* ── KPI Cards ───────────────────────────────────────────── */}
       {loading ? (
         <div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-4">
           {[1, 2, 3, 4].map((i) => (
@@ -166,6 +190,7 @@ export default function DashboardPage() {
             icon={<Building2 size={20} strokeWidth={2.5} />}
             trendValue={formatDelta(trends?.propertiesGrowthPct)}
             trendUp={trends ? trends.propertiesGrowthPct >= 0 : null}
+             href="/dashboard/property-search"
           />
 
           <StatsCard
@@ -185,6 +210,7 @@ export default function DashboardPage() {
             icon={<ShieldCheck size={20} strokeWidth={2.5} />}
             trendValue={formatDelta(trends?.verifiedGrowthPct)}
             trendUp={trends ? trends.verifiedGrowthPct >= 0 : null}
+             href="/dashboard/property-search?filter=verified"
           />
 
           <StatsCard
@@ -201,6 +227,11 @@ export default function DashboardPage() {
             }
             icon={<Clock size={20} strokeWidth={2.5} />}
             trendValue={null}
+            href={
+    stats.pendingProperties > 0
+      ? "/dashboard/property-search?filter=pending"
+      : undefined
+  }
           />
 
           <StatsCard

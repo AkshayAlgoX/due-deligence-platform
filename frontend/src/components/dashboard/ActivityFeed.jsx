@@ -1,6 +1,7 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useState, useMemo } from "react";
+import Link from "next/link";
 import {
   Activity,
   Plus,
@@ -8,18 +9,21 @@ import {
   Edit3,
   Building2,
   Loader2,
+  ArrowRight,
 } from "lucide-react";
 import { getRecentActivity } from "@/services/dashboardService";
 
-/**
- * ActivityFeed — live-ish stream of property actions.
- *
- * Real data from /api/dashboard/activity. Refetches every 60s.
- * No fake events — derived from actual property state.
- */
+const FILTERS = [
+  { key: "ALL",      label: "All"      },
+  { key: "ADDED",    label: "Added"    },
+  { key: "VERIFIED", label: "Verified" },
+  { key: "UPDATED",  label: "Updated"  },
+];
+
 export default function ActivityFeed() {
-  const [items, setItems] = useState([]);
+  const [items, setItems]     = useState([]);
   const [loading, setLoading] = useState(true);
+  const [filter, setFilter]   = useState("ALL");
   const [, forceTick] = useState(0);
 
   const load = async () => {
@@ -35,15 +39,36 @@ export default function ActivityFeed() {
 
   useEffect(() => {
     load();
-    const interval = setInterval(load, 60000); // refetch every 60s
+    const interval = setInterval(load, 60000);
     return () => clearInterval(interval);
   }, []);
 
-  // Re-render every 30s to update relative timestamps
   useEffect(() => {
     const t = setInterval(() => forceTick((n) => n + 1), 30000);
     return () => clearInterval(t);
   }, []);
+
+  // ── Client-side filter ─────────────────────────────────────
+  const visible = useMemo(() => {
+    if (filter === "ALL") return items;
+    const typeMap = {
+      ADDED:    "PROPERTY_ADDED",
+      VERIFIED: "PROPERTY_VERIFIED",
+      UPDATED:  "PROPERTY_UPDATED",
+    };
+    return items.filter((i) => i.type === typeMap[filter]);
+  }, [items, filter]);
+
+  // ── Per-filter counts for pill badges ──────────────────────
+  const counts = useMemo(() => {
+    const c = { ALL: items.length, ADDED: 0, VERIFIED: 0, UPDATED: 0 };
+    for (const i of items) {
+      if (i.type === "PROPERTY_ADDED")    c.ADDED++;
+      if (i.type === "PROPERTY_VERIFIED") c.VERIFIED++;
+      if (i.type === "PROPERTY_UPDATED")  c.UPDATED++;
+    }
+    return c;
+  }, [items]);
 
   return (
     <div className="rounded-2xl border border-gray-100 bg-white shadow-sm">
@@ -55,7 +80,7 @@ export default function ActivityFeed() {
           </div>
           <div>
             <h3 className="text-sm font-bold text-gray-900">Recent activity</h3>
-            <p className="text-xs text-gray-500 mt-0.5">
+            <p className="mt-0.5 text-xs text-gray-500">
               Latest actions across the platform
             </p>
           </div>
@@ -69,6 +94,38 @@ export default function ActivityFeed() {
           Live
         </div>
       </div>
+
+      {/* ── Filter pills ────────────────────────────────────── */}
+      {!loading && items.length > 0 && (
+        <div className="flex items-center gap-1.5 border-b border-gray-100 px-6 py-3">
+          {FILTERS.map((f) => {
+            const isActive = filter === f.key;
+            const count = counts[f.key];
+            return (
+              <button
+                key={f.key}
+                onClick={() => setFilter(f.key)}
+                className={`flex items-center gap-1.5 rounded-full px-3 py-1.5 text-xs font-semibold transition-all duration-150 ${
+                  isActive
+                    ? "bg-[#16a34a] text-white shadow-sm"
+                    : "text-gray-500 hover:bg-gray-50 hover:text-gray-700"
+                }`}
+              >
+                {f.label}
+                <span
+                  className={`rounded-full px-1.5 py-0.5 text-[10px] font-black tabular-nums ${
+                    isActive
+                      ? "bg-white/25 text-white"
+                      : "bg-gray-100 text-gray-500"
+                  }`}
+                >
+                  {count}
+                </span>
+              </button>
+            );
+          })}
+        </div>
+      )}
 
       {/* Body */}
       <div className="p-6">
@@ -88,33 +145,54 @@ export default function ActivityFeed() {
               Add properties to see activity here
             </p>
           </div>
+        ) : visible.length === 0 ? (
+          <div className="flex flex-col items-center justify-center py-10 text-center">
+            <p className="text-sm font-semibold text-gray-700">
+              No {filter.toLowerCase()} activity in recent events
+            </p>
+            <button
+              onClick={() => setFilter("ALL")}
+              className="mt-2 text-xs font-bold text-[#16a34a] hover:underline"
+            >
+              Show all
+            </button>
+          </div>
         ) : (
-          <ol className="relative border-l border-gray-100 pl-6 space-y-4">
-            {items.map((item, idx) => (
-              <ActivityRow key={`${item.propertyId}-${idx}`} item={item} />
-            ))}
-          </ol>
+          <>
+            <ol className="relative space-y-4 border-l border-gray-100 pl-6">
+              {visible.map((item, idx) => (
+                <ActivityRow key={`${item.propertyId}-${idx}`} item={item} />
+              ))}
+            </ol>
+
+            {/* View all link */}
+            <Link
+              href="/dashboard/property-search"
+              className="mt-5 flex items-center justify-center gap-1 text-xs font-bold text-[#16a34a] transition-all hover:gap-2"
+            >
+              View all properties
+              <ArrowRight size={11} strokeWidth={2.5} />
+            </Link>
+          </>
         )}
       </div>
     </div>
   );
 }
 
-// ─── Single activity row ───────────────────────────────────────
+// ── Single activity row ────────────────────────────────────────
 function ActivityRow({ item }) {
   const meta = getActivityMeta(item.type);
   const Icon = meta.icon;
 
   return (
     <li className="relative">
-      {/* Timeline dot */}
       <span
         className={`absolute -left-[33px] flex h-5 w-5 items-center justify-center rounded-full ring-4 ring-white ${meta.dotBg}`}
       >
         <Icon className={`h-2.5 w-2.5 ${meta.iconColor}`} strokeWidth={3} />
       </span>
 
-      {/* Content */}
       <div className="flex items-start justify-between gap-3">
         <div className="min-w-0 flex-1">
           <p className="text-sm text-gray-700">
@@ -122,7 +200,7 @@ function ActivityRow({ item }) {
             {item.propertyAddress && (
               <>
                 :{" "}
-                <span className="font-semibold text-gray-700 truncate">
+                <span className="truncate font-semibold text-gray-700">
                   {item.propertyAddress}
                 </span>
               </>
@@ -137,7 +215,10 @@ function ActivityRow({ item }) {
             {item.actorName && (
               <>
                 {item.propertyCity && " · "}
-                by <span className="font-semibold text-gray-600">{item.actorName}</span>
+                by{" "}
+                <span className="font-semibold text-gray-600">
+                  {item.actorName}
+                </span>
               </>
             )}
           </p>
@@ -150,7 +231,7 @@ function ActivityRow({ item }) {
   );
 }
 
-// ─── Helpers ─────────────────────────────────────────────────────
+// ── Helpers ────────────────────────────────────────────────────
 function getActivityMeta(type) {
   switch (type) {
     case "PROPERTY_ADDED":

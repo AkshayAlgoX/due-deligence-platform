@@ -15,7 +15,8 @@ import { useState, useMemo, useCallback } from "react";
 const DEFAULT_FILTERS = {
   types: [],           // array of property types (multi-select)
   cities: [],          // array of city names (multi-select)
-  verifiedOnly: false, // toggle
+  verifiedOnly: false, 
+  pendingOnly: false,// toggle
   minPrice: null,      // number or null
   maxPrice: null,      // number or null
   sortBy: "recent",    // recent | price-asc | price-desc | alpha
@@ -65,9 +66,9 @@ export function usePropertyFilters(properties = []) {
       result = result.filter((p) => filters.cities.includes(p.city));
     }
 
-    if (filters.verifiedOnly) {
-      result = result.filter((p) => p.verified === true);
-    }
+   if (filters.pendingOnly) {              // ← NEW
+  result = result.filter((p) => p.verified !== true);
+}
 
     if (filters.minPrice != null) {
       result = result.filter((p) => (p.marketValue || 0) >= filters.minPrice);
@@ -101,7 +102,7 @@ export function usePropertyFilters(properties = []) {
     let count = 0;
     count += filters.types.length;
     count += filters.cities.length;
-    if (filters.verifiedOnly) count += 1;
+    if (filters.pendingOnly)  count += 1;
     if (filters.minPrice != null) count += 1;
     if (filters.maxPrice != null) count += 1;
     if (filters.sortBy !== "recent") count += 1;

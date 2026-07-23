@@ -59,3 +59,22 @@ export const searchProperties = async (query) => {
   const response = await api.get(url);
   return response.data;
 };
+
+/**
+ * Fetch geo-tagged properties for portfolio map.
+ * Only returns properties with latitude + longitude set.
+ */
+export const getGeoProperties = async () => {
+  const { data } = await api.get(API_ROUTES.PROPERTIES_GEO);
+  return (data ?? []).map((p) => ({
+    id: p.id,
+    address: p.address ?? "",
+    city: p.city ?? "",
+    state: p.state ?? "",
+    latitude: p.latitude,
+    longitude: p.longitude,
+    marketValue: p.marketValue ?? 0,
+    verified: p.verified ?? false,
+    propertyType: p.propertyType ?? "",
+  }));
+};

@@ -20,7 +20,6 @@ public class PropertyResponse {
     private Double area;
     private Double marketValue;
 
-    // ── NEW FIELDS ─────────────────────────────────────────────────
     private Integer yearBuilt;
     private Double lotSize;
     private String zoning;
@@ -31,6 +30,10 @@ public class PropertyResponse {
     private Integer stories;
     private String structureType;
     private String condition;
+
+    // ── Sprint 4: geo coordinates ─────────────────────────────
+    private Double latitude;
+    private Double longitude;
 
     private List<String> missingFields;
     private Integer totalChecks;

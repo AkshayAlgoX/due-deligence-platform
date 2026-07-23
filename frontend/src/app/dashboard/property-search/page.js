@@ -133,22 +133,31 @@ function PropertySearchInner() {
   }, [loadAggregation]);
 
   useEffect(() => {
-    const urlQuery = searchParams.get("q") ?? "";
-    const urlAction = searchParams.get("action");
+  const urlQuery  = searchParams.get("q") ?? "";
+  const urlAction = searchParams.get("action");
+  const urlFilter = searchParams.get("filter");
 
-    if (urlAction === "add") setModalOpen(true);
+  if (urlAction === "add") setModalOpen(true);
 
-    if (urlQuery.trim()) {
-      setSearchValue(urlQuery);
-      handleSearch(urlQuery, { silent: false });
-      searchProperties("").then((all) => setAllProperties(all));
-      setLastSyncedAt(new Date());
-      setLoading(false);
-    } else {
-      loadAll();
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  // Pre-apply verified filter from URL
+ if (urlFilter === "verified") {
+  setFilter("verifiedOnly", true);
+} else if (urlFilter === "pending") {
+  setFilter("pendingOnly", true);
+}
+  // Pending filter is handled after load — see below
+
+  if (urlQuery.trim()) {
+    setSearchValue(urlQuery);
+    handleSearch(urlQuery, { silent: false });
+    searchProperties("").then((all) => setAllProperties(all));
+    setLastSyncedAt(new Date());
+    setLoading(false);
+  } else {
+    loadAll();
+  }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+}, []);
 
   const handleSearch = useCallback(
     async (query, options = {}) => {

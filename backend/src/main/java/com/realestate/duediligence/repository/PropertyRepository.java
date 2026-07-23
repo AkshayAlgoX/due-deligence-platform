@@ -92,4 +92,34 @@ public interface PropertyRepository extends JpaRepository<Property, Long> {
      *   - verified == true        → PROPERTY_VERIFIED (if updated recently)
      */
     List<Property> findTop30ByOrderByUpdatedAtDesc();
+    // ────────────────────────────────────────────────────────────────
+// NEW — Per-user snapshot queries
+// ────────────────────────────────────────────────────────────────
+
+/** Sum of market values for a specific user's properties. */
+@Query("SELECT COALESCE(SUM(p.marketValue), 0) FROM Property p " +
+       "WHERE p.createdBy.id = :userId AND p.marketValue IS NOT NULL")
+Double sumMarketValueByUser(@Param("userId") Long userId);
+
+/** Count of properties owned by a specific user. */
+@Query("SELECT COUNT(p) FROM Property p WHERE p.createdBy.id = :userId")
+Integer countByCreatedById(@Param("userId") Long userId);
+
+/** Count of verified properties owned by a specific user. */
+@Query("SELECT COUNT(p) FROM Property p " +
+       "WHERE p.createdBy.id = :userId AND p.verified = true")
+Integer countVerifiedByUser(@Param("userId") Long userId);
+
+/** Distinct city count for a specific user's properties. */
+@Query("SELECT COUNT(DISTINCT p.city) FROM Property p " +
+       "WHERE p.createdBy.id = :userId AND p.city IS NOT NULL")
+Integer countDistinctCitiesByUser(@Param("userId") Long userId);
+
+/**
+ * Fetch all properties that have coordinates set (for map view).
+ * Excludes properties without lat/lon so map markers only show real data.
+ */
+@Query("SELECT p FROM Property p " +
+       "WHERE p.latitude IS NOT NULL AND p.longitude IS NOT NULL")
+List<Property> findAllWithCoordinates();
 }

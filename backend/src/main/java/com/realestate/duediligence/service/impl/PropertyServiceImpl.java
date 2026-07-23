@@ -4,28 +4,45 @@ import java.time.LocalDateTime;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.realestate.duediligence.dto.PropertyRequest;
 import com.realestate.duediligence.dto.PropertyResponse;
 import com.realestate.duediligence.entity.Property;
+import com.realestate.duediligence.entity.User;
 import com.realestate.duediligence.integration.AddressValidationService;
 import com.realestate.duediligence.repository.PropertyRepository;
+import com.realestate.duediligence.repository.UserRepository;
+import com.realestate.duediligence.service.PortfolioSnapshotService;
 import com.realestate.duediligence.service.PropertyService;
 import com.realestate.duediligence.service.PropertyVerificationService;
 
 import lombok.RequiredArgsConstructor;
+import com.realestate.duediligence.dto.GeoPropertyResponse;
+import java.net.URI;
+import java.net.URLEncoder;
+import java.net.http.HttpClient;
+import java.net.http.HttpRequest;
+import java.net.http.HttpResponse;
+import java.nio.charset.StandardCharsets;
+import java.time.Duration;
 
 @Service
 @RequiredArgsConstructor
 public class PropertyServiceImpl implements PropertyService {
 
-    private final AddressValidationService addressValidationService;
-    private final PropertyRepository propertyRepository;
-    private final PropertyVerificationService verificationService;
+    private final AddressValidationService      addressValidationService;
+    private final PropertyRepository            propertyRepository;
+    private final PropertyVerificationService   verificationService;
+    private final UserRepository                userRepository;
+    private final PortfolioSnapshotService      portfolioSnapshotService;
 
+    // ── Add property ──────────────────────────────────────────────
     @Override
+    @Transactional
     public PropertyResponse addProperty(PropertyRequest request) {
         if (!addressValidationService.validateAddress(request.getAddress())) {
             throw new RuntimeException("Invalid property address");
@@ -34,21 +51,30 @@ public class PropertyServiceImpl implements PropertyService {
         Property property = new Property();
         applyRequestToEntity(request, property);
 
-        // ── Auto-verify based on data completeness ──────────────────
-        // Rules run automatically — the "verified" flag from request is ignored
+        // Set createdBy from JWT principal
+        User currentUser = resolveCurrentUser();
+        if (currentUser != null) {
+            property.setCreatedBy(currentUser);
+        }
+
+        // Auto-verify based on data completeness
         verificationService.verify(property);
 
         property.setCreatedAt(LocalDateTime.now());
         property.setUpdatedAt(LocalDateTime.now());
 
         Property saved = propertyRepository.save(property);
+
+        // Trigger real-time snapshot so chart updates immediately
+        if (saved.getCreatedBy() != null) {
+            portfolioSnapshotService.refreshSnapshotForUser(
+                    saved.getCreatedBy().getId());
+        }
+
         return mapToResponse(saved);
     }
 
-    /**
-     * Update an existing property. Re-runs verification automatically —
-     * this powers the "Pending → Edit → Verified" user flow.
-     */
+    // ── Update property ───────────────────────────────────────────
     @Override
     @Transactional
     public PropertyResponse updateProperty(Long id, PropertyRequest request) {
@@ -57,15 +83,23 @@ public class PropertyServiceImpl implements PropertyService {
 
         applyRequestToEntity(request, property);
 
-        // ── Re-verify with updated data ────────────────────────────
+        // Re-verify with updated data — powers the "Pending → Edit → Verified" flow
         verificationService.verify(property);
 
         property.setUpdatedAt(LocalDateTime.now());
 
         Property saved = propertyRepository.save(property);
+
+        // Trigger real-time snapshot
+        if (saved.getCreatedBy() != null) {
+            portfolioSnapshotService.refreshSnapshotForUser(
+                    saved.getCreatedBy().getId());
+        }
+
         return mapToResponse(saved);
     }
 
+    // ── Read operations (unchanged) ───────────────────────────────
     @Override
     public List<PropertyResponse> getAllProperties() {
         return propertyRepository.findAll()
@@ -93,11 +127,15 @@ public class PropertyServiceImpl implements PropertyService {
                 .collect(Collectors.toList());
     }
 
-    /**
-     * Admin-only: re-verify ALL existing properties.
-     * Used once after deploying the verification engine to fix legacy data
-     * where every property was blindly marked as verified.
-     */
+    @Override
+    public List<PropertyResponse> getRecentProperties() {
+        return propertyRepository.findTop5ByOrderByCreatedAtDesc()
+                .stream()
+                .map(this::mapToResponse)
+                .collect(Collectors.toList());
+    }
+
+    // ── Admin: re-verify all ──────────────────────────────────────
     @Override
     @Transactional
     public int reverifyAllProperties() {
@@ -113,14 +151,26 @@ public class PropertyServiceImpl implements PropertyService {
         return verifiedCount;
     }
 
-    @Override
-public List<PropertyResponse> getRecentProperties() {
-    return propertyRepository.findTop5ByOrderByCreatedAtDesc()
-            .stream()
-            .map(this::mapToResponse)
-            .collect(Collectors.toList());
-}
-    // ── Helper: Request → Entity (used by both create & update) ────
+    // ── Helper: resolve current user from JWT ─────────────────────
+    /**
+     * Reads the email from the JWT principal (set by JwtAuthFilter)
+     * and loads the User entity. Returns null if unauthenticated —
+     * callers check before using.
+     */
+    private User resolveCurrentUser() {
+        try {
+            Authentication auth =
+                    SecurityContextHolder.getContext().getAuthentication();
+            if (auth == null || !auth.isAuthenticated()) return null;
+
+            String email = auth.getName(); // JWT subject = email
+            return userRepository.findByEmail(email).orElse(null);
+        } catch (Exception e) {
+            return null; // Never crash on this
+        }
+    }
+
+    // ── Helper: Request → Entity ──────────────────────────────────
     private void applyRequestToEntity(PropertyRequest request, Property property) {
         property.setAddress(request.getAddress());
         property.setCity(request.getCity());
@@ -138,10 +188,12 @@ public List<PropertyResponse> getRecentProperties() {
         property.setStories(request.getStories());
         property.setStructureType(request.getStructureType());
         property.setCondition(request.getCondition());
-        // Note: verified flag is set by verificationService, NOT copied from request
+        // verified is set by verificationService — never copied from request
+        property.setLatitude(request.getLatitude());
+        property.setLongitude(request.getLongitude());
     }
 
-    // ── Helper: Entity → Response DTO ──────────────────────────────
+    // ── Helper: Entity → Response DTO ─────────────────────────────
     private PropertyResponse mapToResponse(Property property) {
         PropertyResponse response = new PropertyResponse();
         response.setId(property.getId());
@@ -162,11 +214,110 @@ public List<PropertyResponse> getRecentProperties() {
         response.setStories(property.getStories());
         response.setStructureType(property.getStructureType());
         response.setCondition(property.getCondition());
-
-        // ── Include missing fields for transparency ─────────────────
         response.setMissingFields(verificationService.findMissingFields(property));
         response.setTotalChecks(verificationService.getTotalChecks());
-
+        response.setLatitude(property.getLatitude());
+        response.setLongitude(property.getLongitude());
         return response;
     }
+
+    // ── Geo endpoint ─────────────────────────────────────────────
+@Override
+public List<GeoPropertyResponse> getGeoProperties() {
+    return propertyRepository.findAllWithCoordinates()
+            .stream()
+            .map(p -> GeoPropertyResponse.builder()
+                    .id(p.getId())
+                    .address(p.getAddress())
+                    .city(p.getCity())
+                    .state(p.getState())
+                    .latitude(p.getLatitude())
+                    .longitude(p.getLongitude())
+                    .marketValue(p.getMarketValue())
+                    .verified(p.getVerified())
+                    .propertyType(p.getPropertyType())
+                    .build())
+            .collect(Collectors.toList());
+}
+
+// ── Admin backfill (one-time geocode of legacy properties) ──
+@Override
+@Transactional
+public int backfillCoordinates() {
+    List<Property> needsGeo = propertyRepository.findAll().stream()
+            .filter(p -> p.getLatitude() == null || p.getLongitude() == null)
+            .collect(Collectors.toList());
+
+    if (needsGeo.isEmpty()) return 0;
+
+    HttpClient http = HttpClient.newBuilder()
+            .connectTimeout(Duration.ofSeconds(5))
+            .build();
+
+    int geocoded = 0;
+
+    for (Property p : needsGeo) {
+        try {
+            // Build search query: address + city + state
+            String q = String.join(", ",
+                    p.getAddress() != null ? p.getAddress() : "",
+                    p.getCity() != null ? p.getCity() : "",
+                    p.getState() != null ? p.getState() : ""
+            ).replaceAll(", +", ", ").trim();
+
+            if (q.isBlank()) continue;
+
+            String url = "https://nominatim.openstreetmap.org/search?q="
+                    + URLEncoder.encode(q, StandardCharsets.UTF_8)
+                    + "&format=json&limit=1&countrycodes=in";
+
+            HttpRequest req = HttpRequest.newBuilder()
+                    .uri(URI.create(url))
+                    // Nominatim requires User-Agent
+                    .header("User-Agent", "DueDiligenceAgent/1.0 (college project)")
+                    .header("Accept", "application/json")
+                    .timeout(Duration.ofSeconds(8))
+                    .GET()
+                    .build();
+
+            HttpResponse<String> resp = http.send(req,
+                    HttpResponse.BodyHandlers.ofString());
+
+            if (resp.statusCode() == 200) {
+                String body = resp.body();
+                // Simple parse — extract first lat + lon
+                Double lat = extractJsonNumber(body, "\"lat\":\"");
+                Double lon = extractJsonNumber(body, "\"lon\":\"");
+                if (lat != null && lon != null) {
+                    p.setLatitude(lat);
+                    p.setLongitude(lon);
+                    propertyRepository.save(p);
+                    geocoded++;
+                }
+            }
+
+            // Respect Nominatim rate limit: 1 req/sec
+            Thread.sleep(1100);
+
+        } catch (Exception e) {
+            // Silent — skip this property, continue with others
+        }
+    }
+
+    return geocoded;
+}
+
+/** Extract a numeric value from JSON string after a given key marker. */
+private Double extractJsonNumber(String json, String marker) {
+    int idx = json.indexOf(marker);
+    if (idx < 0) return null;
+    int start = idx + marker.length();
+    int end = json.indexOf("\"", start);
+    if (end < 0) return null;
+    try {
+        return Double.parseDouble(json.substring(start, end));
+    } catch (NumberFormatException e) {
+        return null;
+    }
+}
 }

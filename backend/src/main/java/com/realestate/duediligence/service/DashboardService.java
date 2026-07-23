@@ -6,6 +6,7 @@ import com.realestate.duediligence.dto.ActivityItemResponse;
 import com.realestate.duediligence.dto.DashboardStatsResponse;
 import com.realestate.duediligence.dto.DashboardTrendsResponse;
 import com.realestate.duediligence.dto.PortfolioInsightsResponse;
+import com.realestate.duediligence.dto.RecommendationResponse;
 
 public interface DashboardService {
 
@@ -19,4 +20,7 @@ public interface DashboardService {
 
     /** Week-over-week trend deltas. */
     DashboardTrendsResponse getTrends();
+
+    /** Rule-based recommendations derived from real portfolio data. */
+    List<RecommendationResponse> getRecommendations();
 }

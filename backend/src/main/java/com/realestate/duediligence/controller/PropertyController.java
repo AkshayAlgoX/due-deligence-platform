@@ -20,6 +20,7 @@ import com.realestate.duediligence.service.PropertyService;
 
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import com.realestate.duediligence.dto.GeoPropertyResponse;
 
 @RestController
 @RequestMapping("/api/properties")
@@ -77,4 +78,28 @@ public class PropertyController {
                 "message", "Re-verification complete",
                 "verifiedCount", verified));
     }
+    /**
+ * GET /api/properties/geo
+ * Returns lightweight geo markers for map view.
+ * Only includes properties with latitude + longitude set.
+ */
+@GetMapping("/geo")
+public ResponseEntity<List<GeoPropertyResponse>> getGeoProperties() {
+    return ResponseEntity.ok(propertyService.getGeoProperties());
+}
+
+/**
+ * POST /api/properties/admin/backfill-coordinates
+ * One-time endpoint to geocode legacy properties via Nominatim.
+ * Rate-limited to 1 req/sec — will take ~30 seconds for 30 properties.
+ * Runs synchronously — don't call from UI, use Postman only.
+ */
+@PostMapping("/admin/backfill-coordinates")
+@PreAuthorize("hasRole('ADMIN')")
+public ResponseEntity<Map<String, Object>> backfillCoordinates() {
+    int geocoded = propertyService.backfillCoordinates();
+    return ResponseEntity.ok(Map.of(
+            "message", "Geocoding complete",
+            "geocodedCount", geocoded));
+}
 }
