@@ -459,11 +459,14 @@ function PropertySearchInner() {
         </div>
       )}
 
-      {/* Hero */}
+            {/* Hero */}
       {!loading && selectedProperty && (
         <ErrorBoundary>
           <div id="property-hero">
-            <PropertyDetails property={selectedProperty} />
+            <PropertyDetails
+              property={selectedProperty}
+              onEdit={handleEditProperty}
+            />
           </div>
         </ErrorBoundary>
       )}

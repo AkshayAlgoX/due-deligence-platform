@@ -128,7 +128,7 @@ export default function PropertyResultCard({
           </div>
         )}
 
-        {/* ── TOP-RIGHT: change photo + property type ──────────────── */}
+              {/* ── TOP-RIGHT: change photo + property type ──────────────── */}
         <div className="absolute top-3 right-3 flex items-center gap-1.5">
           {/* Quick photo action — shows on hover when image exists */}
           {hasRealImage && onQuickPhoto && (
@@ -158,7 +158,6 @@ export default function PropertyResultCard({
             </span>
           </div>
         </div>
-
                 {/* ── "ADD PHOTO" PILL — contained button, not full overlay ── */}
         {!hasRealImage && onQuickPhoto && (
           <div

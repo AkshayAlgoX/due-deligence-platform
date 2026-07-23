@@ -10,6 +10,7 @@ import {
   Bath,
   Layers,
   UserRound,
+  Pencil,
 } from "lucide-react";
 import { formatINRFull } from "@/utils/currency";
 import { getPropertyHeroImage } from "@/constants/propertyImages";
@@ -30,7 +31,7 @@ import PropertyImagePlaceholder from "./PropertyImagePlaceholder";
  *  - After aggregation lands, they may come from land-registry service
  *  - "Data source" pill will differentiate MANUAL vs AGGREGATED
  */
-export default function PropertyDetails({ property }) {
+export default function PropertyDetails({ property, onEdit }) {
 
   if (!property) return null;
 
@@ -140,17 +141,30 @@ export default function PropertyDetails({ property }) {
 
         {/* RIGHT: Details */}
         <div className="flex flex-col p-8">
-          {/* Property type + data source pill */}
-          <div className="flex items-center gap-2 flex-wrap">
-            {propertyType && (
-              <p className="text-xs font-bold uppercase tracking-widest text-[#22C55E]">
-                {propertyType}
-              </p>
+                   {/* Property type + data source pill + edit */}
+          <div className="flex items-center justify-between gap-2 flex-wrap">
+            <div className="flex items-center gap-2 flex-wrap">
+              {propertyType && (
+                <p className="text-xs font-bold uppercase tracking-widest text-[#22C55E]">
+                  {propertyType}
+                </p>
+              )}
+              <span className="inline-flex items-center gap-1 rounded-full bg-gray-50 px-2 py-0.5 text-[10px] font-semibold text-gray-500 ring-1 ring-gray-200">
+                <UserRound className="h-2.5 w-2.5" strokeWidth={2.5} />
+                User provided
+              </span>
+            </div>
+
+            {onEdit && (
+              <button
+                type="button"
+                onClick={() => onEdit(property)}
+                className="flex items-center gap-1.5 rounded-lg border border-gray-200 bg-white px-3 py-1.5 text-xs font-semibold text-gray-700 transition-all duration-150 hover:border-[#22C55E] hover:text-[#16a34a] active:scale-95"
+              >
+                <Pencil className="h-3 w-3" strokeWidth={2.4} />
+                Edit details
+              </button>
             )}
-            <span className="inline-flex items-center gap-1 rounded-full bg-gray-50 px-2 py-0.5 text-[10px] font-semibold text-gray-500 ring-1 ring-gray-200">
-              <UserRound className="h-2.5 w-2.5" strokeWidth={2.5} />
-              User provided
-            </span>
           </div>
 
           {/* Address + price */}

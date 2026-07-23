@@ -7,11 +7,15 @@ import lombok.Data;
 @Builder
 public class DashboardStatsResponse {
     private long totalProperties;
-    private long verifiedProperties;   // NEW — real count
-    private long pendingProperties;    // NEW — real count
+    private long verifiedProperties;
+    private long pendingProperties;
     private long totalUsers;
     private long reportsGenerated;
     private long activeAlerts;
+
+    /** NEW — users who created a property in the last 30 days */
+    private long activeUsers;
+
     private DashboardTrends trends;
 
     @Data
