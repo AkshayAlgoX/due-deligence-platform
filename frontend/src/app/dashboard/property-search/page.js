@@ -1,6 +1,7 @@
+// frontend/src/app/dashboard/property-search/page.js
 "use client";
 
-import { useEffect, useState, useCallback, useMemo, Suspense } from "react";
+import { useEffect, useState, useCallback, useMemo, useRef, Suspense } from "react";
 import { useSearchParams } from "next/navigation";
 import { toast } from "sonner";
 import {
@@ -17,6 +18,7 @@ import PropertyDetails from "@/components/property/PropertyDetails";
 import PropertyResultCard from "@/components/property/PropertyResultCard";
 import BuildingInformationCard from "@/components/property/BuildingInformationCard";
 import DataCompletenessCard from "@/components/property/aggregation/DataCompletenessCard";
+import RiskScoreCard from "@/components/property/RiskScoreCard";
 import AddPropertyModal from "@/components/property/AddPropertyModal";
 import EditPropertyModal from "@/components/property/EditPropertyModal";
 import QuickImageUploadModal from "@/components/property/QuickImageUploadModal";
@@ -28,7 +30,7 @@ import {
   PropertyHeroSkeleton,
 } from "@/components/ui/Skeleton";
 
-// ── Aggregation cards ──
+// ── Aggregation cards ──────────────────────────────────────────
 import OwnershipCard from "@/components/property/aggregation/OwnershipCard";
 import TaxHistorySection from "@/components/property/aggregation/TaxHistorySection";
 import ZoningCard from "@/components/property/aggregation/ZoningCard";
@@ -36,9 +38,15 @@ import FloodZoneCard from "@/components/property/aggregation/FloodZoneCard";
 import PermitsSection from "@/components/property/aggregation/PermitsSection";
 import EnvironmentalCard from "@/components/property/aggregation/EnvironmentalCard";
 
-import { searchProperties, getPropertyById } from "@/services/propertyService";
+import {
+  searchProperties,
+  getPropertyById,
+  getPropertyRisk,
+} from "@/services/propertyService";
 import { getAggregatedProperty } from "@/services/aggregationService";
 import { usePropertyFilters } from "@/hooks/usePropertyFilters";
+import { useCompareSelection } from "@/hooks/useCompareSelection";
+import CompareBar from "@/components/property/CompareBar";
 
 function timeAgo(date) {
   if (!date) return "just now";
@@ -50,6 +58,32 @@ function timeAgo(date) {
   const hrs = Math.floor(mins / 60);
   if (hrs < 24)     return `${hrs}h ago`;
   return date.toLocaleDateString();
+}
+
+// Fetch risk for a batch of properties with controlled concurrency.
+// Max 4 in-flight at once — avoids hammering the backend on 32 properties.
+async function fetchRiskBatch(properties, onResult, signal) {
+  const CONCURRENCY = 4;
+  let i = 0;
+
+  async function runNext() {
+    while (i < properties.length) {
+      if (signal?.aborted) return;
+      const prop = properties[i++];
+      try {
+        const risk = await getPropertyRisk(prop.id);
+        if (!signal?.aborted) onResult(prop.id, risk);
+      } catch {
+        // Risk fetch failed for this property — silently skip, no toast
+        // The card just won't show a risk pill
+      }
+    }
+  }
+
+  // Run CONCURRENCY workers in parallel
+  await Promise.all(
+    Array.from({ length: Math.min(CONCURRENCY, properties.length) }, runNext)
+  );
 }
 
 function PropertySearchInner() {
@@ -72,6 +106,11 @@ function PropertySearchInner() {
   const [lastSyncedAt, setLastSyncedAt] = useState(null);
   const [, forceTick] = useState(0);
 
+  // ── Risk scores: Map<propertyId, RiskScoreResponse> ───────────
+  const [riskScores, setRiskScores] = useState(() => new Map());
+  // Ref to abort in-flight risk batch on unmount / reload
+  const riskAbortRef = useRef(null);
+
   const {
     filters,
     filtered: displayedResults,
@@ -80,23 +119,65 @@ function PropertySearchInner() {
     removeFilter,
     clearAll,
     activeCount,
-  } = usePropertyFilters(results);
+  } = usePropertyFilters(results, riskScores);
+
+  const {
+  compareIds,
+  compareList,
+  toggleCompare,
+  clearCompare,
+  isSelected: isInCompare,
+  canAddMore: canAddToCompare,
+  count: compareCount,
+} = useCompareSelection();
 
   useEffect(() => {
     const interval = setInterval(() => forceTick((t) => t + 1), 30000);
     return () => clearInterval(interval);
   }, []);
 
-  // ── Load aggregation whenever a property is selected ──
+  // ── Background risk fetch for a list of properties ────────────
+  const fetchRiskForList = useCallback((list) => {
+    // Abort any previous batch
+    if (riskAbortRef.current) {
+      riskAbortRef.current.abort();
+    }
+    const controller = new AbortController();
+    riskAbortRef.current = controller;
+
+    // Reset only the scores for the new list
+    setRiskScores(new Map());
+
+    fetchRiskBatch(
+      list,
+      (id, risk) => {
+        setRiskScores((prev) => {
+          const next = new Map(prev);
+          next.set(id, risk);
+          return next;
+        });
+      },
+      controller.signal
+    );
+  }, []);
+
+  // Abort risk batch on unmount
+  useEffect(() => {
+    return () => {
+      riskAbortRef.current?.abort();
+    };
+  }, []);
+
+  // ── Load aggregation whenever a property is selected ──────────
   const loadAggregation = useCallback(async (propertyId) => {
-  if (!propertyId) {
-    setAggregated(null);
-    return;
-  }
-  try {
-    setLoadingAggregated(true);
-    setAggregated(null);  // clear stale data immediately
-    const data = await getAggregatedProperty(propertyId);
+    if (!propertyId) {
+      setAggregated(null);
+      return;
+    }
+    try {
+      setLoadingAggregated(true);
+      setAggregated(null);
+      const data = await getAggregatedProperty(propertyId);
       setAggregated(data);
     } catch (err) {
       toast.error("Could not load property details", {
@@ -115,7 +196,10 @@ function PropertySearchInner() {
       setResults(list);
       setAllProperties(list);
       setLastSyncedAt(new Date());
+
+      // Fire background risk fetch immediately
       if (list.length > 0) {
+        fetchRiskForList(list);
         const detail = await getPropertyById(list[0].id);
         setSelectedProperty(detail);
         loadAggregation(detail.id);
@@ -125,39 +209,38 @@ function PropertySearchInner() {
       }
     } catch (err) {
       toast.error("Couldn't load properties", {
-  description: err.message || "Please refresh the page.",
-});
+        description: err.message || "Please refresh the page.",
+      });
     } finally {
       setLoading(false);
     }
-  }, [loadAggregation]);
+  }, [loadAggregation, fetchRiskForList]);
 
   useEffect(() => {
-  const urlQuery  = searchParams.get("q") ?? "";
-  const urlAction = searchParams.get("action");
-  const urlFilter = searchParams.get("filter");
+    const urlQuery  = searchParams.get("q") ?? "";
+    const urlAction = searchParams.get("action");
+    const urlFilter = searchParams.get("filter");
 
-  if (urlAction === "add") setModalOpen(true);
+    if (urlAction === "add") setModalOpen(true);
 
-  // Pre-apply verified filter from URL
- if (urlFilter === "verified") {
-  setFilter("verifiedOnly", true);
-} else if (urlFilter === "pending") {
-  setFilter("pendingOnly", true);
-}
-  // Pending filter is handled after load — see below
+    if (urlFilter === "verified")   setFilter("verifiedOnly", true);
+    if (urlFilter === "pending")    setFilter("pendingOnly", true);
+    if (urlFilter === "high-risk")  setFilter("highRisk", true);
 
-  if (urlQuery.trim()) {
-    setSearchValue(urlQuery);
-    handleSearch(urlQuery, { silent: false });
-    searchProperties("").then((all) => setAllProperties(all));
-    setLastSyncedAt(new Date());
-    setLoading(false);
-  } else {
-    loadAll();
-  }
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-}, []);
+    if (urlQuery.trim()) {
+      setSearchValue(urlQuery);
+      handleSearch(urlQuery, { silent: false });
+      searchProperties("").then((all) => {
+        setAllProperties(all);
+        fetchRiskForList(all);
+      });
+      setLastSyncedAt(new Date());
+      setLoading(false);
+    } else {
+      loadAll();
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   const handleSearch = useCallback(
     async (query, options = {}) => {
@@ -173,15 +256,16 @@ function PropertySearchInner() {
         const list = await searchProperties(query);
         setResults(list);
         setLastSyncedAt(new Date());
+        fetchRiskForList(list);
 
         if (list.length === 0) {
           setSelectedProperty(null);
           setAggregated(null);
           if (!silent) {
-  toast.info("No matches", {
-    description: "Try a different city, address, or ZIP code.",
-  });
-}
+            toast.info("No matches", {
+              description: "Try a different city, address, or ZIP code.",
+            });
+          }
           return;
         }
 
@@ -197,51 +281,61 @@ function PropertySearchInner() {
         }
       } catch (err) {
         toast.error("Search failed", {
-  description: err.message || "Please try again in a moment.",
-});
+          description: err.message || "Please try again in a moment.",
+        });
       } finally {
         setSearching(false);
       }
     },
-    [loadAll, loadAggregation]
+    [loadAll, loadAggregation, fetchRiskForList]
   );
 
-  const handleSelectSuggestion = useCallback(async (property) => {
-    try {
-      setSearching(true);
-      const detail = await getPropertyById(property.id);
-      setSelectedProperty(detail);
-      setResults([property]);
-      loadAggregation(detail.id);
-      setTimeout(() => {
-        document.getElementById("property-hero")?.scrollIntoView({ behavior: "smooth", block: "start" });
-      }, 100);
-    } catch (err) {
-      toast.error("Couldn't load property", {
-  description: err.message || "Please try again in a moment.",
-});
-    } finally {
-      setSearching(false);
-    }
-  }, [loadAggregation]);
+  const handleSelectSuggestion = useCallback(
+    async (property) => {
+      try {
+        setSearching(true);
+        const detail = await getPropertyById(property.id);
+        setSelectedProperty(detail);
+        setResults([property]);
+        loadAggregation(detail.id);
+        setTimeout(() => {
+          document
+            .getElementById("property-hero")
+            ?.scrollIntoView({ behavior: "smooth", block: "start" });
+        }, 100);
+      } catch (err) {
+        toast.error("Couldn't load property", {
+          description: err.message || "Please try again in a moment.",
+        });
+      } finally {
+        setSearching(false);
+      }
+    },
+    [loadAggregation]
+  );
 
-  const handleSelectResult = useCallback(async (property) => {
-    try {
-      setSearching(true);
-      const detail = await getPropertyById(property.id);
-      setSelectedProperty(detail);
-      loadAggregation(detail.id);
-      setTimeout(() => {
-        document.getElementById("property-hero")?.scrollIntoView({ behavior: "smooth", block: "start" });
-      }, 100);
-    } catch (err) {
-      toast.error("Couldn't load property", {
-  description: err.message || "Please try again in a moment.",
-});
-    } finally {
-      setSearching(false);
-    }
-  }, [loadAggregation]);
+  const handleSelectResult = useCallback(
+    async (property) => {
+      try {
+        setSearching(true);
+        const detail = await getPropertyById(property.id);
+        setSelectedProperty(detail);
+        loadAggregation(detail.id);
+        setTimeout(() => {
+          document
+            .getElementById("property-hero")
+            ?.scrollIntoView({ behavior: "smooth", block: "start" });
+        }, 100);
+      } catch (err) {
+        toast.error("Couldn't load property", {
+          description: err.message || "Please try again in a moment.",
+        });
+      } finally {
+        setSearching(false);
+      }
+    },
+    [loadAggregation]
+  );
 
   const handleEditProperty = useCallback((property) => {
     setPropertyToEdit(property);
@@ -253,27 +347,49 @@ function PropertySearchInner() {
     setQuickPhotoModalOpen(true);
   }, []);
 
-  const handleUpdateSuccess = useCallback((updated) => {
-    setResults((prev) => prev.map((p) => (p.id === updated.id ? updated : p)));
-    setAllProperties((prev) => prev.map((p) => (p.id === updated.id ? updated : p)));
-    if (selectedProperty?.id === updated.id) {
-      setSelectedProperty(updated);
-      loadAggregation(updated.id);
-    }
-    setLastSyncedAt(new Date());
-  }, [selectedProperty, loadAggregation]);
+  const handleUpdateSuccess = useCallback(
+    (updated) => {
+      setResults((prev) =>
+        prev.map((p) => (p.id === updated.id ? updated : p))
+      );
+      setAllProperties((prev) =>
+        prev.map((p) => (p.id === updated.id ? updated : p))
+      );
+      if (selectedProperty?.id === updated.id) {
+        setSelectedProperty(updated);
+        loadAggregation(updated.id);
+      }
+      // Re-fetch risk for the updated property only
+      getPropertyRisk(updated.id)
+        .then((risk) => {
+          setRiskScores((prev) => {
+            const next = new Map(prev);
+            next.set(updated.id, risk);
+            return next;
+          });
+        })
+        .catch(() => {});
+      setLastSyncedAt(new Date());
+    },
+    [selectedProperty, loadAggregation]
+  );
 
   const stats = useMemo(() => {
     const total = allProperties.length;
-    const uniqueCities = new Set(allProperties.map((p) => p.city?.trim()).filter(Boolean)).size;
+    const uniqueCities = new Set(
+      allProperties.map((p) => p.city?.trim()).filter(Boolean)
+    ).size;
     const verifiedCount = allProperties.filter((p) => p.verified).length;
-    return { total, cities: uniqueCities, verified: verifiedCount };
-  }, [allProperties]);
+    const highRiskCount = Array.from(riskScores.values()).filter(
+      (r) => r.riskLabel === "HIGH"
+    ).length;
+    return { total, cities: uniqueCities, verified: verifiedCount, highRisk: highRiskCount };
+  }, [allProperties, riskScores]);
 
   return (
     <div className="w-full max-w-[1400px] mx-auto space-y-6">
 
-      {/* Header */}
+      {/* ── Header ────────────────────────────────────────────────── */}
       <div className="rounded-2xl border border-gray-100 bg-white p-8 shadow-sm">
         <div className="flex items-start justify-between gap-6 flex-wrap">
           <div className="min-w-0 flex-1">
@@ -285,7 +401,9 @@ function PropertySearchInner() {
               {loading ? (
                 <div className="flex items-center gap-2">
                   <div className="w-1.5 h-1.5 rounded-full bg-[#22C55E] animate-pulse" />
-                  <span className="text-sm text-gray-500">Loading portfolio...</span>
+                  <span className="text-sm text-gray-500">
+                    Loading portfolio...
+                  </span>
                 </div>
               ) : stats.total === 0 ? (
                 <div className="flex items-center gap-2">
@@ -329,9 +447,26 @@ function PropertySearchInner() {
                   <div className="flex items-center gap-1.5 text-sm">
                     <Clock className="h-3.5 w-3.5 text-gray-400" />
                     <span className="text-gray-500">
-                      Synced <span className="font-semibold text-gray-700">{timeAgo(lastSyncedAt)}</span>
+                      Synced{" "}
+                      <span className="font-semibold text-gray-700">
+                        {timeAgo(lastSyncedAt)}
+                      </span>
                     </span>
                   </div>
+                  {/* High risk count — only shown when risk scores loaded */}
+                  {stats.highRisk > 0 && (
+                    <>
+                      <span className="text-gray-300 hidden sm:inline">•</span>
+                      <button
+                        onClick={() => setFilter("highRisk", true)}
+                        className="flex items-center gap-1.5 text-sm text-red-600 hover:text-red-700 transition font-semibold"
+                        title="Filter to high-risk properties"
+                      >
+                        <span className="inline-flex h-2 w-2 rounded-full bg-red-500" />
+                        {stats.highRisk} high risk
+                      </button>
+                    </>
+                  )}
                 </>
               )}
             </div>
@@ -358,19 +493,21 @@ function PropertySearchInner() {
         </div>
       </div>
 
-      {/* Loading skeleton */}
+      {/* ── Loading skeleton ───────────────────────────────────────── */}
       {loading && (
         <>
           <div className="rounded-2xl border border-gray-100 bg-white p-6 shadow-sm">
             <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-              {[1, 2, 3, 4, 5, 6].map((i) => <PropertyCardSkeleton key={i} />)}
+              {[1, 2, 3, 4, 5, 6].map((i) => (
+                <PropertyCardSkeleton key={i} />
+              ))}
             </div>
           </div>
           <PropertyHeroSkeleton />
         </>
       )}
 
-      {/* Empty state */}
+      {/* ── Empty state ────────────────────────────────────────────── */}
       {!loading && !searching && results.length === 0 && (
         <div className="flex flex-col items-center justify-center rounded-2xl border border-gray-100 bg-white py-20 px-6 text-center">
           <div className="w-16 h-16 rounded-2xl bg-gray-50 border border-gray-100 flex items-center justify-center mb-4">
@@ -378,7 +515,8 @@ function PropertySearchInner() {
           </div>
           <p className="text-lg font-bold text-gray-800">No properties found</p>
           <p className="mt-1.5 text-sm text-gray-500 max-w-xs">
-            Try searching by city name, address, or ZIP code — or add your first property.
+            Try searching by city name, address, or ZIP code — or add your
+            first property.
           </p>
           <button
             onClick={() => setModalOpen(true)}
@@ -390,7 +528,7 @@ function PropertySearchInner() {
         </div>
       )}
 
-      {/* Results grid */}
+      {/* ── Results grid ───────────────────────────────────────────── */}
       {!loading && results.length > 0 && (
         <div className="rounded-2xl border border-gray-100 bg-white p-6 shadow-sm">
           <div className="mb-5 flex items-center justify-between flex-wrap gap-3">
@@ -400,24 +538,23 @@ function PropertySearchInner() {
               </span>
               <p className="text-sm font-semibold text-gray-700">
                 {displayedResults.length === 1 ? "Property" : "Properties"}
-                {activeCount > 0 && displayedResults.length !== results.length && (
-                  <span className="text-gray-400 font-normal">
-                    {" "}(of {results.length})
-                  </span>
-                )}
+                {activeCount > 0 &&
+                  displayedResults.length !== results.length && (
+                    <span className="text-gray-400 font-normal">
+                      {" "}
+                      (of {results.length})
+                    </span>
+                  )}
               </p>
             </div>
 
             <button
               onClick={() => setFilterPanelOpen(true)}
-              className={`
-                relative flex items-center gap-1.5 rounded-lg border px-3 py-1.5
-                text-xs font-medium transition
-                ${activeCount > 0
+              className={`relative flex items-center gap-1.5 rounded-lg border px-3 py-1.5 text-xs font-medium transition ${
+                activeCount > 0
                   ? "border-[#22C55E] bg-green-50 text-[#16a34a] hover:bg-green-100"
                   : "border-gray-200 bg-white text-gray-600 hover:border-gray-300 hover:bg-gray-50"
-                }
-              `}
+              }`}
             >
               <SlidersHorizontal className="h-3.5 w-3.5" />
               Filter
@@ -454,21 +591,25 @@ function PropertySearchInner() {
           ) : (
             <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
               {displayedResults.map((p) => (
-                <PropertyResultCard
-                  key={p.id}
-                  property={p}
-                  isSelected={selectedProperty?.id === p.id}
-                  onClick={() => handleSelectResult(p)}
-                  onEdit={handleEditProperty}
-                  onQuickPhoto={handleQuickPhoto}
-                />
-              ))}
+  <PropertyResultCard
+    key={p.id}
+    property={p}
+    isSelected={selectedProperty?.id === p.id}
+    onClick={() => handleSelectResult(p)}
+    onEdit={handleEditProperty}
+    onQuickPhoto={handleQuickPhoto}
+    riskScore={riskScores.get(p.id) ?? null}
+    onCompare={toggleCompare}
+    isInCompare={isInCompare(p.id)}
+    canAddToCompare={canAddToCompare}
+  />
+))}
             </div>
           )}
         </div>
       )}
 
-            {/* Hero */}
+      {/* ── Property hero ──────────────────────────────────────────── */}
       {!loading && selectedProperty && (
         <ErrorBoundary>
           <div id="property-hero">
@@ -480,60 +621,77 @@ function PropertySearchInner() {
         </ErrorBoundary>
       )}
 
-            {/* Aggregation sections */}
+      {/* ── Aggregation + Risk sections ────────────────────────────── */}
       {!loading && selectedProperty && (
         <ErrorBoundary>
           <div className="space-y-6">
             {/* Row 1: Ownership + Tax history */}
             <div className="grid grid-cols-12 gap-6 items-stretch">
               <div className="col-span-12 lg:col-span-5 flex">
-                <div className="w-full"><OwnershipCard section={aggregated?.ownership} /></div>
+                <div className="w-full">
+                  <OwnershipCard section={aggregated?.ownership} />
+                </div>
               </div>
               <div className="col-span-12 lg:col-span-7 flex">
-                <div className="w-full"><TaxHistorySection section={aggregated?.taxHistory} /></div>
+                <div className="w-full">
+                  <TaxHistorySection section={aggregated?.taxHistory} />
+                </div>
               </div>
             </div>
 
             {/* Row 2: Zoning + Flood zone */}
             <div className="grid grid-cols-12 gap-6 items-stretch">
               <div className="col-span-12 lg:col-span-6 flex">
-                <div className="w-full"><ZoningCard section={aggregated?.zoning} /></div>
+                <div className="w-full">
+                  <ZoningCard section={aggregated?.zoning} />
+                </div>
               </div>
               <div className="col-span-12 lg:col-span-6 flex">
-                <div className="w-full"><FloodZoneCard section={aggregated?.floodZone} /></div>
+                <div className="w-full">
+                  <FloodZoneCard section={aggregated?.floodZone} />
+                </div>
               </div>
             </div>
 
             {/* Row 3: Permits + Environmental */}
             <div className="grid grid-cols-12 gap-6 items-stretch">
               <div className="col-span-12 lg:col-span-7 flex">
-                <div className="w-full"><PermitsSection section={aggregated?.permits} /></div>
+                <div className="w-full">
+                  <PermitsSection section={aggregated?.permits} />
+                </div>
               </div>
               <div className="col-span-12 lg:col-span-5 flex">
-                <div className="w-full"><EnvironmentalCard section={aggregated?.environmental} /></div>
-              </div>
-            </div>
-
-            {/* Row 4: Building info + Data completeness summary */}
-            <div className="grid grid-cols-12 gap-6 items-stretch">
-              <div className="col-span-12 lg:col-span-6 flex">
-                <div className="w-full"><BuildingInformationCard property={selectedProperty} /></div>
-              </div>
-              <div className="col-span-12 lg:col-span-6 flex">
                 <div className="w-full">
-                  <DataCompletenessCard
-                    aggregated={aggregated}
-                    onRefresh={() => loadAggregation(selectedProperty.id)}
-                    refreshing={loadingAggregated}
-                  />
+                  <EnvironmentalCard section={aggregated?.environmental} />
                 </div>
               </div>
             </div>
+
+            {/* Row 4: Risk score + Building info */}
+            <div className="grid grid-cols-12 gap-6 items-stretch">
+              <div className="col-span-12 lg:col-span-6 flex">
+                <div className="w-full">
+                  <RiskScoreCard propertyId={selectedProperty.id} />
+                </div>
+              </div>
+              <div className="col-span-12 lg:col-span-6 flex">
+                <div className="w-full">
+                  <BuildingInformationCard property={selectedProperty} />
+                </div>
+              </div>
+            </div>
+
+            {/* Row 5: Data completeness */}
+            <DataCompletenessCard
+              aggregated={aggregated}
+              onRefresh={() => loadAggregation(selectedProperty.id)}
+              refreshing={loadingAggregated}
+            />
           </div>
         </ErrorBoundary>
       )}
 
-      {/* Modals */}
+      {/* ── Modals ─────────────────────────────────────────────────── */}
       <AddPropertyModal
         isOpen={modalOpen}
         onClose={() => setModalOpen(false)}
@@ -563,6 +721,13 @@ function PropertySearchInner() {
         clearAll={clearAll}
         properties={results}
         filteredCount={displayedResults.length}
+      />
+
+      {/* ── Compare bar — floats above page bottom ──────────────── */}
+      <CompareBar
+        compareList={compareList}
+        onRemove={toggleCompare}
+        onClear={clearCompare}
       />
     </div>
   );

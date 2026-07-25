@@ -9,6 +9,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.realestate.duediligence.dto.GeoPropertyResponse;
 import com.realestate.duediligence.dto.PropertyRequest;
 import com.realestate.duediligence.dto.PropertyResponse;
 import com.realestate.duediligence.entity.Property;
@@ -21,14 +22,6 @@ import com.realestate.duediligence.service.PropertyService;
 import com.realestate.duediligence.service.PropertyVerificationService;
 
 import lombok.RequiredArgsConstructor;
-import com.realestate.duediligence.dto.GeoPropertyResponse;
-import java.net.URI;
-import java.net.URLEncoder;
-import java.net.http.HttpClient;
-import java.net.http.HttpRequest;
-import java.net.http.HttpResponse;
-import java.nio.charset.StandardCharsets;
-import java.time.Duration;
 
 @Service
 @RequiredArgsConstructor
@@ -39,6 +32,7 @@ public class PropertyServiceImpl implements PropertyService {
     private final PropertyVerificationService   verificationService;
     private final UserRepository                userRepository;
     private final PortfolioSnapshotService      portfolioSnapshotService;
+    private final com.realestate.duediligence.service.GeocodingService geocodingService;  // ← NEW
 
     // ── Add property ──────────────────────────────────────────────
     @Override
@@ -70,6 +64,10 @@ public class PropertyServiceImpl implements PropertyService {
             portfolioSnapshotService.refreshSnapshotForUser(
                     saved.getCreatedBy().getId());
         }
+        // ── NEW: auto-geocode in background if coords missing ──
+if (saved.getLatitude() == null || saved.getLongitude() == null) {
+    geocodingService.geocodePropertyAsync(saved.getId());
+}
 
         return mapToResponse(saved);
     }
@@ -95,7 +93,12 @@ public class PropertyServiceImpl implements PropertyService {
             portfolioSnapshotService.refreshSnapshotForUser(
                     saved.getCreatedBy().getId());
         }
+        // ── NEW: auto-geocode in background if coords missing ──
+if (saved.getLatitude() == null || saved.getLongitude() == null) {
+    geocodingService.geocodePropertyAsync(saved.getId());
+}
 
+        
         return mapToResponse(saved);
     }
 
@@ -241,6 +244,7 @@ public List<GeoPropertyResponse> getGeoProperties() {
 }
 
 // ── Admin backfill (one-time geocode of legacy properties) ──
+// ── Admin backfill (batch geocode of legacy properties) ──
 @Override
 @Transactional
 public int backfillCoordinates() {
@@ -250,63 +254,24 @@ public int backfillCoordinates() {
 
     if (needsGeo.isEmpty()) return 0;
 
-    HttpClient http = HttpClient.newBuilder()
-            .connectTimeout(Duration.ofSeconds(5))
-            .build();
-
     int geocoded = 0;
-
     for (Property p : needsGeo) {
         try {
-            // Build search query: address + city + state
-            String q = String.join(", ",
-                    p.getAddress() != null ? p.getAddress() : "",
-                    p.getCity() != null ? p.getCity() : "",
-                    p.getState() != null ? p.getState() : ""
-            ).replaceAll(", +", ", ").trim();
-
-            if (q.isBlank()) continue;
-
-            String url = "https://nominatim.openstreetmap.org/search?q="
-                    + URLEncoder.encode(q, StandardCharsets.UTF_8)
-                    + "&format=json&limit=1&countrycodes=in";
-
-            HttpRequest req = HttpRequest.newBuilder()
-                    .uri(URI.create(url))
-                    // Nominatim requires User-Agent
-                    .header("User-Agent", "DueDiligenceAgent/1.0 (college project)")
-                    .header("Accept", "application/json")
-                    .timeout(Duration.ofSeconds(8))
-                    .GET()
-                    .build();
-
-            HttpResponse<String> resp = http.send(req,
-                    HttpResponse.BodyHandlers.ofString());
-
-            if (resp.statusCode() == 200) {
-                String body = resp.body();
-                // Simple parse — extract first lat + lon
-                Double lat = extractJsonNumber(body, "\"lat\":\"");
-                Double lon = extractJsonNumber(body, "\"lon\":\"");
-                if (lat != null && lon != null) {
-                    p.setLatitude(lat);
-                    p.setLongitude(lon);
-                    propertyRepository.save(p);
-                    geocoded++;
-                }
+            if (geocodingService.geocodeProperty(p)) {
+                propertyRepository.save(p);
+                geocoded++;
             }
-
             // Respect Nominatim rate limit: 1 req/sec
             Thread.sleep(1100);
-
+        } catch (InterruptedException e) {
+            Thread.currentThread().interrupt();
+            break;
         } catch (Exception e) {
-            // Silent — skip this property, continue with others
+            // Continue with next property
         }
     }
-
     return geocoded;
 }
-
 /** Extract a numeric value from JSON string after a given key marker. */
 private Double extractJsonNumber(String json, String marker) {
     int idx = json.indexOf(marker);

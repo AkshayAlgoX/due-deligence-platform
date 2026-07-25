@@ -27,6 +27,7 @@ export const API_ROUTES = {
   PROPERTY_SEARCH: "/api/properties/search",
   PROPERTIES_RECENT: "/api/properties/recent",
   PROPERTIES_GEO: "/api/properties/geo",
+  PROPERTY_RISK: (id) => `/api/properties/${id}/risk`,
 
   // ── Dashboard ─────────────────────────────────────────────────────────────
   DASHBOARD_STATS:    "/api/dashboard/stats",

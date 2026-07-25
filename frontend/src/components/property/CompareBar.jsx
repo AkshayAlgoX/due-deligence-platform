@@ -1,0 +1,143 @@
+// frontend/src/components/property/CompareBar.jsx
+"use client";
+
+import { useRouter } from "next/navigation";
+import { GitCompare, X, Plus } from "lucide-react";
+import { getPropertyImage } from "@/constants/propertyImages";
+
+/**
+ * CompareBar — floating bottom bar shown when 1+ properties selected.
+ *
+ * Shows:
+ *   - Thumbnail + address for each selected property (max 3)
+ *   - Empty slot placeholders up to 3
+ *   - "Compare" CTA (enabled at 2+)
+ *   - Individual remove + clear all
+ *
+ * Appears with a slide-up animation via CSS translate.
+ */
+export default function CompareBar({
+  compareList = [],
+  onRemove,
+  onClear,
+}) {
+  const router  = useRouter();
+  const count   = compareList.length;
+  const visible = count > 0;
+
+  const handleCompare = () => {
+    if (count < 2) return;
+    const ids = compareList.map((p) => p.id).join(",");
+    router.push(`/dashboard/property-comparison?ids=${ids}`);
+  };
+
+  return (
+    <div
+      className={`
+        fixed bottom-0 left-0 right-0 z-50
+        transition-transform duration-300 ease-out
+        ${visible ? "translate-y-0" : "translate-y-full"}
+      `}
+      aria-hidden={!visible}
+    >
+      {/* Backdrop blur strip */}
+      <div className="mx-auto max-w-[1400px] px-4 pb-4">
+        <div className="rounded-2xl border border-gray-200 bg-white/95 backdrop-blur-xl shadow-[0_-8px_40px_rgba(0,0,0,0.12)] px-5 py-4">
+          <div className="flex items-center gap-4">
+
+            {/* Icon + label */}
+            <div className="flex items-center gap-2.5 flex-shrink-0">
+              <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-green-50 ring-1 ring-green-200">
+                <GitCompare className="h-4.5 w-4.5 text-[#16a34a]" strokeWidth={2} />
+              </div>
+              <div>
+                <p className="text-[11px] font-black uppercase tracking-widest text-gray-400">
+                  Compare
+                </p>
+                <p className="text-sm font-bold text-gray-900 leading-none">
+                  {count} of 3 selected
+                </p>
+              </div>
+            </div>
+
+            <div className="h-10 w-px bg-gray-100 flex-shrink-0" />
+
+            {/* Property slots */}
+            <div className="flex flex-1 items-center gap-3 overflow-hidden">
+              {/* Filled slots */}
+              {compareList.map((p) => {
+                const thumb = getPropertyImage(p);
+                return (
+                  <div
+                    key={p.id}
+                    className="flex items-center gap-2.5 rounded-xl border border-gray-200 bg-gray-50 px-3 py-2 min-w-0 flex-shrink-0"
+                  >
+                    {/* Thumbnail */}
+                    <div className="h-8 w-8 flex-shrink-0 overflow-hidden rounded-lg bg-gray-200">
+                      {thumb ? (
+                        <img
+                          src={thumb}
+                          alt={p.address}
+                          className="h-full w-full object-cover"
+                        />
+                      ) : (
+                        <div className="h-full w-full bg-gradient-to-br from-gray-100 to-gray-200" />
+                      )}
+                    </div>
+                    {/* Address */}
+                    <div className="min-w-0">
+                      <p className="text-xs font-bold text-gray-900 truncate max-w-[140px]">
+                        {p.address}
+                      </p>
+                      <p className="text-[10px] text-gray-500 truncate">
+                        {p.city}{p.state ? `, ${p.state}` : ""}
+                      </p>
+                    </div>
+                    {/* Remove */}
+                    <button
+                      onClick={() => onRemove(p)}
+                      className="ml-1 flex h-5 w-5 flex-shrink-0 items-center justify-center rounded-full text-gray-400 hover:bg-gray-200 hover:text-gray-700 transition"
+                      aria-label={`Remove ${p.address}`}
+                    >
+                      <X className="h-3 w-3" strokeWidth={2.5} />
+                    </button>
+                  </div>
+                );
+              })}
+
+              {/* Empty slots */}
+              {Array.from({ length: 3 - count }).map((_, i) => (
+                <div
+                  key={`empty-${i}`}
+                  className="flex h-12 w-36 flex-shrink-0 items-center justify-center gap-1.5 rounded-xl border border-dashed border-gray-200 text-gray-300"
+                >
+                  <Plus className="h-3.5 w-3.5" strokeWidth={2} />
+                  <span className="text-[11px] font-semibold">Add property</span>
+                </div>
+              ))}
+            </div>
+
+            {/* Actions */}
+            <div className="flex items-center gap-2 flex-shrink-0">
+              <button
+                onClick={onClear}
+                className="rounded-xl border border-gray-200 bg-white px-4 py-2.5 text-xs font-semibold text-gray-600 transition hover:bg-gray-50 hover:border-gray-300"
+              >
+                Clear
+              </button>
+              <button
+                onClick={handleCompare}
+                disabled={count < 2}
+                className="flex items-center gap-2 rounded-xl bg-gradient-to-br from-[#22C55E] to-[#16a34a] px-5 py-2.5 text-sm font-bold text-white shadow-[0_4px_16px_rgba(34,197,94,0.35)] transition hover:shadow-[0_6px_20px_rgba(34,197,94,0.45)] hover:scale-[1.02] active:scale-[0.98] disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:scale-100 disabled:shadow-none"
+              >
+                <GitCompare className="h-4 w-4" strokeWidth={2.5} />
+                Compare {count >= 2 ? `${count} properties` : "— select 2 minimum"}
+              </button>
+            </div>
+
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}

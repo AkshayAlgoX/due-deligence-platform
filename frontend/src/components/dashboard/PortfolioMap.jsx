@@ -2,11 +2,20 @@
 
 import { useEffect, useState } from "react";
 import Link from "next/link";
-import { MapPin, Loader2, MapIcon, ArrowRight } from "lucide-react";
-import { getGeoProperties } from "@/services/propertyService";
+import { toast } from "sonner";
+import {
+  MapPin,
+  Loader2,
+  MapIcon,
+  ArrowRight,
+  RefreshCw,
+} from "lucide-react";
+import { getGeoProperties, getAllProperties } from "@/services/propertyService";
+import { getCurrentUser } from "@/services/authService";
+import api from "@/services/api";
 import "leaflet/dist/leaflet.css";
 
-// Format INR helper (short form for popups)
+// ── INR formatter ───────────────────────────────────────────────
 function formatINR(value) {
   if (value == null) return "—";
   if (value >= 1_00_00_000) return `₹${(value / 1_00_00_000).toFixed(2)} Cr`;
@@ -19,13 +28,15 @@ const INDIA_CENTER = [20.5937, 78.9629];
 const DEFAULT_ZOOM = 5;
 
 export default function PortfolioMap({ refreshKey }) {
-  const [properties, setProperties] = useState([]);
-  const [loading, setLoading]       = useState(true);
-  const [error, setError]           = useState(false);
-
-  // Dynamic imports — Leaflet needs window (SSR-safe)
+  const [properties, setProperties]     = useState([]);
+  const [totalCount, setTotalCount]     = useState(0);
+  const [loading, setLoading]           = useState(true);
+  const [error, setError]               = useState(false);
+  const [isAdmin, setIsAdmin]           = useState(false);
+  const [retrying, setRetrying]         = useState(false);
   const [MapComponents, setMapComponents] = useState(null);
 
+  // ── Load Leaflet dynamically (SSR-safe) ──────────────────────
   useEffect(() => {
     (async () => {
       const [
@@ -36,50 +47,91 @@ export default function PortfolioMap({ refreshKey }) {
         import("leaflet"),
       ]);
 
-      // Fix Leaflet default icon path for Next.js bundling
       delete L.Icon.Default.prototype._getIconUrl;
       L.Icon.Default.mergeOptions({
         iconRetinaUrl: "https://unpkg.com/leaflet@1.9.4/dist/images/marker-icon-2x.png",
-        iconUrl: "https://unpkg.com/leaflet@1.9.4/dist/images/marker-icon.png",
-        shadowUrl: "https://unpkg.com/leaflet@1.9.4/dist/images/marker-shadow.png",
+        iconUrl:       "https://unpkg.com/leaflet@1.9.4/dist/images/marker-icon.png",
+        shadowUrl:     "https://unpkg.com/leaflet@1.9.4/dist/images/marker-shadow.png",
       });
 
       setMapComponents({ MapContainer, TileLayer, CircleMarker, Popup, Tooltip });
     })();
   }, []);
 
+  // ── Detect admin role ────────────────────────────────────────
   useEffect(() => {
     (async () => {
       try {
-        setLoading(true);
-        setError(false);
-        const data = await getGeoProperties();
-        setProperties(data);
+        const u = await getCurrentUser();
+        setIsAdmin(u?.role === "ADMIN");
       } catch {
-        setError(true);
-      } finally {
-        setLoading(false);
+        setIsAdmin(false);
       }
     })();
+  }, []);
+
+  // ── Load geo + total property count (parallel) ───────────────
+  const load = async () => {
+    try {
+      setLoading(true);
+      setError(false);
+      const [geo, all] = await Promise.all([
+        getGeoProperties(),
+        getAllProperties().catch(() => []),
+      ]);
+      setProperties(geo);
+      setTotalCount(Array.isArray(all) ? all.length : 0);
+    } catch {
+      setError(true);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    load();
   }, [refreshKey]);
 
-  // ── Marker sizing: proportional to market value ──
+  // ── Admin: trigger backfill for missing coordinates ──────────
+  const handleRetryGeocode = async () => {
+    try {
+      setRetrying(true);
+      const { data } = await api.post("/api/properties/admin/backfill-coordinates");
+      const n = data?.geocodedCount ?? 0;
+      if (n > 0) {
+        toast.success(`${n} propert${n === 1 ? "y" : "ies"} geocoded`, {
+          description: "Reloading map...",
+        });
+        await load();
+      } else {
+        toast.info("No new locations found", {
+          description: "Remaining addresses may be too vague to geocode.",
+        });
+      }
+    } catch (err) {
+      toast.error("Geocoding failed", {
+        description: err?.message || "Please try again later.",
+      });
+    } finally {
+      setRetrying(false);
+    }
+  };
+
+  // ── Marker sizing + color ────────────────────────────────────
   const maxValue = Math.max(...properties.map((p) => p.marketValue || 0), 1);
   const getRadius = (value) => {
     if (!value || value <= 0) return 6;
-    const scaled = 6 + (value / maxValue) * 12; // 6 to 18 px
-    return Math.round(scaled);
+    return Math.round(6 + (value / maxValue) * 12);
   };
-
-  // ── Marker color: green (verified) vs amber (pending) ──
   const getColor = (verified) => (verified ? "#22C55E" : "#f59e0b");
 
-  const isReady = MapComponents && !loading;
+  const missingCount = Math.max(0, totalCount - properties.length);
+  const hasMissing = !loading && missingCount > 0;
 
   return (
     <div className="overflow-hidden rounded-2xl border border-gray-100 bg-white shadow-sm">
-      {/* Header */}
-      <div className="flex items-center justify-between border-b border-gray-100 p-6">
+      {/* ── Header ────────────────────────────────────────────── */}
+      <div className="flex items-center justify-between border-b border-gray-100 p-6 flex-wrap gap-3">
         <div className="flex items-center gap-3">
           <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-[#edf7f3]">
             <MapIcon className="h-4 w-4 text-[#16a34a]" strokeWidth={2.2} />
@@ -89,32 +141,67 @@ export default function PortfolioMap({ refreshKey }) {
               Portfolio geography
             </h3>
             <p className="mt-0.5 text-xs text-gray-500">
-              {loading
-                ? "Loading map..."
-                : `${properties.length} property location${properties.length !== 1 ? "s" : ""} on map`}
+              {loading ? (
+                "Loading map..."
+              ) : totalCount === 0 ? (
+                "No properties yet"
+              ) : (
+                <>
+                  <span className="font-semibold text-gray-700">
+                    {properties.length}
+                  </span>{" "}
+                  of {totalCount} mapped
+                  {hasMissing && (
+                    <>
+                      {" · "}
+                      <span className="text-amber-600 font-medium">
+                        {missingCount} pending
+                      </span>
+                    </>
+                  )}
+                </>
+              )}
             </p>
           </div>
         </div>
 
-       {/* Legend + zoom hint */}
-{!loading && properties.length > 0 && (
-  <div className="flex items-center gap-4 text-xs text-gray-500">
-    <span className="hidden md:inline text-[11px] text-gray-400">
-      Use +/− to zoom
-    </span>
-    <span className="flex items-center gap-1.5">
-      <span className="h-2.5 w-2.5 rounded-full bg-[#22C55E]" />
-      Verified
-    </span>
-    <span className="flex items-center gap-1.5">
-      <span className="h-2.5 w-2.5 rounded-full bg-amber-500" />
-      Pending
-    </span>
-  </div>
-)}
+        <div className="flex items-center gap-4 text-xs text-gray-500">
+          {/* Admin: retry geocode button */}
+          {isAdmin && hasMissing && (
+            <button
+              onClick={handleRetryGeocode}
+              disabled={retrying}
+              className="flex items-center gap-1.5 rounded-lg border border-gray-200 bg-white px-3 py-1.5 text-xs font-semibold text-gray-700 transition-all hover:border-[#22C55E] hover:text-[#16a34a] disabled:opacity-60"
+            >
+              <RefreshCw
+                size={12}
+                strokeWidth={2.5}
+                className={retrying ? "animate-spin" : ""}
+              />
+              {retrying ? "Geocoding..." : "Retry geocoding"}
+            </button>
+          )}
+
+          {/* Legend */}
+          {!loading && properties.length > 0 && (
+            <>
+              <span className="hidden md:inline text-[11px] text-gray-400">
+                Use +/− to zoom
+              </span>
+              <span className="flex items-center gap-1.5">
+                <span className="h-2.5 w-2.5 rounded-full bg-[#22C55E]" />
+                Verified
+              </span>
+              <span className="flex items-center gap-1.5">
+                <span className="h-2.5 w-2.5 rounded-full bg-amber-500" />
+                Pending
+              </span>
+            </>
+          )}
+        </div>
       </div>
 
-      {/* Body */}
+      {/* ── Body ──────────────────────────────────────────────── */}
       <div className="relative h-[420px] w-full">
         {loading || !MapComponents ? (
           <div className="flex h-full items-center justify-center">
@@ -131,22 +218,26 @@ export default function PortfolioMap({ refreshKey }) {
             </div>
             <div>
               <p className="text-sm font-semibold text-gray-800">
-                No mapped properties yet
+                {totalCount === 0
+                  ? "No mapped properties yet"
+                  : "No coordinates captured yet"}
               </p>
               <p className="mt-1 text-xs text-gray-400 leading-relaxed">
-                Add properties using the address suggestions to see them on the map.
+                {totalCount === 0
+                  ? "Add properties using the address suggestions to see them on the map."
+                  : "Properties exist but need geocoding. Admins can trigger it above."}
               </p>
             </div>
           </div>
         ) : (
           <MapComponents.MapContainer
-  center={INDIA_CENTER}
-  zoom={DEFAULT_ZOOM}
-  scrollWheelZoom={false}
-  doubleClickZoom={true}
-  className="h-full w-full"
-  style={{ borderRadius: 0 }}
->
+            center={INDIA_CENTER}
+            zoom={DEFAULT_ZOOM}
+            scrollWheelZoom={false}
+            doubleClickZoom={true}
+            className="h-full w-full"
+            style={{ borderRadius: 0 }}
+          >
             <MapComponents.TileLayer
               attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>'
               url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
