@@ -1,6 +1,7 @@
 // frontend/src/components/property/PropertyResultCard.jsx
 "use client";
 
+import { useRouter } from "next/navigation";
 import {
   BadgeCheck,
   MapPin,
@@ -88,6 +89,8 @@ export default function PropertyResultCard({
     ? RISK_CONFIG[riskScore.riskLabel] ?? null
     : null;
 
+  const router = useRouter();
+
   const handleEditClick = (e) => {
     e.stopPropagation();
     onEdit?.(property);
@@ -114,7 +117,10 @@ export default function PropertyResultCard({
   return (
     <button
       type="button"
-      onClick={onClick}
+      onClick={() => {
+        onClick?.();
+        router.push(`/dashboard/property-search/${property.id}`);
+      }}
       className={`group relative flex flex-col overflow-hidden rounded-3xl bg-white text-left transition-all duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#22C55E] focus-visible:ring-offset-2 ${
         isSelected
           ? "shadow-[0_20px_60px_rgba(34,197,94,0.3)] ring-2 ring-[#22C55E] scale-[1.02]"

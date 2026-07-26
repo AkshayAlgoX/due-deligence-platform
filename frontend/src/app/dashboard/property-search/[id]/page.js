@@ -12,13 +12,10 @@ import {
   Building2,
   Layers,
   MapPin,
-  BadgeCheck,
   AlertTriangle,
   Pencil,
-  Images,
   Home,
   DollarSign,
-  Zap,
 } from "lucide-react";
 import { toast } from "sonner";
 
@@ -50,7 +47,6 @@ export default function PropertyDetailPage() {
   const [loadingProperty,   setLoadingProperty]   = useState(true);
   const [loadingAggregated, setLoadingAggregated] = useState(false);
   const [editModalOpen,     setEditModalOpen]     = useState(false);
-  const [showAllPhotos,     setShowAllPhotos]     = useState(false);
 
   const loadAggregation = useCallback(async (propertyId) => {
     try {
@@ -194,15 +190,7 @@ export default function PropertyDetailPage() {
           ))}
         </div>
 
-        {/* See all photos button — bottom right of gallery */}
-        <button
-          type="button"
-          onClick={() => setShowAllPhotos(true)}
-          className="absolute bottom-4 right-4 flex items-center gap-2 rounded-xl border border-gray-300 bg-white/95 px-3 py-2 text-xs font-bold text-gray-800 shadow-md backdrop-blur-sm transition hover:bg-white"
-        >
-          <Images className="h-3.5 w-3.5" strokeWidth={2.2} />
-          See all photos
-        </button>
+        {/* See all photos button removed — no functionality yet */}
       </div>
 
       {/* ── Price + address + quick facts + CTA ──────────────────────────── */}
@@ -260,14 +248,8 @@ export default function PropertyDetailPage() {
             )}
           </div>
 
-          {/* Right: CTA buttons — Zillow style */}
+          {/* Right: edit button only */}
           <div className="flex w-full flex-col gap-3 lg:w-64 lg:flex-shrink-0">
-            <button
-              type="button"
-              className="w-full rounded-xl bg-[#22C55E] py-3 text-sm font-bold text-white shadow-[0_8px_20px_rgba(34,197,94,0.3)] transition hover:bg-[#16a34a] active:scale-[0.98]"
-            >
-              Request a tour
-            </button>
             <button
               type="button"
               onClick={() => setEditModalOpen(true)}
