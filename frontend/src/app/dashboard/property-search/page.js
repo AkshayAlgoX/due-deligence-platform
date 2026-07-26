@@ -2,7 +2,7 @@
 "use client";
 
 import { useEffect, useState, useCallback, useMemo, useRef, Suspense } from "react";
-import { useSearchParams } from "next/navigation";
+import { useSearchParams, useRouter } from "next/navigation";
 import { toast } from "sonner";
 import {
   SearchX,
@@ -88,6 +88,7 @@ async function fetchRiskBatch(properties, onResult, signal) {
 
 function PropertySearchInner() {
   const searchParams = useSearchParams();
+  const router = useRouter();
 
   const [results, setResults] = useState([]);
   const [allProperties, setAllProperties] = useState([]);
@@ -595,7 +596,7 @@ function PropertySearchInner() {
     key={p.id}
     property={p}
     isSelected={selectedProperty?.id === p.id}
-    onClick={() => handleSelectResult(p)}
+    onClick={() => router.push(`/dashboard/property-search/${p.id}`)}
     onEdit={handleEditProperty}
     onQuickPhoto={handleQuickPhoto}
     riskScore={riskScores.get(p.id) ?? null}
