@@ -76,8 +76,17 @@ if (saved.getLatitude() == null || saved.getLongitude() == null) {
     @Override
     @Transactional
     public PropertyResponse updateProperty(Long id, PropertyRequest request) {
-        Property property = propertyRepository.findById(id)
+                Property property = propertyRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Property not found"));
+
+        // Ownership check — admin bypasses, others must own it
+        User currentUser = resolveCurrentUser();
+        boolean isAdmin = currentUser != null && 
+                "ADMIN".equals(currentUser.getRole().getRoleName().name());
+        if (!isAdmin && (currentUser == null || property.getCreatedBy() == null ||
+                !property.getCreatedBy().getId().equals(currentUser.getId()))) {
+            throw new RuntimeException("Property not found");
+        }
 
         applyRequestToEntity(request, property);
 
@@ -103,36 +112,48 @@ if (saved.getLatitude() == null || saved.getLongitude() == null) {
     }
 
     // ── Read operations (unchanged) ───────────────────────────────
-    @Override
+        @Override
     public List<PropertyResponse> getAllProperties() {
-        return propertyRepository.findAll()
+        User currentUser = resolveCurrentUser();
+        if (currentUser == null) return List.of();
+        return propertyRepository.findByCreatedById(currentUser.getId())
                 .stream()
                 .map(this::mapToResponse)
                 .collect(Collectors.toList());
     }
 
-    @Override
+        @Override
     public PropertyResponse getPropertyById(Long id) {
+        User currentUser = resolveCurrentUser();
         Property property = propertyRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Property not found"));
+        if (currentUser == null || 
+             property.getCreatedBy() == null || 
+             !property.getCreatedBy().getId().equals(currentUser.getId())) {
+            throw new RuntimeException("Property not found");
+        }
         return mapToResponse(property);
     }
 
-    @Override
+        @Override
     public List<PropertyResponse> searchProperties(String query) {
+        User currentUser = resolveCurrentUser();
+        if (currentUser == null) return List.of();
         if (query == null || query.trim().isEmpty()) {
             return getAllProperties();
         }
         String q = query.toLowerCase().trim();
-        return propertyRepository.searchByKeyword(q)
+        return propertyRepository.searchByKeywordAndUser(q, currentUser.getId())
                 .stream()
                 .map(this::mapToResponse)
                 .collect(Collectors.toList());
     }
 
-    @Override
+        @Override
     public List<PropertyResponse> getRecentProperties() {
-        return propertyRepository.findTop5ByOrderByCreatedAtDesc()
+        User currentUser = resolveCurrentUser();
+        if (currentUser == null) return List.of();
+        return propertyRepository.findTop5ByCreatedByIdOrderByCreatedAtDesc(currentUser.getId())
                 .stream()
                 .map(this::mapToResponse)
                 .collect(Collectors.toList());
@@ -227,21 +248,47 @@ if (saved.getLatitude() == null || saved.getLongitude() == null) {
     // ── Geo endpoint ─────────────────────────────────────────────
 @Override
 public List<GeoPropertyResponse> getGeoProperties() {
-    return propertyRepository.findAllWithCoordinates()
-            .stream()
-            .map(p -> GeoPropertyResponse.builder()
-                    .id(p.getId())
-                    .address(p.getAddress())
-                    .city(p.getCity())
-                    .state(p.getState())
-                    .latitude(p.getLatitude())
-                    .longitude(p.getLongitude())
-                    .marketValue(p.getMarketValue())
-                    .verified(p.getVerified())
-                    .propertyType(p.getPropertyType())
-                    .build())
-            .collect(Collectors.toList());
+User currentUser = resolveCurrentUser();
+if (currentUser == null) return List.of();
+return propertyRepository.findAllWithCoordinatesByUser(currentUser.getId())
+        .stream()
+        .map(p -> GeoPropertyResponse.builder()
+                .id(p.getId())
+                .address(p.getAddress())
+                .city(p.getCity())
+                .state(p.getState())
+                .latitude(p.getLatitude())
+                .longitude(p.getLongitude())
+                .marketValue(p.getMarketValue())
+                .verified(p.getVerified())
+                .propertyType(p.getPropertyType())
+                .build())
+        .collect(Collectors.toList());
 }
+
+    // ── Delete property ────────────────────────────────────────────
+    @Override
+    @Transactional
+    public void deleteProperty(Long id) {
+        Property property = propertyRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Property not found"));
+
+        User currentUser = resolveCurrentUser();
+        boolean isAdmin = currentUser != null && 
+                "ADMIN".equals(currentUser.getRole().getRoleName().name());
+        if (!isAdmin && (currentUser == null || property.getCreatedBy() == null ||
+                !property.getCreatedBy().getId().equals(currentUser.getId()))) {
+            throw new RuntimeException("Property not found");
+        }
+
+        // Refresh snapshot before deletion so it's reflected in history
+        if (property.getCreatedBy() != null) {
+            portfolioSnapshotService.refreshSnapshotForUser(
+                    property.getCreatedBy().getId());
+        }
+
+        propertyRepository.delete(property);
+    }
 
 // ── Admin backfill (one-time geocode of legacy properties) ──
 // ── Admin backfill (batch geocode of legacy properties) ──

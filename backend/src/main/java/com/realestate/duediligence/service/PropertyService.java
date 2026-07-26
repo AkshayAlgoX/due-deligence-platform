@@ -29,4 +29,6 @@ public interface PropertyService {
      * Respects 1 req/sec rate limit. Returns count of properties geocoded.
      */
     int backfillCoordinates();
+
+    void deleteProperty(Long id);
 }

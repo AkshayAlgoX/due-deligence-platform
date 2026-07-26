@@ -38,8 +38,8 @@ public class RiskScoringServiceImpl implements RiskScoringService {
 
     private final PropertyAggregationService aggregationService;
 
-    @Override
-    @Cacheable(value = "propertyRisk", key = "#propertyId")
+        @Override
+    @Cacheable(value = "propertyRisk", key = "#propertyId + '_' + T(org.springframework.security.core.context.SecurityContextHolder).getContext().getAuthentication().getName()")
     public RiskScoreResponse computeRisk(Long propertyId) {
         log.debug("Computing risk for property {}", propertyId);
 
