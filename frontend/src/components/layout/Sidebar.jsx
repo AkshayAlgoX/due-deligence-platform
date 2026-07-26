@@ -13,6 +13,7 @@ import {
   Bell,
   ClipboardList,
   User,
+  LifeBuoy,
 } from "lucide-react";
 
 const menuSections = [
@@ -40,11 +41,12 @@ const menuSections = [
     ],
   },
   {
-    label: "Account",
-    items: [
-      { title: "Profile", href: "/dashboard/profile", icon: User, badge: null },
-    ],
-  },
+  label: "Account",
+  items: [
+    { title: "Profile", href: "/dashboard/profile", icon: User,      badge: null },
+    { title: "Support", href: "/support",           icon: LifeBuoy,  badge: null },
+  ],
+},
 ];
 
 function timeAgo(date) {
@@ -85,9 +87,11 @@ export default function Sidebar({ isOpen = true }) {
             {section.items.map((item) => {
               const Icon = item.icon;
               const isActive =
-                item.href === "/dashboard"
-                  ? pathname === "/dashboard"
-                  : pathname?.startsWith(item.href);
+  item.href === "/dashboard"
+    ? pathname === "/dashboard"
+    : item.href === "/support"
+    ? pathname === "/support"
+    : pathname?.startsWith(item.href);
 
               return (
                 <Link
