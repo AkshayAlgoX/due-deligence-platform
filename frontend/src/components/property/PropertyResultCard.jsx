@@ -1,5 +1,6 @@
 "use client";
 
+import { useRouter } from "next/navigation";
 import {
   BadgeCheck,
   MapPin,
@@ -37,6 +38,8 @@ export default function PropertyResultCard({
 }) {
   if (!property) return null;
 
+  const router = useRouter();
+
   const {
     address = "Unknown Address",
     city = "",
@@ -62,6 +65,13 @@ export default function PropertyResultCard({
     onEdit?.(property);
   };
 
+  const handleCardClick = () => {
+    // Navigate to dedicated property detail page
+    router.push(`/dashboard/property-search/${property.id}`);
+    // Also call the parent's onClick if provided (keeps inline selection in sync)
+    onClick?.();
+  };
+
   const handleQuickPhotoClick = (e) => {
     e.stopPropagation();
     onQuickPhoto?.(property);
@@ -78,7 +88,7 @@ export default function PropertyResultCard({
   return (
     <button
       type="button"
-      onClick={onClick}
+      onClick={handleCardClick}
       className={`group relative flex flex-col overflow-hidden rounded-3xl bg-white text-left transition-all duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#22C55E] focus-visible:ring-offset-2 ${
         isSelected
           ? "shadow-[0_20px_60px_rgba(34,197,94,0.3)] ring-2 ring-[#22C55E] scale-[1.02]"
