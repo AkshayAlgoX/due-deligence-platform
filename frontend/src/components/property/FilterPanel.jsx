@@ -1,13 +1,15 @@
 "use client";
 
 import { useEffect, useMemo } from "react";
+// Replace the existing import block with:
 import {
   X,
-  ListFilter,      // ← swapped from SlidersHorizontal
+  ListFilter,
   Check,
   BadgeCheck,
   ArrowUpDown,
-  ArrowRight,      // ← new: for View Results button
+  ArrowRight,
+  ShieldAlert,
 } from "lucide-react";
 import { formatINR } from "@/utils/currency";
 
@@ -16,6 +18,7 @@ const SORT_OPTIONS = [
   { value: "price-asc",  label: "Price: Low → High" },
   { value: "price-desc", label: "Price: High → Low" },
   { value: "alpha",      label: "Alphabetical (A–Z)" },
+  { value: "risk-desc",  label: "Highest risk first" },
 ];
 
 export default function FilterPanel({
@@ -56,15 +59,16 @@ export default function FilterPanel({
 
   if (!isOpen) return null;
 
-  // Count active filters for the header sub-line
-  const activeFilterCount =
-    filters.types.length +
-    filters.cities.length +
-    (filters.verifiedOnly ? 1 : 0) +
-    (filters.minPrice != null ? 1 : 0) +
-    (filters.maxPrice != null ? 1 : 0) +
-    (filters.sortBy !== "recent" ? 1 : 0);
-
+  // Replace the existing activeFilterCount declaration:
+const activeFilterCount =
+  filters.types.length +
+  filters.cities.length +
+  (filters.verifiedOnly ? 1 : 0) +
+  (filters.pendingOnly  ? 1 : 0) +
+  (filters.highRisk     ? 1 : 0) +
+  (filters.minPrice != null ? 1 : 0) +
+  (filters.maxPrice != null ? 1 : 0) +
+  (filters.sortBy !== "recent" ? 1 : 0);
   return (
     <div className="fixed inset-0 z-[90]" role="dialog" aria-modal="true">
       {/* Backdrop */}
@@ -239,49 +243,70 @@ export default function FilterPanel({
             </div>
           </FilterSection>
 
-          <FilterSection title="Data Quality">
+          <FilterSection title="Data quality">
+  {/* Verified only toggle */}
   <label className="flex items-center justify-between cursor-pointer group gap-3">
     <div className="flex items-center gap-3 min-w-0 flex-1">
       <div className="flex-shrink-0 flex h-9 w-9 items-center justify-center rounded-xl bg-green-50 text-[#22C55E]">
         <BadgeCheck className="h-4 w-4" strokeWidth={2.5} />
       </div>
       <div className="min-w-0">
-        <p className="text-sm font-bold text-gray-900">
-          Verified only
-        </p>
+        <p className="text-sm font-bold text-gray-900">Verified only</p>
         <p className="text-[11px] text-gray-500">
           Show properties that passed all quality checks
         </p>
       </div>
     </div>
-
-    {/* ── Bulletproof toggle switch ────────────────────────── */}
     <button
       type="button"
       role="switch"
       aria-checked={filters.verifiedOnly}
       onClick={() => setFilter("verifiedOnly", !filters.verifiedOnly)}
-      className={`
-        relative inline-flex h-6 w-11 flex-shrink-0
-        items-center
-        rounded-full
-        transition-colors duration-200
-        focus:outline-none focus:ring-2 focus:ring-[#22C55E] focus:ring-offset-2
-        ${filters.verifiedOnly ? "bg-[#22C55E]" : "bg-gray-200"}
-      `}
+      className={`relative inline-flex h-6 w-11 flex-shrink-0 items-center rounded-full transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-[#22C55E] focus:ring-offset-2 ${
+        filters.verifiedOnly ? "bg-[#22C55E]" : "bg-gray-200"
+      }`}
     >
-      <span className="sr-only">
-        Toggle verified-only filter
-      </span>
+      <span className="sr-only">Toggle verified-only filter</span>
       <span
         aria-hidden="true"
-        className={`
-          inline-block h-5 w-5
-          transform rounded-full bg-white
-          shadow-sm ring-0
-          transition-transform duration-200
-          ${filters.verifiedOnly ? "translate-x-[22px]" : "translate-x-0.5"}
-        `}
+        className={`inline-block h-5 w-5 transform rounded-full bg-white shadow-sm ring-0 transition-transform duration-200 ${
+          filters.verifiedOnly ? "translate-x-[22px]" : "translate-x-0.5"
+        }`}
+      />
+    </button>
+  </label>
+
+  {/* Divider */}
+  <div className="my-3 h-px bg-gray-100" />
+
+  {/* High risk toggle */}
+  <label className="flex items-center justify-between cursor-pointer group gap-3">
+    <div className="flex items-center gap-3 min-w-0 flex-1">
+      <div className="flex-shrink-0 flex h-9 w-9 items-center justify-center rounded-xl bg-red-50 text-red-500">
+        <ShieldAlert className="h-4 w-4" strokeWidth={2.5} />
+      </div>
+      <div className="min-w-0">
+        <p className="text-sm font-bold text-gray-900">High risk only</p>
+        <p className="text-[11px] text-gray-500">
+          Show properties with risk score above 66
+        </p>
+      </div>
+    </div>
+    <button
+      type="button"
+      role="switch"
+      aria-checked={filters.highRisk}
+      onClick={() => setFilter("highRisk", !filters.highRisk)}
+      className={`relative inline-flex h-6 w-11 flex-shrink-0 items-center rounded-full transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-red-400 focus:ring-offset-2 ${
+        filters.highRisk ? "bg-red-500" : "bg-gray-200"
+      }`}
+    >
+      <span className="sr-only">Toggle high-risk filter</span>
+      <span
+        aria-hidden="true"
+        className={`inline-block h-5 w-5 transform rounded-full bg-white shadow-sm ring-0 transition-transform duration-200 ${
+          filters.highRisk ? "translate-x-[22px]" : "translate-x-0.5"
+        }`}
       />
     </button>
   </label>

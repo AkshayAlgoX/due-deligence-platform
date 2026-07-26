@@ -1,3 +1,4 @@
+// frontend/src/hooks/usePropertyFilters.js
 "use client";
 
 import { useState, useMemo, useCallback } from "react";
@@ -8,20 +9,26 @@ import { useState, useMemo, useCallback } from "react";
  * Takes a list of properties and returns the filtered/sorted subset
  * based on the current filter state. No backend calls.
  *
+ * riskScores: optional Map<propertyId, RiskScoreResponse> — passed in
+ * from the page so highRisk filter can work without this hook
+ * fetching data itself (separation of concerns).
+ *
  * Usage:
  *   const { filters, filtered, setFilter, clearAll, activeCount } =
- *     usePropertyFilters(allProperties);
+ *     usePropertyFilters(allProperties, riskScores);
  */
 const DEFAULT_FILTERS = {
-  types: [],           // array of property types (multi-select)
-  cities: [],          // array of city names (multi-select)
-  verifiedOnly: false, // toggle
-  minPrice: null,      // number or null
-  maxPrice: null,      // number or null
-  sortBy: "recent",    // recent | price-asc | price-desc | alpha
+  types:       [],       // array of property types (multi-select)
+  cities:      [],       // array of city names (multi-select)
+  verifiedOnly: false,   // toggle
+  pendingOnly:  false,   // toggle
+  highRisk:     false,   // toggle — requires riskScores map
+  minPrice:    null,     // number or null
+  maxPrice:    null,     // number or null
+  sortBy:      "recent", // recent | price-asc | price-desc | alpha | risk-desc
 };
 
-export function usePropertyFilters(properties = []) {
+export function usePropertyFilters(properties = [], riskScores = new Map()) {
   const [filters, setFilters] = useState(DEFAULT_FILTERS);
 
   const setFilter = useCallback((key, value) => {
@@ -34,7 +41,9 @@ export function usePropertyFilters(properties = []) {
       const exists = current.includes(value);
       return {
         ...prev,
-        [key]: exists ? current.filter((v) => v !== value) : [...current, value],
+        [key]: exists
+          ? current.filter((v) => v !== value)
+          : [...current, value],
       };
     });
   }, []);
@@ -53,7 +62,7 @@ export function usePropertyFilters(properties = []) {
     });
   }, []);
 
-  // ── Compute filtered + sorted list ─────────────────────────────
+  // ── Compute filtered + sorted list ──────────────────────────────
   const filtered = useMemo(() => {
     let result = [...properties];
 
@@ -69,12 +78,27 @@ export function usePropertyFilters(properties = []) {
       result = result.filter((p) => p.verified === true);
     }
 
+    if (filters.pendingOnly) {
+      result = result.filter((p) => p.verified !== true);
+    }
+
+    if (filters.highRisk) {
+      result = result.filter((p) => {
+        const rs = riskScores.get(p.id);
+        return rs?.riskLabel === "HIGH";
+      });
+    }
+
     if (filters.minPrice != null) {
-      result = result.filter((p) => (p.marketValue || 0) >= filters.minPrice);
+      result = result.filter(
+        (p) => (p.marketValue || 0) >= filters.minPrice
+      );
     }
 
     if (filters.maxPrice != null) {
-      result = result.filter((p) => (p.marketValue || 0) <= filters.maxPrice);
+      result = result.filter(
+        (p) => (p.marketValue || 0) <= filters.maxPrice
+      );
     }
 
     // Sort
@@ -86,15 +110,25 @@ export function usePropertyFilters(properties = []) {
         result.sort((a, b) => (b.marketValue || 0) - (a.marketValue || 0));
         break;
       case "alpha":
-        result.sort((a, b) => (a.address || "").localeCompare(b.address || ""));
+        result.sort((a, b) =>
+          (a.address || "").localeCompare(b.address || "")
+        );
+        break;
+      case "risk-desc":
+        // Highest risk score first — needs riskScores map
+        result.sort((a, b) => {
+          const sa = riskScores.get(a.id)?.overallScore ?? 0;
+          const sb = riskScores.get(b.id)?.overallScore ?? 0;
+          return sb - sa;
+        });
         break;
       case "recent":
       default:
-        result.sort((a, b) => (b.id || 0) - (a.id || 0)); // higher ID = newer
+        result.sort((a, b) => (b.id || 0) - (a.id || 0));
     }
 
     return result;
-  }, [properties, filters]);
+  }, [properties, filters, riskScores]);
 
   // ── Count active (non-default) filters for badge ────────────────
   const activeCount = useMemo(() => {
@@ -102,6 +136,8 @@ export function usePropertyFilters(properties = []) {
     count += filters.types.length;
     count += filters.cities.length;
     if (filters.verifiedOnly) count += 1;
+    if (filters.pendingOnly)  count += 1;
+    if (filters.highRisk)     count += 1;
     if (filters.minPrice != null) count += 1;
     if (filters.maxPrice != null) count += 1;
     if (filters.sortBy !== "recent") count += 1;

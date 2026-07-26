@@ -143,17 +143,10 @@ function LoginPageInner() {
     router.push("/forgot-password");
   };
 
-  const handleContactSupport = async () => {
-    const supportEmail = "duedeligence8@gmail.com";
-    try {
-      await navigator.clipboard.writeText(supportEmail);
-      toast.success("Support email copied", {
-        description: supportEmail,
-      });
-    } catch {
-      window.location.href = `mailto:${supportEmail}`;
-    }
-  };
+  const handleContactSupport = () => {
+  // Open support page in new tab so user doesn't lose their login state
+  window.open("/support", "_blank", "noopener,noreferrer");
+};
 
   const getInputClasses = (hasError) =>
     `h-10 rounded-xl pl-10 text-sm focus-visible:ring-2 transition-colors ${

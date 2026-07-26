@@ -13,23 +13,34 @@ import {
 
 import StatsCard from "@/components/dashboard/StatsCard";
 import RecentPropertiesTable from "@/components/dashboard/RecentPropertiesTable";
+import HeroStrip from "@/components/dashboard/HeroStrip";
+import PortfolioBreakdown from "@/components/dashboard/PortfolioBreakdown";
+import ActivityFeed from "@/components/dashboard/ActivityFeed";
 import AddPropertyModal from "@/components/property/AddPropertyModal";
 import ErrorBoundary from "@/components/ErrorBoundary";
 import { StatsCardSkeleton } from "@/components/ui/Skeleton";
 
-import { getDashboardStats } from "@/services/dashboardService";
+import {
+  getDashboardStats,
+  getDashboardTrends,
+} from "@/services/dashboardService";
 import { getCurrentUser } from "@/services/authService";
+import PortfolioTrendChart from "@/components/dashboard/PortfolioTrendChart";
+import RecommendationsPanel from "@/components/dashboard/RecommendationsPanel";
+import PortfolioMap from "@/components/dashboard/PortfolioMap";
 
 export default function DashboardPage() {
   const [stats, setStats] = useState(null);
+  const [trends, setTrends] = useState(null);
   const [loading, setLoading] = useState(true);
   const [refreshing, setRefreshing] = useState(false);
   const [user, setUser] = useState(null);
   const [modalOpen, setModalOpen] = useState(false);
+  const [refreshKey, setRefreshKey] = useState(0);
 
   useEffect(() => {
     loadUser();
-    loadStats();
+    loadAll();
   }, []);
 
   const loadUser = async () => {
@@ -41,23 +52,37 @@ export default function DashboardPage() {
     }
   };
 
-  const loadStats = async (silent = false) => {
+  const loadAll = async (silent = false) => {
     try {
       if (!silent) setLoading(true);
       else setRefreshing(true);
 
-      const data = await getDashboardStats();
-      setStats(data);
+      const [statsData, trendsData] = await Promise.all([
+        getDashboardStats(),
+        getDashboardTrends().catch(() => null),
+      ]);
+      setStats(statsData);
+      setTrends(trendsData);
 
-      if (silent) toast.success("Stats updated", { duration: 1500 });
+      if (silent) toast.success("Dashboard updated", { duration: 1500 });
     } catch (err) {
       toast.error("Couldn't load dashboard", {
-  description: "Please refresh the page or try again.",
-});
+        description: "Please refresh the page or try again.",
+      });
     } finally {
       setLoading(false);
       setRefreshing(false);
     }
+  };
+
+  const handleRefresh = () => {
+    setRefreshKey((k) => k + 1); // triggers child refetches
+    loadAll(true);
+  };
+
+  const handleAddSuccess = () => {
+    setRefreshKey((k) => k + 1);
+    loadAll(true);
   };
 
   const firstName =
@@ -69,22 +94,26 @@ export default function DashboardPage() {
 
   return (
     <div className="mx-auto w-full max-w-[1400px] space-y-8">
-      {/* ── Header ──────────────────────────────────────────────────────── */}
+      {/* ── Header ─────────────────────────────────────────────── */}
       <div className="flex flex-wrap items-end justify-between gap-4">
         <div>
           <h1 className="text-[32px] font-extrabold tracking-tight text-gray-900">
             {getGreeting()}
-            {firstName ? <span className="text-[#22C55E]">, {firstName}</span> : ""}
+            {firstName ? (
+              <span className="text-[#22C55E]">, {firstName}</span>
+            ) : (
+              ""
+            )}
           </h1>
           <p className="mt-1 text-sm text-gray-500">{subtitle}</p>
         </div>
 
         <div className="flex gap-3">
           <button
-            onClick={() => loadStats(true)}
+            onClick={handleRefresh}
             disabled={refreshing}
             className="group flex h-11 w-11 items-center justify-center rounded-xl border border-gray-200 bg-white transition-all hover:border-[#22C55E] hover:shadow-[0_4px_12px_rgba(34,197,94,0.2)] disabled:opacity-50"
-            aria-label="Refresh stats"
+            aria-label="Refresh"
           >
             <RefreshCw
               size={16}
@@ -105,7 +134,35 @@ export default function DashboardPage() {
         </div>
       </div>
 
-      {/* ── KPI Cards ────────────────────────────────────────────────────── */}
+      {/* ── Hero Strip (only when properties exist) ─────────────── */}
+{!isEmpty && (
+  <ErrorBoundary>
+    <HeroStrip stats={stats} loading={loading} key={`hero-${refreshKey}`} />
+  </ErrorBoundary>
+)}
+
+{/* ── Portfolio trend chart ───────────────────────────────── */}
+{!isEmpty && (
+  <ErrorBoundary>
+    <PortfolioTrendChart key={`trend-${refreshKey}`} refreshKey={refreshKey} />
+  </ErrorBoundary>
+)}
+
+{/* ── Recommendations ─────────────────────────────────────── */}
+{!isEmpty && (
+  <ErrorBoundary>
+    <RecommendationsPanel key={`rec-${refreshKey}`} refreshKey={refreshKey} />
+  </ErrorBoundary>
+)}
+
+{/* ── Portfolio map ───────────────────────────────────────── */}
+{!isEmpty && (
+  <ErrorBoundary>
+    <PortfolioMap key={`map-${refreshKey}`} refreshKey={refreshKey} />
+  </ErrorBoundary>
+)}
+
+{/* ── KPI Cards ───────────────────────────────────────────── */}
       {loading ? (
         <div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-4">
           {[1, 2, 3, 4].map((i) => (
@@ -126,10 +183,14 @@ export default function DashboardPage() {
                 : "—"
             }
             subtitle={
-              stats.totalProperties === 0 ? "No properties added" : undefined
+              stats.totalProperties === 0
+                ? "No properties added"
+                : formatTrend(trends?.propertiesThisWeek, "this week")
             }
             icon={<Building2 size={20} strokeWidth={2.5} />}
-            trendValue={null}
+            trendValue={formatDelta(trends?.propertiesGrowthPct)}
+            trendUp={trends ? trends.propertiesGrowthPct >= 0 : null}
+             href="/dashboard/property-search"
           />
 
           <StatsCard
@@ -147,7 +208,9 @@ export default function DashboardPage() {
                 : "Nothing to verify yet"
             }
             icon={<ShieldCheck size={20} strokeWidth={2.5} />}
-            trendValue={null}
+            trendValue={formatDelta(trends?.verifiedGrowthPct)}
+            trendUp={trends ? trends.verifiedGrowthPct >= 0 : null}
+             href="/dashboard/property-search?filter=verified"
           />
 
           <StatsCard
@@ -164,6 +227,11 @@ export default function DashboardPage() {
             }
             icon={<Clock size={20} strokeWidth={2.5} />}
             trendValue={null}
+            href={
+    stats.pendingProperties > 0
+      ? "/dashboard/property-search?filter=pending"
+      : undefined
+  }
           />
 
           <StatsCard
@@ -171,31 +239,54 @@ export default function DashboardPage() {
             value={
               stats.totalUsers > 0 ? stats.totalUsers.toLocaleString() : "—"
             }
+            subtitle={
+              stats.activeUsers > 0
+                ? `${stats.activeUsers} active in 30 days`
+                : undefined
+            }
             icon={<Users size={20} strokeWidth={2.5} />}
-            trendValue={null}
+            trendValue={formatDelta(trends?.usersGrowthPct)}
+            trendUp={trends ? trends.usersGrowthPct >= 0 : null}
           />
         </div>
       )}
 
-      {/* ── Empty state OR Recent properties table ─────────────────────── */}
-      {!loading && isEmpty ? (
-        <EmptyState onAddClick={() => setModalOpen(true)} />
-      ) : (
+      {/* ── Portfolio breakdown + Recent properties (2-col) ────── */}
+      {!loading && !isEmpty && (
+        <div className="grid grid-cols-1 gap-6 lg:grid-cols-5">
+          <div className="lg:col-span-3">
+            <ErrorBoundary>
+              <RecentPropertiesTable />
+            </ErrorBoundary>
+          </div>
+          <div className="lg:col-span-2">
+            <ErrorBoundary>
+              <PortfolioBreakdown key={`chart-${refreshKey}`} />
+            </ErrorBoundary>
+          </div>
+        </div>
+      )}
+
+      {/* ── Activity feed ──────────────────────────────────────── */}
+      {!loading && !isEmpty && (
         <ErrorBoundary>
-          <RecentPropertiesTable />
+          <ActivityFeed key={`activity-${refreshKey}`} />
         </ErrorBoundary>
       )}
+
+      {/* ── Empty state ────────────────────────────────────────── */}
+      {!loading && isEmpty && <EmptyState onAddClick={() => setModalOpen(true)} />}
 
       <AddPropertyModal
         isOpen={modalOpen}
         onClose={() => setModalOpen(false)}
-        onSuccess={() => loadStats(true)}
+        onSuccess={handleAddSuccess}
       />
     </div>
   );
 }
 
-// ── Empty state ─────────────────────────────────────────────────
+// ─── Empty state ─────────────────────────────────────────────────
 function EmptyState({ onAddClick }) {
   return (
     <div className="rounded-2xl border border-gray-100 bg-white p-10 shadow-sm">
@@ -224,9 +315,21 @@ function EmptyState({ onAddClick }) {
   );
 }
 
+// ─── Helpers ─────────────────────────────────────────────────────
 function getGreeting() {
   const hour = new Date().getHours();
   if (hour < 12) return "Good morning";
   if (hour < 17) return "Good afternoon";
   return "Good evening";
+}
+
+function formatDelta(pct) {
+  if (pct == null || pct === 0) return null;
+  const sign = pct > 0 ? "+" : "";
+  return `${sign}${pct}%`;
+}
+
+function formatTrend(count, suffix) {
+  if (count == null || count === 0) return undefined;
+  return `+${count} ${suffix}`;
 }

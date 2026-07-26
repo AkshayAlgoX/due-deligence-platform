@@ -517,10 +517,6 @@ export default function CommandPalette({ open, onClose, onAction }) {
             </span>
           </div>
 
-          <div className="flex items-center gap-1.5 text-[10px] font-semibold text-gray-400">
-            <div className="w-1.5 h-1.5 rounded-full bg-[#22C55E] animate-pulse" />
-            Powered by Due Diligence AI
-          </div>
         </div>
       </div>
     </div>
