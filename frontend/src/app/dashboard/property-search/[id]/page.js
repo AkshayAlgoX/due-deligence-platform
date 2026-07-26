@@ -140,58 +140,35 @@ export default function PropertyDetailPage() {
         Back to search
       </button>
 
-      {/* ── Zillow-style image gallery ────────────────────────────────────
-          Left: 1 large image  |  Right: 2×2 grid
-      ──────────────────────────────────────────────────────────────────── */}
-      <div className="relative overflow-hidden rounded-2xl">
-        <div className="grid grid-cols-1 gap-1 sm:grid-cols-[3fr_2fr]">
+                  {/* ── Single hero image (multi-photo gallery coming in v2) ── */}
+                  <div className="relative overflow-hidden rounded-2xl h-[320px] sm:h-[480px] bg-gray-100">
+                    {heroImage ? (
+                      <img
+                        src={heroImage}
+                        alt={address}
+                        className="absolute inset-0 h-full w-full object-cover"
+                      />
+                    ) : (
+                      <div className="absolute inset-0 flex items-center justify-center">
+                        <PropertyImagePlaceholder propertyType={propertyType} size="hero" />
+                      </div>
+                    )}
 
-          {/* Large left image */}
-          <div className="relative min-h-[280px] sm:min-h-[420px] row-span-2">
-            {heroImage ? (
-              <img
-                src={heroImage}
-                alt={address}
-                className="absolute inset-0 h-full w-full object-cover"
-              />
-            ) : (
-              <PropertyImagePlaceholder propertyType={propertyType} size="hero" />
-            )}
-
-            {/* Verification badge */}
-            <div className="absolute top-4 left-4">
-              {verified ? (
-                <div className="flex items-center gap-1.5 rounded-full bg-white/95 px-3 py-1.5 shadow-md backdrop-blur-sm">
-                  <span className="h-2 w-2 rounded-full bg-[#22C55E]" />
-                  <span className="text-xs font-bold text-gray-800">Active</span>
-                </div>
-              ) : (
-                <div className="flex items-center gap-1.5 rounded-full bg-amber-50 px-3 py-1.5 shadow-md ring-1 ring-amber-200 backdrop-blur-sm">
-                  <AlertTriangle className="h-3.5 w-3.5 text-amber-500" strokeWidth={2.5} />
-                  <span className="text-xs font-bold text-amber-800">Pending verification</span>
-                </div>
-              )}
-            </div>
-          </div>
-
-          {/* 2×2 right thumbnails */}
-          {[0, 1, 2, 3].map((i) => (
-            <div key={i} className="relative min-h-[104px] bg-gray-100 hidden sm:block">
-              {heroImage ? (
-                <img
-                  src={heroImage}
-                  alt={`${address} view ${i + 2}`}
-                  className="absolute inset-0 h-full w-full object-cover opacity-90"
-                />
-              ) : (
-                <PropertyImagePlaceholder propertyType={propertyType} size="thumb" />
-              )}
-            </div>
-          ))}
-        </div>
-
-        {/* See all photos button removed — no functionality yet */}
-      </div>
+                    {/* Verification badge */}
+                    <div className="absolute top-4 left-4 z-10">
+                      {verified ? (
+                        <div className="flex items-center gap-1.5 rounded-full bg-white/95 px-3 py-1.5 shadow-md backdrop-blur-sm">
+                          <span className="h-2 w-2 rounded-full bg-[#22C55E]" />
+                          <span className="text-xs font-bold text-gray-800">Active</span>
+                        </div>
+                      ) : (
+                        <div className="flex items-center gap-1.5 rounded-full bg-amber-50 px-3 py-1.5 shadow-md ring-1 ring-amber-200 backdrop-blur-sm">
+                          <AlertTriangle className="h-3.5 w-3.5 text-amber-500" strokeWidth={2.5} />
+                          <span className="text-xs font-bold text-amber-800">Pending verification</span>
+                        </div>
+                      )}
+                    </div>
+                  </div>
 
       {/* ── Price + address + quick facts + CTA ──────────────────────────── */}
       <div className="rounded-2xl border border-gray-100 bg-white p-6 shadow-sm">
