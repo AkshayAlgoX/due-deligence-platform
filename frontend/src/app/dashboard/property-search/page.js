@@ -89,14 +89,14 @@ function PropertySearchInner() {
 
   // ── Load aggregation whenever a property is selected ──
   const loadAggregation = useCallback(async (propertyId) => {
-  if (!propertyId) {
-    setAggregated(null);
-    return;
-  }
-  try {
-    setLoadingAggregated(true);
-    setAggregated(null);  // clear stale data immediately
-    const data = await getAggregatedProperty(propertyId);
+    if (!propertyId) {
+      setAggregated(null);
+      return;
+    }
+    try {
+      setLoadingAggregated(true);
+      setAggregated(null);
+      const data = await getAggregatedProperty(propertyId);
       setAggregated(data);
     } catch (err) {
       toast.error("Could not load property details", {
@@ -125,8 +125,8 @@ function PropertySearchInner() {
       }
     } catch (err) {
       toast.error("Couldn't load properties", {
-  description: err.message || "Please refresh the page.",
-});
+        description: err.message || "Please refresh the page.",
+      });
     } finally {
       setLoading(false);
     }
@@ -178,10 +178,10 @@ function PropertySearchInner() {
           setSelectedProperty(null);
           setAggregated(null);
           if (!silent) {
-  toast.info("No matches", {
-    description: "Try a different city, address, or ZIP code.",
-  });
-}
+            toast.info("No matches", {
+              description: "Try a different city, address, or ZIP code.",
+            });
+          }
           return;
         }
 
@@ -197,8 +197,8 @@ function PropertySearchInner() {
         }
       } catch (err) {
         toast.error("Search failed", {
-  description: err.message || "Please try again in a moment.",
-});
+          description: err.message || "Please try again in a moment.",
+        });
       } finally {
         setSearching(false);
       }
@@ -218,8 +218,8 @@ function PropertySearchInner() {
       }, 100);
     } catch (err) {
       toast.error("Couldn't load property", {
-  description: err.message || "Please try again in a moment.",
-});
+        description: err.message || "Please try again in a moment.",
+      });
     } finally {
       setSearching(false);
     }
@@ -236,8 +236,8 @@ function PropertySearchInner() {
       }, 100);
     } catch (err) {
       toast.error("Couldn't load property", {
-  description: err.message || "Please try again in a moment.",
-});
+        description: err.message || "Please try again in a moment.",
+      });
     } finally {
       setSearching(false);
     }
@@ -358,7 +358,6 @@ function PropertySearchInner() {
         </div>
       </div>
 
-      {/* Loading skeleton */}
       {loading && (
         <>
           <div className="rounded-2xl border border-gray-100 bg-white p-6 shadow-sm">
@@ -468,7 +467,7 @@ function PropertySearchInner() {
         </div>
       )}
 
-            {/* Hero */}
+      {/* Hero */}
       {!loading && selectedProperty && (
         <ErrorBoundary>
           <div id="property-hero">
@@ -480,7 +479,7 @@ function PropertySearchInner() {
         </ErrorBoundary>
       )}
 
-            {/* Aggregation sections */}
+      {/* Aggregation sections */}
       {!loading && selectedProperty && (
         <ErrorBoundary>
           <div className="space-y-6">
