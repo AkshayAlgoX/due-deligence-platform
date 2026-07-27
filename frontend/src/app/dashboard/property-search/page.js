@@ -14,36 +14,15 @@ import {
 } from "lucide-react";
 
 import SearchBar from "@/components/property/SearchBar";
-import PropertyDetails from "@/components/property/PropertyDetails";
 import PropertyResultCard from "@/components/property/PropertyResultCard";
-import BuildingInformationCard from "@/components/property/BuildingInformationCard";
-import DataCompletenessCard from "@/components/property/aggregation/DataCompletenessCard";
-import RiskScoreCard from "@/components/property/RiskScoreCard";
 import AddPropertyModal from "@/components/property/AddPropertyModal";
 import EditPropertyModal from "@/components/property/EditPropertyModal";
 import QuickImageUploadModal from "@/components/property/QuickImageUploadModal";
 import FilterPanel from "@/components/property/FilterPanel";
 import ActiveFilterChips from "@/components/property/ActiveFilterChips";
-import ErrorBoundary from "@/components/ErrorBoundary";
-import {
-  PropertyCardSkeleton,
-  PropertyHeroSkeleton,
-} from "@/components/ui/Skeleton";
+import { PropertyCardSkeleton } from "@/components/ui/Skeleton";
 
-// ── Aggregation cards ──────────────────────────────────────────
-import OwnershipCard from "@/components/property/aggregation/OwnershipCard";
-import TaxHistorySection from "@/components/property/aggregation/TaxHistorySection";
-import ZoningCard from "@/components/property/aggregation/ZoningCard";
-import FloodZoneCard from "@/components/property/aggregation/FloodZoneCard";
-import PermitsSection from "@/components/property/aggregation/PermitsSection";
-import EnvironmentalCard from "@/components/property/aggregation/EnvironmentalCard";
-
-import {
-  searchProperties,
-  getPropertyById,
-  getPropertyRisk,
-} from "@/services/propertyService";
-import { getAggregatedProperty } from "@/services/aggregationService";
+import { searchProperties, getPropertyRisk } from "@/services/propertyService";
 import { usePropertyFilters } from "@/hooks/usePropertyFilters";
 import { useCompareSelection } from "@/hooks/useCompareSelection";
 import CompareBar from "@/components/property/CompareBar";
@@ -61,7 +40,6 @@ function timeAgo(date) {
 }
 
 // Fetch risk for a batch of properties with controlled concurrency.
-// Max 4 in-flight at once — avoids hammering the backend on 32 properties.
 async function fetchRiskBatch(properties, onResult, signal) {
   const CONCURRENCY = 4;
   let i = 0;
@@ -74,13 +52,11 @@ async function fetchRiskBatch(properties, onResult, signal) {
         const risk = await getPropertyRisk(prop.id);
         if (!signal?.aborted) onResult(prop.id, risk);
       } catch {
-        // Risk fetch failed for this property — silently skip, no toast
-        // The card just won't show a risk pill
+        // silently skip
       }
     }
   }
 
-  // Run CONCURRENCY workers in parallel
   await Promise.all(
     Array.from({ length: Math.min(CONCURRENCY, properties.length) }, runNext)
   );
@@ -92,9 +68,6 @@ function PropertySearchInner() {
 
   const [results, setResults] = useState([]);
   const [allProperties, setAllProperties] = useState([]);
-  const [selectedProperty, setSelectedProperty] = useState(null);
-  const [aggregated, setAggregated] = useState(null);
-  const [loadingAggregated, setLoadingAggregated] = useState(false);
   const [loading, setLoading] = useState(true);
   const [searching, setSearching] = useState(false);
   const [modalOpen, setModalOpen] = useState(false);
@@ -107,9 +80,7 @@ function PropertySearchInner() {
   const [lastSyncedAt, setLastSyncedAt] = useState(null);
   const [, forceTick] = useState(0);
 
-  // ── Risk scores: Map<propertyId, RiskScoreResponse> ───────────
   const [riskScores, setRiskScores] = useState(() => new Map());
-  // Ref to abort in-flight risk batch on unmount / reload
   const riskAbortRef = useRef(null);
 
   const {
@@ -123,30 +94,22 @@ function PropertySearchInner() {
   } = usePropertyFilters(results, riskScores);
 
   const {
-  compareIds,
-  compareList,
-  toggleCompare,
-  clearCompare,
-  isSelected: isInCompare,
-  canAddMore: canAddToCompare,
-  count: compareCount,
-} = useCompareSelection();
+    compareList,
+    toggleCompare,
+    clearCompare,
+    isSelected: isInCompare,
+    canAddMore: canAddToCompare,
+  } = useCompareSelection();
 
   useEffect(() => {
     const interval = setInterval(() => forceTick((t) => t + 1), 30000);
     return () => clearInterval(interval);
   }, []);
 
-  // ── Background risk fetch for a list of properties ────────────
   const fetchRiskForList = useCallback((list) => {
-    // Abort any previous batch
-    if (riskAbortRef.current) {
-      riskAbortRef.current.abort();
-    }
+    if (riskAbortRef.current) riskAbortRef.current.abort();
     const controller = new AbortController();
     riskAbortRef.current = controller;
-
-    // Reset only the scores for the new list
     setRiskScores(new Map());
 
     fetchRiskBatch(
@@ -162,32 +125,8 @@ function PropertySearchInner() {
     );
   }, []);
 
-  // Abort risk batch on unmount
   useEffect(() => {
-    return () => {
-      riskAbortRef.current?.abort();
-    };
-  }, []);
-
-  // ── Load aggregation whenever a property is selected ──────────
-  const loadAggregation = useCallback(async (propertyId) => {
-    if (!propertyId) {
-      setAggregated(null);
-      return;
-    }
-    try {
-      setLoadingAggregated(true);
-      setAggregated(null);
-      const data = await getAggregatedProperty(propertyId);
-      setAggregated(data);
-    } catch (err) {
-      toast.error("Could not load property details", {
-        description: err?.message || "Please try again.",
-      });
-      setAggregated(null);
-    } finally {
-      setLoadingAggregated(false);
-    }
+    return () => riskAbortRef.current?.abort();
   }, []);
 
   const loadAll = useCallback(async () => {
@@ -197,17 +136,7 @@ function PropertySearchInner() {
       setResults(list);
       setAllProperties(list);
       setLastSyncedAt(new Date());
-
-      // Fire background risk fetch immediately
-      if (list.length > 0) {
-        fetchRiskForList(list);
-        const detail = await getPropertyById(list[0].id);
-        setSelectedProperty(detail);
-        loadAggregation(detail.id);
-      } else {
-        setSelectedProperty(null);
-        setAggregated(null);
-      }
+      if (list.length > 0) fetchRiskForList(list);
     } catch (err) {
       toast.error("Couldn't load properties", {
         description: err.message || "Please refresh the page.",
@@ -215,7 +144,7 @@ function PropertySearchInner() {
     } finally {
       setLoading(false);
     }
-  }, [loadAggregation, fetchRiskForList]);
+  }, [fetchRiskForList]);
 
   useEffect(() => {
     const urlQuery  = searchParams.get("q") ?? "";
@@ -223,7 +152,6 @@ function PropertySearchInner() {
     const urlFilter = searchParams.get("filter");
 
     if (urlAction === "add") setModalOpen(true);
-
     if (urlFilter === "verified")   setFilter("verifiedOnly", true);
     if (urlFilter === "pending")    setFilter("pendingOnly", true);
     if (urlFilter === "high-risk")  setFilter("highRisk", true);
@@ -259,20 +187,12 @@ function PropertySearchInner() {
         setLastSyncedAt(new Date());
         fetchRiskForList(list);
 
-        if (list.length === 0) {
-          setSelectedProperty(null);
-          setAggregated(null);
-          if (!silent) {
-            toast.info("No matches", {
-              description: "Try a different city, address, or ZIP code.",
-            });
-          }
+        if (list.length === 0 && !silent) {
+          toast.info("No matches", {
+            description: "Try a different city, address, or ZIP code.",
+          });
           return;
         }
-
-        const detail = await getPropertyById(list[0].id);
-        setSelectedProperty(detail);
-        loadAggregation(detail.id);
 
         if (!silent) {
           toast.success(
@@ -288,54 +208,14 @@ function PropertySearchInner() {
         setSearching(false);
       }
     },
-    [loadAll, loadAggregation, fetchRiskForList]
+    [loadAll, fetchRiskForList]
   );
 
   const handleSelectSuggestion = useCallback(
-    async (property) => {
-      try {
-        setSearching(true);
-        const detail = await getPropertyById(property.id);
-        setSelectedProperty(detail);
-        setResults([property]);
-        loadAggregation(detail.id);
-        setTimeout(() => {
-          document
-            .getElementById("property-hero")
-            ?.scrollIntoView({ behavior: "smooth", block: "start" });
-        }, 100);
-      } catch (err) {
-        toast.error("Couldn't load property", {
-          description: err.message || "Please try again in a moment.",
-        });
-      } finally {
-        setSearching(false);
-      }
+    (property) => {
+      router.push(`/dashboard/property-search/${property.id}`);
     },
-    [loadAggregation]
-  );
-
-  const handleSelectResult = useCallback(
-    async (property) => {
-      try {
-        setSearching(true);
-        const detail = await getPropertyById(property.id);
-        setSelectedProperty(detail);
-        loadAggregation(detail.id);
-        setTimeout(() => {
-          document
-            .getElementById("property-hero")
-            ?.scrollIntoView({ behavior: "smooth", block: "start" });
-        }, 100);
-      } catch (err) {
-        toast.error("Couldn't load property", {
-          description: err.message || "Please try again in a moment.",
-        });
-      } finally {
-        setSearching(false);
-      }
-    },
-    [loadAggregation]
+    [router]
   );
 
   const handleEditProperty = useCallback((property) => {
@@ -348,32 +228,20 @@ function PropertySearchInner() {
     setQuickPhotoModalOpen(true);
   }, []);
 
-  const handleUpdateSuccess = useCallback(
-    (updated) => {
-      setResults((prev) =>
-        prev.map((p) => (p.id === updated.id ? updated : p))
-      );
-      setAllProperties((prev) =>
-        prev.map((p) => (p.id === updated.id ? updated : p))
-      );
-      if (selectedProperty?.id === updated.id) {
-        setSelectedProperty(updated);
-        loadAggregation(updated.id);
-      }
-      // Re-fetch risk for the updated property only
-      getPropertyRisk(updated.id)
-        .then((risk) => {
-          setRiskScores((prev) => {
-            const next = new Map(prev);
-            next.set(updated.id, risk);
-            return next;
-          });
-        })
-        .catch(() => {});
-      setLastSyncedAt(new Date());
-    },
-    [selectedProperty, loadAggregation]
-  );
+  const handleUpdateSuccess = useCallback((updated) => {
+    setResults((prev) => prev.map((p) => (p.id === updated.id ? updated : p)));
+    setAllProperties((prev) => prev.map((p) => (p.id === updated.id ? updated : p)));
+    getPropertyRisk(updated.id)
+      .then((risk) => {
+        setRiskScores((prev) => {
+          const next = new Map(prev);
+          next.set(updated.id, risk);
+          return next;
+        });
+      })
+      .catch(() => {});
+    setLastSyncedAt(new Date());
+  }, []);
 
   const stats = useMemo(() => {
     const total = allProperties.length;
@@ -402,9 +270,7 @@ function PropertySearchInner() {
               {loading ? (
                 <div className="flex items-center gap-2">
                   <div className="w-1.5 h-1.5 rounded-full bg-[#22C55E] animate-pulse" />
-                  <span className="text-sm text-gray-500">
-                    Loading portfolio...
-                  </span>
+                  <span className="text-sm text-gray-500">Loading portfolio...</span>
                 </div>
               ) : stats.total === 0 ? (
                 <div className="flex items-center gap-2">
@@ -420,16 +286,12 @@ function PropertySearchInner() {
                       <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-[#22C55E] opacity-60" />
                       <span className="relative inline-flex rounded-full h-2 w-2 bg-[#22C55E]" />
                     </span>
-                    <span className="text-[10px] font-black uppercase tracking-widest text-[#16a34a]">
-                      Live
-                    </span>
+                    <span className="text-[10px] font-black uppercase tracking-widest text-[#16a34a]">Live</span>
                   </div>
                   <span className="text-gray-300">•</span>
                   <div className="flex items-center gap-1.5 text-sm">
                     <Database className="h-3.5 w-3.5 text-gray-400" />
-                    <span className="font-bold text-gray-900 tabular-nums">
-                      {stats.total.toLocaleString()}
-                    </span>
+                    <span className="font-bold text-gray-900 tabular-nums">{stats.total.toLocaleString()}</span>
                     <span className="text-gray-500">
                       {stats.total === 1 ? "property" : "properties"} indexed
                     </span>
@@ -437,9 +299,7 @@ function PropertySearchInner() {
                   <span className="text-gray-300">•</span>
                   <div className="flex items-center gap-1.5 text-sm">
                     <MapPin className="h-3.5 w-3.5 text-gray-400" />
-                    <span className="font-bold text-gray-900 tabular-nums">
-                      {stats.cities}
-                    </span>
+                    <span className="font-bold text-gray-900 tabular-nums">{stats.cities}</span>
                     <span className="text-gray-500">
                       {stats.cities === 1 ? "city" : "cities"} covered
                     </span>
@@ -449,19 +309,15 @@ function PropertySearchInner() {
                     <Clock className="h-3.5 w-3.5 text-gray-400" />
                     <span className="text-gray-500">
                       Synced{" "}
-                      <span className="font-semibold text-gray-700">
-                        {timeAgo(lastSyncedAt)}
-                      </span>
+                      <span className="font-semibold text-gray-700">{timeAgo(lastSyncedAt)}</span>
                     </span>
                   </div>
-                  {/* High risk count — only shown when risk scores loaded */}
                   {stats.highRisk > 0 && (
                     <>
                       <span className="text-gray-300 hidden sm:inline">•</span>
                       <button
                         onClick={() => setFilter("highRisk", true)}
                         className="flex items-center gap-1.5 text-sm text-red-600 hover:text-red-700 transition font-semibold"
-                        title="Filter to high-risk properties"
                       >
                         <span className="inline-flex h-2 w-2 rounded-full bg-red-500" />
                         {stats.highRisk} high risk
@@ -496,16 +352,13 @@ function PropertySearchInner() {
 
       {/* ── Loading skeleton ───────────────────────────────────────── */}
       {loading && (
-        <>
-          <div className="rounded-2xl border border-gray-100 bg-white p-6 shadow-sm">
-            <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-              {[1, 2, 3, 4, 5, 6].map((i) => (
-                <PropertyCardSkeleton key={i} />
-              ))}
-            </div>
+        <div className="rounded-2xl border border-gray-100 bg-white p-6 shadow-sm">
+          <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+            {[1, 2, 3, 4, 5, 6].map((i) => (
+              <PropertyCardSkeleton key={i} />
+            ))}
           </div>
-          <PropertyHeroSkeleton />
-        </>
+        </div>
       )}
 
       {/* ── Empty state ────────────────────────────────────────────── */}
@@ -516,8 +369,7 @@ function PropertySearchInner() {
           </div>
           <p className="text-lg font-bold text-gray-800">No properties found</p>
           <p className="mt-1.5 text-sm text-gray-500 max-w-xs">
-            Try searching by city name, address, or ZIP code — or add your
-            first property.
+            Try searching by city name, address, or ZIP code — or add your first property.
           </p>
           <button
             onClick={() => setModalOpen(true)}
@@ -539,13 +391,9 @@ function PropertySearchInner() {
               </span>
               <p className="text-sm font-semibold text-gray-700">
                 {displayedResults.length === 1 ? "Property" : "Properties"}
-                {activeCount > 0 &&
-                  displayedResults.length !== results.length && (
-                    <span className="text-gray-400 font-normal">
-                      {" "}
-                      (of {results.length})
-                    </span>
-                  )}
+                {activeCount > 0 && displayedResults.length !== results.length && (
+                  <span className="text-gray-400 font-normal"> (of {results.length})</span>
+                )}
               </p>
             </div>
 
@@ -576,12 +424,8 @@ function PropertySearchInner() {
           {displayedResults.length === 0 ? (
             <div className="flex flex-col items-center justify-center py-16 text-center">
               <SearchX className="h-10 w-10 text-gray-200 mb-3" />
-              <p className="text-sm font-bold text-gray-700">
-                No properties match your filters
-              </p>
-              <p className="mt-1 text-xs text-gray-500">
-                Try removing some filters or clearing them all
-              </p>
+              <p className="text-sm font-bold text-gray-700">No properties match your filters</p>
+              <p className="mt-1 text-xs text-gray-500">Try removing some filters or clearing them all</p>
               <button
                 onClick={clearAll}
                 className="mt-4 rounded-xl bg-gray-100 px-4 py-2 text-xs font-semibold text-gray-700 transition hover:bg-gray-200"
@@ -592,104 +436,22 @@ function PropertySearchInner() {
           ) : (
             <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
               {displayedResults.map((p) => (
-  <PropertyResultCard
-    key={p.id}
-    property={p}
-    isSelected={selectedProperty?.id === p.id}
-    onClick={() => router.push(`/dashboard/property-search/${p.id}`)}
-    onEdit={handleEditProperty}
-    onQuickPhoto={handleQuickPhoto}
-    riskScore={riskScores.get(p.id) ?? null}
-    onCompare={toggleCompare}
-    isInCompare={isInCompare(p.id)}
-    canAddToCompare={canAddToCompare}
-  />
-))}
+                <PropertyResultCard
+                  key={p.id}
+                  property={p}
+                  isSelected={false}
+                  onClick={() => router.push(`/dashboard/property-search/${p.id}`)}
+                  onEdit={handleEditProperty}
+                  onQuickPhoto={handleQuickPhoto}
+                  riskScore={riskScores.get(p.id) ?? null}
+                  onCompare={toggleCompare}
+                  isInCompare={isInCompare(p.id)}
+                  canAddToCompare={canAddToCompare}
+                />
+              ))}
             </div>
           )}
         </div>
-      )}
-
-      {/* ── Property hero ──────────────────────────────────────────── */}
-      {!loading && selectedProperty && (
-        <ErrorBoundary>
-          <div id="property-hero">
-            <PropertyDetails
-              property={selectedProperty}
-              onEdit={handleEditProperty}
-            />
-          </div>
-        </ErrorBoundary>
-      )}
-
-      {/* ── Aggregation + Risk sections ────────────────────────────── */}
-      {!loading && selectedProperty && (
-        <ErrorBoundary>
-          <div className="space-y-6">
-            {/* Row 1: Ownership + Tax history */}
-            <div className="grid grid-cols-12 gap-6 items-stretch">
-              <div className="col-span-12 lg:col-span-5 flex">
-                <div className="w-full">
-                  <OwnershipCard section={aggregated?.ownership} />
-                </div>
-              </div>
-              <div className="col-span-12 lg:col-span-7 flex">
-                <div className="w-full">
-                  <TaxHistorySection section={aggregated?.taxHistory} />
-                </div>
-              </div>
-            </div>
-
-            {/* Row 2: Zoning + Flood zone */}
-            <div className="grid grid-cols-12 gap-6 items-stretch">
-              <div className="col-span-12 lg:col-span-6 flex">
-                <div className="w-full">
-                  <ZoningCard section={aggregated?.zoning} />
-                </div>
-              </div>
-              <div className="col-span-12 lg:col-span-6 flex">
-                <div className="w-full">
-                  <FloodZoneCard section={aggregated?.floodZone} />
-                </div>
-              </div>
-            </div>
-
-            {/* Row 3: Permits + Environmental */}
-            <div className="grid grid-cols-12 gap-6 items-stretch">
-              <div className="col-span-12 lg:col-span-7 flex">
-                <div className="w-full">
-                  <PermitsSection section={aggregated?.permits} />
-                </div>
-              </div>
-              <div className="col-span-12 lg:col-span-5 flex">
-                <div className="w-full">
-                  <EnvironmentalCard section={aggregated?.environmental} />
-                </div>
-              </div>
-            </div>
-
-            {/* Row 4: Risk score + Building info */}
-            <div className="grid grid-cols-12 gap-6 items-stretch">
-              <div className="col-span-12 lg:col-span-6 flex">
-                <div className="w-full">
-                  <RiskScoreCard propertyId={selectedProperty.id} />
-                </div>
-              </div>
-              <div className="col-span-12 lg:col-span-6 flex">
-                <div className="w-full">
-                  <BuildingInformationCard property={selectedProperty} />
-                </div>
-              </div>
-            </div>
-
-            {/* Row 5: Data completeness */}
-            <DataCompletenessCard
-              aggregated={aggregated}
-              onRefresh={() => loadAggregation(selectedProperty.id)}
-              refreshing={loadingAggregated}
-            />
-          </div>
-        </ErrorBoundary>
       )}
 
       {/* ── Modals ─────────────────────────────────────────────────── */}
@@ -724,7 +486,7 @@ function PropertySearchInner() {
         filteredCount={displayedResults.length}
       />
 
-      {/* ── Compare bar — floats above page bottom ──────────────── */}
+      {/* ── Compare bar ───────────────────────────────────────────── */}
       <CompareBar
         compareList={compareList}
         onRemove={toggleCompare}
