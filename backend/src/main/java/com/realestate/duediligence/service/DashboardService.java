@@ -7,6 +7,7 @@ import com.realestate.duediligence.dto.DashboardStatsResponse;
 import com.realestate.duediligence.dto.DashboardTrendsResponse;
 import com.realestate.duediligence.dto.PortfolioInsightsResponse;
 import com.realestate.duediligence.dto.RecommendationResponse;
+import com.realestate.duediligence.dto.DashboardAnalyticsResponse;
 
 public interface DashboardService {
 
@@ -23,4 +24,7 @@ public interface DashboardService {
 
     /** Rule-based recommendations derived from real portfolio data. */
     List<RecommendationResponse> getRecommendations();
+
+    /** Advanced portfolio analytics for dashboard charts. */
+    DashboardAnalyticsResponse getAnalytics();
 }

@@ -28,6 +28,7 @@ import { getCurrentUser } from "@/services/authService";
 import PortfolioTrendChart from "@/components/dashboard/PortfolioTrendChart";
 import RecommendationsPanel from "@/components/dashboard/RecommendationsPanel";
 import PortfolioMap from "@/components/dashboard/PortfolioMap";
+import AnalyticsPanel from "@/components/dashboard/AnalyticsPanel";
 
 export default function DashboardPage() {
   const [stats, setStats] = useState(null);
@@ -271,6 +272,16 @@ export default function DashboardPage() {
       {!loading && !isEmpty && (
         <ErrorBoundary>
           <ActivityFeed key={`activity-${refreshKey}`} />
+        </ErrorBoundary>
+      )}
+
+      {/* ── Advanced analytics (collapsible) ────────────────────── */}
+      {!loading && !isEmpty && (
+        <ErrorBoundary>
+          <AnalyticsPanel
+            key={`analytics-${refreshKey}`}
+            refreshKey={refreshKey}
+          />
         </ErrorBoundary>
       )}
 

@@ -37,6 +37,7 @@ export const API_ROUTES = {
   ADMIN_DASHBOARD:    "/api/admin/dashboard",
   DASHBOARD_HISTORY: "/api/dashboard/history",
   DASHBOARD_RECOMMENDATIONS: "/api/dashboard/recommendations",
+  DASHBOARD_ANALYTICS: "/api/dashboard/analytics",
 
   // ── Admin ─────────────────────────────────────────────────────────────────
   ADMIN_USERS: "/api/admin/users",

@@ -15,6 +15,7 @@ import com.realestate.duediligence.dto.DashboardTrendsResponse;
 import com.realestate.duediligence.dto.PortfolioHistoryPoint;
 import com.realestate.duediligence.dto.PortfolioInsightsResponse;
 import com.realestate.duediligence.dto.RecommendationResponse;
+import com.realestate.duediligence.dto.DashboardAnalyticsResponse;
 import com.realestate.duediligence.service.DashboardService;
 import com.realestate.duediligence.service.PortfolioSnapshotService;
 
@@ -121,5 +122,14 @@ public ResponseEntity<List<PortfolioHistoryPoint>> getHistory(
 @GetMapping("/recommendations")
 public ResponseEntity<List<RecommendationResponse>> getRecommendations() {
     return ResponseEntity.ok(dashboardService.getRecommendations());
+}
+
+/**
+ * GET /api/dashboard/analytics
+ * Advanced analytics for dashboard charts.
+ */
+@GetMapping("/analytics")
+public ResponseEntity<DashboardAnalyticsResponse> getAnalytics() {
+    return ResponseEntity.ok(dashboardService.getAnalytics());
 }
 }

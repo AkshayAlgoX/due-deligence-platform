@@ -122,4 +122,52 @@ Integer countDistinctCitiesByUser(@Param("userId") Long userId);
 @Query("SELECT p FROM Property p " +
        "WHERE p.latitude IS NOT NULL AND p.longitude IS NOT NULL")
 List<Property> findAllWithCoordinates();
+
+// ────────────────────────────────────────────────────────────────
+// NEW — Advanced dashboard analytics
+// ────────────────────────────────────────────────────────────────
+
+/**
+ * Average market value grouped by property type.
+ * Returns: [propertyType, averageValue, propertyCount]
+ */
+@Query("SELECT p.propertyType, AVG(p.marketValue), COUNT(p) " +
+       "FROM Property p " +
+       "WHERE p.propertyType IS NOT NULL " +
+       "AND p.marketValue IS NOT NULL " +
+       "GROUP BY p.propertyType " +
+       "ORDER BY AVG(p.marketValue) DESC")
+List<Object[]> averageValueByType();
+
+
+/**
+ * Average price per square foot grouped by city.
+ *
+ * Only properties having a valid market value and area are included.
+ * Returns: [city, averagePricePerSqft, propertyCount]
+ */
+@Query("SELECT p.city, AVG(p.marketValue / p.area), COUNT(p) " +
+       "FROM Property p " +
+       "WHERE p.city IS NOT NULL " +
+       "AND p.marketValue IS NOT NULL " +
+       "AND p.area IS NOT NULL " +
+       "AND p.area > 0 " +
+       "GROUP BY p.city " +
+       "ORDER BY AVG(p.marketValue / p.area) DESC")
+List<Object[]> averagePricePerSqftByCity();
+
+
+/**
+ * Verification statistics grouped by city.
+ *
+ * Returns:
+ * [city, totalProperties, verifiedProperties]
+ */
+@Query("SELECT p.city, COUNT(p), " +
+       "SUM(CASE WHEN p.verified = true THEN 1 ELSE 0 END) " +
+       "FROM Property p " +
+       "WHERE p.city IS NOT NULL " +
+       "GROUP BY p.city " +
+       "ORDER BY COUNT(p) DESC")
+List<Object[]> verificationStatsByCity();
 }

@@ -70,9 +70,12 @@ export default function Sidebar({ isOpen = true }) {
 
   return (
     <aside
-      className={`w-64 bg-white border-r border-gray-100 flex flex-col h-full transition-all duration-300 ease-in-out ${
-        isOpen ? "ml-0" : "-ml-64"
-      }`}
+      className= {`
+        fixed inset-y-0 left-0 z-40 w-64 bg-white border-r border-gray-100
+        flex flex-col h-full transition-transform duration-300 ease-in-out
+        lg:relative lg:z-auto lg:translate-x-0
+        ${isOpen ? "translate-x-0" : "-translate-x-full"}
+     `}
     >
       {/* ── Navigation ── */}
       <nav className="flex-1 overflow-y-auto px-3 py-5">

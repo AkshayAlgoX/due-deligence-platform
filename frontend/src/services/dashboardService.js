@@ -132,6 +132,21 @@ export const getDashboardRecommendations = async () => {
   }));
 };
 
+/**
+ * Fetch advanced dashboard analytics.
+ * Returns real aggregated portfolio data. No invented numbers.
+ */
+export const getDashboardAnalytics = async () => {
+  const { data } = await api.get(API_ROUTES.DASHBOARD_ANALYTICS);
+
+  return {
+    avgValueByType: data.avgValueByType ?? [],
+    pricePerSqftByCity: data.pricePerSqftByCity ?? [],
+    verificationRateByCity: data.verificationRateByCity ?? [],
+    portfolioConcentration: data.portfolioConcentration ?? null,
+  };
+};
+
 /** Buyer welcome message. */
 export const getBuyerDashboard = async () => {
   const response = await api.get(API_ROUTES.BUYER_DASHBOARD);

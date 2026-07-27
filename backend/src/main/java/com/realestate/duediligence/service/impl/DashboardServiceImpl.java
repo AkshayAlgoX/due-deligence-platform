@@ -14,6 +14,7 @@ import com.realestate.duediligence.dto.DashboardStatsResponse;
 import com.realestate.duediligence.dto.DashboardTrendsResponse;
 import com.realestate.duediligence.dto.PortfolioInsightsResponse;
 import com.realestate.duediligence.dto.RecommendationResponse;
+import com.realestate.duediligence.dto.DashboardAnalyticsResponse;
 import com.realestate.duediligence.entity.Property;
 import com.realestate.duediligence.entity.User;
 import com.realestate.duediligence.repository.PropertyRepository;
@@ -382,5 +383,104 @@ private int countMissingFields(Property p) {
     if (p.getBedrooms()     == null)                                   missing++;
     if (p.getBathrooms()    == null)                                   missing++;
     return missing;
+}
+
+// ────────────────────────────────────────────────────────────────
+// getAnalytics — Advanced dashboard analytics
+// ────────────────────────────────────────────────────────────────
+
+@Override
+public DashboardAnalyticsResponse getAnalytics() {
+
+    // Average market value by property type
+    List<DashboardAnalyticsResponse.AvgValueByType> avgValueByType =
+            propertyRepository.averageValueByType()
+                    .stream()
+                    .map(row -> DashboardAnalyticsResponse.AvgValueByType.builder()
+                            .type(row[0] != null ? row[0].toString() : "Unknown")
+                            .avgValue(
+                                    row[1] != null
+                                            ? ((Number) row[1]).doubleValue()
+                                            : 0)
+                            .build())
+                    .collect(Collectors.toList());
+
+    // Average price per sqft by city
+    List<DashboardAnalyticsResponse.PricePerSqftByCity> pricePerSqftByCity =
+            propertyRepository.averagePricePerSqftByCity()
+                    .stream()
+                    .limit(6)
+                    .map(row -> DashboardAnalyticsResponse.PricePerSqftByCity.builder()
+                            .city(row[0] != null ? row[0].toString() : "Unknown")
+                            .pricePerSqft(
+                                    row[1] != null
+                                            ? ((Number) row[1]).doubleValue()
+                                            : 0)
+                            .build())
+                    .collect(Collectors.toList());
+
+    // Verification rate by city
+    List<DashboardAnalyticsResponse.VerificationRateByCity> verificationRateByCity =
+            propertyRepository.verificationStatsByCity()
+                    .stream()
+                    .limit(6)
+                    .map(row -> {
+                        long total = row[1] != null
+                                ? ((Number) row[1]).longValue()
+                                : 0;
+
+                        long verified = row[2] != null
+                                ? ((Number) row[2]).longValue()
+                                : 0;
+
+                        double rate = total > 0
+                                ? ((double) verified / total) * 100.0
+                                : 0;
+
+                        return DashboardAnalyticsResponse.VerificationRateByCity
+                                .builder()
+                                .city(row[0] != null
+                                        ? row[0].toString()
+                                        : "Unknown")
+                                .rate(Math.round(rate))
+                                .build();
+                    })
+                    .collect(Collectors.toList());
+
+    // Portfolio concentration
+    List<Object[]> cityRows = propertyRepository.aggregateByCity();
+    long totalProperties = propertyRepository.count();
+
+    DashboardAnalyticsResponse.PortfolioConcentration concentration = null;
+
+    if (!cityRows.isEmpty() && totalProperties > 0) {
+        Object[] top = cityRows.get(0);
+
+        String topCity = top[0] != null
+                ? top[0].toString()
+                : "Unknown";
+
+        long propertyCount = top[1] != null
+                ? ((Number) top[1]).longValue()
+                : 0;
+
+        int pct = (int) Math.round(
+                ((double) propertyCount / totalProperties) * 100.0
+        );
+
+        concentration =
+                DashboardAnalyticsResponse.PortfolioConcentration.builder()
+                        .topCity(topCity)
+                        .propertyCount(propertyCount)
+                        .pct(pct)
+                        .build();
+    }
+
+    return DashboardAnalyticsResponse.builder()
+            .avgValueByType(avgValueByType)
+            .pricePerSqftByCity(pricePerSqftByCity)
+            .verificationRateByCity(verificationRateByCity)
+            .portfolioConcentration(concentration)
+            .build();
 }
 }
