@@ -122,4 +122,66 @@ Integer countDistinctCitiesByUser(@Param("userId") Long userId);
 @Query("SELECT p FROM Property p " +
        "WHERE p.latitude IS NOT NULL AND p.longitude IS NOT NULL")
 List<Property> findAllWithCoordinates();
+
+    // ────────────────────────────────────────────────────────────────
+    // NEW — Per-user filtered queries (data isolation)
+    // ────────────────────────────────────────────────────────────────
+
+    List<Property> findByCreatedById(Long userId);
+
+    List<Property> findTop5ByCreatedByIdOrderByCreatedAtDesc(Long userId);
+
+    @Query("SELECT p FROM Property p WHERE p.createdBy.id = :userId AND (" +
+           "LOWER(p.address)      LIKE %:q% OR " +
+           "LOWER(p.city)         LIKE %:q% OR " +
+           "LOWER(p.state)        LIKE %:q% OR " +
+           "LOWER(p.zipCode)      LIKE %:q% OR " +
+           "LOWER(p.propertyType) LIKE %:q%)")
+    List<Property> searchByKeywordAndUser(@Param("q") String q, @Param("userId") Long userId);
+
+    @Query("SELECT p FROM Property p " +
+           "WHERE p.createdBy.id = :userId " +
+           "AND p.latitude IS NOT NULL AND p.longitude IS NOT NULL")
+    List<Property> findAllWithCoordinatesByUser(@Param("userId") Long userId);
+
+    // ────────────────────────────────────────────────────────────────
+    // Dashboard: per-user filtered queries
+    // ────────────────────────────────────────────────────────────────
+
+    @Query("SELECT COUNT(p) FROM Property p WHERE p.createdBy.id = :userId")
+long countByCreatedByIdLong(@Param("userId") Long userId);
+
+    @Query("SELECT COUNT(p) FROM Property p WHERE p.createdBy.id = :userId AND p.verified = true")
+    long countVerifiedByUserLong(@Param("userId") Long userId);
+
+    @Query("SELECT COUNT(p) FROM Property p WHERE p.createdBy.id = :userId AND p.verified = false")
+    long countPendingByUserLong(@Param("userId") Long userId);
+
+    @Query("SELECT COALESCE(AVG(p.marketValue), 0) FROM Property p " +
+           "WHERE p.createdBy.id = :userId AND p.marketValue IS NOT NULL")
+    double averageMarketValueByUser(@Param("userId") Long userId);
+
+    @Query("SELECT p FROM Property p WHERE p.createdBy.id = :userId " +
+           "AND p.marketValue IS NOT NULL ORDER BY p.marketValue DESC")
+    List<Property> findTopByMarketValueForUser(@Param("userId") Long userId);
+
+    @Query("SELECT p.propertyType, COUNT(p), COALESCE(SUM(p.marketValue), 0) " +
+           "FROM Property p WHERE p.createdBy.id = :userId " +
+           "GROUP BY p.propertyType ORDER BY COUNT(p) DESC")
+    List<Object[]> aggregateByTypeForUser(@Param("userId") Long userId);
+
+    @Query("SELECT p.city, COUNT(p) FROM Property p " +
+           "WHERE p.createdBy.id = :userId AND p.city IS NOT NULL " +
+           "GROUP BY p.city ORDER BY COUNT(p) DESC")
+    List<Object[]> aggregateByCityForUser(@Param("userId") Long userId);
+
+    List<Property> findTop30ByCreatedByIdOrderByUpdatedAtDesc(Long userId);
+
+    long countByCreatedByIdAndCreatedAtBetween(Long userId, LocalDateTime start, LocalDateTime end);
+
+    @Query("SELECT COUNT(p) FROM Property p WHERE p.createdBy.id = :userId " +
+           "AND p.verified = true AND p.updatedAt BETWEEN :start AND :end")
+    long countVerifiedByUserBetween(@Param("userId") Long userId,
+                                    @Param("start") LocalDateTime start,
+                                    @Param("end") LocalDateTime end);
 }

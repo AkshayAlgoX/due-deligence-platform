@@ -30,7 +30,11 @@ import com.realestate.duediligence.integration.tax.TaxHistoryProvider;
 import com.realestate.duediligence.integration.tax.TaxRecord;
 import com.realestate.duediligence.integration.zoning.ZoningInfo;
 import com.realestate.duediligence.integration.zoning.ZoningProvider;
+import com.realestate.duediligence.entity.User;
 import com.realestate.duediligence.repository.PropertyRepository;
+import com.realestate.duediligence.repository.UserRepository;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import com.realestate.duediligence.entity.PropertyDueDiligenceSnapshot;
 import com.realestate.duediligence.repository.PropertyDueDiligenceSnapshotRepository;
 
@@ -55,6 +59,7 @@ public class PropertyAggregationService {
     private static final long OVERALL_TIMEOUT_SECONDS = 8;
 
     private final PropertyRepository propertyRepository;
+    private final UserRepository userRepository;
 
     // All 6 providers — optional so aggregation still works if any bean is missing.
     // Once Member 2 wires their implementations, these auto-inject.
@@ -72,6 +77,7 @@ public class PropertyAggregationService {
     @Autowired
     public PropertyAggregationService(
             PropertyRepository propertyRepository,
+            UserRepository userRepository,
             PropertyDueDiligenceSnapshotRepository snapshotRepository,
             ObjectMapper objectMapper,
             @Autowired(required = false) OwnershipProvider ownershipProvider,
@@ -82,6 +88,7 @@ public class PropertyAggregationService {
             @Autowired(required = false) EnvironmentalProvider environmentalProvider,
             @Qualifier("integrationExecutor") Executor executor) {
         this.propertyRepository = propertyRepository;
+        this.userRepository = userRepository;
         this.snapshotRepository = snapshotRepository;
         this.objectMapper = objectMapper;
         this.ownershipProvider = ownershipProvider;
@@ -93,12 +100,21 @@ public class PropertyAggregationService {
         this.executor = executor;
     }
 
-    @Cacheable(value = "propertyAggregation", key = "#propertyId")
+    @Cacheable(value = "propertyAggregation", key = "#propertyId + '_' + T(org.springframework.security.core.context.SecurityContextHolder).getContext().getAuthentication().getName()")
     public AggregatedPropertyResponse aggregate(Long propertyId) {
         long start = System.currentTimeMillis();
 
         Property property = propertyRepository.findById(propertyId)
                 .orElseThrow(() -> new RuntimeException("Property not found: " + propertyId));
+
+        // Ownership check — admin bypasses, others must own it
+        User currentUser = resolveCurrentUser();
+        boolean isAdmin = currentUser != null &&
+                "ADMIN".equals(currentUser.getRole().getRoleName().name());
+        if (!isAdmin && (currentUser == null || property.getCreatedBy() == null ||
+                !property.getCreatedBy().getId().equals(currentUser.getId()))) {
+            throw new RuntimeException("Property not found: " + propertyId);
+        }
 
         // Fire all 6 providers in parallel
         CompletableFuture<IntegrationResponse<OwnershipRecord>> ownershipF = callProvider(ownershipProvider, property,
@@ -248,6 +264,17 @@ public class PropertyAggregationService {
         r.setStructureType(p.getStructureType());
         r.setCondition(p.getCondition());
         return r;
+    }
+
+    private User resolveCurrentUser() {
+        try {
+            Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+            if (auth == null || !auth.isAuthenticated())
+                return null;
+            return userRepository.findByEmail(auth.getName()).orElse(null);
+        } catch (Exception e) {
+            return null;
+        }
     }
     // ── Persistence ─────────────────────────────────────────────────
 

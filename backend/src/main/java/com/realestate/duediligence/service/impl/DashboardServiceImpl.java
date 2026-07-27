@@ -4,16 +4,16 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
-import java.util.Map;
 import java.util.stream.Collectors;
 
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 import com.realestate.duediligence.dto.ActivityItemResponse;
 import com.realestate.duediligence.dto.DashboardStatsResponse;
 import com.realestate.duediligence.dto.DashboardTrendsResponse;
 import com.realestate.duediligence.dto.PortfolioInsightsResponse;
-import com.realestate.duediligence.dto.RecommendationResponse;
 import com.realestate.duediligence.entity.Property;
 import com.realestate.duediligence.entity.User;
 import com.realestate.duediligence.repository.PropertyRepository;
@@ -21,6 +21,8 @@ import com.realestate.duediligence.repository.UserRepository;
 import com.realestate.duediligence.service.DashboardService;
 
 import lombok.RequiredArgsConstructor;
+import com.realestate.duediligence.dto.RecommendationResponse;
+import java.util.Map;
 
 @Service
 @RequiredArgsConstructor
@@ -33,15 +35,27 @@ public class DashboardServiceImpl implements DashboardService {
     // getStats — existing (unchanged behavior + activeUsers added)
     // ────────────────────────────────────────────────────────────────
 
-    @Override
+        @Override
     public DashboardStatsResponse getStats() {
-        long totalProperties    = propertyRepository.count();
-        long verifiedProperties = propertyRepository.countByVerifiedTrue();
-        long pendingProperties  = propertyRepository.countByVerifiedFalse();
-        long totalUsers         = userRepository.count();
+        User currentUser = resolveCurrentUser();
+        boolean admin = isAdmin();
 
+        long totalProperties, verifiedProperties, pendingProperties;
+
+        if (admin || currentUser == null) {
+            totalProperties    = propertyRepository.count();
+            verifiedProperties = propertyRepository.countByVerifiedTrue();
+            pendingProperties  = propertyRepository.countByVerifiedFalse();
+        } else {
+            Long uid = currentUser.getId();
+            totalProperties    = propertyRepository.countByCreatedByIdLong(uid);
+            verifiedProperties = propertyRepository.countVerifiedByUserLong(uid);
+            pendingProperties  = propertyRepository.countPendingByUserLong(uid);
+        }
+
+        long totalUsers  = admin ? userRepository.count() : 1;
         LocalDateTime thirtyDaysAgo = LocalDateTime.now().minusDays(30);
-        long activeUsers = userRepository.countActiveUsersSince(thirtyDaysAgo);
+        long activeUsers = admin ? userRepository.countActiveUsersSince(thirtyDaysAgo) : 1;
 
         return DashboardStatsResponse.builder()
                 .totalProperties(totalProperties)
@@ -64,14 +78,35 @@ public class DashboardServiceImpl implements DashboardService {
     // getPortfolioInsights — NEW
     // ────────────────────────────────────────────────────────────────
 
-    @Override
+        @Override
     public PortfolioInsightsResponse getPortfolioInsights() {
-        double totalValue = propertyRepository.sumMarketValue();
-        double avgValue   = propertyRepository.averageMarketValue();
-        long totalCities  = propertyRepository.countDistinctCities();
+        User currentUser = resolveCurrentUser();
+        boolean admin = isAdmin();
 
-        // Highest value property
-        List<Property> topByValue = propertyRepository.findTopByMarketValue();
+        double totalValue, avgValue;
+        long totalCities;
+        List<Property> topByValue;
+        List<Object[]> typeRows, cityRows;
+
+        if (admin || currentUser == null) {
+            totalValue  = propertyRepository.sumMarketValue();
+            avgValue    = propertyRepository.averageMarketValue();
+            totalCities = propertyRepository.countDistinctCities();
+            topByValue  = propertyRepository.findTopByMarketValue();
+            typeRows    = propertyRepository.aggregateByType();
+            cityRows    = propertyRepository.aggregateByCity();
+        } else {
+            Long uid = currentUser.getId();
+            Double sum = propertyRepository.sumMarketValueByUser(uid);
+            totalValue  = sum != null ? sum : 0;
+            avgValue    = propertyRepository.averageMarketValueByUser(uid);
+            Integer cc  = propertyRepository.countDistinctCitiesByUser(uid);
+            totalCities = cc != null ? cc : 0;
+            topByValue  = propertyRepository.findTopByMarketValueForUser(uid);
+            typeRows    = propertyRepository.aggregateByTypeForUser(uid);
+            cityRows    = propertyRepository.aggregateByCityForUser(uid);
+        }
+
         PortfolioInsightsResponse.HighlightProperty highlight = null;
         if (!topByValue.isEmpty()) {
             Property p = topByValue.get(0);
@@ -84,7 +119,6 @@ public class DashboardServiceImpl implements DashboardService {
         }
 
         // Distribution by type
-        List<Object[]> typeRows = propertyRepository.aggregateByType();
         List<PortfolioInsightsResponse.TypeDistribution> byType = typeRows.stream()
                 .map(row -> PortfolioInsightsResponse.TypeDistribution.builder()
                         .propertyType(row[0] != null ? (String) row[0] : "Unknown")
@@ -94,7 +128,6 @@ public class DashboardServiceImpl implements DashboardService {
                 .collect(Collectors.toList());
 
         // Distribution by city (top 10)
-        List<Object[]> cityRows = propertyRepository.aggregateByCity();
         List<PortfolioInsightsResponse.CityDistribution> byCity = cityRows.stream()
                 .limit(10)
                 .map(row -> PortfolioInsightsResponse.CityDistribution.builder()
@@ -123,7 +156,10 @@ public class DashboardServiceImpl implements DashboardService {
 
     @Override
     public List<ActivityItemResponse> getRecentActivity(int limit) {
-        List<Property> recent = propertyRepository.findTop30ByOrderByUpdatedAtDesc();
+        User currentUser = resolveCurrentUser();
+        List<Property> recent = (isAdmin() || currentUser == null)
+                ? propertyRepository.findTop30ByOrderByUpdatedAtDesc()
+                : propertyRepository.findTop30ByCreatedByIdOrderByUpdatedAtDesc(currentUser.getId());
 
         List<ActivityItemResponse> items = new ArrayList<>();
 
@@ -176,20 +212,32 @@ public class DashboardServiceImpl implements DashboardService {
     // getTrends — NEW
     // ────────────────────────────────────────────────────────────────
 
-    @Override
+        @Override
     public DashboardTrendsResponse getTrends() {
-        LocalDateTime now         = LocalDateTime.now();
-        LocalDateTime weekAgo     = now.minusDays(7);
+        User currentUser = resolveCurrentUser();
+        boolean admin = isAdmin();
+
+        LocalDateTime now = LocalDateTime.now();
+        LocalDateTime weekAgo = now.minusDays(7);
         LocalDateTime twoWeeksAgo = now.minusDays(14);
 
-        long propsThisWeek     = propertyRepository.countByCreatedAtBetween(weekAgo, now);
-        long propsLastWeek     = propertyRepository.countByCreatedAtBetween(twoWeeksAgo, weekAgo);
+        long propsThisWeek, propsLastWeek, verifiedThisWeek, verifiedLastWeek;
 
-        long verifiedThisWeek  = propertyRepository.countByVerifiedTrueAndUpdatedAtBetween(weekAgo, now);
-        long verifiedLastWeek  = propertyRepository.countByVerifiedTrueAndUpdatedAtBetween(twoWeeksAgo, weekAgo);
+        if (admin || currentUser == null) {
+            propsThisWeek    = propertyRepository.countByCreatedAtBetween(weekAgo, now);
+            propsLastWeek    = propertyRepository.countByCreatedAtBetween(twoWeeksAgo, weekAgo);
+            verifiedThisWeek = propertyRepository.countByVerifiedTrueAndUpdatedAtBetween(weekAgo, now);
+            verifiedLastWeek = propertyRepository.countByVerifiedTrueAndUpdatedAtBetween(twoWeeksAgo, weekAgo);
+        } else {
+            Long uid = currentUser.getId();
+            propsThisWeek    = propertyRepository.countByCreatedByIdAndCreatedAtBetween(uid, weekAgo, now);
+            propsLastWeek    = propertyRepository.countByCreatedByIdAndCreatedAtBetween(uid, twoWeeksAgo, weekAgo);
+            verifiedThisWeek = propertyRepository.countVerifiedByUserBetween(uid, weekAgo, now);
+            verifiedLastWeek = propertyRepository.countVerifiedByUserBetween(uid, twoWeeksAgo, weekAgo);
+        }
 
-        long usersThisWeek     = userRepository.countByCreatedAtBetween(weekAgo, now);
-        long usersLastWeek     = userRepository.countByCreatedAtBetween(twoWeeksAgo, weekAgo);
+        long usersThisWeek = admin ? userRepository.countByCreatedAtBetween(weekAgo, now) : 0;
+        long usersLastWeek = admin ? userRepository.countByCreatedAtBetween(twoWeeksAgo, weekAgo) : 0;
 
         return DashboardTrendsResponse.builder()
                 .propertiesThisWeek(propsThisWeek)
@@ -233,7 +281,10 @@ public class DashboardServiceImpl implements DashboardService {
 @Override
 public List<RecommendationResponse> getRecommendations() {
     List<RecommendationResponse> results = new ArrayList<>();
-    List<Property> all = propertyRepository.findAll();
+    User currentUser = resolveCurrentUser();
+    List<Property> all = (isAdmin() || currentUser == null)
+            ? propertyRepository.findAll()
+            : propertyRepository.findByCreatedById(currentUser.getId());
 
     if (all.isEmpty()) return results;
 
@@ -383,4 +434,22 @@ private int countMissingFields(Property p) {
     if (p.getBathrooms()    == null)                                   missing++;
     return missing;
 }
+
+    /** Resolve current user from JWT. Returns null if unauthenticated. */
+    private User resolveCurrentUser() {
+        try {
+            Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+            if (auth == null || !auth.isAuthenticated()) return null;
+            return userRepository.findByEmail(auth.getName()).orElse(null);
+        } catch (Exception e) {
+            return null;
+        }
+    }
+
+    /** True if current user has ADMIN role. */
+    private boolean isAdmin() {
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        return auth != null && auth.getAuthorities().stream()
+                .anyMatch(a -> a.getAuthority().equals("ROLE_ADMIN"));
+    }
 }
