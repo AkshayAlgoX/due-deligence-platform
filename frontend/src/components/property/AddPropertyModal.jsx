@@ -23,12 +23,15 @@ import {
   Bath,
   Layers,
   Calendar,
+  Sparkles,
 } from "lucide-react";
+
 
 import { addProperty } from "@/services/propertyService";
 import ImageUploader from "./ImageUploader";
 import SearchableSelect from "@/components/ui/SearchableSelect";
 import { INDIAN_STATES, INDIAN_CITIES } from "@/constants/indianLocations";
+import { useAddressAutocomplete } from "@/hooks/useAddressAutocomplete";
 
 const PROPERTY_TYPES = [
   { value: "Residential", label: "Residential",  icon: Home,      color: "text-blue-600 bg-blue-50",     desc: "Home, apartment, villa" },
@@ -51,6 +54,8 @@ const INITIAL_FORM = {
   bathrooms: "",
   stories: "",
   imageUrl: null,
+  latitude: null,      // ← NEW
+  longitude: null,     // ← NEW
 };
 
 const VERIFICATION_FIELDS = [
@@ -64,14 +69,23 @@ export default function AddPropertyModal({ isOpen, onClose, onSuccess }) {
   const [errors, setErrors] = useState({});
   const [submitting, setSubmitting] = useState(false);
   const [typeDropdownOpen, setTypeDropdownOpen] = useState(false);
+  const [addressSuggestionsOpen, setAddressSuggestionsOpen] = useState(false);
+  const [addressWasPicked, setAddressWasPicked] = useState(false);
   const modalRef = useRef(null);
   const addressInputRef = useRef(null);
+  const addressWrapperRef = useRef(null);
   const typeDropdownRef = useRef(null);
+
+  const { suggestions, loading: suggestionsLoading } = useAddressAutocomplete(
+    addressWasPicked ? "" : form.address
+  );
 
   useEffect(() => {
     if (isOpen) {
       setForm(INITIAL_FORM);
       setErrors({});
+      setAddressWasPicked(false);
+      setAddressSuggestionsOpen(false);
       setTimeout(() => addressInputRef.current?.focus(), 150);
     }
   }, [isOpen]);
@@ -92,24 +106,47 @@ export default function AddPropertyModal({ isOpen, onClose, onSuccess }) {
     };
   }, [isOpen, onClose, typeDropdownOpen]);
 
-  useEffect(() => {
-    if (!typeDropdownOpen) return;
+    useEffect(() => {
+    if (!addressSuggestionsOpen) return;
     const handler = (e) => {
-      if (typeDropdownRef.current && !typeDropdownRef.current.contains(e.target)) {
-        setTypeDropdownOpen(false);
+      if (addressWrapperRef.current && !addressWrapperRef.current.contains(e.target)) {
+        setAddressSuggestionsOpen(false);
       }
     };
     document.addEventListener("mousedown", handler);
     return () => document.removeEventListener("mousedown", handler);
-  }, [typeDropdownOpen]);
+  }, [addressSuggestionsOpen]);
 
   const handleBackdropClick = (e) => {
     if (modalRef.current && !modalRef.current.contains(e.target)) onClose();
   };
 
-  const handleChange = (field) => (e) => {
+
+    const handleChange = (field) => (e) => {
     setForm((prev) => ({ ...prev, [field]: e.target.value }));
     if (errors[field]) setErrors((prev) => ({ ...prev, [field]: "" }));
+  };
+
+  const handleAddressChange = (e) => {
+    setForm((prev) => ({ ...prev, address: e.target.value }));
+    if (errors.address) setErrors((prev) => ({ ...prev, address: "" }));
+    setAddressWasPicked(false);
+    setAddressSuggestionsOpen(true);
+  };
+
+  const handleAddressPick = (s) => {
+    setForm((prev) => ({
+      ...prev,
+      address: s.address || s.displayName.split(",")[0],
+      city: s.city || prev.city,
+      state: s.state || prev.state,
+      zipCode: s.zipCode || prev.zipCode,
+      latitude: s.lat ? parseFloat(s.lat) : null,   // ← NEW
+    longitude: s.lon ? parseFloat(s.lon) : null,  // ← NEW
+    }));
+    setAddressWasPicked(true);
+    setAddressSuggestionsOpen(false);
+    setErrors((prev) => ({ ...prev, address: "", city: "", zipCode: "" }));
   };
 
   const handleSelectChange = (field) => (val) => {
@@ -212,6 +249,8 @@ export default function AddPropertyModal({ isOpen, onClose, onSuccess }) {
         bathrooms:    form.bathrooms ? parseInt(form.bathrooms) : null,
         stories:      form.stories ? parseInt(form.stories) : null,
         imageUrl:     form.imageUrl || null,
+        latitude:     form.latitude,      // ← NEW
+  longitude:    form.longitude,     // ← NEW
       });
 
       if (willBeVerified) {
@@ -335,17 +374,67 @@ export default function AddPropertyModal({ isOpen, onClose, onSuccess }) {
 
           {/* Location */}
           <FormSection title="Location" subtitle="Where is this property?">
-            <Field label="Street address" icon={Home} required error={errors.address} hint={form.address ? `${form.address.length} characters` : null}>
-              <input
-                ref={addressInputRef}
-                type="text"
-                value={form.address}
-                onChange={handleChange("address")}
-                placeholder="742 Evergreen Terrace"
-                disabled={submitting}
-                className={inputCls(errors.address)}
-              />
-            </Field>
+            <div ref={addressWrapperRef} className="relative">
+              <Field
+                label="Street address"
+                icon={Home}
+                required
+                error={errors.address}
+                hint={form.address ? `${form.address.length} characters` : null}
+              >
+                <input
+                  ref={addressInputRef}
+                  type="text"
+                  value={form.address}
+                  onChange={handleAddressChange}
+                  onFocus={() => {
+                    if (form.address.trim().length >= 3 && !addressWasPicked) {
+                      setAddressSuggestionsOpen(true);
+                    }
+                  }}
+                  placeholder="Start typing an address..."
+                  disabled={submitting}
+                  autoComplete="off"
+                  className={inputCls(errors.address)}
+                />
+                {suggestionsLoading && (
+                  <Loader2 className="absolute right-3 top-1/2 h-4 w-4 -translate-y-1/2 animate-spin text-gray-400" />
+                )}
+              </Field>
+
+              {addressSuggestionsOpen && suggestions.length > 0 && (
+                <div className="absolute z-30 mt-1 left-0 right-0 rounded-xl border border-gray-100 bg-white shadow-[0_20px_50px_rgba(0,0,0,0.15)] overflow-hidden animate-in fade-in slide-in-from-top-2 duration-150">
+                  <div className="max-h-64 overflow-y-auto">
+                    {suggestions.map((s) => (
+                      <button
+                        key={s.id}
+                        type="button"
+                        onClick={() => handleAddressPick(s)}
+                        className="w-full flex items-start gap-3 px-3 py-2.5 text-left transition-colors border-b border-gray-50 last:border-b-0 hover:bg-green-50/50"
+                      >
+                        <div className="flex h-7 w-7 flex-shrink-0 items-center justify-center rounded-lg bg-gray-50 mt-0.5">
+                          <MapPin className="h-3.5 w-3.5 text-gray-500" strokeWidth={2.2} />
+                        </div>
+                        <div className="flex-1 min-w-0">
+                          <p className="text-sm font-semibold text-gray-900 truncate leading-tight">
+                            {s.address || s.displayName.split(",")[0]}
+                          </p>
+                          <p className="text-[11px] text-gray-500 truncate mt-0.5">
+                            {[s.city, s.state, s.zipCode].filter(Boolean).join(", ")}
+                          </p>
+                        </div>
+                      </button>
+                    ))}
+                  </div>
+                  <div className="flex items-center gap-1.5 border-t border-gray-100 bg-gray-50/70 px-3 py-1.5">
+                    <Sparkles className="h-3 w-3 text-gray-400" />
+                    <p className="text-[10px] text-gray-400">
+                      Powered by OpenStreetMap
+                    </p>
+                  </div>
+                </div>
+              )}
+            </div>
 
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
               <Field label="City" icon={Building2} required error={errors.city}>

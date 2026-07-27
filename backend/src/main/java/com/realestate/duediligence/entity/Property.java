@@ -105,4 +105,9 @@ public class Property {
     protected void onUpdate() {
         this.updatedAt = LocalDateTime.now();
     }
+    @Column(name = "latitude")
+private Double latitude;
+
+@Column(name = "longitude")
+private Double longitude;
 }

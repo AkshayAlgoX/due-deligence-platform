@@ -18,20 +18,26 @@ export const API_ROUTES = {
   VERIFY_OTP: "/api/auth/verify-otp",
   RESET_PASSWORD: "/api/auth/reset-password",
   UPDATE_PROFILE: "/api/auth/me",
-CHANGE_PASSWORD: "/api/auth/change-password",
-
+  CHANGE_PASSWORD: "/api/auth/change-password",
 
   // ── Properties ────────────────────────────────────────────────────────────
   PROPERTIES:      "/api/properties",
   PROPERTY_BY_ID:  (id) => `/api/properties/${id}`,
   PROPERTY_AGGREGATED: (id) => `/api/properties/${id}/aggregated`,
   PROPERTY_SEARCH: "/api/properties/search",
-  PROPERTIES_RECENT: "/api/properties/recent",   // NEW
+  PROPERTIES_RECENT: "/api/properties/recent",
+  PROPERTIES_GEO: "/api/properties/geo",
+  PROPERTY_RISK: (id) => `/api/properties/${id}/risk`,
 
   // ── Dashboard ─────────────────────────────────────────────────────────────
-  DASHBOARD_STATS:  "/api/dashboard/stats",
-  BUYER_DASHBOARD:  "/api/buyer/dashboard",
-  ADMIN_DASHBOARD:  "/api/admin/dashboard",
+  DASHBOARD_STATS:    "/api/dashboard/stats",
+  DASHBOARD_INSIGHTS: "/api/dashboard/insights",
+  DASHBOARD_ACTIVITY: "/api/dashboard/activity",
+  DASHBOARD_TRENDS:   "/api/dashboard/trends",
+  BUYER_DASHBOARD:    "/api/buyer/dashboard",
+  ADMIN_DASHBOARD:    "/api/admin/dashboard",
+  DASHBOARD_HISTORY: "/api/dashboard/history",
+  DASHBOARD_RECOMMENDATIONS: "/api/dashboard/recommendations",
 
   // ── Admin ─────────────────────────────────────────────────────────────────
   ADMIN_USERS: "/api/admin/users",

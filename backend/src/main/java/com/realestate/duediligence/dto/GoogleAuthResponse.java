@@ -31,4 +31,5 @@ public class GoogleAuthResponse {
 
     /** Profile picture from Google — used in UI */
     private String picture;
+    
 }

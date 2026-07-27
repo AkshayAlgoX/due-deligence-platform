@@ -55,4 +55,6 @@ public class PropertyRequest {
     private Integer stories;
     private String structureType;
     private String condition;
+    private Double latitude;
+private Double longitude;
 }
