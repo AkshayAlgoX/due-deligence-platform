@@ -6,6 +6,7 @@ import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.Executor;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -13,7 +14,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
-
 import com.realestate.duediligence.dto.PropertyResponse;
 import com.realestate.duediligence.entity.Property;
 import com.realestate.duediligence.integration.common.IntegrationResponse;
@@ -31,20 +31,22 @@ import com.realestate.duediligence.integration.tax.TaxRecord;
 import com.realestate.duediligence.integration.zoning.ZoningInfo;
 import com.realestate.duediligence.integration.zoning.ZoningProvider;
 import com.realestate.duediligence.repository.PropertyRepository;
+import com.realestate.duediligence.entity.PropertyDueDiligenceSnapshot;
+import com.realestate.duediligence.repository.PropertyDueDiligenceSnapshotRepository;
 
 /**
  * Orchestrates parallel calls to all 6 integration providers.
  *
  * Design:
- *   - All providers called in parallel via CompletableFuture
- *   - Per-provider timeout: 5 seconds (enforced by provider itself)
- *   - Overall aggregation timeout: 8 seconds (safety net)
- *   - Providers that fail return graceful IntegrationResponse.unavailable()
- *   - Frontend gets the SAME response shape regardless of provider status
+ * - All providers called in parallel via CompletableFuture
+ * - Per-provider timeout: 5 seconds (enforced by provider itself)
+ * - Overall aggregation timeout: 8 seconds (safety net)
+ * - Providers that fail return graceful IntegrationResponse.unavailable()
+ * - Frontend gets the SAME response shape regardless of provider status
  *
  * SLA:
- *   Total response < 2s when all providers healthy
- *   Total response < 8s worst case (all providers slow)
+ * Total response < 2s when all providers healthy
+ * Total response < 8s worst case (all providers slow)
  */
 @Service
 public class PropertyAggregationService {
@@ -62,12 +64,16 @@ public class PropertyAggregationService {
     private final FloodZoneProvider floodZoneProvider;
     private final PermitProvider permitProvider;
     private final EnvironmentalProvider environmentalProvider;
+    private final PropertyDueDiligenceSnapshotRepository snapshotRepository;
+    private final ObjectMapper objectMapper;
 
     private final Executor executor;
 
     @Autowired
     public PropertyAggregationService(
             PropertyRepository propertyRepository,
+            PropertyDueDiligenceSnapshotRepository snapshotRepository,
+            ObjectMapper objectMapper,
             @Autowired(required = false) OwnershipProvider ownershipProvider,
             @Autowired(required = false) TaxHistoryProvider taxHistoryProvider,
             @Autowired(required = false) ZoningProvider zoningProvider,
@@ -76,6 +82,8 @@ public class PropertyAggregationService {
             @Autowired(required = false) EnvironmentalProvider environmentalProvider,
             @Qualifier("integrationExecutor") Executor executor) {
         this.propertyRepository = propertyRepository;
+        this.snapshotRepository = snapshotRepository;
+        this.objectMapper = objectMapper;
         this.ownershipProvider = ownershipProvider;
         this.taxHistoryProvider = taxHistoryProvider;
         this.zoningProvider = zoningProvider;
@@ -93,23 +101,22 @@ public class PropertyAggregationService {
                 .orElseThrow(() -> new RuntimeException("Property not found: " + propertyId));
 
         // Fire all 6 providers in parallel
-        CompletableFuture<IntegrationResponse<OwnershipRecord>> ownershipF =
-                callProvider(ownershipProvider, property, "ownership");
+        CompletableFuture<IntegrationResponse<OwnershipRecord>> ownershipF = callProvider(ownershipProvider, property,
+                "ownership");
 
-        CompletableFuture<IntegrationResponse<List<TaxRecord>>> taxF =
-                callProvider(taxHistoryProvider, property, "taxHistory");
+        CompletableFuture<IntegrationResponse<List<TaxRecord>>> taxF = callProvider(taxHistoryProvider, property,
+                "taxHistory");
 
-        CompletableFuture<IntegrationResponse<ZoningInfo>> zoningF =
-                callProvider(zoningProvider, property, "zoning");
+        CompletableFuture<IntegrationResponse<ZoningInfo>> zoningF = callProvider(zoningProvider, property, "zoning");
 
-        CompletableFuture<IntegrationResponse<FloodZoneInfo>> floodF =
-                callProvider(floodZoneProvider, property, "floodZone");
+        CompletableFuture<IntegrationResponse<FloodZoneInfo>> floodF = callProvider(floodZoneProvider, property,
+                "floodZone");
 
-        CompletableFuture<IntegrationResponse<List<PermitRecord>>> permitF =
-                callProvider(permitProvider, property, "permits");
+        CompletableFuture<IntegrationResponse<List<PermitRecord>>> permitF = callProvider(permitProvider, property,
+                "permits");
 
-        CompletableFuture<IntegrationResponse<EnvironmentalInfo>> envF =
-                callProvider(environmentalProvider, property, "environmental");
+        CompletableFuture<IntegrationResponse<EnvironmentalInfo>> envF = callProvider(environmentalProvider, property,
+                "environmental");
 
         // Wait for all, capped at overall timeout
         try {
@@ -131,7 +138,7 @@ public class PropertyAggregationService {
 
         long duration = System.currentTimeMillis() - start;
 
-        return AggregatedPropertyResponse.builder()
+        AggregatedPropertyResponse result = AggregatedPropertyResponse.builder()
                 .property(mapProperty(property))
                 .ownership(ownership)
                 .taxHistory(tax)
@@ -144,6 +151,10 @@ public class PropertyAggregationService {
                 .aggregatedAt(Instant.now())
                 .totalDurationMs(duration)
                 .build();
+
+        persistSnapshot(property, result);
+
+        return result;
     }
 
     // ── Parallel call with fallback ────────────────────────────────
@@ -202,12 +213,15 @@ public class PropertyAggregationService {
         for (IntegrationResponse<?> section : sections) {
             switch (section.getStatus()) {
                 case UNAVAILABLE, TIMEOUT, ERROR -> failed++;
-                default -> { /* success or mock counts as OK */ }
+                default -> {
+                    /* success or mock counts as OK */ }
             }
         }
 
-        if (failed == 0) return AggregatedPropertyResponse.OverallStatus.OK;
-        if (failed >= total / 2) return AggregatedPropertyResponse.OverallStatus.DEGRADED;
+        if (failed == 0)
+            return AggregatedPropertyResponse.OverallStatus.OK;
+        if (failed >= total / 2)
+            return AggregatedPropertyResponse.OverallStatus.DEGRADED;
         return AggregatedPropertyResponse.OverallStatus.PARTIAL;
     }
 
@@ -235,4 +249,47 @@ public class PropertyAggregationService {
         r.setCondition(p.getCondition());
         return r;
     }
+    // ── Persistence ─────────────────────────────────────────────────
+
+    /**
+     * Saves a durable snapshot of this aggregation run.
+     * Never throws — a persistence failure must not break the API response,
+     * since the frontend already has the data it needs.
+     */
+    private void persistSnapshot(Property property, AggregatedPropertyResponse result) {
+        try {
+            PropertyDueDiligenceSnapshot snapshot = PropertyDueDiligenceSnapshot.builder()
+                    .property(property)
+                    .ownershipJson(toJson(result.getOwnership()))
+                    .taxHistoryJson(toJson(result.getTaxHistory()))
+                    .zoningJson(toJson(result.getZoning()))
+                    .floodZoneJson(toJson(result.getFloodZone()))
+                    .permitsJson(toJson(result.getPermits()))
+                    .environmentalJson(toJson(result.getEnvironmental()))
+                    .overallStatus(result.getOverallStatus() != null
+                            ? result.getOverallStatus().name()
+                            : null)
+                    .totalDurationMs(result.getTotalDurationMs())
+                    .aggregatedAt(result.getAggregatedAt())
+                    .createdAt(Instant.now())
+                    .build();
+
+            snapshotRepository.save(snapshot);
+        } catch (Exception e) {
+            log.warn("Failed to persist due diligence snapshot for property {}: {}",
+                    property.getId(), e.getMessage());
+        }
+    }
+
+    private String toJson(Object value) {
+        if (value == null)
+            return null;
+        try {
+            return objectMapper.writeValueAsString(value);
+        } catch (Exception e) {
+            log.warn("Failed to serialize snapshot section: {}", e.getMessage());
+            return null;
+        }
+    }
+
 }
