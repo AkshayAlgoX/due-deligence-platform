@@ -10,7 +10,7 @@ const nextConfig = {
    *
    * Example: fetch('/api/auth/register') → proxied to http://localhost:8080/api/auth/register
    */
-  async rewrites() {
+    async rewrites() {
     return [
       {
         source: "/api/:path*",

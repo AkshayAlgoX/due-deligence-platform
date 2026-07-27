@@ -24,6 +24,7 @@ import { PropertyCardSkeleton } from "@/components/ui/Skeleton";
 
 import { searchProperties, getPropertyRisk } from "@/services/propertyService";
 import { usePropertyFilters } from "@/hooks/usePropertyFilters";
+import { getUser } from "@/utils/helpers";
 import { useCompareSelection } from "@/hooks/useCompareSelection";
 import CompareBar from "@/components/property/CompareBar";
 
@@ -65,6 +66,11 @@ async function fetchRiskBatch(properties, onResult, signal) {
 function PropertySearchInner() {
   const searchParams = useSearchParams();
   const router = useRouter();
+  // Roles allowed to create properties (LEGAL_REVIEWER + FINANCIAL_INSTITUTION are read-only)
+const currentUser = getUser();
+const canAddProperty =
+  currentUser?.role === "ADMIN" ||
+  ["BUYER", "REAL_ESTATE_AGENT"].includes(currentUser?.role);
 
   const [results, setResults] = useState([]);
   const [allProperties, setAllProperties] = useState([]);
@@ -100,6 +106,10 @@ function PropertySearchInner() {
     isSelected: isInCompare,
     canAddMore: canAddToCompare,
   } = useCompareSelection();
+
+    useEffect(() => {
+    document.title = "Property Search | Real Estate Due Diligence";
+  }, []);
 
   useEffect(() => {
     const interval = setInterval(() => forceTick((t) => t + 1), 30000);
@@ -329,14 +339,16 @@ function PropertySearchInner() {
             </div>
           </div>
 
-          <button
-            onClick={() => setModalOpen(true)}
-            className="group relative flex flex-shrink-0 items-center gap-2 overflow-hidden rounded-xl bg-gradient-to-br from-[#22C55E] to-[#16a34a] px-5 py-2.5 text-sm font-bold text-white shadow-[0_8px_20px_rgba(34,197,94,0.3)] transition-all hover:shadow-[0_12px_30px_rgba(34,197,94,0.45)] hover:scale-[1.02] active:scale-[0.98]"
-          >
-            <span className="absolute inset-0 -translate-x-full bg-gradient-to-r from-transparent via-white/20 to-transparent transition-transform duration-700 group-hover:translate-x-full" />
-            <Plus className="h-4 w-4 relative z-10" strokeWidth={2.5} />
-            <span className="relative z-10">Add property</span>
-          </button>
+          {canAddProperty && (
+  <button
+    onClick={() => setModalOpen(true)}
+    className="group relative flex flex-shrink-0 items-center gap-2 overflow-hidden rounded-xl bg-gradient-to-br from-[#22C55E] to-[#16a34a] px-5 py-2.5 text-sm font-bold text-white shadow-[0_8px_20px_rgba(34,197,94,0.3)] transition-all hover:shadow-[0_12px_30px_rgba(34,197,94,0.45)] hover:scale-[1.02] active:scale-[0.98]"
+  >
+    <span className="absolute inset-0 -translate-x-full bg-gradient-to-r from-transparent via-white/20 to-transparent transition-transform duration-700 group-hover:translate-x-full" />
+    <Plus className="h-4 w-4 relative z-10" strokeWidth={2.5} />
+    <span className="relative z-10">Add property</span>
+  </button>
+)}
         </div>
 
         <div className="mt-6">
@@ -371,13 +383,15 @@ function PropertySearchInner() {
           <p className="mt-1.5 text-sm text-gray-500 max-w-xs">
             Try searching by city name, address, or ZIP code — or add your first property.
           </p>
-          <button
-            onClick={() => setModalOpen(true)}
-            className="mt-6 flex items-center gap-2 rounded-xl bg-[#22C55E] px-5 py-2.5 text-sm font-bold text-white shadow-[0_8px_20px_rgba(34,197,94,0.3)] transition hover:bg-[#16a34a]"
-          >
-            <Plus className="h-4 w-4" />
-            Add your first property
-          </button>
+          {canAddProperty && (
+  <button
+    onClick={() => setModalOpen(true)}
+    className="mt-6 flex items-center gap-2 rounded-xl bg-[#22C55E] px-5 py-2.5 text-sm font-bold text-white shadow-[0_8px_20px_rgba(34,197,94,0.3)] transition hover:bg-[#16a34a]"
+  >
+    <Plus className="h-4 w-4" />
+    Add your first property
+  </button>
+)}
         </div>
       )}
 

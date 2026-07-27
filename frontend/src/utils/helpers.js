@@ -18,6 +18,9 @@ export const saveToken = (token, persistent = true) => {
   window.localStorage.removeItem(TOKEN_KEY);
   window.sessionStorage.removeItem(TOKEN_KEY);
   getStorage(persistent).setItem(TOKEN_KEY, token);
+  // ── NEW: also write cookie so middleware.ts can read it ──
+  const maxAge = persistent ? 60 * 60 * 24 * 7 : 0;
+  document.cookie = `auth_token=${token}; path=/; max-age=${maxAge}; SameSite=Strict`;
 };
 
 /** Retrieve the JWT token from whichever storage holds it. */
@@ -36,6 +39,9 @@ export const removeToken = () => {
   window.localStorage.removeItem(USER_KEY);
   window.sessionStorage.removeItem(TOKEN_KEY);
   window.sessionStorage.removeItem(USER_KEY);
+  // ── NEW: clear cookies too ──
+  document.cookie = "auth_token=; path=/; max-age=0";
+  document.cookie = "auth_user=; path=/; max-age=0";
 };
 
 // ── User helpers ─────────────────────────────────────────────────────────────
@@ -46,6 +52,9 @@ export const saveUser = (user, persistent = true) => {
   window.localStorage.removeItem(USER_KEY);
   window.sessionStorage.removeItem(USER_KEY);
   getStorage(persistent).setItem(USER_KEY, JSON.stringify(user));
+  // ── NEW: also write cookie so middleware.ts can read it ──
+  const maxAge = persistent ? 60 * 60 * 24 * 7 : 0;
+  document.cookie = `auth_user=${encodeURIComponent(JSON.stringify(user))}; path=/; max-age=${maxAge}; SameSite=Strict`;
 };
 
 /** Retrieve the authenticated user object. */

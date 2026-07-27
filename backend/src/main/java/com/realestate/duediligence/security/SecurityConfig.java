@@ -42,11 +42,33 @@ public class SecurityConfig {
     private final CustomUserDetailsService customUserDetailsService;
     private final JwtAuthenticationFilter jwtAuthenticationFilter;
     private final RateLimitFilter rateLimitFilter;
+
     @Bean
     SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
 
         http
             .csrf(csrf -> csrf.disable())
+
+            // ── NEW: Security headers (protects against XSS, clickjacking, MIME sniffing) ──
+            .headers(headers -> headers
+                .frameOptions(frame -> frame.deny())                          // X-Frame-Options: DENY (no clickjacking)
+                .contentTypeOptions(opts -> {})                               // X-Content-Type-Options: nosniff
+                .httpStrictTransportSecurity(hsts -> hsts                     // HSTS for HTTPS enforcement
+                    .includeSubDomains(true)
+                    .maxAgeInSeconds(31536000)                                // 1 year
+                )
+                .referrerPolicy(ref -> ref.policy(
+                    org.springframework.security.web.header.writers.ReferrerPolicyHeaderWriter.ReferrerPolicy.STRICT_ORIGIN_WHEN_CROSS_ORIGIN
+                ))
+                .contentSecurityPolicy(csp -> csp.policyDirectives(
+                    "default-src 'self'; " +
+                    "img-src 'self' data: https:; " +
+                    "script-src 'self' 'unsafe-inline' https://accounts.google.com; " +
+                    "style-src 'self' 'unsafe-inline'; " +
+                    "connect-src 'self' https://accounts.google.com; " +
+                    "frame-src https://accounts.google.com"
+                ))
+            )
 
             // Enable CORS with our custom config
             .cors(cors -> cors.configurationSource(corsConfigurationSource()))
@@ -57,14 +79,28 @@ public class SecurityConfig {
             .authorizeHttpRequests(auth -> auth
                 // ── Public endpoints (auth flow) ──────────────────────
                 .requestMatchers(
-                    "/api/auth/register",
-                    "/api/auth/login",
-                    "/api/auth/google",
-                    "/api/auth/complete-google-signup",
-                    "/api/auth/forgot-password",
-                    "/api/auth/verify-otp",
-                    "/api/auth/reset-password"
-                ).permitAll()
+    "/api/auth/register",
+    "/api/auth/login",
+    "/api/auth/google",
+    "/api/auth/complete-google-signup",
+    "/api/auth/forgot-password",
+    "/api/auth/verify-otp",
+    "/api/auth/reset-password",
+
+    // Swagger
+    "/swagger-ui.html",
+    "/swagger-ui/**",
+    "/v3/api-docs",
+    "/v3/api-docs/**",
+    "/v3/api-docs.yaml",
+    "/swagger-resources/**",
+    "/webjars/**",
+
+    // ── NEW: Actuator health + info (safe to be public) ──
+    "/actuator/health",
+    "/actuator/health/**",
+    "/actuator/info"
+).permitAll()
 
                 .requestMatchers("/error").permitAll()
 
@@ -102,10 +138,11 @@ public class SecurityConfig {
 
             .userDetailsService(customUserDetailsService)
 
-                       .addFilterBefore(
+            .addFilterBefore(
                 jwtAuthenticationFilter,
                 UsernamePasswordAuthenticationFilter.class
             )
+
             // Rate limiter runs BEFORE JWT filter — rejects flooding
             // requests before any expensive auth work is done
             .addFilterBefore(

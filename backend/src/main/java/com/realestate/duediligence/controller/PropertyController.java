@@ -5,23 +5,23 @@ import java.util.Map;
 
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.realestate.duediligence.dto.GeoPropertyResponse;
 import com.realestate.duediligence.dto.PropertyRequest;
 import com.realestate.duediligence.dto.PropertyResponse;
 import com.realestate.duediligence.service.PropertyService;
 
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
-import com.realestate.duediligence.dto.GeoPropertyResponse;
 
 @RestController
 @RequestMapping("/api/properties")
@@ -31,6 +31,7 @@ public class PropertyController {
     private final PropertyService propertyService;
 
     @PostMapping
+    @PreAuthorize("hasAnyRole('BUYER', 'REAL_ESTATE_AGENT', 'ADMIN')")
     public PropertyResponse addProperty(@Valid @RequestBody PropertyRequest request) {
         return propertyService.addProperty(request);
     }
@@ -65,6 +66,7 @@ public class PropertyController {
     }
 
     @PutMapping("/{id}")
+    @PreAuthorize("hasAnyRole('BUYER', 'REAL_ESTATE_AGENT', 'ADMIN')")
     public ResponseEntity<PropertyResponse> updateProperty(
             @PathVariable Long id,
             @Valid @RequestBody PropertyRequest request) {
@@ -72,6 +74,7 @@ public class PropertyController {
     }
 
     @DeleteMapping("/{id}")
+    @PreAuthorize("hasAnyRole('BUYER', 'REAL_ESTATE_AGENT', 'ADMIN')")
     public ResponseEntity<Void> deleteProperty(@PathVariable Long id) {
         propertyService.deleteProperty(id);
         return ResponseEntity.noContent().build();

@@ -22,6 +22,9 @@ import { ProfileSkeleton } from "@/components/ui/Skeleton";
 import { getCurrentUser, updateProfile } from "@/services/authService";
 
 export default function ProfilePage() {
+  useEffect(() => {
+    document.title = "Profile | Real Estate Due Diligence";
+  }, []);
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
   const [deleteOpen, setDeleteOpen] = useState(false);

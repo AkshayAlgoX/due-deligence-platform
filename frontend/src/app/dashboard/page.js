@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { useSearchParams } from "next/navigation";
 import { toast } from "sonner";
 import {
   Building2,
@@ -17,6 +18,7 @@ import HeroStrip from "@/components/dashboard/HeroStrip";
 import PortfolioBreakdown from "@/components/dashboard/PortfolioBreakdown";
 import ActivityFeed from "@/components/dashboard/ActivityFeed";
 import AddPropertyModal from "@/components/property/AddPropertyModal";
+import { getUser } from "@/utils/helpers";
 import ErrorBoundary from "@/components/ErrorBoundary";
 import { StatsCardSkeleton } from "@/components/ui/Skeleton";
 
@@ -29,7 +31,11 @@ import PortfolioTrendChart from "@/components/dashboard/PortfolioTrendChart";
 import RecommendationsPanel from "@/components/dashboard/RecommendationsPanel";
 import PortfolioMap from "@/components/dashboard/PortfolioMap";
 
+
+
 export default function DashboardPage() {
+  const searchParams = useSearchParams();
+
   const [stats, setStats] = useState(null);
   const [trends, setTrends] = useState(null);
   const [loading, setLoading] = useState(true);
@@ -37,6 +43,17 @@ export default function DashboardPage() {
   const [user, setUser] = useState(null);
   const [modalOpen, setModalOpen] = useState(false);
   const [refreshKey, setRefreshKey] = useState(0);
+
+  useEffect(() => {
+    if (searchParams.get("error") === "unauthorized") {
+      toast.error("You don't have permission to access that page.");
+      window.history.replaceState({}, "", "/dashboard");
+    }
+  }, [searchParams]);
+
+  useEffect(() => {
+  document.title = "Dashboard | Real Estate Due Diligence";
+}, []);
 
   useEffect(() => {
     loadUser();
@@ -85,6 +102,9 @@ export default function DashboardPage() {
     loadAll(true);
   };
 
+    const currentUser = getUser();
+  const canAddProperty = currentUser && (currentUser.role === "ADMIN" || ["BUYER", "REAL_ESTATE_AGENT"].includes(currentUser.role));
+
   const firstName =
     user?.fullName?.split(" ")[0] ?? user?.email?.split("@")[0] ?? "";
   const isAdmin = user?.role === "ADMIN";
@@ -123,14 +143,16 @@ export default function DashboardPage() {
             />
           </button>
 
-          <button
-            onClick={() => setModalOpen(true)}
-            className="group relative flex h-11 items-center gap-2 overflow-hidden rounded-xl bg-gradient-to-br from-[#22C55E] to-[#16a34a] px-5 text-sm font-bold text-white shadow-[0_10px_30px_rgba(34,197,94,0.4)] transition-all hover:scale-[1.03] hover:shadow-[0_15px_40px_rgba(34,197,94,0.55)] active:scale-[0.97]"
-          >
-            <span className="absolute inset-0 -translate-x-full bg-gradient-to-r from-transparent via-white/25 to-transparent transition-transform duration-1000 group-hover:translate-x-full" />
-            <Plus size={18} className="relative z-10" strokeWidth={2.5} />
-            <span className="relative z-10">Add property</span>
-          </button>
+                    {canAddProperty && (
+            <button
+              onClick={() => setModalOpen(true)}
+              className="group relative flex h-11 items-center gap-2 overflow-hidden rounded-xl bg-gradient-to-br from-[#22C55E] to-[#16a34a] px-5 text-sm font-bold text-white shadow-[0_10px_30px_rgba(34,197,94,0.4)] transition-all hover:scale-[1.03] hover:shadow-[0_15px_40px_rgba(34,197,94,0.55)] active:scale-[0.97]"
+            >
+              <span className="absolute inset-0 -translate-x-full bg-gradient-to-r from-transparent via-white/25 to-transparent transition-transform duration-1000 group-hover:translate-x-full" />
+              <Plus size={18} className="relative z-10" strokeWidth={2.5} />
+              <span className="relative z-10">Add property</span>
+            </button>
+          )}
         </div>
       </div>
 

@@ -28,6 +28,10 @@ export default function PropertyDetailPage() {
   const { id } = useParams();
   const router = useRouter();
 
+  useEffect(() => {
+    document.title = "Property Details | Real Estate Due Diligence";
+  }, []);
+
   const [property, setProperty] = useState(null);
   const [aggregated, setAggregated] = useState(null);
   const [loadingProperty, setLoadingProperty] = useState(true);

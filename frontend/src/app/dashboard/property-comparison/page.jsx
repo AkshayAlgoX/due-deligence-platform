@@ -727,6 +727,9 @@ function PropertyComparisonInner() {
 }
 
 export default function PropertyComparisonPage() {
+  useEffect(() => {
+    document.title = "Property Comparison | Real Estate Due Diligence";
+  }, []);
   return (
     <Suspense
       fallback={

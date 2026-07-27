@@ -9,6 +9,7 @@ import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.Index;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.PrePersist;
@@ -16,6 +17,7 @@ import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+
 
 /**
  * PortfolioSnapshot — one row per user per day.
@@ -30,7 +32,15 @@ import lombok.NoArgsConstructor;
  * always filter by userId.
  */
 @Entity
-@Table(name = "portfolio_snapshots")
+@Table(
+    name = "portfolio_snapshots",
+    indexes = {
+        @Index(name = "idx_snapshot_user_id",   columnList = "user_id"),
+        @Index(name = "idx_snapshot_date",      columnList = "snapshot_date"),
+        @Index(name = "idx_snapshot_user_date", columnList = "user_id, snapshot_date")
+    }
+)
+
 @Data
 @NoArgsConstructor
 @AllArgsConstructor

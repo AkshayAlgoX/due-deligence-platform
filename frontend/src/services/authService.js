@@ -48,11 +48,18 @@ export const registerUser = async ({
 
   // Auto-login: save token immediately so user goes straight to dashboard
   if (token) {
-    saveToken(token, true); // rememberMe = true by default on register
-    saveUser({ email, fullName }, true);
+  saveToken(token, true);
+  // Fetch fresh profile to get role (needed by middleware for RBAC)
+  try {
+    const profile = await getCurrentUser();
+    saveUser({ email, fullName, role: profile.role }, true);
+  } catch {
+    // Fallback if profile fetch fails — save role from payload
+    saveUser({ email, fullName, role }, true);
   }
+}
 
-  return response.data; // { token }
+return response.data;
 };
 
 /**
@@ -66,12 +73,18 @@ export const loginUser = async ({ email, password, rememberMe = true }) => {
   const { token } = response.data;
 
   if (token) {
-    // Persist token + user with the chosen storage strategy
-    saveToken(token, rememberMe);
-    saveUser({ email }, rememberMe);
-  }
+  // Persist token + user with the chosen storage strategy
+  saveToken(token, rememberMe);
 
-  return response.data;
+  // Fetch fresh profile to get role (needed by middleware for RBAC)
+  const profile = await getCurrentUser();
+  saveUser(
+    { email, fullName: profile.fullName, role: profile.role },
+    rememberMe
+  );
+}
+
+return response.data;
 };
 
 /** Logout — clear local session only (stateless JWT). */
@@ -143,12 +156,18 @@ export const loginWithGoogle = async (credential) => {
   const data = response.data;
 
   // If existing user → save token immediately
-  if (data.status === "AUTHENTICATED" && data.token) {
-    saveToken(data.token, true);
-    saveUser({ email: data.email, fullName: data.name }, true);
-  }
+ if (data.status === "AUTHENTICATED" && data.token) {
+  saveToken(data.token, true);
 
-  return data;
+  // Fetch fresh profile to get role (needed by middleware for RBAC)
+  const profile = await getCurrentUser();
+  saveUser(
+    { email: data.email, fullName: data.name, role: profile.role },
+    true
+  );
+}
+
+return data;
 };
 
 /**
@@ -163,11 +182,22 @@ export const completeGoogleSignup = async ({ credential, role, phoneNumber }) =>
   });
 
   const { token } = response.data;
-  if (token) {
-    saveToken(token, true);
-  }
+if (token) {
+  saveToken(token, true);
 
-  return response.data;
+  // Fetch fresh profile to get role (needed by middleware for RBAC)
+  const profile = await getCurrentUser();
+  saveUser(
+    {
+      email: profile.email,
+      fullName: profile.fullName,
+      role: profile.role,
+    },
+    true
+  );
+}
+
+return response.data;
 };
 
 /** Extract email claim from JWT payload (best-effort). */

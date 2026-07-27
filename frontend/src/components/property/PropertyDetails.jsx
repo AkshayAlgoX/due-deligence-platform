@@ -16,6 +16,7 @@ import { formatINRFull } from "@/utils/currency";
 import { getPropertyHeroImage } from "@/constants/propertyImages";
 import PropertyImagePlaceholder from "./PropertyImagePlaceholder";
 import dynamic from "next/dynamic";
+import { getUser } from "@/utils/helpers";
 
 const DownloadPDFButton = dynamic(
   () => import("./pdf/DownloadPDFButton"),
@@ -40,6 +41,9 @@ const DownloadPDFButton = dynamic(
 export default function PropertyDetails({ property, onEdit }) {
 
   if (!property) return null;
+
+  const currentUser = getUser();
+  const canEdit = onEdit && currentUser && (currentUser.role === "ADMIN" || ["BUYER", "REAL_ESTATE_AGENT"].includes(currentUser.role));
 
   const {
     id,
@@ -164,7 +168,7 @@ export default function PropertyDetails({ property, onEdit }) {
   {/* Action buttons */}
   <div className="flex items-center gap-2">
     <DownloadPDFButton property={property} />
-    {onEdit && (
+        {canEdit && (
       <button
         type="button"
         onClick={() => onEdit(property)}
