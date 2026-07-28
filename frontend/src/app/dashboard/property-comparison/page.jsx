@@ -453,21 +453,14 @@ function PropertyComparisonInner() {
           </div>
 
           <div className="flex items-center gap-2">
-            {!loading && properties.filter(Boolean).length > 0 && (
-              <DownloadComparisonPDFButton
-                properties={properties}
-                aggregated={aggregated}
-                risks={risks}
-              />
-            )}
-            <Link
-              href="/dashboard/property-search"
-              className="flex items-center gap-1.5 rounded-xl border border-gray-200 bg-white px-4 py-2.5 text-sm font-semibold text-gray-700 transition hover:border-gray-300 hover:bg-gray-50"
-            >
-              <ArrowLeft className="h-3.5 w-3.5" strokeWidth={2.2} />
-              Back
-            </Link>
-          </div>
+  {!loading && properties.filter(Boolean).length > 0 && (
+    <DownloadComparisonPDFButton
+      properties={properties}
+      aggregated={aggregated}
+      risks={risks}
+    />
+  )}
+</div>
         </div>
       </div>
 

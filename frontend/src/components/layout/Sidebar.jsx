@@ -108,10 +108,10 @@ export default function Sidebar({ isOpen = true, onClose }) {
         />
       )}
     <aside
-      className={`w-64 fixed lg:relative inset-y-0 left-0 z-40 lg:z-auto bg-white border-r border-gray-100 flex flex-col h-full transition-transform duration-300 ease-in-out ${
-        isOpen ? "translate-x-0" : "-translate-x-full lg:translate-x-0"
-      }`}
-    >
+  className={`w-64 fixed lg:relative inset-y-0 left-0 z-40 lg:z-auto bg-white border-r border-gray-100 flex flex-col h-full transition-transform duration-300 ease-in-out ${
+    isOpen ? "translate-x-0" : "-translate-x-full"
+  }`}
+>
       <nav className="flex-1 overflow-y-auto px-3 py-5">
         {menuSections.map((section) => {
           const visibleItems = section.items.filter((item) =>
@@ -136,11 +136,16 @@ export default function Sidebar({ isOpen = true, onClose }) {
                     : pathname?.startsWith(item.href);
 
                 return (
-                                    <Link
-                    key={item.title}
-                    href={item.href}
-                    onClick={onClose}
-                    className={`
+                <Link
+  key={item.title}
+  href={item.href}
+  onClick={() => {
+    // Only close sidebar on mobile (below lg breakpoint)
+    if (typeof window !== "undefined" && window.innerWidth < 1024) {
+      onClose?.();
+    }
+  }}
+  className={`
                       group relative mb-1 flex items-center gap-3
                       rounded-lg px-3 py-2.5
                       text-sm font-semibold transition
