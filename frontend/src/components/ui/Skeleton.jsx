@@ -111,3 +111,34 @@ export function ProfileSkeleton() {
     </div>
   );
 }
+
+/** For inline text — single line of body copy */
+export function TextSkeleton({ lines = 1, className = "" }) {
+  return (
+    <div className={`space-y-2 ${className}`}>
+      {Array.from({ length: lines }).map((_, i) => (
+        <Skeleton
+          key={i}
+          className={`h-4 ${i === lines - 1 && lines > 1 ? "w-2/3" : "w-full"}`}
+        />
+      ))}
+    </div>
+  );
+}
+
+/** For table rows */
+export function TableRowSkeleton({ columns = 4 }) {
+  return (
+    <div className="flex items-center gap-4 border-b border-gray-100 px-4 py-3">
+      {Array.from({ length: columns }).map((_, i) => (
+        <Skeleton key={i} className="h-4 flex-1" />
+      ))}
+    </div>
+  );
+}
+
+/** For avatar circles */
+export function AvatarSkeleton({ size = "default" }) {
+  const sizes = { sm: "h-8 w-8", default: "h-10 w-10", lg: "h-14 w-14" };
+  return <Skeleton className={`${sizes[size]} rounded-full`} />;
+}

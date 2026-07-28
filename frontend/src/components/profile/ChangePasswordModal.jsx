@@ -6,10 +6,28 @@ import { X, Lock, Eye, EyeOff, Loader2 } from "lucide-react";
 import { changePassword } from "@/services/authService";
 import { getPasswordStrength } from "@/utils/helpers";
 
+function validateField(field, value) {
+  const trimmed = String(value ?? "").trim();
+  switch (field) {
+    case "currentPassword":
+      if (!trimmed) return "Current password is required";
+      return "";
+    case "newPassword":
+      if (!trimmed) return "New password is required";
+      if (trimmed.length < 8) return "At least 8 characters";
+      if (!/[A-Za-z]/.test(trimmed)) return "Must contain a letter";
+      if (!/\d/.test(trimmed)) return "Must contain a number";
+      return "";
+    default:
+      return "";
+  }
+}
+
 export default function ChangePasswordModal({ isOpen, onClose }) {
   const [currentPassword, setCurrentPassword] = useState("");
   const [newPassword, setNewPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
+    const [errors, setErrors] = useState({});
   const [showCurrent, setShowCurrent] = useState(false);
   const [showNew, setShowNew] = useState(false);
   const [loading, setLoading] = useState(false);
@@ -24,10 +42,11 @@ export default function ChangePasswordModal({ isOpen, onClose }) {
     passwordsMatch &&
     !loading;
 
-  function reset() {
+    function reset() {
     setCurrentPassword("");
     setNewPassword("");
     setConfirmPassword("");
+    setErrors({});
     setShowCurrent(false);
     setShowNew(false);
   }
@@ -100,13 +119,16 @@ export default function ChangePasswordModal({ isOpen, onClose }) {
             <label className="mb-1.5 block text-xs font-semibold text-gray-700">
               Current password
             </label>
-            <div className="relative">
+                        <div className="relative">
               <input
                 type={showCurrent ? "text" : "password"}
                 value={currentPassword}
-                onChange={(e) => setCurrentPassword(e.target.value)}
+                onChange={(e) => {
+                  setCurrentPassword(e.target.value);
+                  setErrors((prev) => ({ ...prev, currentPassword: validateField("currentPassword", e.target.value) }));
+                }}
                 autoFocus
-                className="w-full rounded-lg border border-gray-200 px-3 py-2.5 pr-10 text-sm focus:border-[#22C55E] focus:outline-none focus:ring-2 focus:ring-[#22C55E]/20"
+                className={`w-full rounded-lg border px-3 py-2.5 pr-10 text-sm focus:outline-none focus:ring-2 ${errors.currentPassword ? "border-red-300 focus:border-red-400 focus:ring-red-100" : "border-gray-200 focus:border-[#22C55E] focus:ring-[#22C55E]/20"}`}
                 placeholder="Enter current password"
               />
               <button
@@ -117,18 +139,27 @@ export default function ChangePasswordModal({ isOpen, onClose }) {
                 {showCurrent ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
               </button>
             </div>
+            {errors.currentPassword && (
+              <p className="mt-1 text-xs text-red-500 flex items-center gap-1">
+                <span className="inline-block w-1 h-1 rounded-full bg-red-500" />
+                {errors.currentPassword}
+              </p>
+            )}
           </div>
 
           <div>
             <label className="mb-1.5 block text-xs font-semibold text-gray-700">
               New password
             </label>
-            <div className="relative">
+                        <div className="relative">
               <input
                 type={showNew ? "text" : "password"}
                 value={newPassword}
-                onChange={(e) => setNewPassword(e.target.value)}
-                className="w-full rounded-lg border border-gray-200 px-3 py-2.5 pr-10 text-sm focus:border-[#22C55E] focus:outline-none focus:ring-2 focus:ring-[#22C55E]/20"
+                onChange={(e) => {
+                  setNewPassword(e.target.value);
+                  setErrors((prev) => ({ ...prev, newPassword: validateField("newPassword", e.target.value) }));
+                }}
+                className={`w-full rounded-lg border px-3 py-2.5 pr-10 text-sm focus:outline-none focus:ring-2 ${errors.newPassword ? "border-red-300 focus:border-red-400 focus:ring-red-100" : "border-gray-200 focus:border-[#22C55E] focus:ring-[#22C55E]/20"}`}
                 placeholder="At least 8 characters"
               />
               <button
@@ -139,6 +170,12 @@ export default function ChangePasswordModal({ isOpen, onClose }) {
                 {showNew ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
               </button>
             </div>
+            {errors.newPassword && (
+              <p className="mt-1 text-xs text-red-500 flex items-center gap-1">
+                <span className="inline-block w-1 h-1 rounded-full bg-red-500" />
+                {errors.newPassword}
+              </p>
+            )}
 
             {newPassword && (
               <div className="mt-2">

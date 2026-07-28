@@ -14,9 +14,9 @@ export default function MainLayout({ children }) {
 
       <div className="flex flex-1 overflow-hidden">
 
-        <Sidebar isOpen={isSidebarOpen} />
+        <Sidebar isOpen={isSidebarOpen} onClose={() => setIsSidebarOpen(false)} />
 
-        <main className="flex-1 overflow-y-auto p-8">
+                <main role="main" aria-label="Dashboard content" id="main-content" className="flex-1 overflow-y-auto p-8">
           {children}
         </main>
 

@@ -21,6 +21,7 @@ import {
 import { toast } from "sonner";
 import Link from "next/link";
 import dynamic from "next/dynamic";
+import Breadcrumbs from "@/components/ui/Breadcrumbs";
 
 import { getPropertyById, getPropertyRisk } from "@/services/propertyService";
 import { getAggregatedProperty } from "@/services/aggregationService";
@@ -422,6 +423,8 @@ function PropertyComparisonInner() {
 
   return (
     <div className="w-full max-w-[1400px] mx-auto space-y-6">
+       <Breadcrumbs />
+
 
       {/* ── Page header ───────────────────────────────────────────── */}
       <div className="rounded-2xl border border-gray-100 bg-white p-8 shadow-sm">

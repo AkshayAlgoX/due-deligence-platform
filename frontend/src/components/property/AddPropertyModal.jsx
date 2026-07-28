@@ -2,6 +2,7 @@
 
 import { useState, useEffect, useRef, useMemo } from "react";
 import { toast } from "sonner";
+import { motion } from "framer-motion";
 import {
   X,
   Home,
@@ -25,6 +26,7 @@ import {
   Calendar,
   Sparkles,
 } from "lucide-react";
+import { scaleUp } from "@/utils/animations";
 
 
 import { addProperty } from "@/services/propertyService";
@@ -61,6 +63,31 @@ const INITIAL_FORM = {
 const VERIFICATION_FIELDS = [
   "address", "city", "state", "zipCode", "propertyType", "area", "marketValue",
 ];
+
+// Real-time field validator — runs on every keystroke
+function validateField(field, value) {
+  const trimmed = String(value ?? "").trim();
+  switch (field) {
+    case "address":
+      if (!trimmed) return "Address is required";
+      if (trimmed.length <= 5) return "Address should be at least 6 characters";
+      return "";
+    case "city":
+      if (!trimmed) return "City is required";
+      return "";
+    case "zipCode":
+      if (trimmed && !/^\d{6}$/.test(trimmed)) return "PIN must be exactly 6 digits";
+      return "";
+    case "area":
+      if (trimmed && parseFloat(trimmed) <= 0) return "Area must be greater than 0";
+      return "";
+    case "marketValue":
+      if (trimmed && parseFloat(trimmed) <= 0) return "Value must be greater than 0";
+      return "";
+    default:
+      return "";
+  }
+}
 
 const CURRENT_YEAR = new Date().getFullYear();
 
@@ -122,10 +149,13 @@ export default function AddPropertyModal({ isOpen, onClose, onSuccess }) {
   };
 
 
-    const handleChange = (field) => (e) => {
-    setForm((prev) => ({ ...prev, [field]: e.target.value }));
-    if (errors[field]) setErrors((prev) => ({ ...prev, [field]: "" }));
-  };
+   const handleChange = (field) => (e) => {
+  const value = e.target.value;
+  setForm((prev) => ({ ...prev, [field]: value }));
+  // Real-time validation — instant red text if invalid
+  const fieldError = validateField(field, value);
+  setErrors((prev) => ({ ...prev, [field]: fieldError }));
+};
 
   const handleAddressChange = (e) => {
     setForm((prev) => ({ ...prev, address: e.target.value }));
@@ -285,9 +315,12 @@ export default function AddPropertyModal({ isOpen, onClose, onSuccess }) {
       onMouseDown={handleBackdropClick}
       className="fixed inset-0 z-50 flex items-center justify-center bg-slate-900/50 p-4 backdrop-blur-sm animate-in fade-in duration-200"
     >
-      <div
+            <motion.div
         ref={modalRef}
-        className="w-full max-w-2xl overflow-hidden rounded-3xl bg-white shadow-[0_30px_80px_rgba(0,0,0,0.3)] animate-in zoom-in-95 duration-200 max-h-[92vh] flex flex-col"
+        variants={scaleUp}
+        initial="initial"
+        animate="animate"
+        className="w-full max-w-2xl overflow-hidden rounded-3xl bg-white shadow-[0_30px_80px_rgba(0,0,0,0.3)] max-h-[92vh] flex flex-col"
       >
         {/* Header */}
         <div className="relative bg-gradient-to-br from-[#22C55E] via-[#22C55E] to-[#16a34a] px-6 py-5 flex-shrink-0">
@@ -704,8 +737,8 @@ export default function AddPropertyModal({ isOpen, onClose, onSuccess }) {
               </button>
             </div>
           </div>
-        </div>
-      </div>
+                </div>
+      </motion.div>
     </div>
   );
 }

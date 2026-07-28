@@ -23,6 +23,7 @@ import FloodZoneCard from "@/components/property/aggregation/FloodZoneCard";
 import PermitsSection from "@/components/property/aggregation/PermitsSection";
 import EnvironmentalCard from "@/components/property/aggregation/EnvironmentalCard";
 import DataCompletenessCard from "@/components/property/aggregation/DataCompletenessCard";
+import Breadcrumbs from "@/components/ui/Breadcrumbs";
 
 export default function PropertyDetailPage() {
   const { id } = useParams();
@@ -94,6 +95,9 @@ export default function PropertyDetailPage() {
 
   return (
     <div className="mx-auto w-full max-w-[1400px] space-y-6 pb-16">
+        <Breadcrumbs
+      overrides={{ [id]: property?.address || "Property" }}
+    />
 
       {/* ── Back navigation ────────────────────────────────────────── */}
       <button

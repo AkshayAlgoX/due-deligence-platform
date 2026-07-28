@@ -81,7 +81,7 @@ function timeAgo(date) {
   return date.toLocaleDateString();
 }
 
-export default function Sidebar({ isOpen = true }) {
+export default function Sidebar({ isOpen = true, onClose }) {
   const pathname = usePathname();
   const [sessionStart] = useState(() => new Date());
   const [, tick] = useState(0);
@@ -93,14 +93,23 @@ export default function Sidebar({ isOpen = true }) {
   }, []);
 
   useEffect(() => {
-    const interval = setInterval(() => tick((t) => t + 1), 30000);
+        const interval = setInterval(() => tick((t) => t + 1), 30000);
     return () => clearInterval(interval);
   }, []);
 
   return (
+    <>
+      {/* Mobile backdrop */}
+      {isOpen && (
+        <div
+                    className="fixed inset-0 z-30 bg-black/40 lg:hidden"
+          onClick={onClose}
+          role="presentation"
+        />
+      )}
     <aside
-      className={`w-64 bg-white border-r border-gray-100 flex flex-col h-full transition-all duration-300 ease-in-out ${
-        isOpen ? "ml-0" : "-ml-64"
+      className={`w-64 fixed lg:relative inset-y-0 left-0 z-40 lg:z-auto bg-white border-r border-gray-100 flex flex-col h-full transition-transform duration-300 ease-in-out ${
+        isOpen ? "translate-x-0" : "-translate-x-full lg:translate-x-0"
       }`}
     >
       <nav className="flex-1 overflow-y-auto px-3 py-5">
@@ -127,9 +136,10 @@ export default function Sidebar({ isOpen = true }) {
                     : pathname?.startsWith(item.href);
 
                 return (
-                  <Link
+                                    <Link
                     key={item.title}
                     href={item.href}
+                    onClick={onClose}
                     className={`
                       group relative mb-1 flex items-center gap-3
                       rounded-lg px-3 py-2.5
@@ -193,7 +203,8 @@ export default function Sidebar({ isOpen = true }) {
           </div>
           <span className="font-medium text-gray-400 flex-shrink-0 ml-2">v1.0</span>
         </div>
-      </div>
+            </div>
     </aside>
+    </>
   );
 }

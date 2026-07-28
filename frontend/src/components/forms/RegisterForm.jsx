@@ -22,6 +22,34 @@ import { ROLES } from "@/constants/roles";
 import { APP_NAME } from "@/constants/appConstants";
 import GoogleSignInButton from "@/components/auth/GoogleSignInButton";
 
+function validateField(field, value) {
+  const trimmed = String(value ?? "").trim();
+  switch (field) {
+    case "email":
+      if (!trimmed) return "Email is required";
+      if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(trimmed)) return "Enter a valid email";
+      return "";
+    case "password":
+      if (!trimmed) return "Password is required";
+      if (trimmed.length < 8) return "At least 8 characters";
+      if (!/[A-Za-z]/.test(trimmed)) return "Must contain a letter";
+      if (!/\d/.test(trimmed)) return "Must contain a number";
+      return "";
+    case "fullName":
+      if (!trimmed) return "Full name is required";
+      if (trimmed.length < 3) return "At least 3 characters";
+      return "";
+    case "phoneNumber":
+      if (!/^[6-9]\d{9}$/.test(trimmed)) return "Enter a valid 10-digit mobile";
+      return "";
+    case "role":
+      if (!trimmed) return "Please select a role";
+      return "";
+    default:
+      return "";
+  }
+}
+
 // ── Inline SVG icons ─────────────────────────────────────────────────────────
 const UserIcon = () => (
   <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24"
@@ -150,14 +178,15 @@ export default function RegisterForm() {
     phoneNumber: useRef(null),
   };
 
-  const handleChange = (field) => (e) => {
-    setForm((prev) => ({ ...prev, [field]: e.target.value }));
-    if (fieldErrors[field]) setFieldErrors((prev) => ({ ...prev, [field]: "" }));
+    const handleChange = (field) => (e) => {
+    const value = e.target.value;
+    setForm((prev) => ({ ...prev, [field]: value }));
+    setFieldErrors((prev) => ({ ...prev, [field]: validateField(field, value) }));
   };
 
   const handleRoleChange = (value) => {
     setForm((prev) => ({ ...prev, role: value }));
-    if (fieldErrors.role) setFieldErrors((prev) => ({ ...prev, role: "" }));
+    setFieldErrors((prev) => ({ ...prev, role: validateField("role", value) }));
   };
 
   // ── Autofocus first field with error (in DOM order) ──────────────────────
@@ -427,12 +456,10 @@ export default function RegisterForm() {
                   maxLength={10}
                   placeholder="9876543210"
                   value={form.phoneNumber}
-                  onChange={(e) => {
+                                    onChange={(e) => {
                     const digitsOnly = e.target.value.replace(/\D/g, "");
                     setForm((prev) => ({ ...prev, phoneNumber: digitsOnly }));
-                    if (fieldErrors.phoneNumber) {
-                      setFieldErrors((prev) => ({ ...prev, phoneNumber: "" }));
-                    }
+                    setFieldErrors((prev) => ({ ...prev, phoneNumber: validateField("phoneNumber", digitsOnly) }));
                   }}
                   disabled={loading || justRegistered}
                   aria-invalid={!!fieldErrors.phoneNumber}

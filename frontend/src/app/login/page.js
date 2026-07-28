@@ -28,6 +28,22 @@ import {
   AlertCircle,
 } from "lucide-react";
 
+function validateField(field, value) {
+  const trimmed = String(value ?? "").trim();
+  switch (field) {
+    case "email":
+      if (!trimmed) return "Email is required";
+      if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(trimmed)) return "Enter a valid email";
+      return "";
+    case "password":
+      if (!trimmed) return "Password is required";
+      if (trimmed.length < 8) return "At least 8 characters";
+      return "";
+    default:
+      return "";
+  }
+}
+
 function LoginPageInner() {
   const router = useRouter();
 
@@ -125,18 +141,14 @@ function LoginPageInner() {
     setLoading(false);
   }
 };
-  const handleEmailChange = (e) => {
+    const handleEmailChange = (e) => {
     setEmail(e.target.value);
-    if (fieldErrors.email) {
-      setFieldErrors((prev) => ({ ...prev, email: "" }));
-    }
+    setFieldErrors((prev) => ({ ...prev, email: validateField("email", e.target.value) }));
   };
 
   const handlePasswordChange = (e) => {
     setPassword(e.target.value);
-    if (fieldErrors.password) {
-      setFieldErrors((prev) => ({ ...prev, password: "" }));
-    }
+    setFieldErrors((prev) => ({ ...prev, password: validateField("password", e.target.value) }));
   };
 
   const handleForgotPassword = () => {

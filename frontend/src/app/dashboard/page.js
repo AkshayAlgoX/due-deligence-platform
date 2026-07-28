@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 import { useSearchParams } from "next/navigation";
 import { toast } from "sonner";
+import { motion } from "framer-motion";
 import {
   Building2,
   ShieldCheck,
@@ -11,6 +12,7 @@ import {
   RefreshCw,
   Users,
 } from "lucide-react";
+import { fadeInUp } from "@/utils/animations";
 
 import StatsCard from "@/components/dashboard/StatsCard";
 import RecentPropertiesTable from "@/components/dashboard/RecentPropertiesTable";
@@ -196,7 +198,12 @@ export default function DashboardPage() {
           Unable to load statistics. Please refresh the page.
         </div>
       ) : (
-        <div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-4">
+                <motion.div
+          className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-4"
+          variants={fadeInUp}
+          initial="initial"
+          animate="animate"
+        >
           <StatsCard
             title="Total properties"
             value={
@@ -266,11 +273,11 @@ export default function DashboardPage() {
                 ? `${stats.activeUsers} active in 30 days`
                 : undefined
             }
-            icon={<Users size={20} strokeWidth={2.5} />}
+                        icon={<Users size={20} strokeWidth={2.5} />}
             trendValue={formatDelta(trends?.usersGrowthPct)}
             trendUp={trends ? trends.usersGrowthPct >= 0 : null}
           />
-        </div>
+        </motion.div>
       )}
 
       {/* ── Portfolio breakdown + Recent properties (2-col) ────── */}

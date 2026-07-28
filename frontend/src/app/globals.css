@@ -105,3 +105,14 @@ body {
 .duration-300 {
   animation-duration: 300ms;
 }
+/* ── Accessibility: visible focus ring on keyboard nav ─────────────────── */
+*:focus-visible {
+  outline: 2px solid #22C55E;
+  outline-offset: 2px;
+  border-radius: 6px;
+}
+
+/* Hide focus ring on mouse click (only show for keyboard users) */
+*:focus:not(:focus-visible) {
+  outline: none;
+}

@@ -4,6 +4,7 @@
 import { useEffect, useState, useCallback, useMemo, useRef, Suspense } from "react";
 import { useSearchParams, useRouter } from "next/navigation";
 import { toast } from "sonner";
+import { motion } from "framer-motion";
 import {
   SearchX,
   Plus,
@@ -12,6 +13,7 @@ import {
   MapPin,
   Clock,
 } from "lucide-react";
+import { staggerContainer, staggerItem } from "@/utils/animations";
 
 import SearchBar from "@/components/property/SearchBar";
 import PropertyResultCard from "@/components/property/PropertyResultCard";
@@ -27,7 +29,7 @@ import { usePropertyFilters } from "@/hooks/usePropertyFilters";
 import { getUser } from "@/utils/helpers";
 import { useCompareSelection } from "@/hooks/useCompareSelection";
 import CompareBar from "@/components/property/CompareBar";
-
+import Breadcrumbs from "@/components/ui/Breadcrumbs";
 function timeAgo(date) {
   if (!date) return "just now";
   const seconds = Math.floor((Date.now() - date.getTime()) / 1000);
@@ -267,6 +269,7 @@ const canAddProperty =
 
   return (
     <div className="w-full max-w-[1400px] mx-auto space-y-6">
+     <Breadcrumbs />
 
       {/* ── Header ────────────────────────────────────────────────── */}
       <div className="rounded-2xl border border-gray-100 bg-white p-8 shadow-sm">
@@ -365,7 +368,7 @@ const canAddProperty =
       {/* ── Loading skeleton ───────────────────────────────────────── */}
       {loading && (
         <div className="rounded-2xl border border-gray-100 bg-white p-6 shadow-sm">
-          <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+          <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3 items-stretch">
             {[1, 2, 3, 4, 5, 6].map((i) => (
               <PropertyCardSkeleton key={i} />
             ))}
@@ -448,22 +451,32 @@ const canAddProperty =
               </button>
             </div>
           ) : (
-            <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-              {displayedResults.map((p) => (
-                <PropertyResultCard
-                  key={p.id}
-                  property={p}
-                  isSelected={false}
-                  onClick={() => router.push(`/dashboard/property-search/${p.id}`)}
-                  onEdit={handleEditProperty}
-                  onQuickPhoto={handleQuickPhoto}
-                  riskScore={riskScores.get(p.id) ?? null}
-                  onCompare={toggleCompare}
-                  isInCompare={isInCompare(p.id)}
-                  canAddToCompare={canAddToCompare}
-                />
-              ))}
-            </div>
+                        <motion.div
+  className="grid items-stretch gap-4 sm:grid-cols-2 lg:grid-cols-3"
+  variants={staggerContainer}
+  initial="initial"
+  animate="animate"
+>
+  {displayedResults.map((p) => (
+    <motion.div
+      key={p.id}
+      variants={staggerItem}
+      className="w-full self-stretch will-change-opacity"
+    >
+      <PropertyResultCard
+        property={p}
+        isSelected={false}
+        onClick={() => router.push(`/dashboard/property-search/${p.id}`)}
+        onEdit={handleEditProperty}
+        onQuickPhoto={handleQuickPhoto}
+        riskScore={riskScores.get(p.id) ?? null}
+        onCompare={toggleCompare}
+        isInCompare={isInCompare(p.id)}
+        canAddToCompare={canAddToCompare}
+      />
+    </motion.div>
+  ))}
+</motion.div>
           )}
         </div>
       )}

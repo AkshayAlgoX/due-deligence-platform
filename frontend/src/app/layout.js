@@ -5,6 +5,7 @@ import Providers from "./providers";
 import "./globals.css";
 import CookieConsentRoot from "@/components/consent/CookieConsentRoot";
 import PageTracker from "@/components/PageTracker";
+import NextTopLoader from "nextjs-toploader";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -29,6 +30,13 @@ export default function RootLayout({ children }) {
       className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`}
     >
       <body className="min-h-full flex flex-col">
+        <a href="#main-content" className="sr-only focus:not-sr-only focus:fixed focus:top-4 focus:left-4 focus:bg-white focus:px-4 focus:py-2 focus:rounded-lg focus:shadow-lg focus:z-50">Skip to main content</a>
+        <NextTopLoader
+    color="#22C55E"
+    height={3}
+    showSpinner={false}
+    shadow="0 0 10px #22C55E,0 0 5px #22C55E"
+  />
         <Providers>{children}</Providers>
 
         {/*
