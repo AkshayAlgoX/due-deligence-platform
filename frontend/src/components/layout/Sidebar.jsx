@@ -15,6 +15,7 @@ import {
   User,
   LifeBuoy,
   Bookmark,
+  Settings,
 } from "lucide-react";
 
 import { getUser } from "@/utils/helpers";
@@ -30,6 +31,7 @@ const ROUTE_ROLES = {
   "/dashboard/notifications":      ["BUYER", "REAL_ESTATE_AGENT", "LEGAL_REVIEWER", "FINANCIAL_INSTITUTION", "ADMIN"],
   "/dashboard/audit-logs":         ["ADMIN"],
   "/dashboard/profile":            ["BUYER", "REAL_ESTATE_AGENT", "LEGAL_REVIEWER", "FINANCIAL_INSTITUTION", "ADMIN"],
+  "/dashboard/settings":           ["BUYER", "REAL_ESTATE_AGENT", "LEGAL_REVIEWER", "FINANCIAL_INSTITUTION", "ADMIN"],
   "/support":                      ["BUYER", "REAL_ESTATE_AGENT", "LEGAL_REVIEWER", "FINANCIAL_INSTITUTION", "ADMIN"],
 };
 
@@ -68,8 +70,9 @@ const menuSections = [
   {
     label: "Account",
     items: [
-      { title: "Profile", href: "/dashboard/profile", icon: User,     badge: null },
-      { title: "Support", href: "/support",           icon: LifeBuoy, badge: null },
+      { title: "Profile",  href: "/dashboard/profile",   icon: User,     badge: null },
+      { title: "Settings", href: "/dashboard/settings",  icon: Settings, badge: null },
+      { title: "Support",  href: "/support",             icon: LifeBuoy, badge: null },
     ],
   },
 ];

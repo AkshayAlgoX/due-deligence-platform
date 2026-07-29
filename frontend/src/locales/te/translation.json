@@ -1,0 +1,133 @@
+{
+  "nav": {
+    "dashboard": "డ్యాష్‌బోర్డ్",
+    "propertySearch": "ఆస్తి శోధన",
+    "dueDiligence": "తగిన శ్రద్ధ",
+    "riskAssessment": "రిస్క్ అంచనా",
+    "propertyComparison": "ఆస్తి పోలిక",
+    "savedComparisons": "సేవ్ చేసిన పోలికలు",
+    "reports": "నివేదికలు",
+    "notifications": "నోటిఫికేషన్లు",
+    "auditLogs": "ఆడిట్ లాగ్లు",
+    "profile": "ప్రొఫైల్",
+    "support": "మద్దతు",
+    "sections": {
+      "main": "ప్రధాన",
+      "analysis": "విశ్లేషణ",
+      "insights": "అంతర్దృష్టులు",
+      "account": "ఖాతా"
+    },
+    "sessionActive": "సెషన్ యాక్టివ్",
+    "version": "v1.0"
+  },
+  "auth": {
+    "login": {
+      "title": "తిరిగి స్వాగతం",
+      "subtitle": "మీ ఆస్తి పోర్ట్‌ఫోలియో నష్టాలను నిర్వహించడానికి సైన్ ఇన్ చేయండి.",
+      "emailLabel": "వృత్తిపరమైన ఇమెయిల్",
+      "emailPlaceholder": "name@company.com",
+      "passwordLabel": "పాస్‌వర్డ్",
+      "forgotPassword": "పాస్‌వర్డ్ మర్చిపోయారా?",
+      "rememberMe": "ఈ బ్రౌజర్‌లో సైన్ ఇన్‌గా ఉంచండి",
+      "signIn": "సైన్ ఇన్",
+      "newToPlatform": "ప్లాట్‌ఫామ్‌కు కొత్తగా వచ్చారా?",
+      "createAccount": "ఉచిత ఖాతా తయారు చేయండి"
+    }
+  },
+  "dashboard": {
+    "greetings": {
+      "morning": "శుభోదయం",
+      "afternoon": "నమస్కారం",
+      "evening": "శుభ సాయంత్రం"
+    },
+    "subtitle": "మీ పోర్ట్‌ఫోలియో ఒక చూపులో",
+    "stats": {
+      "totalProperties": "మొత్తం ఆస్తులు",
+      "verified": "ధృవీకరించబడింది",
+      "pending": "పెండింగ్",
+      "platformUsers": "ప్లాట్‌ఫామ్ వినియోగదారులు"
+    },
+    "empty": {
+      "title": "ఇంకా ఆస్తులు లేవు",
+      "addFirst": "మీ మొదటి ఆస్తి జోడించండి"
+    }
+  },
+  "property": {
+    "addProperty": "ఆస్తి జోడించు",
+    "search": {
+      "title": "ఆస్తి శోధన",
+      "noPropertiesFound": "ఆస్తులు కనుగొనబడలేదు"
+    },
+    "card": {
+      "verified": "ధృవీకరించబడింది",
+      "pending": "పెండింగ్",
+      "marketValue": "మార్కెట్ విలువ"
+    },
+    "details": {
+      "backToSearch": "శోధనకు తిరిగి వెళ్ళు",
+      "editProperty": "ఆస్తి సవరించు"
+    }
+  },
+  "profile": {
+    "title": "ఖాతా నిర్వహణ",
+    "subtitle": "మీ వృత్తిపరమైన గుర్తింపు మరియు అప్లికేషన్ భద్రతను నియంత్రించండి.",
+    "fields": {
+      "fullName": "పూర్తి పేరు",
+      "email": "ఇమెయిల్ చిరునామా",
+      "phone": "ఫోన్"
+    },
+    "actions": {
+      "editProfile": "ప్రొఫైల్ సవరించు",
+      "cancel": "రద్దు చేయి",
+      "saveChanges": "మార్పులు సేవ్ చేయి",
+      "deleteAccount": "ఖాతా తొలగించు"
+    },
+    "roles": {
+      "BUYER": "కొనుగోలుదారు",
+      "REAL_ESTATE_AGENT": "రియల్ ఎస్టేట్ ఏజెంట్",
+      "ADMIN": "నిర్వాహకుడు"
+    }
+  },
+  "settings": {
+    "title": "సెట్టింగ్లు",
+    "language": {
+      "sectionTitle": "భాష",
+      "sectionSubtitle": "ఇంటర్‌ఫేస్ కోసం మీకు నచ్చిన భాషను ఎంచుకోండి.",
+      "label": "ఇంటర్‌ఫేస్ భాష",
+      "selectPlaceholder": "భాష ఎంచుకోండి",
+      "saved": "భాష నవీకరించబడింది",
+      "savedDescription": "ఇంటర్‌ఫేస్ భాష {{language}} కి మార్చబడింది."
+    }
+  },
+  "common": {
+    "loading": "లోడ్ అవుతోంది...",
+    "error": "ఏదో తప్పు జరిగింది",
+    "save": "సేవ్ చేయి",
+    "cancel": "రద్దు",
+    "back": "వెనక్కి",
+    "noData": "డేటా అందుబాటులో లేదు",
+    "justNow": "ఇప్పుడే"
+  },
+  "pages": {
+    "dueDiligence": {
+      "title": "డ్యూ డిలిజెన్స్ డ్యాష్‌బోర్డ్ త్వరలో వస్తుంది",
+      "description": "మీ అన్ని ఆస్తుల డ్యూ డిలిజెన్స్ స్థితి యొక్క సమేకిత దృశ్యం ఇక్కడ కనిపిస్తుంది."
+    },
+    "reports": {
+      "title": "నివేదికలు త్వరలో వస్తాయి",
+      "description": "పోర్ట్‌ఫోలియో నివేదికలు, రిస్క్ సారాంశాలు మరియు డ్యూ డిలిజెన్స్ పత్రాలు రూపొందించండి."
+    },
+    "notifications": {
+      "title": "మీరు అన్నీ చదివారు",
+      "description": "కొత్త నోటిఫికేషన్లు లేవు."
+    },
+    "auditLogs": {
+      "title": "ఇంకా ఆడిట్ నమోదులు లేవు",
+      "description": "సిస్టమ్ చర్యలు మరియు వినియోగదారు కార్యకలాపాలు ఇక్కడ ట్రాక్ చేయబడతాయి."
+    },
+    "riskAssessment": {
+      "title": "రిస్క్ అంచనా అవలోకనం త్వరలో వస్తుంది",
+      "description": "పోర్ట్‌ఫోలియో-వ్యాప్త రిస్క్ విశ్లేషణ ఇక్కడ కనిపిస్తుంది."
+    }
+  }
+}
