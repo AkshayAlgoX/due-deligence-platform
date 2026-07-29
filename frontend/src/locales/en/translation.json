@@ -1,0 +1,394 @@
+{
+  "nav": {
+    "dashboard": "Dashboard",
+    "propertySearch": "Property Search",
+    "dueDiligence": "Due Diligence",
+    "riskAssessment": "Risk Assessment",
+    "propertyComparison": "Property Comparison",
+    "savedComparisons": "Saved Comparisons",
+    "reports": "Reports",
+    "notifications": "Notifications",
+    "auditLogs": "Audit Logs",
+    "profile": "Profile",
+    "support": "Support",
+    "sections": {
+      "main": "Main",
+      "analysis": "Analysis",
+      "insights": "Insights",
+      "account": "Account"
+    },
+    "sessionActive": "Session active",
+    "version": "v1.0"
+  },
+  "auth": {
+    "login": {
+      "title": "Welcome back",
+      "subtitle": "Sign in to manage your property portfolio risks.",
+      "emailLabel": "Professional Email",
+      "emailPlaceholder": "name@company.com",
+      "passwordLabel": "Password",
+      "forgotPassword": "Forgot password?",
+      "rememberMe": "Keep me signed in on this browser",
+      "signIn": "Sign in",
+      "contactSupport": "Contact support",
+      "orContinueWith": "OR CONTINUE WITH",
+      "newToPlatform": "New to the platform?",
+      "createAccount": "Create a free account",
+      "features": {
+        "analysis": "Comprehensive property analysis",
+        "auditing": "Secure due diligence auditing",
+        "risk": "Automated risk assessment"
+      },
+      "secureBy": "Secure by design",
+      "learnHow": "Learn how",
+      "platformOnline": "Platform online",
+      "builtForTrust": "Built for trust",
+      "verifiedListings": "Verified listings only",
+      "secureByDefault": "Secure by default",
+      "roleBasedAccess": "Role-based access"
+    },
+    "register": {
+      "whyPlatform": "Why this platform",
+      "headline": "Honest tooling for property due diligence",
+      "features": {
+        "verificationFirst": "Verification-first listings",
+        "verificationFirstDesc": "Every property runs through a seven-point data-quality engine before it's marked verified.",
+        "secure": "Secure by default",
+        "secureDesc": "JWT sessions, BCrypt password hashing, and role-based access on every endpoint.",
+        "teams": "Built for real teams",
+        "teamsDesc": "Five distinct roles — buyer, agent, legal reviewer, financial institution, and admin.",
+        "consent": "Consent-first analytics",
+        "consentDesc": "Nothing loads until you opt in. Cookie preferences are honored strictly."
+      },
+      "platformOnline": "Platform online",
+      "secureBy": "Secure by design",
+      "learnHow": "Learn how"
+    },
+    "forgotPassword": {
+      "step1Title": "Reset your password",
+      "step1Subtitle": "Enter your email and we'll send a 6-digit code.",
+      "emailLabel": "Email address",
+      "sendCode": "Send code",
+      "alreadyHaveCode": "I already have a code",
+      "step2Title": "Enter the code",
+      "step2Subtitle": "Sent to",
+      "verifyCode": "Verify code",
+      "changeEmail": "Change email",
+      "resendCode": "Resend code",
+      "resendIn": "Resend in {{n}}s",
+      "waitBefore": "Wait {{n}}s before resending",
+      "step3Title": "Set a new password",
+      "step3Subtitle": "Use at least 8 characters with a mix of cases and a number.",
+      "newPassword": "New password",
+      "confirmPassword": "Confirm password",
+      "resetPassword": "Reset password",
+      "requirements": {
+        "length": "At least 8 characters",
+        "case": "Upper and lower case",
+        "number": "Contains a number",
+        "match": "Passwords match"
+      },
+      "step4Title": "Password updated",
+      "step4Subtitle": "Sign in with your new password to continue.",
+      "backToSignIn": "Back to sign in",
+      "redirectingIn": "Redirecting in {{n}}s…",
+      "capsLock": "Caps Lock is on"
+    },
+    "errors": {
+      "emailRequired": "Enter your email",
+      "emailInvalid": "Enter a valid email address",
+      "passwordRequired": "Enter your password",
+      "passwordLength": "At least 8 characters",
+      "fieldErrors": "Please check your details",
+      "someFieldsNeedAttention": "Some fields need attention.",
+      "signInFailed": "Sign in failed",
+      "checkCredentials": "Please check your credentials and try again."
+    }
+  },
+  "dashboard": {
+    "greetings": {
+      "morning": "Good morning",
+      "afternoon": "Good afternoon",
+      "evening": "Good evening"
+    },
+    "subtitle": "Your portfolio at a glance",
+    "platformOverview": "Platform overview",
+    "stats": {
+      "totalProperties": "Total properties",
+      "verified": "Verified",
+      "pending": "Pending",
+      "platformUsers": "Platform users",
+      "ofTotal": "{{pct}}% of total",
+      "awaitingVerification": "Awaiting verification",
+      "allCaughtUp": "All caught up",
+      "activeIn30Days": "{{n}} active in 30 days",
+      "noPropertiesAdded": "No properties added",
+      "nothingToVerify": "Nothing to verify yet"
+    },
+    "empty": {
+      "title": "No properties yet",
+      "description": "Add your first property to see verification results and portfolio insights.",
+      "addFirst": "Add your first property"
+    },
+    "refresh": "Refresh"
+  },
+  "property": {
+    "addProperty": "Add property",
+    "addFirstProperty": "Add your first property",
+    "search": {
+      "title": "Property search",
+      "placeholder": "Search pages, properties, actions...",
+      "loadingPortfolio": "Loading portfolio...",
+      "readyToIndex": "Ready to index your first property",
+      "live": "Live",
+      "propertiesIndexed": "{{n}} {{unit}} indexed",
+      "propertyUnit": "property",
+      "propertiesUnit": "properties",
+      "citiesCovered": "{{n}} {{unit}} covered",
+      "cityUnit": "city",
+      "citiesUnit": "cities",
+      "synced": "Synced",
+      "highRisk": "{{n}} high risk",
+      "noPropertiesFound": "No properties found",
+      "trySearching": "Try searching by city name, address, or ZIP code — or add your first property.",
+      "noMatches": "No matches",
+      "tryDifferent": "Try a different city, address, or ZIP code.",
+      "searchFailed": "Search failed",
+      "tryAgain": "Please try again in a moment.",
+      "couldntLoad": "Couldn't load properties",
+      "pleaseRefresh": "Please refresh the page.",
+      "found": "Found {{n}} {{unit}}"
+    },
+    "filter": {
+      "filter": "Filter",
+      "clearFilters": "Clear filters",
+      "noMatchFilters": "No properties match your filters",
+      "tryRemoving": "Try removing some filters or clearing them all"
+    },
+    "card": {
+      "verified": "Verified",
+      "pending": "Pending",
+      "incomplete": "Incomplete",
+      "marketValue": "Market value",
+      "completeToVerify": "Complete to verify",
+      "missing": "Missing:",
+      "addPhoto": "Add photo",
+      "changePhoto": "Change photo",
+      "lowRisk": "Low risk",
+      "mediumRisk": "Medium risk",
+      "highRisk": "High risk"
+    },
+    "details": {
+      "verifiedProperty": "Verified property",
+      "pendingVerification": "Pending verification",
+      "active": "Active",
+      "userProvided": "User provided",
+      "editDetails": "Edit details",
+      "estimatedMarketValue": "Estimated market value",
+      "yearBuilt": "Year built",
+      "stories": "Stories",
+      "lotSize": "Lot size",
+      "zoning": "Zoning",
+      "beds": "beds",
+      "baths": "baths",
+      "sqft": "sqft",
+      "type": "Type",
+      "pricePerSqft": "Price/sqft",
+      "editProperty": "Edit property",
+      "backToSearch": "Back to search",
+      "monthlyEst": "Est. {{amount}}/mo",
+      "getPrequalified": "Get pre-qualified"
+    },
+    "comparison": {
+      "title": "Property comparison",
+      "subtitle": "Side-by-side analysis of {{n}} {{unit}} · real data only",
+      "propertyUnit": "property",
+      "propertiesUnit": "properties",
+      "mySaved": "My saved",
+      "saveComparison": "Save comparison",
+      "goToSearch": "Go to property search",
+      "selectAtLeast2": "Select at least 2 properties to compare",
+      "sections": {
+        "financial": "Financial",
+        "propertyDetails": "Property details",
+        "riskAssessment": "Risk assessment",
+        "dataQuality": "Data quality",
+        "integrationSources": "Integration data sources",
+        "environmental": "Environmental"
+      },
+      "metrics": {
+        "marketValue": "Market value",
+        "area": "Area",
+        "pricePerSqft": "Price / sqft",
+        "lotSize": "Lot size",
+        "yearBuilt": "Year built",
+        "type": "Type",
+        "bedrooms": "Bedrooms",
+        "bathrooms": "Bathrooms",
+        "stories": "Stories",
+        "condition": "Condition",
+        "structureType": "Structure type",
+        "zoning": "Zoning",
+        "overallRisk": "Overall risk",
+        "financialRisk": "Financial risk",
+        "legalRisk": "Legal risk",
+        "environmentalRisk": "Environmental risk",
+        "structuralRisk": "Structural risk",
+        "verification": "Verification",
+        "ownership": "Ownership",
+        "taxHistory": "Tax history",
+        "floodZone": "Flood zone",
+        "permits": "Permits",
+        "aqi": "AQI",
+        "floodRisk": "Flood risk",
+        "nearIndustrial": "Near industrial zone"
+      },
+      "risk": {
+        "low": "Low risk",
+        "medium": "Medium risk",
+        "high": "High risk"
+      },
+      "status": {
+        "live": "Live",
+        "cached": "Cached",
+        "sample": "Sample",
+        "unavailable": "Unavailable",
+        "timedOut": "Timed out",
+        "error": "Error",
+        "noData": "No data"
+      },
+      "legend": {
+        "title": "Legend",
+        "best": "Best value",
+        "worst": "Worst value",
+        "middle": "Middle",
+        "note": "Comparisons are relative — no external benchmarks used"
+      }
+    }
+  },
+  "profile": {
+    "title": "Account Management",
+    "subtitle": "Control your professional identity and application security.",
+    "sections": {
+      "accountDetails": "Account details",
+      "accountDetailsSubtitle": "Primary contact and organizational information.",
+      "security": "Security & access",
+      "securitySubtitle": "Manage your authentication methods and security protocols.",
+      "dangerZone": "Danger zone",
+      "dangerZoneSubtitle": "Irreversible actions. Please proceed with care."
+    },
+    "fields": {
+      "fullName": "Full name",
+      "email": "Email address",
+      "phone": "Phone",
+      "signInMethod": "Sign-in method",
+      "accessLevel": "Access level",
+      "memberSince": "Member since"
+    },
+    "actions": {
+      "editProfile": "Edit profile",
+      "cancel": "Cancel",
+      "saveChanges": "Save changes",
+      "saving": "Saving...",
+      "changePassword": "Change password",
+      "deleteAccount": "Delete account"
+    },
+    "password": {
+      "title": "Account password",
+      "description": "Update your password anytime to keep your account secure.",
+      "googleOnly": "You sign in with Google. No password is set."
+    },
+    "delete": {
+      "title": "Delete this account",
+      "description": "Permanently removes your profile, all properties you've added, and all session data. This cannot be undone."
+    },
+    "roles": {
+      "BUYER": "Buyer",
+      "REAL_ESTATE_AGENT": "Real Estate Agent",
+      "LEGAL_REVIEWER": "Legal Reviewer",
+      "FINANCIAL_INSTITUTION": "Financial Institution",
+      "ADMIN": "Administrator"
+    },
+    "authProvider": {
+      "LOCAL": "Email + password",
+      "GOOGLE": "Google",
+      "LOCAL_AND_GOOGLE": "Email + Google"
+    },
+    "locked": "Locked",
+    "verified": "Verified {{role}}",
+    "errors": {
+      "nameValidation": "3–100 characters, letters and spaces only",
+      "phoneValidation": "10 digits, starting with 6–9",
+      "couldntLoad": "Could not load profile",
+      "pleaseRefresh": "Please refresh the page.",
+      "unableToLoad": "Unable to load profile. Please refresh the page."
+    },
+    "success": {
+      "profileUpdated": "Profile updated",
+      "changesSaved": "Your changes have been saved."
+    }
+  },
+  "settings": {
+    "title": "Settings",
+    "language": {
+      "sectionTitle": "Language",
+      "sectionSubtitle": "Choose your preferred language for the interface.",
+      "label": "Interface language",
+      "selectPlaceholder": "Select language",
+      "saved": "Language updated",
+      "savedDescription": "The interface language has been changed to {{language}}."
+    }
+  },
+  "common": {
+    "loading": "Loading...",
+    "error": "Something went wrong",
+    "retry": "Try again",
+    "save": "Save",
+    "cancel": "Cancel",
+    "delete": "Delete",
+    "edit": "Edit",
+    "close": "Close",
+    "back": "Back",
+    "next": "Next",
+    "confirm": "Confirm",
+    "yes": "Yes",
+    "no": "No",
+    "search": "Search",
+    "filter": "Filter",
+    "clear": "Clear",
+    "clearAll": "Clear all",
+    "apply": "Apply",
+    "refresh": "Refresh",
+    "download": "Download",
+    "upload": "Upload",
+    "submit": "Submit",
+    "noData": "No data available",
+    "justNow": "just now",
+    "minutesAgo": "{{n}}m ago",
+    "hoursAgo": "{{n}}h ago",
+    "secondsAgo": "{{n}}s ago",
+    "syncedAgo": "Synced"
+  },
+  "pages": {
+    "dueDiligence": {
+      "title": "Due Diligence dashboard coming soon",
+      "description": "Consolidated view of all your properties' due diligence status will appear here."
+    },
+    "riskAssessment": {
+      "title": "Risk Assessment overview coming soon",
+      "description": "Portfolio-wide risk analysis and prioritized action items will appear here."
+    },
+    "reports": {
+      "title": "Reports coming soon",
+      "description": "Generate portfolio reports, risk summaries, and due diligence documents. This feature is under development."
+    },
+    "notifications": {
+      "title": "You're all caught up",
+      "description": "No new notifications. We'll alert you when properties need attention or reports are ready."
+    },
+    "auditLogs": {
+      "title": "No audit entries yet",
+      "description": "System actions and user activity will be tracked here for compliance and security review."
+    }
+  }
+}

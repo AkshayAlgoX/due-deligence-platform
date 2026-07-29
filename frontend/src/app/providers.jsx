@@ -1,6 +1,7 @@
 "use client";
 
 import { GoogleOAuthProvider } from "@react-oauth/google";
+import I18nProvider from "@/components/I18nProvider";
 
 /**
  * Client-side providers wrapper.
@@ -9,16 +10,13 @@ import { GoogleOAuthProvider } from "@react-oauth/google";
 export default function Providers({ children }) {
   const googleClientId = process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID;
 
-  if (!googleClientId) {
-    console.warn(
-      "⚠️ NEXT_PUBLIC_GOOGLE_CLIENT_ID is not set. Google Sign-In will be disabled."
-    );
-    return children;
-  }
-
-  return (
+  const content = googleClientId ? (
     <GoogleOAuthProvider clientId={googleClientId}>
       {children}
     </GoogleOAuthProvider>
+  ) : (
+    children
   );
+
+  return <I18nProvider>{content}</I18nProvider>;
 }
