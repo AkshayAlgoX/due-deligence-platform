@@ -557,8 +557,12 @@ function PropertyComparisonInner() {
       {!loading && properties.filter(Boolean).length > 0 && (
         <div className="flex gap-4 flex-wrap">
           {P.map((prop, i) => (
-            <PropertyHeroCard key={ids[i]} property={prop} index={i} />
-          ))}
+  <PropertyHeroCard
+    key={prop?.id ?? ids[i] ?? `hero-slot-${i}`}
+    property={prop}
+    index={i}
+  />
+))}
         </div>
       )}
 
@@ -583,9 +587,13 @@ function PropertyComparisonInner() {
                       Metric
                     </span>
                   </th>
-                  {P.map((prop, i) => (
-                    <PropertyHeader key={ids[i]} property={prop} index={i} />
-                  ))}
+                 {P.map((prop, i) => (
+  <PropertyHeader
+    key={prop?.id ?? ids[i] ?? `header-slot-${i}`}
+    property={prop}
+    index={i}
+  />
+))}
                 </tr>
               </thead>
 
