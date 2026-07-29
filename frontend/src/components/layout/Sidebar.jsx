@@ -14,6 +14,7 @@ import {
   ClipboardList,
   User,
   LifeBuoy,
+  Bookmark,
 } from "lucide-react";
 
 import { getUser } from "@/utils/helpers";
@@ -23,7 +24,8 @@ const ROUTE_ROLES = {
   "/dashboard/property-search":    ["BUYER", "REAL_ESTATE_AGENT", "LEGAL_REVIEWER", "FINANCIAL_INSTITUTION", "ADMIN"],
   "/dashboard/due-diligence":      ["BUYER", "REAL_ESTATE_AGENT", "LEGAL_REVIEWER", "FINANCIAL_INSTITUTION", "ADMIN"],
   "/dashboard/risk-assessment":    ["BUYER", "REAL_ESTATE_AGENT", "LEGAL_REVIEWER", "FINANCIAL_INSTITUTION", "ADMIN"],
-  "/dashboard/property-comparison":["BUYER", "REAL_ESTATE_AGENT", "LEGAL_REVIEWER", "FINANCIAL_INSTITUTION", "ADMIN"],
+ "/dashboard/property-comparison":["BUYER", "REAL_ESTATE_AGENT", "LEGAL_REVIEWER", "FINANCIAL_INSTITUTION", "ADMIN"],
+"/dashboard/saved-comparisons":  ["BUYER", "REAL_ESTATE_AGENT", "LEGAL_REVIEWER", "FINANCIAL_INSTITUTION", "ADMIN"],
   "/dashboard/reports":            ["REAL_ESTATE_AGENT", "LEGAL_REVIEWER", "FINANCIAL_INSTITUTION", "ADMIN"],
   "/dashboard/notifications":      ["BUYER", "REAL_ESTATE_AGENT", "LEGAL_REVIEWER", "FINANCIAL_INSTITUTION", "ADMIN"],
   "/dashboard/audit-logs":         ["ADMIN"],
@@ -47,13 +49,14 @@ const menuSections = [
     ],
   },
   {
-    label: "Analysis",
-    items: [
-      { title: "Due Diligence",       href: "/dashboard/due-diligence",       icon: ShieldCheck,   badge: null },
-      { title: "Risk Assessment",     href: "/dashboard/risk-assessment",     icon: AlertTriangle, badge: null },
-      { title: "Property Comparison", href: "/dashboard/property-comparison", icon: GitCompare,    badge: null },
-    ],
-  },
+  label: "Analysis",
+  items: [
+    { title: "Due Diligence",        href: "/dashboard/due-diligence",        icon: ShieldCheck,   badge: null },
+    { title: "Risk Assessment",      href: "/dashboard/risk-assessment",      icon: AlertTriangle, badge: null },
+    { title: "Property Comparison",  href: "/dashboard/property-comparison",  icon: GitCompare,    badge: null },
+    { title: "Saved Comparisons",    href: "/dashboard/saved-comparisons",    icon: Bookmark,      badge: null },
+  ],
+},
   {
     label: "Insights",
     items: [

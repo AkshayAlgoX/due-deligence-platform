@@ -41,4 +41,8 @@ export const API_ROUTES = {
 
   // ── Admin ─────────────────────────────────────────────────────────────────
   ADMIN_USERS: "/api/admin/users",
+
+    // ── Comparisons ──────────────────────────────────────────────────────────────
+  COMPARISONS:         "/api/comparisons",
+  COMPARISON_BY_ID:    (id) => `/api/comparisons/${id}`,
 };
