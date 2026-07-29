@@ -3,54 +3,69 @@
 import { useEffect, useState, useCallback } from "react";
 import { useRouter } from "next/navigation";
 import {
-   ListChecks,
+  ListChecks,
   ChevronDown,
   ChevronUp,
   X,
   ArrowRight,
-  Loader2,
 } from "lucide-react";
 import { getDashboardRecommendations } from "@/services/dashboardService";
 
 const DISMISS_KEY = "dd_dismissed_recommendations";
 const MAX_VISIBLE = 5;
 
-// ── Severity → visual mapping (subtle, one accent) ────────────
+// ── Severity → visual mapping ─────────────────────────────────
 function getSeverityConfig(severity) {
   switch (severity) {
     case "HIGH":
-      return { dot: "bg-red-500",   label: "Urgent",   labelColor: "text-red-600"   };
+      return {
+        dot: "bg-red-500",
+        label: "Urgent",
+        labelColor: "text-red-600 dark:text-red-400",
+      };
     case "MEDIUM":
-      return { dot: "bg-amber-500", label: "Action",   labelColor: "text-amber-700" };
+      return {
+        dot: "bg-amber-500",
+        label: "Action",
+        labelColor: "text-amber-700 dark:text-amber-400",
+      };
     case "POSITIVE":
-      return { dot: "bg-[#22C55E]", label: "On track", labelColor: "text-[#16a34a]" };
+      return {
+        dot: "bg-[#22C55E]",
+        label: "On track",
+        labelColor: "text-[#16a34a] dark:text-green-400",
+      };
     case "LOW":
     default:
-      return { dot: "bg-gray-300",  label: "Tip",      labelColor: "text-gray-500"  };
+      return {
+        dot: "bg-gray-300 dark:bg-[#6e7681]",
+        label: "Tip",
+        labelColor: "text-gray-500 dark:text-[#7d8590]",
+      };
   }
 }
 
 // ── Skeleton ─────────────────────────────────────────────────
 function RecommendationsSkeleton() {
   return (
-    <div className="rounded-2xl border border-gray-100 bg-white shadow-sm">
-      <div className="flex items-center justify-between border-b border-gray-100 p-6">
+    <div className="rounded-2xl border border-gray-100 dark:border-[#30363d] bg-white dark:bg-[#161b22] shadow-sm">
+      <div className="flex items-center justify-between border-b border-gray-100 dark:border-[#30363d] p-6">
         <div className="flex items-center gap-3">
-          <div className="h-9 w-9 animate-pulse rounded-xl bg-gray-100" />
+          <div className="h-9 w-9 animate-pulse rounded-xl bg-gray-100 dark:bg-[#1c2128]" />
           <div className="space-y-1.5">
-            <div className="h-3.5 w-28 animate-pulse rounded bg-gray-100" />
-            <div className="h-3 w-40 animate-pulse rounded bg-gray-100" />
+            <div className="h-3.5 w-28 animate-pulse rounded bg-gray-100 dark:bg-[#1c2128]" />
+            <div className="h-3 w-40 animate-pulse rounded bg-gray-100 dark:bg-[#1c2128]" />
           </div>
         </div>
       </div>
-      <div className="divide-y divide-gray-50">
+      <div className="divide-y divide-gray-50 dark:divide-[#30363d]">
         {[1, 2, 3].map((i) => (
           <div key={i} className="animate-pulse p-5">
             <div className="flex items-start gap-3">
-              <div className="mt-1.5 h-1.5 w-1.5 rounded-full bg-gray-200" />
+              <div className="mt-1.5 h-1.5 w-1.5 rounded-full bg-gray-200 dark:bg-[#30363d]" />
               <div className="flex-1 space-y-2">
-                <div className="h-3.5 w-48 rounded bg-gray-100" />
-                <div className="h-3 w-64 rounded bg-gray-100" />
+                <div className="h-3.5 w-48 rounded bg-gray-100 dark:bg-[#1c2128]" />
+                <div className="h-3 w-64 rounded bg-gray-100 dark:bg-[#1c2128]" />
               </div>
             </div>
           </div>
@@ -66,30 +81,28 @@ function RecommendationRow({ rec, onDismiss }) {
   const cfg = getSeverityConfig(rec.severity);
 
   return (
-    <div className="group relative flex items-start gap-3 px-6 py-4 transition-colors hover:bg-gray-50/60">
-      {/* Small colored dot — the only color on the row */}
+    <div className="group relative flex items-start gap-3 px-6 py-4 transition-colors hover:bg-gray-50/60 dark:hover:bg-[#1c2128]">
       <span
         className={`mt-2 h-1.5 w-1.5 flex-shrink-0 rounded-full ${cfg.dot}`}
       />
 
-      {/* Content */}
       <div className="min-w-0 flex-1">
         <div className="flex items-center gap-2">
-          <p className="text-sm font-semibold text-gray-900">{rec.title}</p>
+          <p className="text-sm font-semibold text-gray-900 dark:text-[#e6edf3]">{rec.title}</p>
           <span
             className={`text-[10px] font-bold uppercase tracking-wide ${cfg.labelColor}`}
           >
             {cfg.label}
           </span>
         </div>
-        <p className="mt-1 text-xs leading-relaxed text-gray-500">
+        <p className="mt-1 text-xs leading-relaxed text-gray-500 dark:text-[#7d8590]">
           {rec.description}
         </p>
 
         {rec.actionUrl && rec.actionLabel && (
           <button
             onClick={() => router.push(rec.actionUrl)}
-            className="mt-2 flex items-center gap-1 text-xs font-semibold text-[#16a34a] transition-all hover:gap-1.5"
+            className="mt-2 flex items-center gap-1 text-xs font-semibold text-[#16a34a] dark:text-green-400 transition-all hover:gap-1.5"
           >
             {rec.actionLabel}
             <ArrowRight size={11} strokeWidth={2.5} />
@@ -97,11 +110,10 @@ function RecommendationRow({ rec, onDismiss }) {
         )}
       </div>
 
-      {/* Dismiss */}
       {rec.severity !== "POSITIVE" && (
         <button
           onClick={() => onDismiss(rec.type)}
-          className="flex-shrink-0 rounded-md p-1 text-gray-300 opacity-0 transition-all hover:bg-white hover:text-gray-500 group-hover:opacity-100"
+          className="flex-shrink-0 rounded-md p-1 text-gray-300 dark:text-[#6e7681] opacity-0 transition-all hover:bg-white dark:hover:bg-[#0d1117] hover:text-gray-500 dark:hover:text-[#e6edf3] group-hover:opacity-100"
           aria-label="Dismiss"
         >
           <X size={13} strokeWidth={2.5} />
@@ -161,33 +173,30 @@ export default function RecommendationsPanel({ refreshKey }) {
   const urgentCount = visible.filter((r) => r.severity === "HIGH").length;
 
   return (
-    <div className="overflow-hidden rounded-2xl border border-gray-100 bg-white shadow-sm">
-      {/* ── Header ────────────────────────────────────────── */}
-      <div className="flex items-center justify-between border-b border-gray-100 p-6">
+    <div className="overflow-hidden rounded-2xl border border-gray-100 dark:border-[#30363d] bg-white dark:bg-[#161b22] shadow-sm">
+      <div className="flex items-center justify-between border-b border-gray-100 dark:border-[#30363d] p-6">
         <div className="flex items-center gap-3">
-          <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-[#edf7f3]">
-  <ListChecks className="h-4 w-4 text-[#16a34a]" strokeWidth={2.2} />
-</div>
+          <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-[#edf7f3] dark:bg-[#0d2818]">
+            <ListChecks className="h-4 w-4 text-[#16a34a] dark:text-green-400" strokeWidth={2.2} />
+          </div>
           <div>
-            <h3 className="text-sm font-bold text-gray-900">
+            <h3 className="text-sm font-bold text-gray-900 dark:text-[#e6edf3]">
               Recommendations
             </h3>
-            <p className="mt-0.5 text-xs text-gray-500">
-              {visible.length} action{visible.length !== 1 ? "s" : ""} to
-              improve your portfolio
+            <p className="mt-0.5 text-xs text-gray-500 dark:text-[#7d8590]">
+              {visible.length} action{visible.length !== 1 ? "s" : ""} to improve your portfolio
             </p>
           </div>
         </div>
 
         {urgentCount > 0 && (
-          <span className="rounded-full bg-red-50 px-2.5 py-1 text-xs font-bold text-red-600">
+          <span className="rounded-full bg-red-50 dark:bg-[#2d1214] px-2.5 py-1 text-xs font-bold text-red-600 dark:text-red-400">
             {urgentCount} urgent
           </span>
         )}
       </div>
 
-      {/* ── Rows ──────────────────────────────────────────── */}
-      <div className="divide-y divide-gray-50">
+      <div className="divide-y divide-gray-50 dark:divide-[#30363d]">
         {shown.map((rec) => (
           <RecommendationRow
             key={rec.type}
@@ -197,11 +206,10 @@ export default function RecommendationsPanel({ refreshKey }) {
         ))}
       </div>
 
-      {/* ── Expand / collapse footer ───────────────────────── */}
       {hasMore && (
         <button
           onClick={() => setExpanded((e) => !e)}
-          className="flex w-full items-center justify-center gap-1.5 border-t border-gray-100 bg-gray-50/40 py-3 text-xs font-semibold text-gray-500 transition-all hover:bg-gray-50 hover:text-gray-700"
+          className="flex w-full items-center justify-center gap-1.5 border-t border-gray-100 dark:border-[#30363d] bg-gray-50/40 dark:bg-[#0d1117] py-3 text-xs font-semibold text-gray-500 dark:text-[#7d8590] transition-all hover:bg-gray-50 dark:hover:bg-[#1c2128] hover:text-gray-700 dark:hover:text-[#e6edf3]"
         >
           {expanded ? (
             <>

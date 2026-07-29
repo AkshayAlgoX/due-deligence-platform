@@ -17,6 +17,7 @@ import { getUser } from "@/utils/helpers";
 import LogoutConfirmModal from "@/components/LogoutConfirmModal";
 import CommandPalette from "@/components/CommandPalette";
 import { useCommandPalette } from "@/hooks/useCommandPalette";
+import ThemeToggle from "@/components/ThemeToggle";
 
 export default function Navbar({ toggleSidebar }) {
   const router = useRouter();
@@ -30,17 +31,14 @@ export default function Navbar({ toggleSidebar }) {
   const menuRef = useRef(null);
 
   useEffect(() => {
-  setUser(getUser());
-  // Detect Mac to show ⌘ vs Ctrl
-  if (typeof window !== "undefined") {
-    setIsMac(/Mac|iPhone|iPad|iPod/.test(window.navigator.platform));
-  }
-
-  // Listen for profile updates (avatar upload/remove) — re-read from storage
-  const handleUserUpdate = () => setUser(getUser());
-  window.addEventListener("user-updated", handleUserUpdate);
-  return () => window.removeEventListener("user-updated", handleUserUpdate);
-}, []);
+    setUser(getUser());
+    if (typeof window !== "undefined") {
+      setIsMac(/Mac|iPhone|iPad|iPod/.test(window.navigator.platform));
+    }
+    const handleUserUpdate = () => setUser(getUser());
+    window.addEventListener("user-updated", handleUserUpdate);
+    return () => window.removeEventListener("user-updated", handleUserUpdate);
+  }, []);
 
   useEffect(() => {
     const handleClickOutside = (e) => {
@@ -61,15 +59,10 @@ export default function Navbar({ toggleSidebar }) {
     logout();
   };
 
-  /**
-   * Actions dispatched from the command palette.
-   * Keeps palette decoupled from auth/modal logic.
-   */
   const handlePaletteAction = (kind) => {
     if (kind === "logout") {
       setLogoutModalOpen(true);
     } else if (kind === "add-property") {
-      // Route to search page — it has the Add Property modal
       router.push("/dashboard/property-search?action=add");
     }
   };
@@ -93,13 +86,13 @@ export default function Navbar({ toggleSidebar }) {
 
   return (
     <>
-      <header className="h-[68px] border-b border-gray-100 bg-white px-6 flex items-center justify-between z-[1000] relative shadow-sm">
+      <header className="h-[68px] border-b border-gray-100 dark:border-[#30363d] bg-white dark:bg-[#161b22] px-6 flex items-center justify-between z-[1000] relative shadow-sm">
         <div className="flex items-center gap-10">
           {/* Sidebar toggle + brand */}
           <div className="flex items-center gap-4">
             <button
               onClick={toggleSidebar}
-              className="text-gray-400 hover:text-gray-700 transition"
+              className="text-gray-400 hover:text-gray-700 dark:text-[#7d8590] dark:hover:text-[#e6edf3] transition"
               aria-label="Toggle sidebar"
             >
               <Menu size={24} />
@@ -115,7 +108,7 @@ export default function Navbar({ toggleSidebar }) {
             </div>
           </div>
 
-          {/* ── Command palette trigger (was dead search bar) ────────── */}
+          {/* Command palette trigger */}
           <button
             type="button"
             onClick={() => setPaletteOpen(true)}
@@ -125,33 +118,31 @@ export default function Navbar({ toggleSidebar }) {
               flex items-center gap-3
               w-[420px]
               rounded-xl
-              border border-gray-100
-              bg-gray-50/50
+              border border-gray-100 dark:border-[#30363d]
+              bg-gray-50/50 dark:bg-[#0d1117]
               pl-4 pr-2 py-2.5
               text-sm text-left
               outline-none
               transition-all
-              hover:border-gray-200
-              hover:bg-white
+              hover:border-gray-200 dark:hover:border-[#484f58]
+              hover:bg-white dark:hover:bg-[#1c2128]
               hover:shadow-sm
               focus:border-[#22C55E]
-              focus:bg-white
+              focus:bg-white dark:focus:bg-[#1c2128]
               focus:ring-4 focus:ring-green-500/10
             "
           >
-            <Search className="h-4 w-4 text-gray-400 group-hover:text-[#22C55E] transition-colors flex-shrink-0" />
-
-            <span className="flex-1 text-gray-400 group-hover:text-gray-600 transition-colors truncate">
+            <Search className="h-4 w-4 text-gray-400 dark:text-[#7d8590] group-hover:text-[#22C55E] transition-colors flex-shrink-0" />
+            <span className="flex-1 text-gray-400 dark:text-[#7d8590] group-hover:text-gray-600 dark:group-hover:text-[#e6edf3] transition-colors truncate">
               Search pages, properties, actions...
             </span>
-
-            {/* Keyboard shortcut hint */}
             <kbd className="
               flex-shrink-0
               flex items-center gap-0.5
-              rounded-md border border-gray-200 bg-white
+              rounded-md border border-gray-200 dark:border-[#30363d]
+              bg-white dark:bg-[#161b22]
               px-1.5 py-0.5
-              text-[10px] font-mono font-semibold text-gray-500
+              text-[10px] font-mono font-semibold text-gray-500 dark:text-[#7d8590]
               shadow-sm
             ">
               <span className="text-[11px] leading-none">
@@ -162,96 +153,104 @@ export default function Navbar({ toggleSidebar }) {
           </button>
         </div>
 
-        {/* Right side — bell, user menu */}
-        <div className="flex items-center gap-5">
+        {/* Right side: bell → ThemeToggle → divider → user menu */}
+        <div className="flex items-center gap-3">
+
+          {/* ── Notification bell — now navigates ── */}
           <button
-            className="relative cursor-pointer group"
+            type="button"
+            onClick={() => router.push("/dashboard/notifications")}
+            className="relative cursor-pointer group flex h-9 w-9 items-center justify-center rounded-lg transition hover:bg-gray-50 dark:hover:bg-[#1c2128]"
             aria-label="Notifications"
+            title="Notifications"
           >
             <Bell
-              className="text-gray-600 group-hover:text-[#22C55E] transition"
-              size={22}
+              className="text-gray-600 dark:text-[#7d8590] group-hover:text-[#22C55E] transition"
+              size={20}
             />
-            <span className="absolute top-0 right-0 w-2 h-2 bg-red-500 rounded-full border border-white animate-pulse" />
           </button>
 
-          <div className="h-8 w-px bg-gray-200" />
+          {/* Theme Toggle */}
+          <ThemeToggle />
 
+          {/* Divider */}
+          <div className="h-8 w-px bg-gray-200 dark:bg-[#30363d]" />
+
+          {/* User menu */}
           <div className="relative" ref={menuRef}>
             <button
               type="button"
               onClick={() => setMenuOpen((prev) => !prev)}
-              className="flex items-center gap-3 rounded-xl px-2 py-1 transition hover:bg-gray-50"
+              className="flex items-center gap-3 rounded-xl px-2 py-1 transition hover:bg-gray-50 dark:hover:bg-[#1c2128]"
               aria-label="User menu"
               aria-expanded={menuOpen}
             >
               <div className="text-right">
-                <p className="font-bold text-sm text-gray-900 leading-tight">
+                <p className="font-bold text-sm text-gray-900 dark:text-[#e6edf3] leading-tight">
                   {fullName}
                 </p>
-                <p className="text-[12px] text-gray-500">{role}</p>
+                <p className="text-[12px] text-gray-500 dark:text-[#7d8590]">{role}</p>
               </div>
 
               <div className="relative">
-  {user?.profilePicture ? (
-    <img
-      src={user.profilePicture}
-      alt={fullName}
-      className="h-10 w-10 rounded-full object-cover shadow-lg shadow-green-500/30 ring-2 ring-white"
-      onError={(e) => {
-        // If image fails to load, hide it — fallback initials div takes over
-        e.currentTarget.style.display = "none";
-        e.currentTarget.nextElementSibling?.classList.remove("hidden");
-      }}
-    />
-  ) : null}
-  <div
-    className={`${
-      user?.profilePicture ? "hidden" : "flex"
-    } h-10 w-10 rounded-full bg-gradient-to-br from-[#22C55E] to-[#16a34a] items-center justify-center text-white text-sm font-black shadow-lg shadow-green-500/30`}
-  >
-    {initials}
-  </div>
-  <span className="absolute bottom-0 right-0 w-2.5 h-2.5 bg-green-500 rounded-full border-2 border-white animate-pulse" />
-</div>
+                {user?.profilePicture ? (
+                  <img
+                    src={user.profilePicture}
+                    alt={fullName}
+                    className="h-10 w-10 rounded-full object-cover shadow-lg shadow-green-500/30 ring-2 ring-white dark:ring-[#161b22]"
+                    onError={(e) => {
+                      e.currentTarget.style.display = "none";
+                      e.currentTarget.nextElementSibling?.classList.remove("hidden");
+                    }}
+                  />
+                ) : null}
+                <div
+                  className={`${
+                    user?.profilePicture ? "hidden" : "flex"
+                  } h-10 w-10 rounded-full bg-gradient-to-br from-[#22C55E] to-[#16a34a] items-center justify-center text-white text-sm font-black shadow-lg shadow-green-500/30`}
+                >
+                  {initials}
+                </div>
+                <span className="absolute bottom-0 right-0 w-2.5 h-2.5 bg-green-500 rounded-full border-2 border-white dark:border-[#161b22] animate-pulse" />
+              </div>
 
               <ChevronDown
                 size={16}
-                className={`text-gray-400 transition-transform ${
+                className={`text-gray-400 dark:text-[#7d8590] transition-transform ${
                   menuOpen ? "rotate-180" : ""
                 }`}
               />
             </button>
 
-           {menuOpen && (
-  <div className="absolute right-0 top-full mt-2 w-64 rounded-2xl border border-gray-100 bg-white shadow-2xl z-[1001] overflow-hidden animate-in fade-in slide-in-from-top-2 duration-150">
-                <div className="border-b border-gray-100 bg-gradient-to-br from-green-50 to-emerald-50 px-4 py-3">
-                 <div className="flex items-center gap-3">
-  {user?.profilePicture ? (
-    <img
-      src={user.profilePicture}
-      alt={fullName}
-      className="h-11 w-11 rounded-full object-cover shadow-lg shadow-green-500/30 ring-2 ring-white flex-shrink-0"
-      onError={(e) => {
-        e.currentTarget.style.display = "none";
-        e.currentTarget.nextElementSibling?.classList.remove("hidden");
-      }}
-    />
-  ) : null}
-  <div
-    className={`${
-      user?.profilePicture ? "hidden" : "flex"
-    } h-11 w-11 rounded-full bg-gradient-to-br from-[#22C55E] to-[#16a34a] items-center justify-center text-white text-sm font-black shadow-lg shadow-green-500/30 flex-shrink-0`}
-  >
-    {initials}
-  </div>
-  <div className="min-w-0 flex-1">
-    <p className="text-sm font-bold text-gray-900 truncate">
-      {fullName}
-    </p>
-    <p className="text-xs text-gray-500 truncate">{email}</p>
-  </div>
-</div>
+            {menuOpen && (
+              <div className="absolute right-0 top-full mt-2 w-64 rounded-2xl border border-gray-100 dark:border-[#30363d] bg-white dark:bg-[#161b22] shadow-2xl z-[1001] overflow-hidden animate-in fade-in slide-in-from-top-2 duration-150">
+                <div className="border-b border-gray-100 dark:border-[#30363d] bg-gradient-to-br from-green-50 to-emerald-50 dark:from-[#0d2818] dark:to-[#0d2818] px-4 py-3">
+                  <div className="flex items-center gap-3">
+                    {user?.profilePicture ? (
+                      <img
+                        src={user.profilePicture}
+                        alt={fullName}
+                        className="h-11 w-11 rounded-full object-cover shadow-lg shadow-green-500/30 ring-2 ring-white dark:ring-[#161b22] flex-shrink-0"
+                        onError={(e) => {
+                          e.currentTarget.style.display = "none";
+                          e.currentTarget.nextElementSibling?.classList.remove("hidden");
+                        }}
+                      />
+                    ) : null}
+                    <div
+                      className={`${
+                        user?.profilePicture ? "hidden" : "flex"
+                      } h-11 w-11 rounded-full bg-gradient-to-br from-[#22C55E] to-[#16a34a] items-center justify-center text-white text-sm font-black shadow-lg shadow-green-500/30 flex-shrink-0`}
+                    >
+                      {initials}
+                    </div>
+                    <div className="min-w-0 flex-1">
+                      <p className="text-sm font-bold text-gray-900 dark:text-[#e6edf3] truncate">
+                        {fullName}
+                      </p>
+                      <p className="text-xs text-gray-500 dark:text-[#7d8590] truncate">{email}</p>
+                    </div>
+                  </div>
                 </div>
 
                 <div className="p-1.5">
@@ -261,16 +260,16 @@ export default function Navbar({ toggleSidebar }) {
                       setMenuOpen(false);
                       router.push("/dashboard/profile");
                     }}
-                    className="flex w-full items-center gap-3 rounded-xl px-3 py-2.5 text-sm text-gray-700 transition hover:bg-gray-50"
+                    className="flex w-full items-center gap-3 rounded-xl px-3 py-2.5 text-sm text-gray-700 dark:text-[#e6edf3] transition hover:bg-gray-50 dark:hover:bg-[#1c2128]"
                   >
-                    <User size={16} className="text-gray-400" />
+                    <User size={16} className="text-gray-400 dark:text-[#7d8590]" />
                     My Profile
                   </button>
 
                   <button
                     type="button"
                     onClick={handleLogoutClick}
-                    className="flex w-full items-center gap-3 rounded-xl px-3 py-2.5 text-sm font-semibold text-red-600 transition hover:bg-red-50"
+                    className="flex w-full items-center gap-3 rounded-xl px-3 py-2.5 text-sm font-semibold text-red-600 dark:text-red-400 transition hover:bg-red-50 dark:hover:bg-[#2d1214]"
                   >
                     <LogOut size={16} />
                     Log Out
@@ -282,14 +281,12 @@ export default function Navbar({ toggleSidebar }) {
         </div>
       </header>
 
-      {/* Logout Confirmation Modal */}
       <LogoutConfirmModal
         isOpen={logoutModalOpen}
         onClose={() => setLogoutModalOpen(false)}
         onConfirm={handleConfirmLogout}
       />
 
-      {/* Global Command Palette (⌘K) */}
       <CommandPalette
         open={paletteOpen}
         onClose={() => setPaletteOpen(false)}

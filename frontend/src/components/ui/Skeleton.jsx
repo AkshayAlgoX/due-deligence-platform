@@ -8,7 +8,7 @@
 export function Skeleton({ className = "" }) {
   return (
     <div
-      className={`animate-pulse rounded-lg bg-gray-100 ${className}`}
+      className={`animate-pulse rounded-lg bg-gray-100 dark:bg-[#1c2128] ${className}`}
     />
   );
 }
@@ -16,7 +16,7 @@ export function Skeleton({ className = "" }) {
 /** For dashboard KPI cards */
 export function StatsCardSkeleton() {
   return (
-    <div className="rounded-2xl border border-gray-100 bg-white p-6 shadow-sm">
+    <div className="rounded-2xl border border-gray-100 dark:border-[#30363d] bg-white dark:bg-[#161b22] p-6 shadow-sm">
       <div className="flex items-start justify-between">
         <Skeleton className="h-10 w-10 rounded-xl" />
         <Skeleton className="h-6 w-14 rounded-full" />
@@ -30,7 +30,7 @@ export function StatsCardSkeleton() {
 /** For property result cards in the grid */
 export function PropertyCardSkeleton() {
   return (
-    <div className="overflow-hidden rounded-3xl border border-gray-100 bg-white shadow-sm">
+    <div className="overflow-hidden rounded-3xl border border-gray-100 dark:border-[#30363d] bg-white dark:bg-[#161b22] shadow-sm">
       <Skeleton className="h-44 w-full rounded-none" />
       <div className="p-5">
         <div className="flex items-start gap-2">
@@ -38,7 +38,7 @@ export function PropertyCardSkeleton() {
           <Skeleton className="h-4 flex-1" />
         </div>
         <Skeleton className="ml-7 mt-2 h-3 w-2/3" />
-        <div className="my-4 h-px bg-gray-100" />
+        <div className="my-4 h-px bg-gray-100 dark:bg-[#30363d]" />
         <div className="flex gap-1.5">
           <Skeleton className="h-6 w-20 rounded-full" />
           <Skeleton className="h-6 w-14 rounded-full" />
@@ -52,7 +52,7 @@ export function PropertyCardSkeleton() {
 /** For property hero card */
 export function PropertyHeroSkeleton() {
   return (
-    <div className="overflow-hidden rounded-2xl border border-gray-100 bg-white shadow-sm">
+    <div className="overflow-hidden rounded-2xl border border-gray-100 dark:border-[#30363d] bg-white dark:bg-[#161b22] shadow-sm">
       <div className="grid grid-cols-1 lg:grid-cols-2">
         <Skeleton className="h-[380px] rounded-none" />
         <div className="p-8">
@@ -69,7 +69,7 @@ export function PropertyHeroSkeleton() {
             <Skeleton className="h-4 w-16" />
             <Skeleton className="h-4 w-24" />
           </div>
-          <div className="my-6 h-px bg-gray-100" />
+          <div className="my-6 h-px bg-gray-100 dark:bg-[#30363d]" />
           <div className="grid grid-cols-4 gap-6">
             {[1, 2, 3, 4].map((i) => (
               <div key={i}>
@@ -96,7 +96,7 @@ export function ProfileSkeleton() {
 
       <div>
         <Skeleton className="mb-4 h-3 w-20" />
-        <div className="divide-y divide-gray-100 rounded-2xl border border-gray-100 bg-white shadow-sm">
+        <div className="divide-y divide-gray-100 dark:divide-[#30363d] rounded-2xl border border-gray-100 dark:border-[#30363d] bg-white dark:bg-[#161b22] shadow-sm">
           {[1, 2, 3, 4, 5, 6].map((i) => (
             <div key={i} className="flex items-center gap-4 px-5 py-4">
               <Skeleton className="h-8 w-8 rounded-lg" />
@@ -129,7 +129,7 @@ export function TextSkeleton({ lines = 1, className = "" }) {
 /** For table rows */
 export function TableRowSkeleton({ columns = 4 }) {
   return (
-    <div className="flex items-center gap-4 border-b border-gray-100 px-4 py-3">
+    <div className="flex items-center gap-4 border-b border-gray-100 dark:border-[#30363d] px-4 py-3">
       {Array.from({ length: columns }).map((_, i) => (
         <Skeleton key={i} className="h-4 flex-1" />
       ))}

@@ -33,8 +33,6 @@ import PortfolioTrendChart from "@/components/dashboard/PortfolioTrendChart";
 import RecommendationsPanel from "@/components/dashboard/RecommendationsPanel";
 import PortfolioMap from "@/components/dashboard/PortfolioMap";
 
-
-
 export default function DashboardPage() {
   const searchParams = useSearchParams();
 
@@ -54,8 +52,8 @@ export default function DashboardPage() {
   }, [searchParams]);
 
   useEffect(() => {
-  document.title = "Dashboard | Real Estate Due Diligence";
-}, []);
+    document.title = "Dashboard | Real Estate Due Diligence";
+  }, []);
 
   useEffect(() => {
     loadUser();
@@ -67,7 +65,7 @@ export default function DashboardPage() {
       const data = await getCurrentUser();
       setUser(data);
     } catch {
-      // Silent — dashboard still works without user context
+      // Silent
     }
   };
 
@@ -95,7 +93,7 @@ export default function DashboardPage() {
   };
 
   const handleRefresh = () => {
-    setRefreshKey((k) => k + 1); // triggers child refetches
+    setRefreshKey((k) => k + 1);
     loadAll(true);
   };
 
@@ -104,8 +102,11 @@ export default function DashboardPage() {
     loadAll(true);
   };
 
-    const currentUser = getUser();
-  const canAddProperty = currentUser && (currentUser.role === "ADMIN" || ["BUYER", "REAL_ESTATE_AGENT"].includes(currentUser.role));
+  const currentUser = getUser();
+  const canAddProperty =
+    currentUser &&
+    (currentUser.role === "ADMIN" ||
+      ["BUYER", "REAL_ESTATE_AGENT"].includes(currentUser.role));
 
   const firstName =
     user?.fullName?.split(" ")[0] ?? user?.email?.split("@")[0] ?? "";
@@ -116,10 +117,10 @@ export default function DashboardPage() {
 
   return (
     <div className="mx-auto w-full max-w-[1400px] space-y-8">
-      {/* ── Header ─────────────────────────────────────────────── */}
+      {/* ── Header ─────────────────────────────────────────────────── */}
       <div className="flex flex-wrap items-end justify-between gap-4">
         <div>
-          <h1 className="text-[32px] font-extrabold tracking-tight text-gray-900">
+          <h1 className="text-[32px] font-extrabold tracking-tight text-gray-900 dark:text-[#e6edf3]">
             {getGreeting()}
             {firstName ? (
               <span className="text-[#22C55E]">, {firstName}</span>
@@ -127,25 +128,25 @@ export default function DashboardPage() {
               ""
             )}
           </h1>
-          <p className="mt-1 text-sm text-gray-500">{subtitle}</p>
+          <p className="mt-1 text-sm text-gray-500 dark:text-[#7d8590]">{subtitle}</p>
         </div>
 
         <div className="flex gap-3">
           <button
             onClick={handleRefresh}
             disabled={refreshing}
-            className="group flex h-11 w-11 items-center justify-center rounded-xl border border-gray-200 bg-white transition-all hover:border-[#22C55E] hover:shadow-[0_4px_12px_rgba(34,197,94,0.2)] disabled:opacity-50"
+            className="group flex h-11 w-11 items-center justify-center rounded-xl border border-gray-200 dark:border-[#30363d] bg-white dark:bg-[#161b22] transition-all hover:border-[#22C55E] hover:shadow-[0_4px_12px_rgba(34,197,94,0.2)] disabled:opacity-50"
             aria-label="Refresh"
           >
             <RefreshCw
               size={16}
-              className={`text-gray-600 transition-colors group-hover:text-[#22C55E] ${
+              className={`text-gray-600 dark:text-[#7d8590] transition-colors group-hover:text-[#22C55E] ${
                 refreshing ? "animate-spin text-[#22C55E]" : ""
               }`}
             />
           </button>
 
-                    {canAddProperty && (
+          {canAddProperty && (
             <button
               onClick={() => setModalOpen(true)}
               className="group relative flex h-11 items-center gap-2 overflow-hidden rounded-xl bg-gradient-to-br from-[#22C55E] to-[#16a34a] px-5 text-sm font-bold text-white shadow-[0_10px_30px_rgba(34,197,94,0.4)] transition-all hover:scale-[1.03] hover:shadow-[0_15px_40px_rgba(34,197,94,0.55)] active:scale-[0.97]"
@@ -158,35 +159,35 @@ export default function DashboardPage() {
         </div>
       </div>
 
-      {/* ── Hero Strip (only when properties exist) ─────────────── */}
-{!isEmpty && (
-  <ErrorBoundary>
-    <HeroStrip stats={stats} loading={loading} key={`hero-${refreshKey}`} />
-  </ErrorBoundary>
-)}
+      {/* ── Hero Strip ─────────────────────────────────────────────── */}
+      {!isEmpty && (
+        <ErrorBoundary>
+          <HeroStrip stats={stats} loading={loading} key={`hero-${refreshKey}`} />
+        </ErrorBoundary>
+      )}
 
-{/* ── Portfolio trend chart ───────────────────────────────── */}
-{!isEmpty && (
-  <ErrorBoundary>
-    <PortfolioTrendChart key={`trend-${refreshKey}`} refreshKey={refreshKey} />
-  </ErrorBoundary>
-)}
+      {/* ── Portfolio trend chart ──────────────────────────────────── */}
+      {!isEmpty && (
+        <ErrorBoundary>
+          <PortfolioTrendChart key={`trend-${refreshKey}`} refreshKey={refreshKey} />
+        </ErrorBoundary>
+      )}
 
-{/* ── Recommendations ─────────────────────────────────────── */}
-{!isEmpty && (
-  <ErrorBoundary>
-    <RecommendationsPanel key={`rec-${refreshKey}`} refreshKey={refreshKey} />
-  </ErrorBoundary>
-)}
+      {/* ── Recommendations ────────────────────────────────────────── */}
+      {!isEmpty && (
+        <ErrorBoundary>
+          <RecommendationsPanel key={`rec-${refreshKey}`} refreshKey={refreshKey} />
+        </ErrorBoundary>
+      )}
 
-{/* ── Portfolio map ───────────────────────────────────────── */}
-{!isEmpty && (
-  <ErrorBoundary>
-    <PortfolioMap key={`map-${refreshKey}`} refreshKey={refreshKey} />
-  </ErrorBoundary>
-)}
+      {/* ── Portfolio map ──────────────────────────────────────────── */}
+      {!isEmpty && (
+        <ErrorBoundary>
+          <PortfolioMap key={`map-${refreshKey}`} refreshKey={refreshKey} />
+        </ErrorBoundary>
+      )}
 
-{/* ── KPI Cards ───────────────────────────────────────────── */}
+      {/* ── KPI Cards ──────────────────────────────────────────────── */}
       {loading ? (
         <div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-4">
           {[1, 2, 3, 4].map((i) => (
@@ -194,11 +195,11 @@ export default function DashboardPage() {
           ))}
         </div>
       ) : !stats ? (
-        <div className="rounded-xl border border-gray-200 bg-gray-50 p-8 text-center text-sm text-gray-500">
+        <div className="rounded-xl border border-gray-200 dark:border-[#30363d] bg-gray-50 dark:bg-[#161b22] p-8 text-center text-sm text-gray-500 dark:text-[#7d8590]">
           Unable to load statistics. Please refresh the page.
         </div>
       ) : (
-                <motion.div
+        <motion.div
           className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-4"
           variants={fadeInUp}
           initial="initial"
@@ -219,7 +220,7 @@ export default function DashboardPage() {
             icon={<Building2 size={20} strokeWidth={2.5} />}
             trendValue={formatDelta(trends?.propertiesGrowthPct)}
             trendUp={trends ? trends.propertiesGrowthPct >= 0 : null}
-             href="/dashboard/property-search"
+            href="/dashboard/property-search"
           />
 
           <StatsCard
@@ -239,7 +240,7 @@ export default function DashboardPage() {
             icon={<ShieldCheck size={20} strokeWidth={2.5} />}
             trendValue={formatDelta(trends?.verifiedGrowthPct)}
             trendUp={trends ? trends.verifiedGrowthPct >= 0 : null}
-             href="/dashboard/property-search?filter=verified"
+            href="/dashboard/property-search?filter=verified"
           />
 
           <StatsCard
@@ -257,10 +258,10 @@ export default function DashboardPage() {
             icon={<Clock size={20} strokeWidth={2.5} />}
             trendValue={null}
             href={
-    stats.pendingProperties > 0
-      ? "/dashboard/property-search?filter=pending"
-      : undefined
-  }
+              stats.pendingProperties > 0
+                ? "/dashboard/property-search?filter=pending"
+                : undefined
+            }
           />
 
           <StatsCard
@@ -273,14 +274,14 @@ export default function DashboardPage() {
                 ? `${stats.activeUsers} active in 30 days`
                 : undefined
             }
-                        icon={<Users size={20} strokeWidth={2.5} />}
+            icon={<Users size={20} strokeWidth={2.5} />}
             trendValue={formatDelta(trends?.usersGrowthPct)}
             trendUp={trends ? trends.usersGrowthPct >= 0 : null}
           />
         </motion.div>
       )}
 
-      {/* ── Portfolio breakdown + Recent properties (2-col) ────── */}
+      {/* ── Portfolio breakdown + Recent properties ────────────────── */}
       {!loading && !isEmpty && (
         <div className="grid grid-cols-1 gap-6 lg:grid-cols-5">
           <div className="lg:col-span-3">
@@ -296,14 +297,14 @@ export default function DashboardPage() {
         </div>
       )}
 
-      {/* ── Activity feed ──────────────────────────────────────── */}
+      {/* ── Activity feed ──────────────────────────────────────────── */}
       {!loading && !isEmpty && (
         <ErrorBoundary>
           <ActivityFeed key={`activity-${refreshKey}`} />
         </ErrorBoundary>
       )}
 
-      {/* ── Empty state ────────────────────────────────────────── */}
+      {/* ── Empty state ────────────────────────────────────────────── */}
       {!loading && isEmpty && <EmptyState onAddClick={() => setModalOpen(true)} />}
 
       <AddPropertyModal
@@ -315,19 +316,19 @@ export default function DashboardPage() {
   );
 }
 
-// ─── Empty state ─────────────────────────────────────────────────
+// ─── Empty state ─────────────────────────────────────────────────────
 function EmptyState({ onAddClick }) {
   return (
-    <div className="rounded-2xl border border-gray-100 bg-white p-10 shadow-sm">
+    <div className="rounded-2xl border border-gray-100 dark:border-[#30363d] bg-white dark:bg-[#161b22] p-10 shadow-sm">
       <div className="mx-auto flex max-w-md flex-col items-center text-center">
-        <div className="flex h-16 w-16 items-center justify-center rounded-2xl bg-[#edf7f3]">
-          <Building2 className="h-7 w-7 text-[#16a34a]" strokeWidth={2} />
+        <div className="flex h-16 w-16 items-center justify-center rounded-2xl bg-[#edf7f3] dark:bg-[#0d2818]">
+          <Building2 className="h-7 w-7 text-[#16a34a] dark:text-green-400" strokeWidth={2} />
         </div>
 
-        <h2 className="mt-5 text-lg font-bold text-gray-900">
+        <h2 className="mt-5 text-lg font-bold text-gray-900 dark:text-[#e6edf3]">
           No properties yet
         </h2>
-        <p className="mt-2 text-sm text-gray-500 leading-relaxed">
+        <p className="mt-2 text-sm text-gray-500 dark:text-[#7d8590] leading-relaxed">
           Add your first property to see verification results and portfolio insights.
         </p>
 
@@ -344,7 +345,7 @@ function EmptyState({ onAddClick }) {
   );
 }
 
-// ─── Helpers ─────────────────────────────────────────────────────
+// ─── Helpers ─────────────────────────────────────────────────────────
 function getGreeting() {
   const hour = new Date().getHours();
   if (hour < 12) return "Good morning";

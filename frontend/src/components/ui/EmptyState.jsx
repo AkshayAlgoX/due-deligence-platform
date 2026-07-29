@@ -2,23 +2,12 @@
 
 import { Inbox } from "lucide-react";
 
-/**
- * Reusable empty state component.
- *
- * Usage:
- *   <EmptyState
- *     icon={SearchX}
- *     title="No properties found"
- *     description="Try adjusting your filters."
- *     action={{ label: "Add property", onClick: () => setOpen(true) }}
- *   />
- */
 export default function EmptyState({
   icon: Icon = Inbox,
   title = "Nothing here yet",
   description = "Get started by adding your first item.",
   action = null,
-  size = "default", // "default" | "compact"
+  size = "default",
 }) {
   const isCompact = size === "compact";
 
@@ -29,18 +18,18 @@ export default function EmptyState({
       }`}
     >
       <div
-        className={`rounded-2xl bg-gray-50 border border-gray-100 flex items-center justify-center mb-4 ${
+        className={`rounded-2xl bg-gray-50 dark:bg-[#1c2128] border border-gray-100 dark:border-[#30363d] flex items-center justify-center mb-4 ${
           isCompact ? "w-12 h-12" : "w-16 h-16"
         }`}
       >
         <Icon
-          className={`text-gray-300 ${isCompact ? "h-5 w-5" : "h-7 w-7"}`}
+          className={`text-gray-300 dark:text-[#484f58] ${isCompact ? "h-5 w-5" : "h-7 w-7"}`}
           strokeWidth={1.5}
         />
       </div>
 
       <p
-        className={`font-bold text-gray-800 ${
+        className={`font-bold text-gray-800 dark:text-[#e6edf3] ${
           isCompact ? "text-sm" : "text-lg"
         }`}
       >
@@ -49,7 +38,7 @@ export default function EmptyState({
 
       {description && (
         <p
-          className={`mt-1.5 text-gray-500 max-w-sm ${
+          className={`mt-1.5 text-gray-500 dark:text-[#7d8590] max-w-sm ${
             isCompact ? "text-xs" : "text-sm"
           }`}
         >

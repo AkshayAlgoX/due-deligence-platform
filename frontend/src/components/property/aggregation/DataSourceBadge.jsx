@@ -2,14 +2,6 @@
 
 import { Radio, Database, AlertCircle, Clock } from "lucide-react";
 
-/**
- * Small pill showing where data came from.
- *
- * LIVE / CACHED → green "Live" (real integration)
- * MOCK          → amber "Mock" (real API unavailable for region)
- * NO_DATA       → gray "No data"
- * UNAVAILABLE / TIMEOUT / ERROR → red "Unavailable"
- */
 export default function DataSourceBadge({ status, dataSource, retrievedAt }) {
   const config = getConfig(status);
   const Icon = config.icon;
@@ -26,7 +18,7 @@ export default function DataSourceBadge({ status, dataSource, retrievedAt }) {
         {config.label}
       </div>
       {timeAgo && (
-        <span className="text-[10px] text-gray-400">{timeAgo}</span>
+        <span className="text-[10px] text-gray-400 dark:text-[#6e7681]">{timeAgo}</span>
       )}
     </div>
   );
@@ -39,31 +31,31 @@ function getConfig(status) {
       return {
         label: status === "CACHED" ? "Cached" : "Live",
         icon: Radio,
-        className: "text-green-700 bg-green-50 ring-green-200",
+        className: "text-green-700 dark:text-green-400 bg-green-50 dark:bg-[#0d2818] ring-green-200 dark:ring-green-900",
       };
     case "MOCK":
       return {
         label: "Mock",
         icon: Database,
-        className: "text-amber-700 bg-amber-50 ring-amber-200",
+        className: "text-amber-700 dark:text-amber-400 bg-amber-50 dark:bg-[#282a10] ring-amber-200 dark:ring-amber-900",
       };
     case "NO_DATA":
       return {
         label: "No data",
         icon: Database,
-        className: "text-gray-600 bg-gray-50 ring-gray-200",
+        className: "text-gray-600 dark:text-[#7d8590] bg-gray-50 dark:bg-[#1c2128] ring-gray-200 dark:ring-[#30363d]",
       };
     case "TIMEOUT":
       return {
         label: "Timeout",
         icon: Clock,
-        className: "text-orange-700 bg-orange-50 ring-orange-200",
+        className: "text-orange-700 dark:text-orange-400 bg-orange-50 dark:bg-[#282a10] ring-orange-200 dark:ring-orange-900",
       };
     default:
       return {
         label: "Unavailable",
         icon: AlertCircle,
-        className: "text-red-700 bg-red-50 ring-red-200",
+        className: "text-red-700 dark:text-red-400 bg-red-50 dark:bg-[#2d1214] ring-red-200 dark:ring-red-900",
       };
   }
 }

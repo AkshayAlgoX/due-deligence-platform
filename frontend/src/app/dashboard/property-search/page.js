@@ -30,6 +30,7 @@ import { getUser } from "@/utils/helpers";
 import { useCompareSelection } from "@/hooks/useCompareSelection";
 import CompareBar from "@/components/property/CompareBar";
 import Breadcrumbs from "@/components/ui/Breadcrumbs";
+
 function timeAgo(date) {
   if (!date) return "just now";
   const seconds = Math.floor((Date.now() - date.getTime()) / 1000);
@@ -42,7 +43,6 @@ function timeAgo(date) {
   return date.toLocaleDateString();
 }
 
-// Fetch risk for a batch of properties with controlled concurrency.
 async function fetchRiskBatch(properties, onResult, signal) {
   const CONCURRENCY = 4;
   let i = 0;
@@ -55,7 +55,7 @@ async function fetchRiskBatch(properties, onResult, signal) {
         const risk = await getPropertyRisk(prop.id);
         if (!signal?.aborted) onResult(prop.id, risk);
       } catch {
-        // silently skip
+        // silent
       }
     }
   }
@@ -68,11 +68,10 @@ async function fetchRiskBatch(properties, onResult, signal) {
 function PropertySearchInner() {
   const searchParams = useSearchParams();
   const router = useRouter();
-  // Roles allowed to create properties (LEGAL_REVIEWER + FINANCIAL_INSTITUTION are read-only)
-const currentUser = getUser();
-const canAddProperty =
-  currentUser?.role === "ADMIN" ||
-  ["BUYER", "REAL_ESTATE_AGENT"].includes(currentUser?.role);
+  const currentUser = getUser();
+  const canAddProperty =
+    currentUser?.role === "ADMIN" ||
+    ["BUYER", "REAL_ESTATE_AGENT"].includes(currentUser?.role);
 
   const [results, setResults] = useState([]);
   const [allProperties, setAllProperties] = useState([]);
@@ -109,7 +108,7 @@ const canAddProperty =
     canAddMore: canAddToCompare,
   } = useCompareSelection();
 
-    useEffect(() => {
+  useEffect(() => {
     document.title = "Property Search | Real Estate Due Diligence";
   }, []);
 
@@ -269,13 +268,13 @@ const canAddProperty =
 
   return (
     <div className="w-full max-w-[1400px] mx-auto space-y-6">
-     <Breadcrumbs />
+      <Breadcrumbs />
 
-      {/* ── Header ────────────────────────────────────────────────── */}
-      <div className="rounded-2xl border border-gray-100 bg-white p-8 shadow-sm">
+      {/* ── Header ─────────────────────────────────────────────── */}
+      <div className="rounded-2xl border border-gray-100 dark:border-[#30363d] bg-white dark:bg-[#161b22] p-8 shadow-sm">
         <div className="flex items-start justify-between gap-6 flex-wrap">
           <div className="min-w-0 flex-1">
-            <h1 className="text-[32px] font-extrabold text-gray-900 tracking-tight">
+            <h1 className="text-[32px] font-extrabold text-gray-900 dark:text-[#e6edf3] tracking-tight">
               Property search
             </h1>
 
@@ -283,12 +282,12 @@ const canAddProperty =
               {loading ? (
                 <div className="flex items-center gap-2">
                   <div className="w-1.5 h-1.5 rounded-full bg-[#22C55E] animate-pulse" />
-                  <span className="text-sm text-gray-500">Loading portfolio...</span>
+                  <span className="text-sm text-gray-500 dark:text-[#7d8590]">Loading portfolio...</span>
                 </div>
               ) : stats.total === 0 ? (
                 <div className="flex items-center gap-2">
                   <div className="w-1.5 h-1.5 rounded-full bg-amber-400 animate-pulse" />
-                  <span className="text-sm font-medium text-gray-600">
+                  <span className="text-sm font-medium text-gray-600 dark:text-[#7d8590]">
                     Ready to index your first property
                   </span>
                 </div>
@@ -299,38 +298,38 @@ const canAddProperty =
                       <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-[#22C55E] opacity-60" />
                       <span className="relative inline-flex rounded-full h-2 w-2 bg-[#22C55E]" />
                     </span>
-                    <span className="text-[10px] font-black uppercase tracking-widest text-[#16a34a]">Live</span>
+                    <span className="text-[10px] font-black uppercase tracking-widest text-[#16a34a] dark:text-green-400">Live</span>
                   </div>
-                  <span className="text-gray-300">•</span>
+                  <span className="text-gray-300 dark:text-[#30363d]">•</span>
                   <div className="flex items-center gap-1.5 text-sm">
-                    <Database className="h-3.5 w-3.5 text-gray-400" />
-                    <span className="font-bold text-gray-900 tabular-nums">{stats.total.toLocaleString()}</span>
-                    <span className="text-gray-500">
+                    <Database className="h-3.5 w-3.5 text-gray-400 dark:text-[#7d8590]" />
+                    <span className="font-bold text-gray-900 dark:text-[#e6edf3] tabular-nums">{stats.total.toLocaleString()}</span>
+                    <span className="text-gray-500 dark:text-[#7d8590]">
                       {stats.total === 1 ? "property" : "properties"} indexed
                     </span>
                   </div>
-                  <span className="text-gray-300">•</span>
+                  <span className="text-gray-300 dark:text-[#30363d]">•</span>
                   <div className="flex items-center gap-1.5 text-sm">
-                    <MapPin className="h-3.5 w-3.5 text-gray-400" />
-                    <span className="font-bold text-gray-900 tabular-nums">{stats.cities}</span>
-                    <span className="text-gray-500">
+                    <MapPin className="h-3.5 w-3.5 text-gray-400 dark:text-[#7d8590]" />
+                    <span className="font-bold text-gray-900 dark:text-[#e6edf3] tabular-nums">{stats.cities}</span>
+                    <span className="text-gray-500 dark:text-[#7d8590]">
                       {stats.cities === 1 ? "city" : "cities"} covered
                     </span>
                   </div>
-                  <span className="text-gray-300 hidden sm:inline">•</span>
+                  <span className="text-gray-300 dark:text-[#30363d] hidden sm:inline">•</span>
                   <div className="flex items-center gap-1.5 text-sm">
-                    <Clock className="h-3.5 w-3.5 text-gray-400" />
-                    <span className="text-gray-500">
+                    <Clock className="h-3.5 w-3.5 text-gray-400 dark:text-[#7d8590]" />
+                    <span className="text-gray-500 dark:text-[#7d8590]">
                       Synced{" "}
-                      <span className="font-semibold text-gray-700">{timeAgo(lastSyncedAt)}</span>
+                      <span className="font-semibold text-gray-700 dark:text-[#e6edf3]">{timeAgo(lastSyncedAt)}</span>
                     </span>
                   </div>
                   {stats.highRisk > 0 && (
                     <>
-                      <span className="text-gray-300 hidden sm:inline">•</span>
+                      <span className="text-gray-300 dark:text-[#30363d] hidden sm:inline">•</span>
                       <button
                         onClick={() => setFilter("highRisk", true)}
-                        className="flex items-center gap-1.5 text-sm text-red-600 hover:text-red-700 transition font-semibold"
+                        className="flex items-center gap-1.5 text-sm text-red-600 dark:text-red-400 hover:text-red-700 dark:hover:text-red-300 transition font-semibold"
                       >
                         <span className="inline-flex h-2 w-2 rounded-full bg-red-500" />
                         {stats.highRisk} high risk
@@ -343,15 +342,15 @@ const canAddProperty =
           </div>
 
           {canAddProperty && (
-  <button
-    onClick={() => setModalOpen(true)}
-    className="group relative flex flex-shrink-0 items-center gap-2 overflow-hidden rounded-xl bg-gradient-to-br from-[#22C55E] to-[#16a34a] px-5 py-2.5 text-sm font-bold text-white shadow-[0_8px_20px_rgba(34,197,94,0.3)] transition-all hover:shadow-[0_12px_30px_rgba(34,197,94,0.45)] hover:scale-[1.02] active:scale-[0.98]"
-  >
-    <span className="absolute inset-0 -translate-x-full bg-gradient-to-r from-transparent via-white/20 to-transparent transition-transform duration-700 group-hover:translate-x-full" />
-    <Plus className="h-4 w-4 relative z-10" strokeWidth={2.5} />
-    <span className="relative z-10">Add property</span>
-  </button>
-)}
+            <button
+              onClick={() => setModalOpen(true)}
+              className="group relative flex flex-shrink-0 items-center gap-2 overflow-hidden rounded-xl bg-gradient-to-br from-[#22C55E] to-[#16a34a] px-5 py-2.5 text-sm font-bold text-white shadow-[0_8px_20px_rgba(34,197,94,0.3)] transition-all hover:shadow-[0_12px_30px_rgba(34,197,94,0.45)] hover:scale-[1.02] active:scale-[0.98]"
+            >
+              <span className="absolute inset-0 -translate-x-full bg-gradient-to-r from-transparent via-white/20 to-transparent transition-transform duration-700 group-hover:translate-x-full" />
+              <Plus className="h-4 w-4 relative z-10" strokeWidth={2.5} />
+              <span className="relative z-10">Add property</span>
+            </button>
+          )}
         </div>
 
         <div className="mt-6">
@@ -365,9 +364,9 @@ const canAddProperty =
         </div>
       </div>
 
-      {/* ── Loading skeleton ───────────────────────────────────────── */}
+      {/* ── Loading skeleton ────────────────────────────────────── */}
       {loading && (
-        <div className="rounded-2xl border border-gray-100 bg-white p-6 shadow-sm">
+        <div className="rounded-2xl border border-gray-100 dark:border-[#30363d] bg-white dark:bg-[#161b22] p-6 shadow-sm">
           <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3 items-stretch">
             {[1, 2, 3, 4, 5, 6].map((i) => (
               <PropertyCardSkeleton key={i} />
@@ -376,40 +375,40 @@ const canAddProperty =
         </div>
       )}
 
-      {/* ── Empty state ────────────────────────────────────────────── */}
+      {/* ── Empty state ─────────────────────────────────────────── */}
       {!loading && !searching && results.length === 0 && (
-        <div className="flex flex-col items-center justify-center rounded-2xl border border-gray-100 bg-white py-20 px-6 text-center">
-          <div className="w-16 h-16 rounded-2xl bg-gray-50 border border-gray-100 flex items-center justify-center mb-4">
-            <SearchX className="h-7 w-7 text-gray-300" />
+        <div className="flex flex-col items-center justify-center rounded-2xl border border-gray-100 dark:border-[#30363d] bg-white dark:bg-[#161b22] py-20 px-6 text-center">
+          <div className="w-16 h-16 rounded-2xl bg-gray-50 dark:bg-[#1c2128] border border-gray-100 dark:border-[#30363d] flex items-center justify-center mb-4">
+            <SearchX className="h-7 w-7 text-gray-300 dark:text-[#6e7681]" />
           </div>
-          <p className="text-lg font-bold text-gray-800">No properties found</p>
-          <p className="mt-1.5 text-sm text-gray-500 max-w-xs">
+          <p className="text-lg font-bold text-gray-800 dark:text-[#e6edf3]">No properties found</p>
+          <p className="mt-1.5 text-sm text-gray-500 dark:text-[#7d8590] max-w-xs">
             Try searching by city name, address, or ZIP code — or add your first property.
           </p>
           {canAddProperty && (
-  <button
-    onClick={() => setModalOpen(true)}
-    className="mt-6 flex items-center gap-2 rounded-xl bg-[#22C55E] px-5 py-2.5 text-sm font-bold text-white shadow-[0_8px_20px_rgba(34,197,94,0.3)] transition hover:bg-[#16a34a]"
-  >
-    <Plus className="h-4 w-4" />
-    Add your first property
-  </button>
-)}
+            <button
+              onClick={() => setModalOpen(true)}
+              className="mt-6 flex items-center gap-2 rounded-xl bg-[#22C55E] px-5 py-2.5 text-sm font-bold text-white shadow-[0_8px_20px_rgba(34,197,94,0.3)] transition hover:bg-[#16a34a]"
+            >
+              <Plus className="h-4 w-4" />
+              Add your first property
+            </button>
+          )}
         </div>
       )}
 
-      {/* ── Results grid ───────────────────────────────────────────── */}
+      {/* ── Results grid ────────────────────────────────────────── */}
       {!loading && results.length > 0 && (
-        <div className="rounded-2xl border border-gray-100 bg-white p-6 shadow-sm">
+        <div className="rounded-2xl border border-gray-100 dark:border-[#30363d] bg-white dark:bg-[#161b22] p-6 shadow-sm">
           <div className="mb-5 flex items-center justify-between flex-wrap gap-3">
             <div className="flex items-center gap-2">
-              <span className="inline-flex h-6 w-6 items-center justify-center rounded-lg bg-green-100 text-[11px] font-black text-green-700">
+              <span className="inline-flex h-6 w-6 items-center justify-center rounded-lg bg-green-100 dark:bg-[#0d2818] text-[11px] font-black text-green-700 dark:text-green-400">
                 {displayedResults.length}
               </span>
-              <p className="text-sm font-semibold text-gray-700">
+              <p className="text-sm font-semibold text-gray-700 dark:text-[#e6edf3]">
                 {displayedResults.length === 1 ? "Property" : "Properties"}
                 {activeCount > 0 && displayedResults.length !== results.length && (
-                  <span className="text-gray-400 font-normal"> (of {results.length})</span>
+                  <span className="text-gray-400 dark:text-[#6e7681] font-normal"> (of {results.length})</span>
                 )}
               </p>
             </div>
@@ -418,8 +417,8 @@ const canAddProperty =
               onClick={() => setFilterPanelOpen(true)}
               className={`relative flex items-center gap-1.5 rounded-lg border px-3 py-1.5 text-xs font-medium transition ${
                 activeCount > 0
-                  ? "border-[#22C55E] bg-green-50 text-[#16a34a] hover:bg-green-100"
-                  : "border-gray-200 bg-white text-gray-600 hover:border-gray-300 hover:bg-gray-50"
+                  ? "border-[#22C55E] bg-green-50 dark:bg-[#0d2818] text-[#16a34a] dark:text-green-400 hover:bg-green-100 dark:hover:bg-[#0d2818]/70"
+                  : "border-gray-200 dark:border-[#30363d] bg-white dark:bg-[#1c2128] text-gray-600 dark:text-[#7d8590] hover:border-gray-300 dark:hover:border-[#484f58] hover:bg-gray-50 dark:hover:bg-[#161b22]"
               }`}
             >
               <SlidersHorizontal className="h-3.5 w-3.5" />
@@ -440,48 +439,48 @@ const canAddProperty =
 
           {displayedResults.length === 0 ? (
             <div className="flex flex-col items-center justify-center py-16 text-center">
-              <SearchX className="h-10 w-10 text-gray-200 mb-3" />
-              <p className="text-sm font-bold text-gray-700">No properties match your filters</p>
-              <p className="mt-1 text-xs text-gray-500">Try removing some filters or clearing them all</p>
+              <SearchX className="h-10 w-10 text-gray-200 dark:text-[#30363d] mb-3" />
+              <p className="text-sm font-bold text-gray-700 dark:text-[#e6edf3]">No properties match your filters</p>
+              <p className="mt-1 text-xs text-gray-500 dark:text-[#7d8590]">Try removing some filters or clearing them all</p>
               <button
                 onClick={clearAll}
-                className="mt-4 rounded-xl bg-gray-100 px-4 py-2 text-xs font-semibold text-gray-700 transition hover:bg-gray-200"
+                className="mt-4 rounded-xl bg-gray-100 dark:bg-[#1c2128] px-4 py-2 text-xs font-semibold text-gray-700 dark:text-[#e6edf3] transition hover:bg-gray-200 dark:hover:bg-[#30363d]"
               >
                 Clear filters
               </button>
             </div>
           ) : (
-                        <motion.div
-  className="grid items-stretch gap-4 sm:grid-cols-2 lg:grid-cols-3"
-  variants={staggerContainer}
-  initial="initial"
-  animate="animate"
->
-  {displayedResults.map((p) => (
-    <motion.div
-      key={p.id}
-      variants={staggerItem}
-      className="w-full self-stretch will-change-opacity"
-    >
-      <PropertyResultCard
-        property={p}
-        isSelected={false}
-        onClick={() => router.push(`/dashboard/property-search/${p.id}`)}
-        onEdit={handleEditProperty}
-        onQuickPhoto={handleQuickPhoto}
-        riskScore={riskScores.get(p.id) ?? null}
-        onCompare={toggleCompare}
-        isInCompare={isInCompare(p.id)}
-        canAddToCompare={canAddToCompare}
-      />
-    </motion.div>
-  ))}
-</motion.div>
+            <motion.div
+              className="grid items-stretch gap-4 sm:grid-cols-2 lg:grid-cols-3"
+              variants={staggerContainer}
+              initial="initial"
+              animate="animate"
+            >
+              {displayedResults.map((p) => (
+                <motion.div
+                  key={p.id}
+                  variants={staggerItem}
+                  className="w-full self-stretch will-change-opacity"
+                >
+                  <PropertyResultCard
+                    property={p}
+                    isSelected={false}
+                    onClick={() => router.push(`/dashboard/property-search/${p.id}`)}
+                    onEdit={handleEditProperty}
+                    onQuickPhoto={handleQuickPhoto}
+                    riskScore={riskScores.get(p.id) ?? null}
+                    onCompare={toggleCompare}
+                    isInCompare={isInCompare(p.id)}
+                    canAddToCompare={canAddToCompare}
+                  />
+                </motion.div>
+              ))}
+            </motion.div>
           )}
         </div>
       )}
 
-      {/* ── Modals ─────────────────────────────────────────────────── */}
+      {/* Modals — dark treatment in Chunk F */}
       <AddPropertyModal
         isOpen={modalOpen}
         onClose={() => setModalOpen(false)}
@@ -513,7 +512,6 @@ const canAddProperty =
         filteredCount={displayedResults.length}
       />
 
-      {/* ── Compare bar ───────────────────────────────────────────── */}
       <CompareBar
         compareList={compareList}
         onRemove={toggleCompare}
@@ -528,9 +526,9 @@ export default function PropertySearchPage() {
     <Suspense
       fallback={
         <div className="w-full max-w-[1400px] mx-auto space-y-6">
-          <div className="rounded-2xl border border-gray-100 bg-white p-8 shadow-sm animate-pulse">
-            <div className="h-8 w-48 rounded-lg bg-gray-200 mb-4" />
-            <div className="h-14 w-full rounded-2xl bg-gray-100" />
+          <div className="rounded-2xl border border-gray-100 dark:border-[#30363d] bg-white dark:bg-[#161b22] p-8 shadow-sm animate-pulse">
+            <div className="h-8 w-48 rounded-lg bg-gray-200 dark:bg-[#1c2128] mb-4" />
+            <div className="h-14 w-full rounded-2xl bg-gray-100 dark:bg-[#1c2128]" />
           </div>
         </div>
       }

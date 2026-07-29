@@ -27,7 +27,7 @@ export default function ChangePasswordModal({ isOpen, onClose }) {
   const [currentPassword, setCurrentPassword] = useState("");
   const [newPassword, setNewPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
-    const [errors, setErrors] = useState({});
+  const [errors, setErrors] = useState({});
   const [showCurrent, setShowCurrent] = useState(false);
   const [showNew, setShowNew] = useState(false);
   const [loading, setLoading] = useState(false);
@@ -42,7 +42,7 @@ export default function ChangePasswordModal({ isOpen, onClose }) {
     passwordsMatch &&
     !loading;
 
-    function reset() {
+  function reset() {
     setCurrentPassword("");
     setNewPassword("");
     setConfirmPassword("");
@@ -87,28 +87,28 @@ export default function ChangePasswordModal({ isOpen, onClose }) {
 
   return (
     <div
-      className="fixed inset-0 z-[9999] flex items-center justify-center bg-black/40 p-4"
+      className="fixed inset-0 z-[9999] flex items-center justify-center bg-black/40 dark:bg-black/70 p-4"
       onClick={handleClose}
     >
       <div
-        className="w-full max-w-md rounded-2xl bg-white p-6 shadow-[0_20px_60px_rgba(0,0,0,0.15)]"
+        className="w-full max-w-md rounded-2xl bg-white dark:bg-[#161b22] p-6 shadow-[0_20px_60px_rgba(0,0,0,0.15)] dark:shadow-[0_20px_60px_rgba(0,0,0,0.6)]"
         onClick={(e) => e.stopPropagation()}
       >
         <div className="mb-5 flex items-start justify-between">
           <div className="flex items-center gap-3">
-            <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-[#edf7f3]">
-              <Lock className="h-4 w-4 text-[#16a34a]" strokeWidth={2.2} />
+            <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-[#edf7f3] dark:bg-[#0d2818]">
+              <Lock className="h-4 w-4 text-[#16a34a] dark:text-green-400" strokeWidth={2.2} />
             </div>
             <div>
-              <h2 className="text-base font-bold text-gray-900">Change password</h2>
-              <p className="text-xs text-gray-500">Update your account password</p>
+              <h2 className="text-base font-bold text-gray-900 dark:text-[#e6edf3]">Change password</h2>
+              <p className="text-xs text-gray-500 dark:text-[#7d8590]">Update your account password</p>
             </div>
           </div>
           <button
             type="button"
             onClick={handleClose}
             disabled={loading}
-            className="text-gray-400 hover:text-gray-600 disabled:opacity-50"
+            className="text-gray-400 dark:text-[#7d8590] hover:text-gray-600 dark:hover:text-[#e6edf3] disabled:opacity-50"
           >
             <X className="h-4 w-4" />
           </button>
@@ -116,10 +116,10 @@ export default function ChangePasswordModal({ isOpen, onClose }) {
 
         <form onSubmit={handleSubmit} className="space-y-4">
           <div>
-            <label className="mb-1.5 block text-xs font-semibold text-gray-700">
+            <label className="mb-1.5 block text-xs font-semibold text-gray-700 dark:text-[#e6edf3]">
               Current password
             </label>
-                        <div className="relative">
+            <div className="relative">
               <input
                 type={showCurrent ? "text" : "password"}
                 value={currentPassword}
@@ -128,19 +128,23 @@ export default function ChangePasswordModal({ isOpen, onClose }) {
                   setErrors((prev) => ({ ...prev, currentPassword: validateField("currentPassword", e.target.value) }));
                 }}
                 autoFocus
-                className={`w-full rounded-lg border px-3 py-2.5 pr-10 text-sm focus:outline-none focus:ring-2 ${errors.currentPassword ? "border-red-300 focus:border-red-400 focus:ring-red-100" : "border-gray-200 focus:border-[#22C55E] focus:ring-[#22C55E]/20"}`}
+                className={`w-full rounded-lg border bg-white dark:bg-[#0d1117] text-gray-900 dark:text-[#e6edf3] px-3 py-2.5 pr-10 text-sm focus:outline-none focus:ring-2 placeholder:text-gray-400 dark:placeholder:text-[#6e7681] ${
+                  errors.currentPassword
+                    ? "border-red-300 dark:border-red-900 focus:border-red-400 focus:ring-red-100 dark:focus:ring-red-900"
+                    : "border-gray-200 dark:border-[#30363d] focus:border-[#22C55E] focus:ring-[#22C55E]/20"
+                }`}
                 placeholder="Enter current password"
               />
               <button
                 type="button"
                 onClick={() => setShowCurrent((s) => !s)}
-                className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600"
+                className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 dark:text-[#7d8590] hover:text-gray-600 dark:hover:text-[#e6edf3]"
               >
                 {showCurrent ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
               </button>
             </div>
             {errors.currentPassword && (
-              <p className="mt-1 text-xs text-red-500 flex items-center gap-1">
+              <p className="mt-1 text-xs text-red-500 dark:text-red-400 flex items-center gap-1">
                 <span className="inline-block w-1 h-1 rounded-full bg-red-500" />
                 {errors.currentPassword}
               </p>
@@ -148,10 +152,10 @@ export default function ChangePasswordModal({ isOpen, onClose }) {
           </div>
 
           <div>
-            <label className="mb-1.5 block text-xs font-semibold text-gray-700">
+            <label className="mb-1.5 block text-xs font-semibold text-gray-700 dark:text-[#e6edf3]">
               New password
             </label>
-                        <div className="relative">
+            <div className="relative">
               <input
                 type={showNew ? "text" : "password"}
                 value={newPassword}
@@ -159,19 +163,23 @@ export default function ChangePasswordModal({ isOpen, onClose }) {
                   setNewPassword(e.target.value);
                   setErrors((prev) => ({ ...prev, newPassword: validateField("newPassword", e.target.value) }));
                 }}
-                className={`w-full rounded-lg border px-3 py-2.5 pr-10 text-sm focus:outline-none focus:ring-2 ${errors.newPassword ? "border-red-300 focus:border-red-400 focus:ring-red-100" : "border-gray-200 focus:border-[#22C55E] focus:ring-[#22C55E]/20"}`}
+                className={`w-full rounded-lg border bg-white dark:bg-[#0d1117] text-gray-900 dark:text-[#e6edf3] px-3 py-2.5 pr-10 text-sm focus:outline-none focus:ring-2 placeholder:text-gray-400 dark:placeholder:text-[#6e7681] ${
+                  errors.newPassword
+                    ? "border-red-300 dark:border-red-900 focus:border-red-400 focus:ring-red-100 dark:focus:ring-red-900"
+                    : "border-gray-200 dark:border-[#30363d] focus:border-[#22C55E] focus:ring-[#22C55E]/20"
+                }`}
                 placeholder="At least 8 characters"
               />
               <button
                 type="button"
                 onClick={() => setShowNew((s) => !s)}
-                className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600"
+                className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 dark:text-[#7d8590] hover:text-gray-600 dark:hover:text-[#e6edf3]"
               >
                 {showNew ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
               </button>
             </div>
             {errors.newPassword && (
-              <p className="mt-1 text-xs text-red-500 flex items-center gap-1">
+              <p className="mt-1 text-xs text-red-500 dark:text-red-400 flex items-center gap-1">
                 <span className="inline-block w-1 h-1 rounded-full bg-red-500" />
                 {errors.newPassword}
               </p>
@@ -179,12 +187,12 @@ export default function ChangePasswordModal({ isOpen, onClose }) {
 
             {newPassword && (
               <div className="mt-2">
-                <div className="h-1 w-full overflow-hidden rounded-full bg-gray-100">
+                <div className="h-1 w-full overflow-hidden rounded-full bg-gray-100 dark:bg-[#1c2128]">
                   <div
                     className={`h-full transition-all ${strength.color} ${strength.width}`}
                   />
                 </div>
-                <p className="mt-1 text-[11px] font-medium text-gray-500">
+                <p className="mt-1 text-[11px] font-medium text-gray-500 dark:text-[#7d8590]">
                   {strength.label}
                 </p>
               </div>
@@ -192,18 +200,18 @@ export default function ChangePasswordModal({ isOpen, onClose }) {
           </div>
 
           <div>
-            <label className="mb-1.5 block text-xs font-semibold text-gray-700">
+            <label className="mb-1.5 block text-xs font-semibold text-gray-700 dark:text-[#e6edf3]">
               Confirm new password
             </label>
             <input
               type={showNew ? "text" : "password"}
               value={confirmPassword}
               onChange={(e) => setConfirmPassword(e.target.value)}
-              className="w-full rounded-lg border border-gray-200 px-3 py-2.5 text-sm focus:border-[#22C55E] focus:outline-none focus:ring-2 focus:ring-[#22C55E]/20"
+              className="w-full rounded-lg border border-gray-200 dark:border-[#30363d] bg-white dark:bg-[#0d1117] text-gray-900 dark:text-[#e6edf3] px-3 py-2.5 text-sm focus:border-[#22C55E] focus:outline-none focus:ring-2 focus:ring-[#22C55E]/20 placeholder:text-gray-400 dark:placeholder:text-[#6e7681]"
               placeholder="Re-enter new password"
             />
             {confirmPassword && !passwordsMatch && (
-              <p className="mt-1 text-[11px] font-medium text-red-600">
+              <p className="mt-1 text-[11px] font-medium text-red-600 dark:text-red-400">
                 Passwords do not match
               </p>
             )}
@@ -214,7 +222,7 @@ export default function ChangePasswordModal({ isOpen, onClose }) {
               type="button"
               onClick={handleClose}
               disabled={loading}
-              className="flex-1 rounded-lg border border-gray-200 bg-white px-4 py-2.5 text-sm font-semibold text-gray-700 transition hover:bg-gray-50 disabled:opacity-50"
+              className="flex-1 rounded-lg border border-gray-200 dark:border-[#30363d] bg-white dark:bg-[#1c2128] px-4 py-2.5 text-sm font-semibold text-gray-700 dark:text-[#e6edf3] transition hover:bg-gray-50 dark:hover:bg-[#30363d] disabled:opacity-50"
             >
               Cancel
             </button>

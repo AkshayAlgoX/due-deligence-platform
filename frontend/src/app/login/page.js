@@ -56,29 +56,21 @@ function LoginPageInner() {
   const [capsLockOn, setCapsLockOn] = useState(false);
   const [passwordFocused, setPasswordFocused] = useState(false);
 
-  // Refs for autofocus on validation error
   const emailRef = useRef(null);
   const passwordRef = useRef(null);
 
-  // ── Client-side validation ────────────────────────────────────────────────
   const validate = () => {
     const errors = {};
     const trimmedEmail = email.trim();
-
     if (!trimmedEmail) {
       errors.email = "Enter your email";
     } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(trimmedEmail)) {
       errors.email = "Enter a valid email address";
     }
-
-    if (!password) {
-      errors.password = "Enter your password";
-    }
-
+    if (!password) errors.password = "Enter your password";
     return errors;
   };
 
-  // ── Autofocus first field with error after validation fails ───────────────
   useEffect(() => {
     if (fieldErrors.email && emailRef.current) {
       emailRef.current.focus();
@@ -87,61 +79,45 @@ function LoginPageInner() {
     }
   }, [fieldErrors]);
 
-  // ── Detect Caps Lock while typing in password field ───────────────────────
   const handlePasswordKeyEvent = (e) => {
-    // getModifierState works on keydown/keyup only
     if (typeof e.getModifierState === "function") {
       setCapsLockOn(e.getModifierState("CapsLock"));
     }
   };
 
-  // ── Main login handler ────────────────────────────────────────────────────
   const handleLogin = async (e) => {
-  e.preventDefault();
-
-  const errors = validate();
-  if (Object.keys(errors).length > 0) {
-    setFieldErrors(errors);
-    return;
-  }
-
-  setFieldErrors({});
-  setLoading(true);
-
-  const minDuration = new Promise((resolve) => setTimeout(resolve, 400));
-
-  try {
-    await Promise.all([
-      loginUser({
-        email: email.trim().toLowerCase(),
-        password,
-        rememberMe,
-      }),
-      minDuration,
-    ]);
-    toast.success("Welcome back", {
-      description: "Redirecting to your dashboard.",
-    });
-    router.push("/dashboard");
-  } catch (err) {
-    await minDuration;
-
-    if (err.errors && typeof err.errors === "object") {
-      setFieldErrors(err.errors);
-      toast.error("Please check your details", {
-        description: "Some fields need attention.",
-      });
-    } else {
-      toast.error("Sign in failed", {
-        description:
-          err.message || "Please check your credentials and try again.",
-      });
+    e.preventDefault();
+    const errors = validate();
+    if (Object.keys(errors).length > 0) {
+      setFieldErrors(errors);
+      return;
     }
-  } finally {
-    setLoading(false);
-  }
-};
-    const handleEmailChange = (e) => {
+    setFieldErrors({});
+    setLoading(true);
+    const minDuration = new Promise((resolve) => setTimeout(resolve, 400));
+    try {
+      await Promise.all([
+        loginUser({ email: email.trim().toLowerCase(), password, rememberMe }),
+        minDuration,
+      ]);
+      toast.success("Welcome back", { description: "Redirecting to your dashboard." });
+      router.push("/dashboard");
+    } catch (err) {
+      await minDuration;
+      if (err.errors && typeof err.errors === "object") {
+        setFieldErrors(err.errors);
+        toast.error("Please check your details", { description: "Some fields need attention." });
+      } else {
+        toast.error("Sign in failed", {
+          description: err.message || "Please check your credentials and try again.",
+        });
+      }
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleEmailChange = (e) => {
     setEmail(e.target.value);
     setFieldErrors((prev) => ({ ...prev, email: validateField("email", e.target.value) }));
   };
@@ -151,28 +127,27 @@ function LoginPageInner() {
     setFieldErrors((prev) => ({ ...prev, password: validateField("password", e.target.value) }));
   };
 
-  const handleForgotPassword = () => {
-    router.push("/forgot-password");
-  };
+  const handleForgotPassword = () => { router.push("/forgot-password"); };
 
   const handleContactSupport = () => {
-  // Open support page in new tab so user doesn't lose their login state
-  window.open("/support", "_blank", "noopener,noreferrer");
-};
+    window.open("/support", "_blank", "noopener,noreferrer");
+  };
 
   const getInputClasses = (hasError) =>
-    `h-10 rounded-xl pl-10 text-sm focus-visible:ring-2 transition-colors ${
-      hasError
-        ? "border-red-300 focus-visible:ring-red-400"
-        : "border-gray-200 focus-visible:ring-green-500"
-    }`;
+    `h-10 rounded-xl pl-10 text-sm focus-visible:ring-2 transition-colors
+     bg-white dark:bg-[#0d1117] text-gray-900 dark:text-[#e6edf3]
+     placeholder:text-gray-400 dark:placeholder:text-[#6e7681]
+     ${hasError
+       ? "border-red-300 dark:border-red-800 focus-visible:ring-red-400"
+       : "border-gray-200 dark:border-[#30363d] focus-visible:ring-green-500 dark:focus-visible:ring-green-700"
+     }`;
 
   return (
-    <main className="h-screen overflow-hidden bg-[#edf7f3]">
-      <div className="mx-auto flex h-screen max-w-[1600px] overflow-hidden bg-white">
+    <main className="h-screen overflow-hidden bg-[#edf7f3] dark:bg-[#0d1117]">
+      <div className="mx-auto flex h-screen max-w-[1600px] overflow-hidden bg-white dark:bg-[#0d1117]">
 
-        {/* Left Section */}
-        <section className="flex w-full flex-col items-center bg-[#f8fffb] px-8 py-6 lg:w-[40%]">
+        {/* ── Left Section ── */}
+        <section className="flex w-full flex-col items-center bg-[#f8fffb] dark:bg-[#0d1117] px-8 py-6 lg:w-[40%]">
           <div className="flex w-full max-w-[420px] flex-col">
 
             {/* Logo */}
@@ -187,27 +162,27 @@ function LoginPageInner() {
 
             {/* Welcome */}
             <div className="mt-5">
-              <h2 className="text-[36px] font-black leading-[40px] tracking-tight text-[#111827]">
+              <h2 className="text-[36px] font-black leading-[40px] tracking-tight text-[#111827] dark:text-[#e6edf3]">
                 Welcome back
               </h2>
-              <p className="mt-2 text-sm leading-5 text-gray-500">
+              <p className="mt-2 text-sm leading-5 text-gray-500 dark:text-[#7d8590]">
                 Sign in to manage your property portfolio risks.
               </p>
             </div>
 
-            {/* Login form */}
+            {/* Login form card */}
             <form
               onSubmit={handleLogin}
               noValidate
-              className="mt-4 w-full rounded-[28px] border border-white bg-white p-5 shadow-[0_20px_60px_rgba(0,0,0,0.08)]"
+              className="mt-4 w-full rounded-[28px] border border-white dark:border-[#30363d] bg-white dark:bg-[#161b22] p-5 shadow-[0_20px_60px_rgba(0,0,0,0.08)] dark:shadow-[0_20px_60px_rgba(0,0,0,0.4)]"
             >
               {/* Email */}
               <div className="space-y-1.5">
-                <label className="text-xs font-semibold" htmlFor="email">
+                <label className="text-xs font-semibold text-gray-700 dark:text-[#e6edf3]" htmlFor="email">
                   Professional Email
                 </label>
                 <div className="relative">
-                  <Mail className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-gray-400" />
+                  <Mail className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-gray-400 dark:text-[#6e7681]" />
                   <Input
                     ref={emailRef}
                     id="email"
@@ -221,11 +196,7 @@ function LoginPageInner() {
                   />
                 </div>
                 {fieldErrors.email && (
-                  <p
-                    id="email-error"
-                    role="alert"
-                    className="text-[11px] text-red-500 leading-tight pl-1"
-                  >
+                  <p id="email-error" role="alert" className="text-[11px] text-red-500 dark:text-red-400 leading-tight pl-1">
                     {fieldErrors.email}
                   </p>
                 )}
@@ -234,7 +205,7 @@ function LoginPageInner() {
               {/* Password */}
               <div className="mt-4 space-y-1.5">
                 <div className="flex justify-between">
-                  <label className="text-xs font-semibold" htmlFor="password">
+                  <label className="text-xs font-semibold text-gray-700 dark:text-[#e6edf3]" htmlFor="password">
                     Password
                   </label>
                   <button
@@ -246,7 +217,7 @@ function LoginPageInner() {
                   </button>
                 </div>
                 <div className="relative">
-                  <Lock className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-gray-400" />
+                  <Lock className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-gray-400 dark:text-[#6e7681]" />
                   <Input
                     ref={passwordRef}
                     id="password"
@@ -271,7 +242,7 @@ function LoginPageInner() {
                   <button
                     type="button"
                     onClick={() => setShowPassword(!showPassword)}
-                    className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600"
+                    className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 dark:text-[#6e7681] hover:text-gray-600 dark:hover:text-[#e6edf3]"
                     tabIndex={-1}
                     aria-label={showPassword ? "Hide password" : "Show password"}
                   >
@@ -279,23 +250,15 @@ function LoginPageInner() {
                   </button>
                 </div>
 
-                {/* Caps Lock warning — only when password focused and caps on */}
                 {capsLockOn && passwordFocused && !fieldErrors.password && (
-                  <p
-                    id="caps-lock-warning"
-                    className="flex items-center gap-1 text-[11px] text-amber-600 leading-tight pl-1"
-                  >
+                  <p id="caps-lock-warning" className="flex items-center gap-1 text-[11px] text-amber-600 dark:text-amber-400 leading-tight pl-1">
                     <AlertCircle className="h-3 w-3" strokeWidth={2.5} />
                     Caps Lock is on
                   </p>
                 )}
 
                 {fieldErrors.password && (
-                  <p
-                    id="password-error"
-                    role="alert"
-                    className="text-[11px] text-red-500 leading-tight pl-1"
-                  >
+                  <p id="password-error" role="alert" className="text-[11px] text-red-500 dark:text-red-400 leading-tight pl-1">
                     {fieldErrors.password}
                   </p>
                 )}
@@ -308,12 +271,12 @@ function LoginPageInner() {
                   checked={rememberMe}
                   onCheckedChange={(checked) => setRememberMe(!!checked)}
                 />
-                <label htmlFor="rememberMe" className="cursor-pointer text-xs text-gray-600">
+                <label htmlFor="rememberMe" className="cursor-pointer text-xs text-gray-600 dark:text-[#7d8590]">
                   Keep me signed in on this browser
                 </label>
               </div>
 
-              {/* Submit */}
+              {/* Submit — green gradient, unchanged */}
               <Button
                 type="submit"
                 disabled={loading}
@@ -331,19 +294,19 @@ function LoginPageInner() {
 
               {/* Divider */}
               <div className="my-4 flex items-center">
-                <div className="h-px flex-1 bg-gray-200"></div>
-                <span className="mx-3 text-[10px] text-gray-500">OR CONTINUE WITH</span>
-                <div className="h-px flex-1 bg-gray-200"></div>
+                <div className="h-px flex-1 bg-gray-200 dark:bg-[#30363d]" />
+                <span className="mx-3 text-[10px] text-gray-500 dark:text-[#6e7681]">OR CONTINUE WITH</span>
+                <div className="h-px flex-1 bg-gray-200 dark:bg-[#30363d]" />
               </div>
 
-              {/* Google Sign-In + Contact Support */}
+              {/* Google + Support */}
               <div className="space-y-2.5">
                 <GoogleSignInButton />
                 <Button
                   type="button"
                   variant="outline"
                   onClick={handleContactSupport}
-                  className="h-10 w-full rounded-xl border-gray-200 bg-white text-xs transition hover:bg-gray-50"
+                  className="h-10 w-full rounded-xl border-gray-200 dark:border-[#30363d] bg-white dark:bg-[#0d1117] text-gray-700 dark:text-[#7d8590] text-xs transition hover:bg-gray-50 dark:hover:bg-[#1c2128]"
                 >
                   <Headphones className="mr-1.5 h-3.5 w-3.5" />
                   Contact support
@@ -352,7 +315,7 @@ function LoginPageInner() {
             </form>
 
             {/* Register link */}
-            <div className="mt-3 text-center text-xs text-gray-600">
+            <div className="mt-3 text-center text-xs text-gray-600 dark:text-[#7d8590]">
               New to the platform?
               <button
                 type="button"
@@ -363,41 +326,35 @@ function LoginPageInner() {
               </button>
             </div>
 
-            {/* Features */}
+            {/* Feature bullets */}
             <div className="mt-4 space-y-1.5">
-              <div className="flex items-center gap-3">
-                <div className="flex h-6 w-6 items-center justify-center rounded-full bg-green-100">
-                  <CheckCircle className="h-3.5 w-3.5 text-green-600" />
+              {[
+                "Comprehensive property analysis",
+                "Secure due diligence auditing",
+                "Automated risk assessment",
+              ].map((text) => (
+                <div key={text} className="flex items-center gap-3">
+                  <div className="flex h-6 w-6 items-center justify-center rounded-full bg-green-100 dark:bg-[#0d2818]">
+                    <CheckCircle className="h-3.5 w-3.5 text-green-600 dark:text-green-400" />
+                  </div>
+                  <span className="text-xs text-gray-700 dark:text-[#7d8590]">{text}</span>
                 </div>
-                <span className="text-xs">Comprehensive property analysis</span>
-              </div>
-              <div className="flex items-center gap-3">
-                <div className="flex h-6 w-6 items-center justify-center rounded-full bg-green-100">
-                  <CheckCircle className="h-3.5 w-3.5 text-green-600" />
-                </div>
-                <span className="text-xs">Secure due diligence auditing</span>
-              </div>
-              <div className="flex items-center gap-3">
-                <div className="flex h-6 w-6 items-center justify-center rounded-full bg-green-100">
-                  <CheckCircle className="h-3.5 w-3.5 text-green-600" />
-                </div>
-                <span className="text-xs">Automated risk assessment</span>
-              </div>
+              ))}
             </div>
 
-            {/* Honest security footer — matches register page */}
-<div className="mt-4 border-t border-gray-200 pt-3 text-center">
-  <p className="text-[10px] text-gray-500">
-    Secure by design ·{" "}
-    <Link href="/security" className="underline hover:text-[#22C55E] transition">
-      Learn how
-    </Link>
-  </p>
-</div>
+            {/* Security footer */}
+            <div className="mt-4 border-t border-gray-200 dark:border-[#30363d] pt-3 text-center">
+              <p className="text-[10px] text-gray-500 dark:text-[#6e7681]">
+                Secure by design ·{" "}
+                <Link href="/security" className="underline hover:text-[#22C55E] transition">
+                  Learn how
+                </Link>
+              </p>
+            </div>
           </div>
         </section>
 
-        {/* Right Section — building image */}
+        {/* ── Right Section — photo panel, unchanged (dark photo overlay) ── */}
         <section className="relative hidden overflow-hidden rounded-l-3xl lg:block lg:w-[60%]">
           <img
             src="https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?w=1600&q=80"
@@ -408,8 +365,8 @@ function LoginPageInner() {
 
           <div className="absolute right-8 top-8 flex items-center gap-2 rounded-full border border-white/30 bg-white/10 px-5 py-2 text-xs font-semibold text-white backdrop-blur-md">
             <span className="relative flex h-2 w-2">
-              <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-green-400 opacity-75"></span>
-              <span className="relative inline-flex h-2 w-2 rounded-full bg-green-400"></span>
+              <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-green-400 opacity-75" />
+              <span className="relative inline-flex h-2 w-2 rounded-full bg-green-400" />
             </span>
             Platform online
           </div>
@@ -420,7 +377,6 @@ function LoginPageInner() {
               A verification-first platform for property intelligence — every listing
               passes seven data-quality checks before it goes live.
             </p>
-
             <div className="mt-6 space-y-3">
               <div className="flex items-center gap-3">
                 <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-white/15">

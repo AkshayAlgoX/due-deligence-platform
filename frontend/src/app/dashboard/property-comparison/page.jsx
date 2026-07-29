@@ -39,7 +39,7 @@ const DownloadComparisonPDFButton = dynamic(
   { ssr: false }
 );
 
-// ── Helpers ────────────────────────────────────────────────────────────────
+// ── Helpers ───────────────────────────────────────────────────────────────────
 
 function fmt(val) {
   if (val == null || val === "") return "—";
@@ -56,7 +56,7 @@ function fmtRaw(val) {
   return Number(val);
 }
 
-// ── Delta logic ────────────────────────────────────────────────────────────
+// ── Delta logic ───────────────────────────────────────────────────────────────
 
 function computeDeltas(values, direction) {
   const nums = values.map(fmtRaw);
@@ -86,31 +86,31 @@ function DeltaCell({ value, delta, displayValue }) {
   const base =
     "px-4 py-3 text-sm font-bold text-center align-middle transition-colors";
   const colors = {
-    best: "bg-green-50 text-green-800",
-    worst: "bg-red-50 text-red-700",
-    neutral: "text-gray-900",
+    best:    "bg-green-50 dark:bg-[#0d2818] text-green-800 dark:text-green-400",
+    worst:   "bg-red-50 dark:bg-[#2d1214] text-red-700 dark:text-red-400",
+    neutral: "text-gray-900 dark:text-[#e6edf3]",
   };
 
   return (
     <td
-      className={`${base} ${colors[delta] ?? colors.neutral} border-r border-gray-100 last:border-r-0`}
+      className={`${base} ${colors[delta] ?? colors.neutral} border-r border-gray-100 dark:border-[#30363d] last:border-r-0`}
     >
       <div className="flex items-center justify-center gap-1.5">
         {delta === "best" && (
           <TrendingUp
-            className="h-3.5 w-3.5 text-green-600 flex-shrink-0"
+            className="h-3.5 w-3.5 text-green-600 dark:text-green-400 flex-shrink-0"
             strokeWidth={2.5}
           />
         )}
         {delta === "worst" && (
           <TrendingDown
-            className="h-3.5 w-3.5 text-red-500 flex-shrink-0"
+            className="h-3.5 w-3.5 text-red-500 dark:text-red-400 flex-shrink-0"
             strokeWidth={2.5}
           />
         )}
         {delta === "neutral" && value != null && (
           <Minus
-            className="h-3 w-3 text-gray-300 flex-shrink-0"
+            className="h-3 w-3 text-gray-300 dark:text-[#484f58] flex-shrink-0"
             strokeWidth={2}
           />
         )}
@@ -120,29 +120,29 @@ function DeltaCell({ value, delta, displayValue }) {
   );
 }
 
-// ── Risk display ──────────────────────────────────────────────────────────
+// ── Risk display ──────────────────────────────────────────────────────────────
 
 const RISK_ICON = {
-  LOW: ShieldCheck,
+  LOW:    ShieldCheck,
   MEDIUM: Shield,
-  HIGH: ShieldAlert,
+  HIGH:   ShieldAlert,
 };
 const RISK_COLOR = {
-  LOW: "text-green-700 bg-green-50",
-  MEDIUM: "text-amber-700 bg-amber-50",
-  HIGH: "text-red-700 bg-red-50",
+  LOW:    "text-green-700 dark:text-green-400 bg-green-50 dark:bg-[#0d2818]",
+  MEDIUM: "text-amber-700 dark:text-amber-400 bg-amber-50 dark:bg-[#282a10]",
+  HIGH:   "text-red-700 dark:text-red-400 bg-red-50 dark:bg-[#2d1214]",
 };
 
 function RiskCell({ risk }) {
   if (!risk) {
     return (
-      <td className="px-4 py-3 text-center text-sm text-gray-400 border-r border-gray-100 last:border-r-0">
+      <td className="px-4 py-3 text-center text-sm text-gray-400 dark:text-[#6e7681] border-r border-gray-100 dark:border-[#30363d] last:border-r-0">
         —
       </td>
     );
   }
   const Icon = RISK_ICON[risk.riskLabel] ?? Shield;
-  const color = RISK_COLOR[risk.riskLabel] ?? "text-gray-700 bg-gray-50";
+  const color = RISK_COLOR[risk.riskLabel] ?? "text-gray-700 dark:text-[#e6edf3] bg-gray-50 dark:bg-[#1c2128]";
   const delta =
     risk.riskLabel === "HIGH"
       ? "worst"
@@ -152,7 +152,13 @@ function RiskCell({ risk }) {
 
   return (
     <td
-      className={`px-4 py-3 text-center border-r border-gray-100 last:border-r-0 ${delta === "best" ? "bg-green-50" : delta === "worst" ? "bg-red-50" : ""}`}
+      className={`px-4 py-3 text-center border-r border-gray-100 dark:border-[#30363d] last:border-r-0 ${
+        delta === "best"
+          ? "bg-green-50 dark:bg-[#0d2818]"
+          : delta === "worst"
+            ? "bg-red-50 dark:bg-[#2d1214]"
+            : ""
+      }`}
     >
       <div className="flex flex-col items-center gap-1">
         <span
@@ -165,7 +171,7 @@ function RiskCell({ risk }) {
               ? "Medium risk"
               : "High risk"}
         </span>
-        <span className="text-[11px] text-gray-500 tabular-nums font-semibold">
+        <span className="text-[11px] text-gray-500 dark:text-[#7d8590] tabular-nums font-semibold">
           {risk.overallScore}/100
         </span>
       </div>
@@ -173,39 +179,41 @@ function RiskCell({ risk }) {
   );
 }
 
-// ── Section status cell ────────────────────────────────────────────────────
+// ── Section status cell ───────────────────────────────────────────────────────
 
 const STATUS_COLORS = {
-  LIVE: "bg-green-100 text-green-700",
-  CACHED: "bg-green-100 text-green-700",
-  MOCK: "bg-amber-100 text-amber-700",
-  UNAVAILABLE: "bg-red-100 text-red-600",
-  TIMEOUT: "bg-red-100 text-red-600",
-  ERROR: "bg-red-100 text-red-600",
-  NO_DATA: "bg-gray-100 text-gray-500",
+  LIVE:        "bg-green-100 dark:bg-[#0d2818] text-green-700 dark:text-green-400",
+  CACHED:      "bg-green-100 dark:bg-[#0d2818] text-green-700 dark:text-green-400",
+  MOCK:        "bg-amber-100 dark:bg-[#282a10] text-amber-700 dark:text-amber-400",
+  UNAVAILABLE: "bg-red-100 dark:bg-[#2d1214] text-red-600 dark:text-red-400",
+  TIMEOUT:     "bg-red-100 dark:bg-[#2d1214] text-red-600 dark:text-red-400",
+  ERROR:       "bg-red-100 dark:bg-[#2d1214] text-red-600 dark:text-red-400",
+  NO_DATA:     "bg-gray-100 dark:bg-[#1c2128] text-gray-500 dark:text-[#7d8590]",
 };
 const STATUS_LABELS = {
-  LIVE: "Live",
-  CACHED: "Cached",
-  MOCK: "Sample",
+  LIVE:        "Live",
+  CACHED:      "Cached",
+  MOCK:        "Sample",
   UNAVAILABLE: "Unavailable",
-  TIMEOUT: "Timed out",
-  ERROR: "Error",
-  NO_DATA: "No data",
+  TIMEOUT:     "Timed out",
+  ERROR:       "Error",
+  NO_DATA:     "No data",
 };
 
 function StatusCell({ section }) {
   const status = section?.status;
   if (!status)
     return (
-      <td className="px-4 py-3 text-center text-sm text-gray-400 border-r border-gray-100 last:border-r-0">
+      <td className="px-4 py-3 text-center text-sm text-gray-400 dark:text-[#6e7681] border-r border-gray-100 dark:border-[#30363d] last:border-r-0">
         —
       </td>
     );
   return (
-    <td className="px-4 py-3 text-center border-r border-gray-100 last:border-r-0">
+    <td className="px-4 py-3 text-center border-r border-gray-100 dark:border-[#30363d] last:border-r-0">
       <span
-        className={`inline-flex rounded-full px-2.5 py-1 text-[11px] font-bold ${STATUS_COLORS[status] ?? "bg-gray-100 text-gray-500"}`}
+        className={`inline-flex rounded-full px-2.5 py-1 text-[11px] font-bold ${
+          STATUS_COLORS[status] ?? "bg-gray-100 dark:bg-[#1c2128] text-gray-500 dark:text-[#7d8590]"
+        }`}
       >
         {STATUS_LABELS[status] ?? status}
       </span>
@@ -213,14 +221,14 @@ function StatusCell({ section }) {
   );
 }
 
-// ── Row components ─────────────────────────────────────────────────────────
+// ── Row components ────────────────────────────────────────────────────────────
 
 function SectionHeader({ label, colCount }) {
   return (
-    <tr className="bg-gray-50">
+    <tr className="bg-gray-50 dark:bg-[#1c2128]">
       <td
         colSpan={colCount + 1}
-        className="px-4 py-2.5 text-[10px] font-black uppercase tracking-widest text-gray-400 border-b border-gray-100"
+        className="px-4 py-2.5 text-[10px] font-black uppercase tracking-widest text-gray-400 dark:text-[#6e7681] border-b border-gray-100 dark:border-[#30363d]"
       >
         {label}
       </td>
@@ -231,8 +239,8 @@ function SectionHeader({ label, colCount }) {
 function MetricRow({ label, values, displayValues, direction = "none" }) {
   const deltas = computeDeltas(values, direction);
   return (
-    <tr className="border-b border-gray-100 hover:bg-gray-50/50 transition-colors">
-      <td className="px-4 py-3 text-xs font-semibold text-gray-500 w-40 border-r border-gray-200 bg-gray-50/30">
+    <tr className="border-b border-gray-100 dark:border-[#30363d] hover:bg-gray-50/50 dark:hover:bg-[#1c2128]/50 transition-colors">
+      <td className="px-4 py-3 text-xs font-semibold text-gray-500 dark:text-[#7d8590] w-40 border-r border-gray-200 dark:border-[#30363d] bg-gray-50/30 dark:bg-[#161b22]">
         {label}
       </td>
       {displayValues.map((dv, i) => (
@@ -249,14 +257,14 @@ function MetricRow({ label, values, displayValues, direction = "none" }) {
 
 function PlainRow({ label, values }) {
   return (
-    <tr className="border-b border-gray-100 hover:bg-gray-50/50 transition-colors">
-      <td className="px-4 py-3 text-xs font-semibold text-gray-500 w-40 border-r border-gray-200 bg-gray-50/30">
+    <tr className="border-b border-gray-100 dark:border-[#30363d] hover:bg-gray-50/50 dark:hover:bg-[#1c2128]/50 transition-colors">
+      <td className="px-4 py-3 text-xs font-semibold text-gray-500 dark:text-[#7d8590] w-40 border-r border-gray-200 dark:border-[#30363d] bg-gray-50/30 dark:bg-[#161b22]">
         {label}
       </td>
       {values.map((v, i) => (
         <td
           key={i}
-          className="px-4 py-3 text-sm font-bold text-center text-gray-900 border-r border-gray-100 last:border-r-0"
+          className="px-4 py-3 text-sm font-bold text-center text-gray-900 dark:text-[#e6edf3] border-r border-gray-100 dark:border-[#30363d] last:border-r-0"
         >
           {v ?? "—"}
         </td>
@@ -265,15 +273,15 @@ function PlainRow({ label, values }) {
   );
 }
 
-// ── Property hero column header (table thead) ──────────────────────────────
+// ── Property header column (table thead) ──────────────────────────────────────
 
 function PropertyHeader({ property, index }) {
   if (!property) {
     return (
-      <th className="px-4 py-4 text-center border-r border-gray-200 last:border-r-0">
+      <th className="px-4 py-4 text-center border-r border-gray-200 dark:border-[#30363d] last:border-r-0">
         <div className="flex flex-col items-center gap-1">
-          <div className="h-16 w-full rounded-xl bg-gray-100 animate-pulse" />
-          <div className="h-3 w-24 rounded bg-gray-100 animate-pulse mt-2" />
+          <div className="h-16 w-full rounded-xl bg-gray-100 dark:bg-[#1c2128] animate-pulse" />
+          <div className="h-3 w-24 rounded bg-gray-100 dark:bg-[#1c2128] animate-pulse mt-2" />
         </div>
       </th>
     );
@@ -282,34 +290,31 @@ function PropertyHeader({ property, index }) {
   const LABELS = ["A", "B", "C"];
 
   return (
-    <th className="px-4 py-4 text-center font-normal border-r border-gray-200 last:border-r-0 min-w-[220px] max-w-[280px]">
+    <th className="px-4 py-4 text-center font-normal border-r border-gray-200 dark:border-[#30363d] last:border-r-0 min-w-[220px] max-w-[280px]">
       <div className="flex flex-col items-center gap-2">
         <div className="flex h-8 w-8 items-center justify-center rounded-full bg-gradient-to-br from-[#22C55E] to-[#16a34a] shadow-[0_4px_12px_rgba(34,197,94,0.3)]">
           <span className="text-sm font-black text-white">{LABELS[index]}</span>
         </div>
         <div className="text-center min-w-0 w-full px-2">
-          <p className="text-sm font-black text-gray-900 line-clamp-2 leading-tight">
+          <p className="text-sm font-black text-gray-900 dark:text-[#e6edf3] line-clamp-2 leading-tight">
             {property.address}
           </p>
-          <p className="mt-0.5 text-[11px] text-gray-500">
+          <p className="mt-0.5 text-[11px] text-gray-500 dark:text-[#7d8590]">
             {property.city}
             {property.state ? `, ${property.state}` : ""}
           </p>
         </div>
         {property.verified ? (
-          <div className="flex items-center gap-1 rounded-full bg-green-50 px-2.5 py-1 ring-1 ring-green-200">
-            <BadgeCheck className="h-3 w-3 text-green-600" strokeWidth={2.5} />
-            <span className="text-[10px] font-bold text-green-700">
+          <div className="flex items-center gap-1 rounded-full bg-green-50 dark:bg-[#0d2818] px-2.5 py-1 ring-1 ring-green-200 dark:ring-green-900/50">
+            <BadgeCheck className="h-3 w-3 text-green-600 dark:text-green-400" strokeWidth={2.5} />
+            <span className="text-[10px] font-bold text-green-700 dark:text-green-400">
               Verified
             </span>
           </div>
         ) : (
-          <div className="flex items-center gap-1 rounded-full bg-amber-50 px-2.5 py-1 ring-1 ring-amber-200">
-            <AlertTriangle
-              className="h-3 w-3 text-amber-600"
-              strokeWidth={2.5}
-            />
-            <span className="text-[10px] font-bold text-amber-700">
+          <div className="flex items-center gap-1 rounded-full bg-amber-50 dark:bg-[#282a10] px-2.5 py-1 ring-1 ring-amber-200 dark:ring-amber-900/50">
+            <AlertTriangle className="h-3 w-3 text-amber-600 dark:text-amber-400" strokeWidth={2.5} />
+            <span className="text-[10px] font-bold text-amber-700 dark:text-amber-400">
               Pending
             </span>
           </div>
@@ -324,41 +329,39 @@ function PropertyHeader({ property, index }) {
   );
 }
 
-// ── Loading skeleton ───────────────────────────────────────────────────────
+// ── Loading skeleton ──────────────────────────────────────────────────────────
 
 function CompareSkeleton({ count }) {
   return (
-    <div className="rounded-2xl border border-gray-100 bg-white shadow-sm overflow-hidden animate-pulse">
+    <div className="rounded-2xl border border-gray-100 dark:border-[#30363d] bg-white dark:bg-[#161b22] shadow-sm overflow-hidden animate-pulse">
       <div
-        className="grid border-b border-gray-200"
-        style={{
-          gridTemplateColumns: `160px repeat(${count}, 1fr)`,
-        }}
+        className="grid border-b border-gray-200 dark:border-[#30363d]"
+        style={{ gridTemplateColumns: `160px repeat(${count}, 1fr)` }}
       >
-        <div className="px-4 py-4 bg-gray-50" />
+        <div className="px-4 py-4 bg-gray-50 dark:bg-[#1c2128]" />
         {Array.from({ length: count }).map((_, i) => (
           <div
             key={i}
-            className="px-4 py-4 border-l border-gray-200 flex flex-col items-center gap-3"
+            className="px-4 py-4 border-l border-gray-200 dark:border-[#30363d] flex flex-col items-center gap-3"
           >
-            <div className="h-8 w-8 rounded-full bg-gray-200" />
-            <div className="h-4 w-32 rounded bg-gray-200" />
-            <div className="h-3 w-20 rounded bg-gray-200" />
-            <div className="h-6 w-16 rounded-full bg-gray-200" />
+            <div className="h-8 w-8 rounded-full bg-gray-200 dark:bg-[#30363d]" />
+            <div className="h-4 w-32 rounded bg-gray-200 dark:bg-[#30363d]" />
+            <div className="h-3 w-20 rounded bg-gray-200 dark:bg-[#30363d]" />
+            <div className="h-6 w-16 rounded-full bg-gray-200 dark:bg-[#30363d]" />
           </div>
         ))}
       </div>
       {Array.from({ length: 8 }).map((_, i) => (
-        <div key={i} className="flex border-b border-gray-100">
-          <div className="w-40 px-4 py-3 bg-gray-50/50 flex-shrink-0">
-            <div className="h-3 w-20 rounded bg-gray-200" />
+        <div key={i} className="flex border-b border-gray-100 dark:border-[#30363d]">
+          <div className="w-40 px-4 py-3 bg-gray-50/50 dark:bg-[#1c2128] flex-shrink-0">
+            <div className="h-3 w-20 rounded bg-gray-200 dark:bg-[#30363d]" />
           </div>
           {Array.from({ length: count }).map((_, j) => (
             <div
               key={j}
-              className="flex-1 px-4 py-3 border-l border-gray-100 flex justify-center"
+              className="flex-1 px-4 py-3 border-l border-gray-100 dark:border-[#30363d] flex justify-center"
             >
-              <div className="h-4 w-24 rounded bg-gray-100" />
+              <div className="h-4 w-24 rounded bg-gray-100 dark:bg-[#1c2128]" />
             </div>
           ))}
         </div>
@@ -367,7 +370,7 @@ function CompareSkeleton({ count }) {
   );
 }
 
-// ── Main comparison inner ──────────────────────────────────────────────────
+// ── Main comparison inner ─────────────────────────────────────────────────────
 
 function PropertyComparisonInner() {
   const searchParams = useSearchParams();
@@ -386,22 +389,16 @@ function PropertyComparisonInner() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
-  // ── Save modal + sheet state ─────────────────────────────────────────────
   const [saveModalOpen, setSaveModalOpen] = useState(false);
   const [sheetOpen, setSheetOpen] = useState(false);
 
   const { save, isSaving } = useSavedComparisons({ autoFetch: false });
 
   const loadAll = useCallback(async () => {
-    if (ids.length < 1) {
-      setLoading(false);
-      return;
-    }
-
+    if (ids.length < 1) { setLoading(false); return; }
     try {
       setLoading(true);
       setError(null);
-
       const results = await Promise.allSettled(
         ids.map(async (id) => {
           const [prop, agg, risk] = await Promise.allSettled([
@@ -410,45 +407,37 @@ function PropertyComparisonInner() {
             getPropertyRisk(id),
           ]);
           return {
-            property: prop.status === "fulfilled" ? prop.value : null,
-            aggregated: agg.status === "fulfilled" ? agg.value : null,
-            risk: risk.status === "fulfilled" ? risk.value : null,
+            property:   prop.status === "fulfilled" ? prop.value : null,
+            aggregated: agg.status  === "fulfilled" ? agg.value  : null,
+            risk:       risk.status === "fulfilled" ? risk.value  : null,
           };
         })
       );
-
-      const loaded = results
-        .filter((r) => r.status === "fulfilled")
-        .map((r) => r.value);
-
+      const loaded = results.filter((r) => r.status === "fulfilled").map((r) => r.value);
       setProperties(loaded.map((r) => r.property));
       setAggregated(loaded.map((r) => r.aggregated));
       setRisks(loaded.map((r) => r.risk));
     } catch (err) {
       setError(err?.message ?? "Failed to load comparison data");
-      toast.error("Could not load comparison", {
-        description: "Please go back and try again.",
-      });
+      toast.error("Could not load comparison", { description: "Please go back and try again." });
     } finally {
       setLoading(false);
     }
   }, [idsParam]);
 
-  useEffect(() => {
-    loadAll();
-  }, [loadAll]);
+  useEffect(() => { loadAll(); }, [loadAll]);
 
-  // ── Empty / error states ───────────────────────────────────────────────
+  // ── Empty / error state ────────────────────────────────────────────────────
   if (!loading && (ids.length < 2 || error)) {
     return (
-      <div className="flex flex-col items-center justify-center rounded-2xl border border-gray-100 bg-white py-24 text-center shadow-sm">
-        <div className="flex h-16 w-16 items-center justify-center rounded-2xl bg-gray-50 border border-gray-100 mb-4">
-          <SearchX className="h-7 w-7 text-gray-300" />
+      <div className="flex flex-col items-center justify-center rounded-2xl border border-gray-100 dark:border-[#30363d] bg-white dark:bg-[#161b22] py-24 text-center shadow-sm">
+        <div className="flex h-16 w-16 items-center justify-center rounded-2xl bg-gray-50 dark:bg-[#1c2128] border border-gray-100 dark:border-[#30363d] mb-4">
+          <SearchX className="h-7 w-7 text-gray-300 dark:text-[#484f58]" />
         </div>
-        <p className="text-lg font-bold text-gray-800">
+        <p className="text-lg font-bold text-gray-800 dark:text-[#e6edf3]">
           {error ?? "Select at least 2 properties to compare"}
         </p>
-        <p className="mt-1.5 text-sm text-gray-500 max-w-xs">
+        <p className="mt-1.5 text-sm text-gray-500 dark:text-[#7d8590] max-w-xs">
           Go to property search, select 2–3 properties using the compare
           checkbox on each card, then click "Compare".
         </p>
@@ -472,7 +461,6 @@ function PropertyComparisonInner() {
     p?.marketValue && p?.area ? Math.round(p.marketValue / p.area) : null
   );
 
-  // ── Default comparison name ──────────────────────────────────────────────
   const defaultName = P.filter(Boolean)
     .map((p) => p.city || p.address?.split(",")[0])
     .filter(Boolean)
@@ -482,30 +470,27 @@ function PropertyComparisonInner() {
     <div className="w-full max-w-[1400px] mx-auto space-y-6">
       <Breadcrumbs />
 
-      {/* ── Page header ─────────────────────────────────────────────────── */}
-      <div className="rounded-2xl border border-gray-100 bg-white p-8 shadow-sm">
+      {/* ── Page header card ── */}
+      <div className="rounded-2xl border border-gray-100 dark:border-[#30363d] bg-white dark:bg-[#161b22] p-8 shadow-sm">
         <div className="flex items-center justify-between gap-4 flex-wrap">
           <div className="flex items-center gap-4">
             <Link
               href="/dashboard/property-search"
-              className="flex h-10 w-10 items-center justify-center rounded-xl border border-gray-200 bg-white text-gray-500 transition hover:border-[#22C55E] hover:text-[#16a34a]"
+              className="flex h-10 w-10 items-center justify-center rounded-xl border border-gray-200 dark:border-[#30363d] bg-white dark:bg-[#0d1117] text-gray-500 dark:text-[#7d8590] transition hover:border-[#22C55E] hover:text-[#16a34a]"
               aria-label="Back to property search"
             >
               <ArrowLeft className="h-4.5 w-4.5" strokeWidth={2.2} />
             </Link>
             <div>
               <div className="flex items-center gap-2">
-                <div className="flex h-8 w-8 items-center justify-center rounded-xl bg-green-50 ring-1 ring-green-200">
-                  <GitCompare
-                    className="h-4 w-4 text-[#16a34a]"
-                    strokeWidth={2}
-                  />
+                <div className="flex h-8 w-8 items-center justify-center rounded-xl bg-green-50 dark:bg-[#0d2818] ring-1 ring-green-200 dark:ring-green-900/50">
+                  <GitCompare className="h-4 w-4 text-[#16a34a]" strokeWidth={2} />
                 </div>
-                <h1 className="text-2xl font-extrabold text-gray-900 tracking-tight">
+                <h1 className="text-2xl font-extrabold text-gray-900 dark:text-[#e6edf3] tracking-tight">
                   Property comparison
                 </h1>
               </div>
-              <p className="mt-1 text-sm text-gray-500">
+              <p className="mt-1 text-sm text-gray-500 dark:text-[#7d8590]">
                 Side-by-side analysis of {colCount}{" "}
                 {colCount === 1 ? "property" : "properties"} · real data only
               </p>
@@ -518,13 +503,13 @@ function PropertyComparisonInner() {
             <button
               type="button"
               onClick={() => setSheetOpen(true)}
-              className="flex items-center gap-2 rounded-xl border border-gray-200 bg-white px-4 py-2.5 text-sm font-bold text-gray-600 transition hover:border-[#22C55E] hover:text-[#16a34a] cursor-pointer"
+              className="flex items-center gap-2 rounded-xl border border-gray-200 dark:border-[#30363d] bg-white dark:bg-[#0d1117] px-4 py-2.5 text-sm font-bold text-gray-600 dark:text-[#7d8590] transition hover:border-[#22C55E] hover:text-[#16a34a] dark:hover:border-[#22C55E] dark:hover:text-[#22C55E] cursor-pointer"
             >
               <BookmarkCheck className="h-4 w-4" strokeWidth={2} />
               My saved
             </button>
 
-            {/* Save Comparison button */}
+            {/* Save Comparison button — green gradient, unchanged */}
             {!loading && properties.filter(Boolean).length >= 2 && (
               <button
                 type="button"
@@ -553,24 +538,24 @@ function PropertyComparisonInner() {
         </div>
       </div>
 
-      {/* ── Hero cards row ───────────────────────────────────────────────── */}
+      {/* ── Hero cards row ── */}
       {!loading && properties.filter(Boolean).length > 0 && (
         <div className="flex gap-4 flex-wrap">
           {P.map((prop, i) => (
-  <PropertyHeroCard
-    key={prop?.id ?? ids[i] ?? `hero-slot-${i}`}
-    property={prop}
-    index={i}
-  />
-))}
+            <PropertyHeroCard
+              key={prop?.id ?? ids[i] ?? `hero-slot-${i}`}
+              property={prop}
+              index={i}
+            />
+          ))}
         </div>
       )}
 
-      {/* ── Comparison table ─────────────────────────────────────────────── */}
+      {/* ── Comparison table ── */}
       {loading ? (
         <CompareSkeleton count={colCount} />
       ) : (
-        <div className="rounded-2xl border border-gray-100 bg-white shadow-sm overflow-hidden">
+        <div className="rounded-2xl border border-gray-100 dark:border-[#30363d] bg-white dark:bg-[#161b22] shadow-sm overflow-hidden">
           <div className="overflow-x-auto">
             <table className="w-full border-collapse">
               <colgroup>
@@ -581,57 +566,49 @@ function PropertyComparisonInner() {
               </colgroup>
 
               <thead>
-                <tr className="border-b-2 border-gray-200">
-                  <th className="px-4 py-4 text-left bg-gray-50 border-r border-gray-200">
-                    <span className="text-[10px] font-black uppercase tracking-widest text-gray-400">
+                <tr className="border-b-2 border-gray-200 dark:border-[#30363d]">
+                  <th className="px-4 py-4 text-left bg-gray-50 dark:bg-[#1c2128] border-r border-gray-200 dark:border-[#30363d]">
+                    <span className="text-[10px] font-black uppercase tracking-widest text-gray-400 dark:text-[#6e7681]">
                       Metric
                     </span>
                   </th>
-                 {P.map((prop, i) => (
-  <PropertyHeader
-    key={prop?.id ?? ids[i] ?? `header-slot-${i}`}
-    property={prop}
-    index={i}
-  />
-))}
+                  {P.map((prop, i) => (
+                    <PropertyHeader
+                      key={prop?.id ?? ids[i] ?? `header-slot-${i}`}
+                      property={prop}
+                      index={i}
+                    />
+                  ))}
                 </tr>
               </thead>
 
               <tbody>
-                {/* ── FINANCIAL ──────────────────────────────────────────── */}
+                {/* ── FINANCIAL ── */}
                 <SectionHeader label="Financial" colCount={colCount} />
                 <MetricRow
                   label="Market value"
                   values={P.map((p) => p?.marketValue)}
-                  displayValues={P.map((p) =>
-                    p?.marketValue ? formatINR(p.marketValue) : null
-                  )}
+                  displayValues={P.map((p) => p?.marketValue ? formatINR(p.marketValue) : null)}
                   direction="higher-better"
                 />
                 <MetricRow
                   label="Area"
                   values={P.map((p) => p?.area)}
-                  displayValues={P.map((p) =>
-                    p?.area ? fmtArea(p.area) : null
-                  )}
+                  displayValues={P.map((p) => p?.area ? fmtArea(p.area) : null)}
                   direction="higher-better"
                 />
                 <MetricRow
                   label="Price / sqft"
                   values={pricePerSqft}
                   displayValues={P.map((p, i) =>
-                    pricePerSqft[i]
-                      ? `₹${pricePerSqft[i].toLocaleString("en-IN")}`
-                      : null
+                    pricePerSqft[i] ? `₹${pricePerSqft[i].toLocaleString("en-IN")}` : null
                   )}
                   direction="lower-better"
                 />
                 <MetricRow
                   label="Lot size"
                   values={P.map((p) => p?.lotSize)}
-                  displayValues={P.map((p) =>
-                    p?.lotSize ? fmtArea(p.lotSize) : null
-                  )}
+                  displayValues={P.map((p) => p?.lotSize ? fmtArea(p.lotSize) : null)}
                   direction="higher-better"
                 />
                 <MetricRow
@@ -641,15 +618,9 @@ function PropertyComparisonInner() {
                   direction="higher-better"
                 />
 
-                {/* ── PROPERTY DETAILS ───────────────────────────────────── */}
-                <SectionHeader
-                  label="Property details"
-                  colCount={colCount}
-                />
-                <PlainRow
-                  label="Type"
-                  values={P.map((p) => p?.propertyType)}
-                />
+                {/* ── PROPERTY DETAILS ── */}
+                <SectionHeader label="Property details" colCount={colCount} />
+                <PlainRow label="Type"       values={P.map((p) => p?.propertyType)} />
                 <MetricRow
                   label="Bedrooms"
                   values={P.map((p) => p?.bedrooms)}
@@ -662,27 +633,15 @@ function PropertyComparisonInner() {
                   displayValues={P.map((p) => fmt(p?.bathrooms))}
                   direction="higher-better"
                 />
-                <PlainRow
-                  label="Stories"
-                  values={P.map((p) => fmt(p?.stories))}
-                />
-                <PlainRow
-                  label="Condition"
-                  values={P.map((p) => p?.condition ?? null)}
-                />
-                <PlainRow
-                  label="Structure type"
-                  values={P.map((p) => p?.structureType ?? null)}
-                />
-                <PlainRow
-                  label="Zoning"
-                  values={P.map((p) => p?.zoning ?? null)}
-                />
+                <PlainRow label="Stories"        values={P.map((p) => fmt(p?.stories))} />
+                <PlainRow label="Condition"       values={P.map((p) => p?.condition ?? null)} />
+                <PlainRow label="Structure type"  values={P.map((p) => p?.structureType ?? null)} />
+                <PlainRow label="Zoning"          values={P.map((p) => p?.zoning ?? null)} />
 
-                {/* ── RISK ASSESSMENT ────────────────────────────────────── */}
+                {/* ── RISK ASSESSMENT ── */}
                 <SectionHeader label="Risk assessment" colCount={colCount} />
-                <tr className="border-b border-gray-100">
-                  <td className="px-4 py-3 text-xs font-semibold text-gray-500 border-r border-gray-200 bg-gray-50/30">
+                <tr className="border-b border-gray-100 dark:border-[#30363d]">
+                  <td className="px-4 py-3 text-xs font-semibold text-gray-500 dark:text-[#7d8590] border-r border-gray-200 dark:border-[#30363d] bg-gray-50/30 dark:bg-[#161b22]">
                     Overall risk
                   </td>
                   {R.map((risk, i) => (
@@ -692,58 +651,47 @@ function PropertyComparisonInner() {
                 <MetricRow
                   label="Financial risk"
                   values={R.map((r) => r?.financialScore)}
-                  displayValues={R.map((r) =>
-                    r ? `${r.financialScore}/100` : null
-                  )}
+                  displayValues={R.map((r) => r ? `${r.financialScore}/100` : null)}
                   direction="lower-better"
                 />
                 <MetricRow
                   label="Legal risk"
                   values={R.map((r) => r?.legalScore)}
-                  displayValues={R.map((r) =>
-                    r ? `${r.legalScore}/100` : null
-                  )}
+                  displayValues={R.map((r) => r ? `${r.legalScore}/100` : null)}
                   direction="lower-better"
                 />
                 <MetricRow
                   label="Environmental risk"
                   values={R.map((r) => r?.environmentalScore)}
-                  displayValues={R.map((r) =>
-                    r ? `${r.environmentalScore}/100` : null
-                  )}
+                  displayValues={R.map((r) => r ? `${r.environmentalScore}/100` : null)}
                   direction="lower-better"
                 />
                 <MetricRow
                   label="Structural risk"
                   values={R.map((r) => r?.structuralScore)}
-                  displayValues={R.map((r) =>
-                    r ? `${r.structuralScore}/100` : null
-                  )}
+                  displayValues={R.map((r) => r ? `${r.structuralScore}/100` : null)}
                   direction="lower-better"
                 />
 
-                {/* ── DATA QUALITY ────────────────────────────────────────── */}
+                {/* ── DATA QUALITY ── */}
                 <SectionHeader label="Data quality" colCount={colCount} />
-                <tr className="border-b border-gray-100">
-                  <td className="px-4 py-3 text-xs font-semibold text-gray-500 border-r border-gray-200 bg-gray-50/30">
+                <tr className="border-b border-gray-100 dark:border-[#30363d]">
+                  <td className="px-4 py-3 text-xs font-semibold text-gray-500 dark:text-[#7d8590] border-r border-gray-200 dark:border-[#30363d] bg-gray-50/30 dark:bg-[#161b22]">
                     Verification
                   </td>
                   {P.map((p, i) => (
                     <td
                       key={i}
-                      className="px-4 py-3 text-center border-r border-gray-100 last:border-r-0"
+                      className="px-4 py-3 text-center border-r border-gray-100 dark:border-[#30363d] last:border-r-0"
                     >
                       {p?.verified ? (
-                        <span className="inline-flex items-center gap-1 rounded-full bg-green-50 px-2.5 py-1 text-xs font-bold text-green-700 ring-1 ring-green-200">
+                        <span className="inline-flex items-center gap-1 rounded-full bg-green-50 dark:bg-[#0d2818] px-2.5 py-1 text-xs font-bold text-green-700 dark:text-green-400 ring-1 ring-green-200 dark:ring-green-900/50">
                           <BadgeCheck className="h-3.5 w-3.5" strokeWidth={2.5} />
                           Verified
                         </span>
                       ) : (
-                        <span className="inline-flex items-center gap-1 rounded-full bg-amber-50 px-2.5 py-1 text-xs font-bold text-amber-700 ring-1 ring-amber-200">
-                          <AlertTriangle
-                            className="h-3.5 w-3.5"
-                            strokeWidth={2.5}
-                          />
+                        <span className="inline-flex items-center gap-1 rounded-full bg-amber-50 dark:bg-[#282a10] px-2.5 py-1 text-xs font-bold text-amber-700 dark:text-amber-400 ring-1 ring-amber-200 dark:ring-amber-900/50">
+                          <AlertTriangle className="h-3.5 w-3.5" strokeWidth={2.5} />
                           Pending
                         </span>
                       )}
@@ -751,24 +699,21 @@ function PropertyComparisonInner() {
                   ))}
                 </tr>
 
-                {/* ── INTEGRATION SOURCES ────────────────────────────────── */}
-                <SectionHeader
-                  label="Integration data sources"
-                  colCount={colCount}
-                />
+                {/* ── INTEGRATION SOURCES ── */}
+                <SectionHeader label="Integration data sources" colCount={colCount} />
                 {[
-                  ["Ownership", (a) => a?.ownership],
-                  ["Tax history", (a) => a?.taxHistory],
-                  ["Zoning", (a) => a?.zoning],
-                  ["Flood zone", (a) => a?.floodZone],
-                  ["Permits", (a) => a?.permits],
-                  ["Environmental", (a) => a?.environmental],
+                  ["Ownership",    (a) => a?.ownership],
+                  ["Tax history",  (a) => a?.taxHistory],
+                  ["Zoning",       (a) => a?.zoning],
+                  ["Flood zone",   (a) => a?.floodZone],
+                  ["Permits",      (a) => a?.permits],
+                  ["Environmental",(a) => a?.environmental],
                 ].map(([label, getter]) => (
                   <tr
                     key={label}
-                    className="border-b border-gray-100 hover:bg-gray-50/50 transition-colors"
+                    className="border-b border-gray-100 dark:border-[#30363d] hover:bg-gray-50/50 dark:hover:bg-[#1c2128]/50 transition-colors"
                   >
-                    <td className="px-4 py-3 text-xs font-semibold text-gray-500 border-r border-gray-200 bg-gray-50/30">
+                    <td className="px-4 py-3 text-xs font-semibold text-gray-500 dark:text-[#7d8590] border-r border-gray-200 dark:border-[#30363d] bg-gray-50/30 dark:bg-[#161b22]">
                       {label}
                     </td>
                     {A.map((agg, i) => (
@@ -777,13 +722,11 @@ function PropertyComparisonInner() {
                   </tr>
                 ))}
 
-                {/* ── ENVIRONMENTAL ──────────────────────────────────────── */}
+                {/* ── ENVIRONMENTAL ── */}
                 <SectionHeader label="Environmental" colCount={colCount} />
                 <MetricRow
                   label="AQI"
-                  values={A.map(
-                    (a) => a?.environmental?.data?.airQualityIndex
-                  )}
+                  values={A.map((a) => a?.environmental?.data?.airQualityIndex)}
                   displayValues={A.map((a) => {
                     const aqi = a?.environmental?.data?.airQualityIndex;
                     const cat = a?.environmental?.data?.aqiCategory;
@@ -798,12 +741,10 @@ function PropertyComparisonInner() {
                 />
                 <PlainRow
                   label="Flood zone"
-                  values={A.map(
-                    (a) => a?.floodZone?.data?.zoneClassification ?? null
-                  )}
+                  values={A.map((a) => a?.floodZone?.data?.zoneClassification ?? null)}
                 />
-                <tr className="border-b border-gray-100 hover:bg-gray-50/50 transition-colors">
-                  <td className="px-4 py-3 text-xs font-semibold text-gray-500 border-r border-gray-200 bg-gray-50/30">
+                <tr className="border-b border-gray-100 dark:border-[#30363d] hover:bg-gray-50/50 dark:hover:bg-[#1c2128]/50 transition-colors">
+                  <td className="px-4 py-3 text-xs font-semibold text-gray-500 dark:text-[#7d8590] border-r border-gray-200 dark:border-[#30363d] bg-gray-50/30 dark:bg-[#161b22]">
                     Near industrial zone
                   </td>
                   {A.map((a, i) => {
@@ -811,12 +752,12 @@ function PropertyComparisonInner() {
                     return (
                       <td
                         key={i}
-                        className="px-4 py-3 text-sm font-bold text-center border-r border-gray-100 last:border-r-0"
+                        className="px-4 py-3 text-sm font-bold text-center border-r border-gray-100 dark:border-[#30363d] last:border-r-0"
                       >
                         {val == null ? "—" : val ? (
-                          <span className="text-red-600">Yes</span>
+                          <span className="text-red-600 dark:text-red-400">Yes</span>
                         ) : (
-                          <span className="text-green-700">No</span>
+                          <span className="text-green-700 dark:text-green-400">No</span>
                         )}
                       </td>
                     );
@@ -826,48 +767,42 @@ function PropertyComparisonInner() {
             </table>
           </div>
 
-          {/* Table legend */}
-          <div className="flex items-center gap-6 border-t border-gray-100 bg-gray-50/50 px-6 py-3 flex-wrap">
-            <p className="text-[10px] font-black uppercase tracking-widest text-gray-400">
+          {/* ── Table legend ── */}
+          <div className="flex items-center gap-6 border-t border-gray-100 dark:border-[#30363d] bg-gray-50/50 dark:bg-[#1c2128] px-6 py-3 flex-wrap">
+            <p className="text-[10px] font-black uppercase tracking-widest text-gray-400 dark:text-[#6e7681]">
               Legend
             </p>
             <div className="flex items-center gap-1.5">
-              <TrendingUp
-                className="h-3.5 w-3.5 text-green-600"
-                strokeWidth={2.5}
-              />
-              <span className="text-[11px] font-semibold text-gray-600">
+              <TrendingUp className="h-3.5 w-3.5 text-green-600 dark:text-green-400" strokeWidth={2.5} />
+              <span className="text-[11px] font-semibold text-gray-600 dark:text-[#7d8590]">
                 Best value
               </span>
             </div>
             <div className="flex items-center gap-1.5">
-              <TrendingDown
-                className="h-3.5 w-3.5 text-red-500"
-                strokeWidth={2.5}
-              />
-              <span className="text-[11px] font-semibold text-gray-600">
+              <TrendingDown className="h-3.5 w-3.5 text-red-500 dark:text-red-400" strokeWidth={2.5} />
+              <span className="text-[11px] font-semibold text-gray-600 dark:text-[#7d8590]">
                 Worst value
               </span>
             </div>
             <div className="flex items-center gap-1.5">
-              <Minus className="h-3 w-3 text-gray-300" strokeWidth={2} />
-              <span className="text-[11px] font-semibold text-gray-600">
+              <Minus className="h-3 w-3 text-gray-300 dark:text-[#484f58]" strokeWidth={2} />
+              <span className="text-[11px] font-semibold text-gray-600 dark:text-[#7d8590]">
                 Middle
               </span>
             </div>
-            <span className="text-[11px] text-gray-400">
+            <span className="text-[11px] text-gray-400 dark:text-[#6e7681]">
               Comparisons are relative — no external benchmarks used
             </span>
           </div>
         </div>
       )}
 
-      {/* ── Market value chart ───────────────────────────────────────────── */}
+      {/* ── Market value chart ── */}
       {!loading && properties.filter(Boolean).length >= 2 && (
         <MarketValueChart properties={properties} />
       )}
 
-      {/* ── Save modal ───────────────────────────────────────────────────── */}
+      {/* ── Save modal ── */}
       <SaveComparisonModal
         isOpen={saveModalOpen}
         onClose={() => setSaveModalOpen(false)}
@@ -877,7 +812,7 @@ function PropertyComparisonInner() {
         defaultName={defaultName}
       />
 
-      {/* ── Saved comparisons sheet ──────────────────────────────────────── */}
+      {/* ── Saved comparisons sheet ── */}
       <SavedComparisonsSheet
         isOpen={sheetOpen}
         onClose={() => setSheetOpen(false)}
@@ -890,13 +825,14 @@ export default function PropertyComparisonPage() {
   useEffect(() => {
     document.title = "Property Comparison | Real Estate Due Diligence";
   }, []);
+
   return (
     <Suspense
       fallback={
         <div className="w-full max-w-[1400px] mx-auto space-y-6 animate-pulse">
-          <div className="rounded-2xl border border-gray-100 bg-white p-8 shadow-sm">
-            <div className="h-8 w-64 rounded-lg bg-gray-200" />
-            <div className="mt-2 h-4 w-48 rounded bg-gray-100" />
+          <div className="rounded-2xl border border-gray-100 dark:border-[#30363d] bg-white dark:bg-[#161b22] p-8 shadow-sm">
+            <div className="h-8 w-64 rounded-lg bg-gray-200 dark:bg-[#30363d]" />
+            <div className="mt-2 h-4 w-48 rounded bg-gray-100 dark:bg-[#1c2128]" />
           </div>
           <CompareSkeleton count={2} />
         </div>

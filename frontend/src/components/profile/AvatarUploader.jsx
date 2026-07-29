@@ -42,7 +42,6 @@ export default function AvatarUploader({
 
   const hasPhoto = !!user?.profilePicture;
 
-  // ── Position menu using fixed coords (escapes overflow:hidden parents) ────
   const openMenu = () => {
     if (!avatarRef.current) return;
     const rect = avatarRef.current.getBoundingClientRect();
@@ -53,7 +52,6 @@ export default function AvatarUploader({
     setShowMenu(true);
   };
 
-  // ── Close menu on Escape ──────────────────────────────────────────────────
   useEffect(() => {
     if (!showMenu) return;
     const handleKey = (e) => {
@@ -63,7 +61,6 @@ export default function AvatarUploader({
     return () => document.removeEventListener("keydown", handleKey);
   }, [showMenu]);
 
-  // ── File selection ────────────────────────────────────────────────────────
   const handleFileSelect = (e) => {
     const file = e.target.files?.[0];
     if (!file) return;
@@ -81,7 +78,6 @@ export default function AvatarUploader({
     setSelectedFile(file);
   };
 
-  // ── Confirm upload ────────────────────────────────────────────────────────
   const handleConfirmUpload = async () => {
     if (!selectedFile) return;
     setUploading(true);
@@ -98,12 +94,11 @@ export default function AvatarUploader({
         profilePicture: url,
       });
 
-      // Sync localStorage + broadcast to Navbar/Sidebar
-updateStoredUser({ profilePicture: updated.profilePicture });
+      updateStoredUser({ profilePicture: updated.profilePicture });
 
-toast.success("Profile photo updated");
-onUpdated?.(updated);
-handleCancel();
+      toast.success("Profile photo updated");
+      onUpdated?.(updated);
+      handleCancel();
     } catch (err) {
       toast.error("Upload failed", {
         description: err?.message || "Please try again.",
@@ -121,7 +116,6 @@ handleCancel();
     if (fileInputRef.current) fileInputRef.current.value = "";
   };
 
-  // ── Remove existing photo ─────────────────────────────────────────────────
   const handleRemove = async () => {
     if (!hasPhoto) return;
     setRemoving(true);
@@ -134,11 +128,10 @@ handleCancel();
         profilePicture: "",
       });
 
-      // Sync localStorage + broadcast to Navbar/Sidebar (null = removed)
-updateStoredUser({ profilePicture: null });
+      updateStoredUser({ profilePicture: null });
 
-toast.success("Profile photo removed");
-onUpdated?.(updated);
+      toast.success("Profile photo removed");
+      onUpdated?.(updated);
     } catch (err) {
       toast.error("Failed to remove photo", {
         description: err?.message || "Please try again.",
@@ -150,7 +143,6 @@ onUpdated?.(updated);
 
   return (
     <>
-      {/* Hidden file input */}
       <input
         ref={fileInputRef}
         type="file"
@@ -165,12 +157,11 @@ onUpdated?.(updated);
         className="relative group"
         style={{ width: size, height: size }}
       >
-        {/* Avatar image */}
         {user?.profilePicture ? (
           <img
             src={user.profilePicture}
             alt={user.fullName}
-            className="h-full w-full rounded-2xl border-4 border-white object-cover shadow-lg"
+            className="h-full w-full rounded-2xl border-4 border-white dark:border-[#161b22] object-cover shadow-lg"
             onError={(e) => {
               e.currentTarget.style.display = "none";
               e.currentTarget.nextElementSibling?.classList.remove("hidden");
@@ -178,18 +169,15 @@ onUpdated?.(updated);
           />
         ) : null}
 
-        {/* Fallback initials */}
         <div
-          className={`${user?.profilePicture ? "hidden" : "flex"} h-full w-full items-center justify-center rounded-2xl border-4 border-white bg-gradient-to-br from-[#22C55E] to-[#16a34a] font-black text-white shadow-lg`}
+          className={`${user?.profilePicture ? "hidden" : "flex"} h-full w-full items-center justify-center rounded-2xl border-4 border-white dark:border-[#161b22] bg-gradient-to-br from-[#22C55E] to-[#16a34a] font-black text-white shadow-lg`}
           style={{ fontSize: `${size * 0.32}px` }}
         >
           {initials}
         </div>
 
-        {/* Online status dot */}
-        <span className="absolute bottom-1 right-1 h-5 w-5 rounded-full border-4 border-white bg-green-500 z-10" />
+        <span className="absolute bottom-1 right-1 h-5 w-5 rounded-full border-4 border-white dark:border-[#161b22] bg-green-500 z-10" />
 
-        {/* Hover overlay */}
         <button
           type="button"
           onClick={openMenu}
@@ -204,29 +192,26 @@ onUpdated?.(updated);
           )}
         </button>
 
-        {/* Small camera badge (bottom-right) */}
         <button
           type="button"
           onClick={openMenu}
           disabled={uploading || removing}
-          className="absolute -bottom-1 -right-1 flex h-8 w-8 items-center justify-center rounded-full bg-white shadow-md ring-2 ring-white transition hover:scale-110 hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer z-30"
+          className="absolute -bottom-1 -right-1 flex h-8 w-8 items-center justify-center rounded-full bg-white dark:bg-[#1c2128] shadow-md ring-2 ring-white dark:ring-[#161b22] transition hover:scale-110 hover:bg-gray-50 dark:hover:bg-[#30363d] disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer z-30"
           aria-label="Photo options"
         >
-          <Camera className="h-4 w-4 text-gray-700" strokeWidth={2.4} />
+          <Camera className="h-4 w-4 text-gray-700 dark:text-[#e6edf3]" strokeWidth={2.4} />
         </button>
       </div>
 
-      {/* ── Photo action menu (FIXED positioning) ─────────────────────────── */}
+      {/* ── Photo action menu ─────────────────────────────────────────── */}
       {showMenu && (
         <>
-          {/* Backdrop */}
           <div
             className="fixed inset-0 z-[9998]"
             onClick={() => setShowMenu(false)}
           />
-          {/* Menu */}
           <div
-            className="fixed z-[9998] w-60 rounded-2xl border border-gray-100 bg-white p-2 shadow-2xl animate-in fade-in slide-in-from-top-2 duration-200"
+            className="fixed z-[9998] w-60 rounded-2xl border border-gray-100 dark:border-[#30363d] bg-white dark:bg-[#161b22] p-2 shadow-2xl animate-in fade-in slide-in-from-top-2 duration-200"
             style={{
               top: menuPos.top,
               left: menuPos.left,
@@ -239,10 +224,10 @@ onUpdated?.(updated);
                 setShowMenu(false);
                 fileInputRef.current?.click();
               }}
-              className="flex w-full items-center gap-3 rounded-xl px-3 py-2.5 text-left text-sm font-bold text-gray-700 transition hover:bg-green-50 hover:text-[#16a34a] cursor-pointer"
+              className="flex w-full items-center gap-3 rounded-xl px-3 py-2.5 text-left text-sm font-bold text-gray-700 dark:text-[#e6edf3] transition hover:bg-green-50 dark:hover:bg-[#0d2818] hover:text-[#16a34a] dark:hover:text-green-400 cursor-pointer"
             >
-              <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-green-50">
-                <Upload className="h-4 w-4 text-[#16a34a]" strokeWidth={2.2} />
+              <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-green-50 dark:bg-[#0d2818]">
+                <Upload className="h-4 w-4 text-[#16a34a] dark:text-green-400" strokeWidth={2.2} />
               </div>
               {hasPhoto ? "Change photo" : "Upload photo"}
             </button>
@@ -251,17 +236,17 @@ onUpdated?.(updated);
               <button
                 type="button"
                 onClick={handleRemove}
-                className="flex w-full items-center gap-3 rounded-xl px-3 py-2.5 text-left text-sm font-bold text-gray-700 transition hover:bg-red-50 hover:text-red-600 cursor-pointer"
+                className="flex w-full items-center gap-3 rounded-xl px-3 py-2.5 text-left text-sm font-bold text-gray-700 dark:text-[#e6edf3] transition hover:bg-red-50 dark:hover:bg-[#2d1214] hover:text-red-600 dark:hover:text-red-400 cursor-pointer"
               >
-                <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-red-50">
-                  <Trash2 className="h-4 w-4 text-red-500" strokeWidth={2.2} />
+                <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-red-50 dark:bg-[#2d1214]">
+                  <Trash2 className="h-4 w-4 text-red-500 dark:text-red-400" strokeWidth={2.2} />
                 </div>
                 Remove photo
               </button>
             )}
 
-            <div className="mt-1 border-t border-gray-100 px-3 pt-2 pb-1">
-              <p className="text-[10px] font-semibold text-gray-400">
+            <div className="mt-1 border-t border-gray-100 dark:border-[#30363d] px-3 pt-2 pb-1">
+              <p className="text-[10px] font-semibold text-gray-400 dark:text-[#6e7681]">
                 JPG, PNG, WebP · Max 5 MB
               </p>
             </div>
@@ -271,17 +256,17 @@ onUpdated?.(updated);
 
       {/* ── Upload confirmation modal ──────────────────────────────────── */}
       {preview && (
-        <div className="fixed inset-0 z-[9999] flex items-center justify-center bg-black/60 p-4 backdrop-blur-md animate-in fade-in duration-200">
-          <div className="w-full max-w-sm rounded-3xl bg-white shadow-2xl overflow-hidden animate-in zoom-in-95 duration-300">
-            <div className="flex items-center justify-between border-b border-gray-100 px-6 py-4">
-              <h3 className="text-base font-black text-gray-900">
+        <div className="fixed inset-0 z-[9999] flex items-center justify-center bg-black/60 dark:bg-black/80 p-4 backdrop-blur-md animate-in fade-in duration-200">
+          <div className="w-full max-w-sm rounded-3xl bg-white dark:bg-[#161b22] shadow-2xl overflow-hidden animate-in zoom-in-95 duration-300">
+            <div className="flex items-center justify-between border-b border-gray-100 dark:border-[#30363d] px-6 py-4">
+              <h3 className="text-base font-black text-gray-900 dark:text-[#e6edf3]">
                 Preview & upload
               </h3>
               <button
                 type="button"
                 onClick={handleCancel}
                 disabled={uploading}
-                className="rounded-full p-1.5 text-gray-400 hover:bg-gray-100 hover:text-gray-700 disabled:opacity-50 cursor-pointer"
+                className="rounded-full p-1.5 text-gray-400 dark:text-[#7d8590] hover:bg-gray-100 dark:hover:bg-[#1c2128] hover:text-gray-700 dark:hover:text-[#e6edf3] disabled:opacity-50 cursor-pointer"
                 aria-label="Close"
               >
                 <X className="h-4 w-4" />
@@ -293,7 +278,7 @@ onUpdated?.(updated);
                 <img
                   src={preview}
                   alt="Preview"
-                  className="h-40 w-40 rounded-2xl object-cover ring-4 ring-green-50 shadow-lg"
+                  className="h-40 w-40 rounded-2xl object-cover ring-4 ring-green-50 dark:ring-[#0d2818] shadow-lg"
                 />
                 {uploading && (
                   <div className="absolute inset-0 flex items-center justify-center rounded-2xl bg-black/60">
@@ -308,10 +293,10 @@ onUpdated?.(updated);
               </div>
 
               <div className="text-center">
-                <p className="text-sm font-black text-gray-900">
+                <p className="text-sm font-black text-gray-900 dark:text-[#e6edf3]">
                   {selectedFile?.name}
                 </p>
-                <p className="text-xs text-gray-400 mt-0.5">
+                <p className="text-xs text-gray-400 dark:text-[#6e7681] mt-0.5">
                   {selectedFile
                     ? `${(selectedFile.size / 1024).toFixed(0)} KB`
                     : ""}
@@ -319,7 +304,7 @@ onUpdated?.(updated);
               </div>
 
               {uploading && (
-                <div className="w-full h-1.5 rounded-full bg-gray-100 overflow-hidden">
+                <div className="w-full h-1.5 rounded-full bg-gray-100 dark:bg-[#1c2128] overflow-hidden">
                   <div
                     className="h-full bg-gradient-to-r from-[#22C55E] to-[#16a34a] transition-all duration-200"
                     style={{ width: `${progress}%` }}
@@ -328,12 +313,12 @@ onUpdated?.(updated);
               )}
             </div>
 
-            <div className="flex gap-3 border-t border-gray-100 bg-gray-50/50 px-6 py-4">
+            <div className="flex gap-3 border-t border-gray-100 dark:border-[#30363d] bg-gray-50/50 dark:bg-[#0d1117] px-6 py-4">
               <button
                 type="button"
                 onClick={handleCancel}
                 disabled={uploading}
-                className="flex-1 rounded-xl border-2 border-gray-200 bg-white px-4 py-2.5 text-sm font-bold text-gray-700 transition hover:bg-gray-50 disabled:opacity-50 cursor-pointer"
+                className="flex-1 rounded-xl border-2 border-gray-200 dark:border-[#30363d] bg-white dark:bg-[#1c2128] px-4 py-2.5 text-sm font-bold text-gray-700 dark:text-[#e6edf3] transition hover:bg-gray-50 dark:hover:bg-[#30363d] disabled:opacity-50 cursor-pointer"
               >
                 Cancel
               </button>

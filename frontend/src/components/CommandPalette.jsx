@@ -32,7 +32,6 @@ import {
   clearRecentSearches,
 } from "@/hooks/useCommandPalette";
 
-// ─── Navigation routes (static, no API needed) ────────────────────────────────
 const PAGES = [
   { id: "page-dashboard",      label: "Dashboard",           description: "Portfolio overview & KPIs",       icon: Home,        path: "/dashboard" },
   { id: "page-search",         label: "Property Search",     description: "Find & verify properties",         icon: FileSearch,  path: "/dashboard/property-search" },
@@ -45,25 +44,11 @@ const PAGES = [
   { id: "page-profile",        label: "My Profile",          description: "Account & preferences",            icon: UserCircle,  path: "/dashboard/profile" },
 ];
 
-// ─── Quick actions ────────────────────────────────────────────────────────────
 const ACTIONS = [
-  { id: "action-add-property", label: "Add New Property",  description: "Register a new listing",  icon: Plus,    kind: "add-property" },
-  { id: "action-logout",       label: "Log Out",           description: "End your session",         icon: LogOut,  kind: "logout", danger: true },
+  { id: "action-add-property", label: "Add New Property", description: "Register a new listing", icon: Plus,   kind: "add-property" },
+  { id: "action-logout",       label: "Log Out",          description: "End your session",        icon: LogOut, kind: "logout", danger: true },
 ];
 
-/**
- * CommandPalette — global search modal (⌘K style).
- *
- * Searches across:
- *  - Static navigation pages
- *  - Live property data (debounced 400ms)
- *  - Quick actions (add property, logout)
- *
- * Props:
- *  @param {boolean} open       - controls visibility
- *  @param {function} onClose   - called when user closes palette
- *  @param {function} onAction  - called with action kind ("add-property" | "logout")
- */
 export default function CommandPalette({ open, onClose, onAction }) {
   const router = useRouter();
   const inputRef = useRef(null);
@@ -76,33 +61,26 @@ export default function CommandPalette({ open, onClose, onAction }) {
   const [highlightIdx, setHighlightIdx] = useState(0);
   const [recent, setRecent] = useState([]);
 
-  // ── Auto-focus input on open + reset state ─────────────────────────────────
   useEffect(() => {
     if (open) {
       setRecent(getRecentSearches());
-      // Delay focus for animation smoothness
       setTimeout(() => inputRef.current?.focus(), 50);
     } else {
-      // Reset on close
       setQuery("");
       setPropertyResults([]);
       setHighlightIdx(0);
     }
   }, [open]);
 
-  // ── Lock body scroll when open ─────────────────────────────────────────────
   useEffect(() => {
     if (open) {
       document.body.style.overflow = "hidden";
     } else {
       document.body.style.overflow = "";
     }
-    return () => {
-      document.body.style.overflow = "";
-    };
+    return () => { document.body.style.overflow = ""; };
   }, [open]);
 
-  // ── Debounced property search (400ms — faster than page search since inline) ─
   useEffect(() => {
     if (debounceRef.current) clearTimeout(debounceRef.current);
 
@@ -117,7 +95,7 @@ export default function CommandPalette({ open, onClose, onAction }) {
     debounceRef.current = setTimeout(async () => {
       try {
         const results = await searchProperties(query);
-        setPropertyResults(results.slice(0, 5)); // cap at 5 in palette
+        setPropertyResults(results.slice(0, 5));
       } catch {
         setPropertyResults([]);
       } finally {
@@ -125,19 +103,14 @@ export default function CommandPalette({ open, onClose, onAction }) {
       }
     }, 400);
 
-    return () => {
-      if (debounceRef.current) clearTimeout(debounceRef.current);
-    };
+    return () => { if (debounceRef.current) clearTimeout(debounceRef.current); };
   }, [query]);
 
-  // ── Filter pages by query ─────────────────────────────────────────────────
   const filteredPages = useMemo(() => {
     if (!query.trim()) return PAGES;
     const q = query.toLowerCase();
     return PAGES.filter(
-      (p) =>
-        p.label.toLowerCase().includes(q) ||
-        p.description.toLowerCase().includes(q)
+      (p) => p.label.toLowerCase().includes(q) || p.description.toLowerCase().includes(q)
     );
   }, [query]);
 
@@ -145,75 +118,46 @@ export default function CommandPalette({ open, onClose, onAction }) {
     if (!query.trim()) return ACTIONS;
     const q = query.toLowerCase();
     return ACTIONS.filter(
-      (a) =>
-        a.label.toLowerCase().includes(q) ||
-        a.description.toLowerCase().includes(q)
+      (a) => a.label.toLowerCase().includes(q) || a.description.toLowerCase().includes(q)
     );
   }, [query]);
 
-  // ── Flat list of ALL selectable items (for keyboard navigation) ────────────
   const flatItems = useMemo(() => {
     const items = [];
-
-    // Recent searches (only shown when query is empty)
     if (!query.trim() && recent.length > 0) {
       recent.forEach((q, i) => {
         items.push({ type: "recent", label: q, id: `recent-${i}` });
       });
     }
-
     filteredPages.forEach((p) => items.push({ type: "page", ...p }));
-    propertyResults.forEach((p) =>
-      items.push({ type: "property", id: `prop-${p.id}`, property: p })
-    );
+    propertyResults.forEach((p) => items.push({ type: "property", id: `prop-${p.id}`, property: p }));
     filteredActions.forEach((a) => items.push({ type: "action", ...a }));
-
     return items;
   }, [query, recent, filteredPages, propertyResults, filteredActions]);
 
-  // Reset highlight when list changes
-  useEffect(() => {
-    setHighlightIdx(0);
-  }, [flatItems.length]);
+  useEffect(() => { setHighlightIdx(0); }, [flatItems.length]);
 
-  // ── Handle item selection ──────────────────────────────────────────────────
   const handleSelect = useCallback(
     (item) => {
       if (!item) return;
-
-      if (item.type === "recent") {
-        // Fill query with recent search
-        setQuery(item.label);
-        return;
-      }
-
+      if (item.type === "recent") { setQuery(item.label); return; }
       if (item.type === "page") {
         router.push(item.path);
         addRecentSearch(item.label);
         onClose();
         return;
       }
-
       if (item.type === "property") {
         addRecentSearch(item.property.address || query);
-        // Navigate to search page pre-filtered to this property's address
-        router.push(
-          `/dashboard/property-search?q=${encodeURIComponent(item.property.address || "")}`
-        );
+        router.push(`/dashboard/property-search?q=${encodeURIComponent(item.property.address || "")}`);
         onClose();
         return;
       }
-
-      if (item.type === "action") {
-        onClose();
-        onAction?.(item.kind);
-        return;
-      }
+      if (item.type === "action") { onClose(); onAction?.(item.kind); return; }
     },
     [router, onClose, onAction, query]
   );
 
-  // ── Keyboard navigation ───────────────────────────────────────────────────
   const handleKeyDown = (e) => {
     if (e.key === "ArrowDown") {
       e.preventDefault();
@@ -227,12 +171,9 @@ export default function CommandPalette({ open, onClose, onAction }) {
     }
   };
 
-  // ── Auto-scroll highlighted item into view ─────────────────────────────────
   useEffect(() => {
     if (!listRef.current) return;
-    const highlightedEl = listRef.current.querySelector(
-      `[data-idx="${highlightIdx}"]`
-    );
+    const highlightedEl = listRef.current.querySelector(`[data-idx="${highlightIdx}"]`);
     highlightedEl?.scrollIntoView({ block: "nearest", behavior: "smooth" });
   }, [highlightIdx]);
 
@@ -244,9 +185,8 @@ export default function CommandPalette({ open, onClose, onAction }) {
 
   if (!open) return null;
 
-  // ── Compute section indices for grouped rendering ─────────────────────────
-  const showRecent = !query.trim() && recent.length > 0;
   let cursor = 0;
+  const showRecent = !query.trim() && recent.length > 0;
   const recentStart = cursor;
   if (showRecent) cursor += recent.length;
   const pagesStart = cursor;
@@ -271,26 +211,19 @@ export default function CommandPalette({ open, onClose, onAction }) {
     >
       {/* Backdrop */}
       <div
-        className="absolute inset-0 bg-slate-900/40 backdrop-blur-sm animate-in fade-in duration-150"
+        className="absolute inset-0 bg-slate-900/40 dark:bg-slate-900/70 backdrop-blur-sm animate-in fade-in duration-150"
         onClick={onClose}
       />
 
-      {/* Palette */}
-      <div className="
-        relative w-full max-w-2xl
-        rounded-2xl
-        border border-gray-100
-        bg-white
-        shadow-[0_30px_80px_rgba(0,0,0,0.25)]
-        overflow-hidden
-        animate-in fade-in zoom-in-95 slide-in-from-top-4 duration-200
-      ">
-        {/* ── Search input ────────────────────────────────────────── */}
-        <div className="flex items-center gap-3 border-b border-gray-100 px-4 py-3.5">
+      {/* Palette card */}
+      <div className="relative w-full max-w-2xl rounded-2xl border border-gray-100 dark:border-[#30363d] bg-white dark:bg-[#161b22] shadow-[0_30px_80px_rgba(0,0,0,0.25)] dark:shadow-[0_30px_80px_rgba(0,0,0,0.6)] overflow-hidden animate-in fade-in zoom-in-95 slide-in-from-top-4 duration-200">
+
+        {/* ── Search input ── */}
+        <div className="flex items-center gap-3 border-b border-gray-100 dark:border-[#30363d] px-4 py-3.5">
           {searchingProperties ? (
             <Loader2 className="h-5 w-5 text-[#22C55E] animate-spin flex-shrink-0" />
           ) : (
-            <Search className="h-5 w-5 text-gray-400 flex-shrink-0" />
+            <Search className="h-5 w-5 text-gray-400 dark:text-[#6e7681] flex-shrink-0" />
           )}
 
           <input
@@ -302,68 +235,48 @@ export default function CommandPalette({ open, onClose, onAction }) {
             onKeyDown={handleKeyDown}
             placeholder="Search pages, properties, or actions..."
             aria-label="Command palette search"
-            className="
-              flex-1
-              bg-transparent
-              text-base font-medium text-gray-900
-              outline-none
-              placeholder:text-gray-400
-              placeholder:font-normal
-            "
+            className="flex-1 bg-transparent text-base font-medium text-gray-900 dark:text-[#e6edf3] outline-none placeholder:text-gray-400 dark:placeholder:text-[#6e7681] placeholder:font-normal"
           />
 
-          <kbd className="
-            hidden sm:inline-flex items-center
-            rounded-md border border-gray-200 bg-gray-50
-            px-2 py-0.5
-            text-[10px] font-mono font-semibold text-gray-500
-          ">
+          <kbd className="hidden sm:inline-flex items-center rounded-md border border-gray-200 dark:border-[#30363d] bg-gray-50 dark:bg-[#0d1117] px-2 py-0.5 text-[10px] font-mono font-semibold text-gray-500 dark:text-[#7d8590]">
             esc
           </kbd>
 
           <button
             onClick={onClose}
-            className="
-              flex h-7 w-7 items-center justify-center
-              rounded-md
-              text-gray-400
-              transition hover:bg-gray-100 hover:text-gray-600
-              sm:hidden
-            "
+            className="flex h-7 w-7 items-center justify-center rounded-md text-gray-400 dark:text-[#6e7681] transition hover:bg-gray-100 dark:hover:bg-[#1c2128] hover:text-gray-600 dark:hover:text-[#e6edf3] sm:hidden"
             aria-label="Close"
           >
             <X className="h-4 w-4" />
           </button>
         </div>
 
-        {/* ── Results list ────────────────────────────────────────── */}
-        <div
-          ref={listRef}
-          className="max-h-[60vh] overflow-y-auto py-2"
-        >
-          {/* Empty state — no results */}
+        {/* ── Results list ── */}
+        <div ref={listRef} className="max-h-[60vh] overflow-y-auto py-2">
+
+          {/* Empty state */}
           {hasNoResults && (
             <div className="px-6 py-12 text-center">
-              <div className="mx-auto w-12 h-12 rounded-2xl bg-gray-50 border border-gray-100 flex items-center justify-center mb-3">
-                <Sparkles className="h-5 w-5 text-gray-300" />
+              <div className="mx-auto w-12 h-12 rounded-2xl bg-gray-50 dark:bg-[#0d1117] border border-gray-100 dark:border-[#30363d] flex items-center justify-center mb-3">
+                <Sparkles className="h-5 w-5 text-gray-300 dark:text-[#30363d]" />
               </div>
-              <p className="text-sm font-bold text-gray-700">
+              <p className="text-sm font-bold text-gray-700 dark:text-[#e6edf3]">
                 No matches for &ldquo;{query}&rdquo;
               </p>
-              <p className="mt-1 text-xs text-gray-400">
+              <p className="mt-1 text-xs text-gray-400 dark:text-[#6e7681]">
                 Try searching for a page name, property address, or action
               </p>
             </div>
           )}
 
-          {/* ── RECENT SEARCHES ─────────────────────────────────── */}
+          {/* ── RECENT ── */}
           {showRecent && (
             <Section
               title="Recent"
               rightSlot={
                 <button
                   onClick={handleClearRecent}
-                  className="flex items-center gap-1 text-[10px] font-semibold text-gray-400 hover:text-gray-600 transition"
+                  className="flex items-center gap-1 text-[10px] font-semibold text-gray-400 dark:text-[#6e7681] hover:text-gray-600 dark:hover:text-[#e6edf3] transition"
                 >
                   <Trash2 className="h-3 w-3" />
                   Clear
@@ -380,7 +293,7 @@ export default function CommandPalette({ open, onClose, onAction }) {
                     onMouseEnter={() => setHighlightIdx(idx)}
                     onClick={() => handleSelect({ type: "recent", label: q })}
                     icon={<Clock className="h-4 w-4" />}
-                    iconClass="bg-gray-100 text-gray-500"
+                    iconClass="bg-gray-100 dark:bg-[#1c2128] text-gray-500 dark:text-[#7d8590]"
                     label={q}
                     description="Recent search"
                   />
@@ -389,12 +302,9 @@ export default function CommandPalette({ open, onClose, onAction }) {
             </Section>
           )}
 
-          {/* ── PAGES ───────────────────────────────────────────── */}
+          {/* ── PAGES ── */}
           {filteredPages.length > 0 && (
-            <Section
-              title="Pages"
-              badge={filteredPages.length}
-            >
+            <Section title="Pages" badge={filteredPages.length}>
               {filteredPages.map((p, i) => {
                 const idx = pagesStart + i;
                 const Icon = p.icon;
@@ -406,7 +316,7 @@ export default function CommandPalette({ open, onClose, onAction }) {
                     onMouseEnter={() => setHighlightIdx(idx)}
                     onClick={() => handleSelect({ type: "page", ...p })}
                     icon={<Icon className="h-4 w-4" strokeWidth={2.2} />}
-                    iconClass="bg-blue-50 text-blue-600"
+                    iconClass="bg-blue-50 dark:bg-[#0c1f33] text-blue-600 dark:text-blue-400"
                     label={p.label}
                     description={p.description}
                   />
@@ -415,13 +325,9 @@ export default function CommandPalette({ open, onClose, onAction }) {
             </Section>
           )}
 
-          {/* ── PROPERTIES (live from API) ──────────────────────── */}
+          {/* ── PROPERTIES ── */}
           {propertyResults.length > 0 && (
-            <Section
-              title="Properties"
-              badge={propertyResults.length}
-              subtitle="Live from database"
-            >
+            <Section title="Properties" badge={propertyResults.length} subtitle="Live from database">
               {propertyResults.map((prop, i) => {
                 const idx = propsStart + i;
                 return (
@@ -430,20 +336,12 @@ export default function CommandPalette({ open, onClose, onAction }) {
                     idx={idx}
                     highlighted={idx === highlightIdx}
                     onMouseEnter={() => setHighlightIdx(idx)}
-                    onClick={() =>
-                      handleSelect({
-                        type: "property",
-                        id: `prop-${prop.id}`,
-                        property: prop,
-                      })
-                    }
+                    onClick={() => handleSelect({ type: "property", id: `prop-${prop.id}`, property: prop })}
                     icon={<Building2 className="h-4 w-4" strokeWidth={2.2} />}
-                    iconClass="bg-green-50 text-green-600"
+                    iconClass="bg-green-50 dark:bg-[#0d2818] text-green-600 dark:text-green-400"
                     label={prop.address || "Untitled property"}
                     description={
-                      [prop.city, prop.state, prop.zipCode]
-                        .filter(Boolean)
-                        .join(", ") || "Location unknown"
+                      [prop.city, prop.state, prop.zipCode].filter(Boolean).join(", ") || "Location unknown"
                     }
                     rightSlot={
                       prop.marketValue > 0 && (
@@ -458,15 +356,15 @@ export default function CommandPalette({ open, onClose, onAction }) {
             </Section>
           )}
 
-          {/* Property loading spinner (while typing) */}
+          {/* Property loading spinner */}
           {searchingProperties && propertyResults.length === 0 && query.trim() && (
-            <div className="px-4 py-3 flex items-center gap-2 text-xs text-gray-400">
+            <div className="px-4 py-3 flex items-center gap-2 text-xs text-gray-400 dark:text-[#6e7681]">
               <Loader2 className="h-3 w-3 animate-spin" />
               Searching properties...
             </div>
           )}
 
-          {/* ── ACTIONS ─────────────────────────────────────────── */}
+          {/* ── ACTIONS ── */}
           {filteredActions.length > 0 && (
             <Section title="Actions">
               {filteredActions.map((a, i) => {
@@ -482,8 +380,8 @@ export default function CommandPalette({ open, onClose, onAction }) {
                     icon={<Icon className="h-4 w-4" strokeWidth={2.2} />}
                     iconClass={
                       a.danger
-                        ? "bg-red-50 text-red-600"
-                        : "bg-purple-50 text-purple-600"
+                        ? "bg-red-50 dark:bg-[#2d1214] text-red-600 dark:text-red-400"
+                        : "bg-purple-50 dark:bg-[#1a1033] text-purple-600 dark:text-purple-400"
                     }
                     label={a.label}
                     description={a.description}
@@ -495,50 +393,44 @@ export default function CommandPalette({ open, onClose, onAction }) {
           )}
         </div>
 
-        {/* ── Footer with keyboard hints ─────────────────────────── */}
-        <div className="
-          border-t border-gray-100
-          bg-gray-50/70
-          px-4 py-2.5
-          flex items-center justify-between
-        ">
-          <div className="flex items-center gap-3 text-[10px] text-gray-500">
+        {/* ── Footer with keyboard hints ── */}
+        <div className="border-t border-gray-100 dark:border-[#30363d] bg-gray-50/70 dark:bg-[#0d1117] px-4 py-2.5 flex items-center justify-between">
+          <div className="flex items-center gap-3 text-[10px] text-gray-500 dark:text-[#6e7681]">
             <span className="flex items-center gap-1.5">
-              <kbd className="px-1.5 py-0.5 rounded border border-gray-200 bg-white font-mono text-[9px]">↑↓</kbd>
+              <kbd className="px-1.5 py-0.5 rounded border border-gray-200 dark:border-[#30363d] bg-white dark:bg-[#161b22] font-mono text-[9px] dark:text-[#7d8590]">↑↓</kbd>
               Navigate
             </span>
             <span className="flex items-center gap-1.5">
-              <kbd className="px-1.5 py-0.5 rounded border border-gray-200 bg-white font-mono text-[9px]">↵</kbd>
+              <kbd className="px-1.5 py-0.5 rounded border border-gray-200 dark:border-[#30363d] bg-white dark:bg-[#161b22] font-mono text-[9px] dark:text-[#7d8590]">↵</kbd>
               Select
             </span>
             <span className="hidden sm:flex items-center gap-1.5">
-              <kbd className="px-1.5 py-0.5 rounded border border-gray-200 bg-white font-mono text-[9px]">esc</kbd>
+              <kbd className="px-1.5 py-0.5 rounded border border-gray-200 dark:border-[#30363d] bg-white dark:bg-[#161b22] font-mono text-[9px] dark:text-[#7d8590]">esc</kbd>
               Close
             </span>
           </div>
-
         </div>
       </div>
     </div>
   );
 }
 
-// ─── Reusable section header ────────────────────────────────────────────────
+// ─── Section ──────────────────────────────────────────────────────────────────
 function Section({ title, badge, subtitle, rightSlot, children }) {
   return (
     <div className="mb-1">
       <div className="flex items-center justify-between px-4 py-1.5">
         <div className="flex items-center gap-2">
-          <p className="text-[10px] font-black tracking-widest uppercase text-gray-400">
+          <p className="text-[10px] font-black tracking-widest uppercase text-gray-400 dark:text-[#6e7681]">
             {title}
           </p>
           {badge !== undefined && (
-            <span className="text-[9px] font-bold text-gray-400 tabular-nums">
+            <span className="text-[9px] font-bold text-gray-400 dark:text-[#6e7681] tabular-nums">
               {badge}
             </span>
           )}
           {subtitle && (
-            <span className="text-[10px] text-gray-400 italic">
+            <span className="text-[10px] text-gray-400 dark:text-[#6e7681] italic">
               · {subtitle}
             </span>
           )}
@@ -550,7 +442,7 @@ function Section({ title, badge, subtitle, rightSlot, children }) {
   );
 }
 
-// ─── Reusable palette row ──────────────────────────────────────────────────
+// ─── PaletteRow ───────────────────────────────────────────────────────────────
 function PaletteRow({
   idx,
   highlighted,
@@ -576,13 +468,13 @@ function PaletteRow({
         transition-colors
         ${highlighted
           ? danger
-            ? "bg-red-50"
-            : "bg-gray-50"
-          : "hover:bg-gray-50/60"
+            ? "bg-red-50 dark:bg-[#2d1214]"
+            : "bg-gray-50 dark:bg-[#1c2128]"
+          : "hover:bg-gray-50/60 dark:hover:bg-[#1c2128]/60"
         }
       `}
     >
-      {/* Icon */}
+      {/* Icon box */}
       <div className={`
         flex-shrink-0 flex h-8 w-8 items-center justify-center
         rounded-lg
@@ -596,18 +488,18 @@ function PaletteRow({
       <div className="min-w-0 flex-1">
         <p className={`
           text-sm font-semibold truncate
-          ${danger ? "text-red-700" : "text-gray-900"}
+          ${danger ? "text-red-700 dark:text-red-400" : "text-gray-900 dark:text-[#e6edf3]"}
         `}>
           {label}
         </p>
         {description && (
-          <p className="text-xs text-gray-500 truncate mt-0.5">
+          <p className="text-xs text-gray-500 dark:text-[#7d8590] truncate mt-0.5">
             {description}
           </p>
         )}
       </div>
 
-      {/* Right slot (price, kbd hint, etc.) */}
+      {/* Right slot */}
       {rightSlot && (
         <div className="flex-shrink-0">
           {rightSlot}
@@ -618,7 +510,7 @@ function PaletteRow({
       {highlighted && (
         <CornerDownLeft
           className={`h-3.5 w-3.5 flex-shrink-0 ${
-            danger ? "text-red-500" : "text-[#22C55E]"
+            danger ? "text-red-500 dark:text-red-400" : "text-[#22C55E]"
           }`}
         />
       )}

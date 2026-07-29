@@ -33,9 +33,9 @@ export default function ProfilePage() {
   }, []);
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
-const [deleteOpen, setDeleteOpen] = useState(false);
-const [passwordOpen, setPasswordOpen] = useState(false);
-const [signOutAllOpen, setSignOutAllOpen] = useState(false);
+  const [deleteOpen, setDeleteOpen] = useState(false);
+  const [passwordOpen, setPasswordOpen] = useState(false);
+  const [signOutAllOpen, setSignOutAllOpen] = useState(false);
 
   const [editing, setEditing] = useState(false);
   const [saving, setSaving] = useState(false);
@@ -66,8 +66,8 @@ const [signOutAllOpen, setSignOutAllOpen] = useState(false);
 
   if (!user) {
     return (
-      <div className="mx-auto max-w-md rounded-xl border border-gray-200 bg-white p-6 text-center">
-        <p className="text-sm text-gray-500">
+      <div className="mx-auto max-w-md rounded-xl border border-gray-200 dark:border-[#30363d] bg-white dark:bg-[#161b22] p-6 text-center">
+        <p className="text-sm text-gray-500 dark:text-[#7d8590]">
           Unable to load profile. Please refresh the page.
         </p>
       </div>
@@ -107,7 +107,7 @@ const [signOutAllOpen, setSignOutAllOpen] = useState(false);
     : "—";
 
   const isGoogleOnly = user.authProvider === "GOOGLE";
-  const isVerified = user.email && user.email.includes("@"); // Simple check — always true for signed-in users
+  const isVerified = user.email && user.email.includes("@");
   const initials = (user.fullName || user.email || "U")
     .split(" ")
     .map((w) => w[0])
@@ -162,133 +162,124 @@ const [signOutAllOpen, setSignOutAllOpen] = useState(false);
     <div className="mx-auto w-full max-w-4xl space-y-6">
       {/* ── Page title ─────────────────────────────────────────────────────── */}
       <div>
-        <h1 className="text-[28px] font-extrabold tracking-tight text-gray-900">
+        <h1 className="text-[28px] font-extrabold tracking-tight text-gray-900 dark:text-[#e6edf3]">
           Account Management
         </h1>
-        <p className="mt-1 text-sm text-gray-500">
+        <p className="mt-1 text-sm text-gray-500 dark:text-[#7d8590]">
           Control your professional identity and application security.
         </p>
       </div>
 
-      {/* ── HERO BANNER CARD ─────────────────────────────────────────────── */}
-<div className="relative overflow-hidden rounded-3xl border border-gray-100 bg-white shadow-sm">
-  {/* Cover banner — Premium dark slate */}
-  <div className="relative h-40 overflow-hidden bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900">
-    {/* Fine grid pattern */}
-    <div
-      className="absolute inset-0 opacity-[0.08]"
-      style={{
-        backgroundImage: `
-          linear-gradient(to right, white 1px, transparent 1px),
-          linear-gradient(to bottom, white 1px, transparent 1px)
-        `,
-        backgroundSize: "40px 40px",
-      }}
-    />
-    {/* Subtle diagonal shine */}
-    <div
-      className="absolute inset-0 opacity-30"
-      style={{
-        backgroundImage:
-          "linear-gradient(120deg, transparent 40%, rgba(255,255,255,0.06) 50%, transparent 60%)",
-      }}
-    />
-    {/* Brand green accent glow */}
-    <div className="absolute -top-20 -right-20 h-56 w-56 rounded-full bg-[#22C55E]/25 blur-3xl" />
-    {/* Subtle blue accent */}
-    <div className="absolute -bottom-24 -left-16 h-56 w-56 rounded-full bg-blue-500/15 blur-3xl" />
-    {/* Top-edge highlight */}
-    <div className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-white/20 to-transparent" />
-  </div>
-
-  {/* ── Body: Avatar row + info + action ────────────────────────────── */}
-  <div className="px-8 pb-6">
-    {/* Avatar floats up over banner */}
-    <div className="flex justify-start -mt-16">
-      <AvatarUploader
-        user={user}
-        size={128}
-        onUpdated={(updated) => setUser(updated)}
-      />
-    </div>
-
-    {/* Info row — comes BELOW avatar with proper spacing */}
-    <div className="mt-4 flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
-      {/* Left: name + role */}
-      <div className="min-w-0">
-        <div className="flex items-center gap-2 flex-wrap">
-          <h2 className="text-2xl font-black text-gray-900 tracking-tight">
-            {user.fullName || "User"}
-          </h2>
-          {isVerified && (
-            <div className="flex items-center gap-1 rounded-full bg-green-50 px-2.5 py-1 ring-1 ring-green-200">
-              <BadgeCheck className="h-3.5 w-3.5 text-green-600" strokeWidth={2.5} />
-              <span className="text-[10px] font-black text-green-700">
-                Verified {roleLabel}
-              </span>
-            </div>
-          )}
+      {/* ── HERO BANNER CARD ───────────────────────────────────────────────── */}
+      <div className="relative overflow-hidden rounded-3xl border border-gray-100 dark:border-[#30363d] bg-white dark:bg-[#161b22] shadow-sm">
+        {/* Cover banner — dark slate looks great in both themes */}
+        <div className="relative h-40 overflow-hidden bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900">
+          <div
+            className="absolute inset-0 opacity-[0.08]"
+            style={{
+              backgroundImage: `
+                linear-gradient(to right, white 1px, transparent 1px),
+                linear-gradient(to bottom, white 1px, transparent 1px)
+              `,
+              backgroundSize: "40px 40px",
+            }}
+          />
+          <div
+            className="absolute inset-0 opacity-30"
+            style={{
+              backgroundImage:
+                "linear-gradient(120deg, transparent 40%, rgba(255,255,255,0.06) 50%, transparent 60%)",
+            }}
+          />
+          <div className="absolute -top-20 -right-20 h-56 w-56 rounded-full bg-[#22C55E]/25 blur-3xl" />
+          <div className="absolute -bottom-24 -left-16 h-56 w-56 rounded-full bg-blue-500/15 blur-3xl" />
+          <div className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-white/20 to-transparent" />
         </div>
-        <p className="mt-1.5 flex items-center gap-1.5 text-sm text-gray-500 font-medium">
-          <Briefcase className="h-3.5 w-3.5 text-gray-400" strokeWidth={2} />
-          {roleTagline || user.email}
-        </p>
-      </div>
 
-      {/* Right: Edit button */}
-      <div className="flex-shrink-0">
-        {!editing ? (
-          <button
-            type="button"
-            onClick={() => setEditing(true)}
-            className="flex items-center gap-2 rounded-xl border border-gray-200 bg-white px-4 py-2.5 text-sm font-bold text-gray-700 transition hover:border-[#22C55E] hover:text-[#16a34a] cursor-pointer"
-          >
-            <Pencil className="h-3.5 w-3.5" strokeWidth={2.4} />
-            Edit profile
-          </button>
-        ) : (
-          <div className="flex items-center gap-2">
-            <button
-              type="button"
-              onClick={handleCancel}
-              disabled={saving}
-              className="flex items-center gap-1.5 rounded-xl border border-gray-200 bg-white px-4 py-2.5 text-sm font-bold text-gray-700 transition hover:bg-gray-50 disabled:opacity-50 cursor-pointer"
-            >
-              <X className="h-3.5 w-3.5" strokeWidth={2.4} />
-              Cancel
-            </button>
-            <button
-              type="button"
-              onClick={handleSave}
-              disabled={!canSave}
-              className="flex items-center gap-1.5 rounded-xl bg-gradient-to-r from-[#22C55E] to-[#16a34a] px-4 py-2.5 text-sm font-bold text-white shadow-[0_4px_12px_rgba(34,197,94,0.3)] transition hover:shadow-[0_8px_20px_rgba(34,197,94,0.4)] disabled:cursor-not-allowed disabled:opacity-50 cursor-pointer"
-            >
-              {saving ? (
-                <Loader2 className="h-3.5 w-3.5 animate-spin" />
-              ) : (
-                <Check className="h-3.5 w-3.5" strokeWidth={2.4} />
-              )}
-              {saving ? "Saving..." : "Save changes"}
-            </button>
+        {/* Body */}
+        <div className="px-8 pb-6">
+          <div className="flex justify-start -mt-16">
+            <AvatarUploader
+              user={user}
+              size={128}
+              onUpdated={(updated) => setUser(updated)}
+            />
           </div>
-        )}
-      </div>
-    </div>
-  </div>
-</div>
 
-      {/* ── ACCOUNT DETAILS SECTION ──────────────────────────────────────── */}
+          <div className="mt-4 flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
+            <div className="min-w-0">
+              <div className="flex items-center gap-2 flex-wrap">
+                <h2 className="text-2xl font-black text-gray-900 dark:text-[#e6edf3] tracking-tight">
+                  {user.fullName || "User"}
+                </h2>
+                {isVerified && (
+                  <div className="flex items-center gap-1 rounded-full bg-green-50 dark:bg-[#0d2818] px-2.5 py-1 ring-1 ring-green-200 dark:ring-green-900">
+                    <BadgeCheck className="h-3.5 w-3.5 text-green-600 dark:text-green-400" strokeWidth={2.5} />
+                    <span className="text-[10px] font-black text-green-700 dark:text-green-400">
+                      Verified {roleLabel}
+                    </span>
+                  </div>
+                )}
+              </div>
+              <p className="mt-1.5 flex items-center gap-1.5 text-sm text-gray-500 dark:text-[#7d8590] font-medium">
+                <Briefcase className="h-3.5 w-3.5 text-gray-400 dark:text-[#6e7681]" strokeWidth={2} />
+                {roleTagline || user.email}
+              </p>
+            </div>
+
+            <div className="flex-shrink-0">
+              {!editing ? (
+                <button
+                  type="button"
+                  onClick={() => setEditing(true)}
+                  className="flex items-center gap-2 rounded-xl border border-gray-200 dark:border-[#30363d] bg-white dark:bg-[#1c2128] px-4 py-2.5 text-sm font-bold text-gray-700 dark:text-[#e6edf3] transition hover:border-[#22C55E] hover:text-[#16a34a] dark:hover:text-[#22C55E] cursor-pointer"
+                >
+                  <Pencil className="h-3.5 w-3.5" strokeWidth={2.4} />
+                  Edit profile
+                </button>
+              ) : (
+                <div className="flex items-center gap-2">
+                  <button
+                    type="button"
+                    onClick={handleCancel}
+                    disabled={saving}
+                    className="flex items-center gap-1.5 rounded-xl border border-gray-200 dark:border-[#30363d] bg-white dark:bg-[#1c2128] px-4 py-2.5 text-sm font-bold text-gray-700 dark:text-[#e6edf3] transition hover:bg-gray-50 dark:hover:bg-[#161b22] disabled:opacity-50 cursor-pointer"
+                  >
+                    <X className="h-3.5 w-3.5" strokeWidth={2.4} />
+                    Cancel
+                  </button>
+                  <button
+                    type="button"
+                    onClick={handleSave}
+                    disabled={!canSave}
+                    className="flex items-center gap-1.5 rounded-xl bg-gradient-to-r from-[#22C55E] to-[#16a34a] px-4 py-2.5 text-sm font-bold text-white shadow-[0_4px_12px_rgba(34,197,94,0.3)] transition hover:shadow-[0_8px_20px_rgba(34,197,94,0.4)] disabled:cursor-not-allowed disabled:opacity-50 cursor-pointer"
+                  >
+                    {saving ? (
+                      <Loader2 className="h-3.5 w-3.5 animate-spin" />
+                    ) : (
+                      <Check className="h-3.5 w-3.5" strokeWidth={2.4} />
+                    )}
+                    {saving ? "Saving..." : "Save changes"}
+                  </button>
+                </div>
+              )}
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {/* ── ACCOUNT DETAILS ────────────────────────────────────────────────── */}
       <section>
         <div className="mb-4">
-          <h2 className="text-sm font-bold uppercase tracking-widest text-gray-500">
+          <h2 className="text-sm font-bold uppercase tracking-widest text-gray-500 dark:text-[#7d8590]">
             Account details
           </h2>
-          <p className="mt-1 text-xs text-gray-400">
+          <p className="mt-1 text-xs text-gray-400 dark:text-[#6e7681]">
             Primary contact and organizational information.
           </p>
         </div>
 
-        <div className="divide-y divide-gray-100 rounded-2xl border border-gray-100 bg-white shadow-sm">
+        <div className="divide-y divide-gray-100 dark:divide-[#30363d] rounded-2xl border border-gray-100 dark:border-[#30363d] bg-white dark:bg-[#161b22] shadow-sm">
           {editing ? (
             <EditRow
               icon={UserIcon}
@@ -350,28 +341,28 @@ const [signOutAllOpen, setSignOutAllOpen] = useState(false);
         </div>
       </section>
 
-      {/* ── SECURITY SECTION ─────────────────────────────────────────────── */}
+      {/* ── SECURITY & ACCESS ──────────────────────────────────────────────── */}
       <section>
         <div className="mb-4">
-          <h2 className="text-sm font-bold uppercase tracking-widest text-gray-500">
+          <h2 className="text-sm font-bold uppercase tracking-widest text-gray-500 dark:text-[#7d8590]">
             Security & access
           </h2>
-          <p className="mt-1 text-xs text-gray-400">
+          <p className="mt-1 text-xs text-gray-400 dark:text-[#6e7681]">
             Manage your authentication methods and security protocols.
           </p>
         </div>
 
-               <div className="space-y-3">
+        <div className="space-y-3">
           {/* Change password card */}
-          <div className="rounded-2xl border border-gray-100 bg-white p-5 shadow-sm">
+          <div className="rounded-2xl border border-gray-100 dark:border-[#30363d] bg-white dark:bg-[#161b22] p-5 shadow-sm">
             <div className="flex items-start justify-between gap-4">
               <div className="flex items-start gap-3">
-                <div className="flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-xl bg-[#edf7f3] ring-1 ring-green-100">
-                  <Lock className="h-4 w-4 text-[#16a34a]" strokeWidth={2.2} />
+                <div className="flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-xl bg-[#edf7f3] dark:bg-[#0d2818] ring-1 ring-green-100 dark:ring-green-900">
+                  <Lock className="h-4 w-4 text-[#16a34a] dark:text-green-400" strokeWidth={2.2} />
                 </div>
                 <div className="min-w-0">
-                  <p className="text-sm font-black text-gray-900">Account password</p>
-                  <p className="mt-1 text-xs text-gray-500">
+                  <p className="text-sm font-black text-gray-900 dark:text-[#e6edf3]">Account password</p>
+                  <p className="mt-1 text-xs text-gray-500 dark:text-[#7d8590]">
                     {isGoogleOnly
                       ? "You sign in with Google. No password is set."
                       : "Update your password anytime to keep your account secure."}
@@ -382,7 +373,7 @@ const [signOutAllOpen, setSignOutAllOpen] = useState(false);
                 type="button"
                 onClick={() => setPasswordOpen(true)}
                 disabled={isGoogleOnly}
-                className="flex-shrink-0 rounded-xl border border-gray-200 bg-white px-4 py-2 text-xs font-bold text-gray-700 transition hover:border-[#22C55E] hover:text-[#16a34a] disabled:cursor-not-allowed disabled:opacity-50 cursor-pointer"
+                className="flex-shrink-0 rounded-xl border border-gray-200 dark:border-[#30363d] bg-white dark:bg-[#1c2128] px-4 py-2 text-xs font-bold text-gray-700 dark:text-[#e6edf3] transition hover:border-[#22C55E] hover:text-[#16a34a] dark:hover:text-[#22C55E] disabled:cursor-not-allowed disabled:opacity-50 cursor-pointer"
               >
                 Change password
               </button>
@@ -390,17 +381,17 @@ const [signOutAllOpen, setSignOutAllOpen] = useState(false);
           </div>
 
           {/* Sign out everywhere card */}
-          <div className="rounded-2xl border border-gray-100 bg-white p-5 shadow-sm">
+          <div className="rounded-2xl border border-gray-100 dark:border-[#30363d] bg-white dark:bg-[#161b22] p-5 shadow-sm">
             <div className="flex items-start justify-between gap-4">
               <div className="flex items-start gap-3">
-                <div className="flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-xl bg-orange-50 ring-1 ring-orange-100">
-                  <MonitorSmartphone className="h-4 w-4 text-orange-600" strokeWidth={2.2} />
+                <div className="flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-xl bg-orange-50 dark:bg-[#282a10] ring-1 ring-orange-100 dark:ring-orange-900">
+                  <MonitorSmartphone className="h-4 w-4 text-orange-600 dark:text-orange-400" strokeWidth={2.2} />
                 </div>
                 <div className="min-w-0">
-                  <p className="text-sm font-black text-gray-900">
+                  <p className="text-sm font-black text-gray-900 dark:text-[#e6edf3]">
                     Sign out of all devices
                   </p>
-                  <p className="mt-1 text-xs text-gray-500 leading-relaxed">
+                  <p className="mt-1 text-xs text-gray-500 dark:text-[#7d8590] leading-relaxed">
                     End your session everywhere — phones, tablets, and other browsers.
                     Useful if you shared your device or lost access to one.
                   </p>
@@ -409,7 +400,7 @@ const [signOutAllOpen, setSignOutAllOpen] = useState(false);
               <button
                 type="button"
                 onClick={() => setSignOutAllOpen(true)}
-                className="flex-shrink-0 flex items-center gap-1.5 rounded-xl border border-orange-200 bg-white px-4 py-2 text-xs font-bold text-orange-700 transition hover:border-orange-500 hover:bg-orange-50 cursor-pointer"
+                className="flex-shrink-0 flex items-center gap-1.5 rounded-xl border border-orange-200 dark:border-orange-900 bg-white dark:bg-[#1c2128] px-4 py-2 text-xs font-bold text-orange-700 dark:text-orange-400 transition hover:border-orange-500 hover:bg-orange-50 dark:hover:bg-[#282a10] cursor-pointer"
               >
                 <ShieldOff className="h-3.5 w-3.5" strokeWidth={2.4} />
                 Sign out everywhere
@@ -419,30 +410,30 @@ const [signOutAllOpen, setSignOutAllOpen] = useState(false);
         </div>
       </section>
 
-      {/* ── DANGER ZONE ──────────────────────────────────────────────────── */}
+      {/* ── DANGER ZONE ────────────────────────────────────────────────────── */}
       <section>
         <div className="mb-4">
-          <h2 className="text-sm font-bold uppercase tracking-widest text-red-600">
+          <h2 className="text-sm font-bold uppercase tracking-widest text-red-600 dark:text-red-400">
             Danger zone
           </h2>
-          <p className="mt-1 text-xs text-gray-500">
+          <p className="mt-1 text-xs text-gray-500 dark:text-[#7d8590]">
             Irreversible actions. Please proceed with care.
           </p>
         </div>
 
-        <div className="rounded-2xl border-2 border-red-100 bg-red-50/30 p-5">
+        <div className="rounded-2xl border-2 border-red-100 dark:border-red-950 bg-red-50/30 dark:bg-[#2d1214]/40 p-5">
           <div className="flex items-start gap-3">
-            <div className="flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-xl bg-red-100 ring-1 ring-red-200">
+            <div className="flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-xl bg-red-100 dark:bg-[#2d1214] ring-1 ring-red-200 dark:ring-red-900">
               <AlertTriangle
-                className="h-4 w-4 text-red-600"
+                className="h-4 w-4 text-red-600 dark:text-red-400"
                 strokeWidth={2.2}
               />
             </div>
             <div className="flex-1 min-w-0">
-              <p className="text-sm font-black text-gray-900">
+              <p className="text-sm font-black text-gray-900 dark:text-[#e6edf3]">
                 Delete this account
               </p>
-              <p className="mt-1 text-xs text-gray-600 leading-relaxed">
+              <p className="mt-1 text-xs text-gray-600 dark:text-[#7d8590] leading-relaxed">
                 Permanently removes your profile, all properties you've added,
                 and all session data. This cannot be undone.
               </p>
@@ -450,7 +441,7 @@ const [signOutAllOpen, setSignOutAllOpen] = useState(false);
               <button
                 type="button"
                 onClick={() => setDeleteOpen(true)}
-                className="mt-4 rounded-xl border border-red-300 bg-white px-4 py-2 text-sm font-bold text-red-600 shadow-sm transition hover:border-red-600 hover:bg-red-600 hover:text-white cursor-pointer"
+                className="mt-4 rounded-xl border border-red-300 dark:border-red-900 bg-white dark:bg-[#1c2128] px-4 py-2 text-sm font-bold text-red-600 dark:text-red-400 shadow-sm transition hover:border-red-600 hover:bg-red-600 hover:text-white dark:hover:bg-red-900 dark:hover:text-white cursor-pointer"
               >
                 Delete account
               </button>
@@ -459,7 +450,7 @@ const [signOutAllOpen, setSignOutAllOpen] = useState(false);
         </div>
       </section>
 
-            {/* ── Modals ──────────────────────────────────────────────────────── */}
+      {/* Modals — dark treatment in Chunk F */}
       <DeleteAccountModal
         isOpen={deleteOpen}
         onClose={() => setDeleteOpen(false)}
@@ -477,24 +468,24 @@ const [signOutAllOpen, setSignOutAllOpen] = useState(false);
   );
 }
 
-// ── Sub-components ──────────────────────────────────────────────────────────
+// ── Sub-components ─────────────────────────────────────────────────────────
 
 function InfoRow({ icon: Icon, label, value, locked = false }) {
   return (
     <div className="flex items-center gap-4 px-5 py-4">
-      <div className="flex h-9 w-9 flex-shrink-0 items-center justify-center rounded-xl bg-gray-50 text-gray-500 ring-1 ring-gray-100">
+      <div className="flex h-9 w-9 flex-shrink-0 items-center justify-center rounded-xl bg-gray-50 dark:bg-[#1c2128] text-gray-500 dark:text-[#7d8590] ring-1 ring-gray-100 dark:ring-[#30363d]">
         <Icon className="h-4 w-4" strokeWidth={2} />
       </div>
       <div className="flex-1 min-w-0">
-        <p className="text-[11px] font-black uppercase tracking-wider text-gray-500">
+        <p className="text-[11px] font-black uppercase tracking-wider text-gray-500 dark:text-[#7d8590]">
           {label}
         </p>
-        <p className="mt-0.5 text-sm font-bold text-gray-900 truncate">
+        <p className="mt-0.5 text-sm font-bold text-gray-900 dark:text-[#e6edf3] truncate">
           {value}
         </p>
       </div>
       {locked && (
-        <span className="flex-shrink-0 rounded-md bg-gray-100 px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wider text-gray-500">
+        <span className="flex-shrink-0 rounded-md bg-gray-100 dark:bg-[#1c2128] px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wider text-gray-500 dark:text-[#7d8590]">
           Locked
         </span>
       )}
@@ -505,27 +496,27 @@ function InfoRow({ icon: Icon, label, value, locked = false }) {
 function EditRow({ icon: Icon, label, value, onChange, placeholder, prefix, error }) {
   return (
     <div className="flex items-start gap-4 px-5 py-4">
-      <div className="flex h-9 w-9 flex-shrink-0 items-center justify-center rounded-xl bg-[#edf7f3] text-[#16a34a] ring-1 ring-green-100">
+      <div className="flex h-9 w-9 flex-shrink-0 items-center justify-center rounded-xl bg-[#edf7f3] dark:bg-[#0d2818] text-[#16a34a] dark:text-green-400 ring-1 ring-green-100 dark:ring-green-900">
         <Icon className="h-4 w-4" strokeWidth={2} />
       </div>
       <div className="flex-1 min-w-0">
-        <label className="block text-[11px] font-black uppercase tracking-wider text-gray-500">
+        <label className="block text-[11px] font-black uppercase tracking-wider text-gray-500 dark:text-[#7d8590]">
           {label}
         </label>
         <div className="mt-1 flex items-center gap-2">
           {prefix && (
-            <span className="text-sm font-bold text-gray-500">{prefix}</span>
+            <span className="text-sm font-bold text-gray-500 dark:text-[#7d8590]">{prefix}</span>
           )}
           <input
             type="text"
             value={value}
             onChange={(e) => onChange(e.target.value)}
             placeholder={placeholder}
-            className="w-full rounded-md border border-gray-200 px-2 py-1.5 text-sm font-semibold focus:border-[#22C55E] focus:outline-none focus:ring-2 focus:ring-[#22C55E]/20"
+            className="w-full rounded-md border border-gray-200 dark:border-[#30363d] bg-white dark:bg-[#0d1117] px-2 py-1.5 text-sm font-semibold text-gray-900 dark:text-[#e6edf3] focus:border-[#22C55E] focus:outline-none focus:ring-2 focus:ring-[#22C55E]/20"
           />
         </div>
         {error && (
-          <p className="mt-1 text-[11px] font-semibold text-red-600">{error}</p>
+          <p className="mt-1 text-[11px] font-semibold text-red-600 dark:text-red-400">{error}</p>
         )}
       </div>
     </div>

@@ -11,14 +11,6 @@ import {
   Plus,
 } from "lucide-react";
 
-/**
- * Building information card.
- *
- * Design principle: HONEST DATA
- *   - Reads directly from Property entity (user-entered fields)
- *   - Hides any field that's null/missing (no "N/A", no fake defaults)
- *   - Renders actionable empty state if nothing is available
- */
 export default function BuildingInformationCard({ property, onEdit }) {
   if (!property) return null;
 
@@ -56,41 +48,40 @@ export default function BuildingInformationCard({ property, onEdit }) {
   ].filter(Boolean);
 
   return (
-    <div className="group flex h-full w-full flex-col overflow-hidden rounded-2xl border border-gray-200 bg-white shadow-sm transition-all duration-200 hover:border-gray-300 hover:shadow-md">
-      {/* ── Header ─────────────────────────────────────────────── */}
-      <div className="flex items-start justify-between gap-3 border-b border-gray-100 px-6 py-5">
+    <div className="group flex h-full w-full flex-col overflow-hidden rounded-2xl border border-gray-200 dark:border-[#30363d] bg-white dark:bg-[#161b22] shadow-sm transition-all duration-200 hover:border-gray-300 dark:hover:border-[#484f58] hover:shadow-md">
+      {/* Header */}
+      <div className="flex items-start justify-between gap-3 border-b border-gray-100 dark:border-[#30363d] px-6 py-5">
         <div className="flex min-w-0 items-start gap-3">
-          <div className="flex h-11 w-11 flex-shrink-0 items-center justify-center rounded-xl bg-[#edf7f3] ring-1 ring-green-100 transition-transform duration-200 group-hover:scale-105">
-            <Building2 className="h-5 w-5 text-[#16a34a]" strokeWidth={2.2} />
+          <div className="flex h-11 w-11 flex-shrink-0 items-center justify-center rounded-xl bg-[#edf7f3] dark:bg-[#0d2818] ring-1 ring-green-100 dark:ring-green-900 transition-transform duration-200 group-hover:scale-105">
+            <Building2 className="h-5 w-5 text-[#16a34a] dark:text-green-400" strokeWidth={2.2} />
           </div>
           <div className="min-w-0">
-            <h3 className="text-base font-bold tracking-tight text-gray-900">
+            <h3 className="text-base font-bold tracking-tight text-gray-900 dark:text-[#e6edf3]">
               Building information
             </h3>
-            <p className="mt-0.5 text-sm text-gray-500">
+            <p className="mt-0.5 text-sm text-gray-500 dark:text-[#7d8590]">
               Structural details you provided
             </p>
           </div>
         </div>
 
-        <div className="inline-flex flex-shrink-0 items-center gap-1 rounded-md bg-blue-50 px-2 py-0.5 text-[10px] font-bold uppercase tracking-wider text-blue-700 ring-1 ring-blue-200">
+        <div className="inline-flex flex-shrink-0 items-center gap-1 rounded-md bg-blue-50 dark:bg-[#0c1f33] px-2 py-0.5 text-[10px] font-bold uppercase tracking-wider text-blue-700 dark:text-blue-400 ring-1 ring-blue-200 dark:ring-blue-900">
           <ShieldCheck className="h-2.5 w-2.5" strokeWidth={2.5} />
           User provided
         </div>
       </div>
 
-      {/* ── Body ───────────────────────────────────────────────── */}
+      {/* Body */}
       <div className="flex-1 p-6">
         {rows.length === 0 ? (
-          // ✅ ACTIONABLE EMPTY STATE
           <div className="flex h-full min-h-[180px] flex-col items-center justify-center text-center">
-            <div className="mb-3 flex h-12 w-12 items-center justify-center rounded-full bg-gray-100">
-              <Building2 className="h-5 w-5 text-gray-400" strokeWidth={2} />
+            <div className="mb-3 flex h-12 w-12 items-center justify-center rounded-full bg-gray-100 dark:bg-[#1c2128]">
+              <Building2 className="h-5 w-5 text-gray-400 dark:text-[#7d8590]" strokeWidth={2} />
             </div>
-            <p className="text-sm font-semibold text-gray-800">
+            <p className="text-sm font-semibold text-gray-800 dark:text-[#e6edf3]">
               No building details added
             </p>
-            <p className="mt-1.5 max-w-xs text-xs leading-relaxed text-gray-500">
+            <p className="mt-1.5 max-w-xs text-xs leading-relaxed text-gray-500 dark:text-[#7d8590]">
               Add structure type, year built, bedrooms and more to improve risk scoring accuracy.
             </p>
             {onEdit && (
@@ -110,16 +101,16 @@ export default function BuildingInformationCard({ property, onEdit }) {
               return (
                 <div
                   key={row.label}
-                  className="flex items-center gap-3 rounded-lg border border-gray-100 bg-gray-50/40 px-3 py-2.5 transition-colors hover:bg-gray-50"
+                  className="flex items-center gap-3 rounded-lg border border-gray-100 dark:border-[#30363d] bg-gray-50/40 dark:bg-[#1c2128] px-3 py-2.5 transition-colors hover:bg-gray-50 dark:hover:bg-[#161b22]"
                 >
-                  <div className="flex h-8 w-8 flex-shrink-0 items-center justify-center rounded-lg bg-white ring-1 ring-gray-100">
-                    <Icon className="h-4 w-4 text-gray-500" strokeWidth={2} />
+                  <div className="flex h-8 w-8 flex-shrink-0 items-center justify-center rounded-lg bg-white dark:bg-[#0d1117] ring-1 ring-gray-100 dark:ring-[#30363d]">
+                    <Icon className="h-4 w-4 text-gray-500 dark:text-[#7d8590]" strokeWidth={2} />
                   </div>
                   <div className="min-w-0 flex-1">
-                    <p className="text-[10px] font-bold uppercase tracking-widest text-gray-500">
+                    <p className="text-[10px] font-bold uppercase tracking-widest text-gray-500 dark:text-[#7d8590]">
                       {row.label}
                     </p>
-                    <p className="text-sm font-bold text-gray-900">
+                    <p className="text-sm font-bold text-gray-900 dark:text-[#e6edf3]">
                       {row.value}
                     </p>
                   </div>

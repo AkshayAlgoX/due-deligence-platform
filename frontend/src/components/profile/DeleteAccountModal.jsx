@@ -25,17 +25,17 @@ export default function DeleteAccountModal({ isOpen, onClose, user }) {
 
     if (confirmation !== "DELETE") {
       toast.error("Confirmation required", {
-  description: "Type DELETE exactly to confirm this action.",
-});
+        description: "Type DELETE exactly to confirm this action.",
+      });
       return;
     }
 
     if (!password.trim()) {
-     toast.error(isGoogleOnly ? "Email required" : "Password required", {
-  description: isGoogleOnly
-    ? "Enter your email to confirm."
-    : "Enter your password to confirm.",
-});
+      toast.error(isGoogleOnly ? "Email required" : "Password required", {
+        description: isGoogleOnly
+          ? "Enter your email to confirm."
+          : "Enter your password to confirm.",
+      });
       return;
     }
 
@@ -55,9 +55,9 @@ export default function DeleteAccountModal({ isOpen, onClose, user }) {
           window.location.href = "/login";
         }, 1500);
       } else {
-       toast.error("Could not delete account", {
-  description: res.message || "Please try again in a moment.",
-});
+        toast.error("Could not delete account", {
+          description: res.message || "Please try again in a moment.",
+        });
       }
     } catch (err) {
       toast.error("Could not delete account", {
@@ -69,34 +69,34 @@ export default function DeleteAccountModal({ isOpen, onClose, user }) {
   };
 
   return (
-    <div className="fixed inset-0 z-[100] flex items-center justify-center bg-slate-900/50 backdrop-blur-sm px-4">
-      <div className="w-full max-w-md rounded-2xl bg-white p-6 shadow-2xl">
+    <div className="fixed inset-0 z-[100] flex items-center justify-center bg-slate-900/50 dark:bg-black/70 backdrop-blur-sm px-4">
+      <div className="w-full max-w-md rounded-2xl bg-white dark:bg-[#161b22] p-6 shadow-2xl">
         <div className="flex items-start justify-between">
           <div className="flex items-center gap-3">
-            <div className="flex h-10 w-10 items-center justify-center rounded-full bg-red-100">
-              <AlertTriangle className="h-5 w-5 text-red-600" />
+            <div className="flex h-10 w-10 items-center justify-center rounded-full bg-red-100 dark:bg-[#2d1214]">
+              <AlertTriangle className="h-5 w-5 text-red-600 dark:text-red-400" />
             </div>
             <div>
-              <h2 className="text-lg font-bold text-gray-900">Delete account</h2>
-              <p className="text-xs text-gray-500">
+              <h2 className="text-lg font-bold text-gray-900 dark:text-[#e6edf3]">Delete account</h2>
+              <p className="text-xs text-gray-500 dark:text-[#7d8590]">
                 This action cannot be undone.
               </p>
             </div>
           </div>
           <button
             onClick={onClose}
-            className="flex h-8 w-8 items-center justify-center rounded-lg text-gray-400 hover:bg-gray-100 hover:text-gray-700 transition"
+            className="flex h-8 w-8 items-center justify-center rounded-lg text-gray-400 dark:text-[#7d8590] hover:bg-gray-100 dark:hover:bg-[#1c2128] hover:text-gray-700 dark:hover:text-[#e6edf3] transition"
             aria-label="Close"
           >
             <X className="h-4 w-4" />
           </button>
         </div>
 
-        <div className="mt-4 rounded-xl border border-red-100 bg-red-50/60 p-4">
-          <p className="text-sm font-semibold text-red-900">
+        <div className="mt-4 rounded-xl border border-red-100 dark:border-red-900 bg-red-50/60 dark:bg-[#2d1214]/40 p-4">
+          <p className="text-sm font-semibold text-red-900 dark:text-red-300">
             The following will be permanently deleted:
           </p>
-          <ul className="mt-2 space-y-1 text-xs text-red-800">
+          <ul className="mt-2 space-y-1 text-xs text-red-800 dark:text-red-400">
             <li>• Your account and profile</li>
             <li>• All properties you added</li>
             <li>• All your session data</li>
@@ -105,7 +105,7 @@ export default function DeleteAccountModal({ isOpen, onClose, user }) {
 
         <form onSubmit={handleDelete} className="mt-5 space-y-4">
           <div className="space-y-1.5">
-            <label className="text-xs font-semibold text-gray-700">
+            <label className="text-xs font-semibold text-gray-700 dark:text-[#e6edf3]">
               {passwordLabel}
             </label>
             <input
@@ -114,12 +114,12 @@ export default function DeleteAccountModal({ isOpen, onClose, user }) {
               onChange={(e) => setPassword(e.target.value)}
               placeholder={passwordPlaceholder}
               disabled={loading}
-              className="h-11 w-full rounded-xl border border-gray-200 bg-white px-3 text-sm outline-none focus:border-red-400 focus:ring-2 focus:ring-red-100 disabled:bg-gray-50"
+              className="h-11 w-full rounded-xl border border-gray-200 dark:border-[#30363d] bg-white dark:bg-[#0d1117] px-3 text-sm text-gray-900 dark:text-[#e6edf3] outline-none focus:border-red-400 focus:ring-2 focus:ring-red-100 dark:focus:ring-red-900 disabled:bg-gray-50 dark:disabled:bg-[#1c2128] placeholder:text-gray-400 dark:placeholder:text-[#6e7681]"
             />
           </div>
 
           <div className="space-y-1.5">
-            <label className="text-xs font-semibold text-gray-700">
+            <label className="text-xs font-semibold text-gray-700 dark:text-[#e6edf3]">
               Type <span className="font-mono font-black">DELETE</span> to
               confirm
             </label>
@@ -130,7 +130,7 @@ export default function DeleteAccountModal({ isOpen, onClose, user }) {
               placeholder="DELETE"
               disabled={loading}
               autoComplete="off"
-              className="h-11 w-full rounded-xl border border-gray-200 bg-white px-3 text-sm font-mono outline-none focus:border-red-400 focus:ring-2 focus:ring-red-100 disabled:bg-gray-50"
+              className="h-11 w-full rounded-xl border border-gray-200 dark:border-[#30363d] bg-white dark:bg-[#0d1117] px-3 text-sm text-gray-900 dark:text-[#e6edf3] font-mono outline-none focus:border-red-400 focus:ring-2 focus:ring-red-100 dark:focus:ring-red-900 disabled:bg-gray-50 dark:disabled:bg-[#1c2128] placeholder:text-gray-400 dark:placeholder:text-[#6e7681]"
             />
           </div>
 
@@ -139,7 +139,7 @@ export default function DeleteAccountModal({ isOpen, onClose, user }) {
               type="button"
               onClick={onClose}
               disabled={loading}
-              className="flex-1 h-11 rounded-xl border border-gray-200 bg-white text-sm font-semibold text-gray-700 transition hover:bg-gray-50 disabled:opacity-50"
+              className="flex-1 h-11 rounded-xl border border-gray-200 dark:border-[#30363d] bg-white dark:bg-[#1c2128] text-sm font-semibold text-gray-700 dark:text-[#e6edf3] transition hover:bg-gray-50 dark:hover:bg-[#30363d] disabled:opacity-50"
             >
               Cancel
             </button>
@@ -148,7 +148,7 @@ export default function DeleteAccountModal({ isOpen, onClose, user }) {
               disabled={
                 loading || confirmation !== "DELETE" || !password.trim()
               }
-              className="flex-1 flex h-11 items-center justify-center gap-2 rounded-xl bg-red-600 text-sm font-bold text-white transition hover:bg-red-700 disabled:opacity-50 disabled:cursor-not-allowed"
+              className="flex-1 flex h-11 items-center justify-center gap-2 rounded-xl bg-red-600 dark:bg-red-600 text-sm font-bold text-white transition hover:bg-red-700 dark:hover:bg-red-700 disabled:opacity-50 disabled:cursor-not-allowed"
             >
               {loading ? (
                 <Loader2 className="h-4 w-4 animate-spin" />

@@ -16,21 +16,21 @@ export default function ZoningCard({ section }) {
       {zoning && (
         <div className="space-y-4">
           {/* Zone code + category */}
-          <div className="flex items-center justify-between rounded-xl bg-[#edf7f3] px-4 py-3">
+          <div className="flex items-center justify-between rounded-xl bg-[#edf7f3] dark:bg-[#0d2818] px-4 py-3">
             <div>
-              <p className="text-[10px] font-bold uppercase tracking-widest text-[#16a34a]">
+              <p className="text-[10px] font-bold uppercase tracking-widest text-[#16a34a] dark:text-green-400">
                 Zone code
               </p>
-              <p className="mt-0.5 text-2xl font-black text-gray-900 tabular-nums">
+              <p className="mt-0.5 text-2xl font-black text-gray-900 dark:text-[#e6edf3] tabular-nums">
                 {zoning.zoneCode || "—"}
               </p>
             </div>
             {zoning.zoneCategory && (
               <div className="text-right">
-                <p className="text-[10px] font-bold uppercase tracking-widest text-gray-500">
+                <p className="text-[10px] font-bold uppercase tracking-widest text-gray-500 dark:text-[#7d8590]">
                   Category
                 </p>
-                <p className="mt-0.5 text-sm font-bold text-gray-800">
+                <p className="mt-0.5 text-sm font-bold text-gray-800 dark:text-[#e6edf3]">
                   {zoning.zoneCategory.replace(/_/g, " ")}
                 </p>
               </div>
@@ -54,7 +54,7 @@ export default function ZoningCard({ section }) {
           {zoning.allowedUses?.length > 0 && (
             <UsesList
               icon={CheckCircle2}
-              iconColor="text-green-600"
+              iconColor="text-green-600 dark:text-green-400"
               label="Allowed uses"
               uses={zoning.allowedUses}
             />
@@ -64,7 +64,7 @@ export default function ZoningCard({ section }) {
           {zoning.restrictedUses?.length > 0 && (
             <UsesList
               icon={XCircle}
-              iconColor="text-red-500"
+              iconColor="text-red-500 dark:text-red-400"
               label="Restricted uses"
               uses={zoning.restrictedUses}
             />
@@ -72,11 +72,11 @@ export default function ZoningCard({ section }) {
 
           {/* Master plan reference */}
           {zoning.masterPlanReference && (
-            <div className="border-t border-gray-100 pt-3">
-              <p className="text-[10px] font-bold uppercase tracking-widest text-gray-500">
+            <div className="border-t border-gray-100 dark:border-[#30363d] pt-3">
+              <p className="text-[10px] font-bold uppercase tracking-widest text-gray-500 dark:text-[#7d8590]">
                 Reference plan
               </p>
-              <p className="mt-1 text-xs font-semibold text-gray-700">
+              <p className="mt-1 text-xs font-semibold text-gray-700 dark:text-[#e6edf3]">
                 {zoning.masterPlanReference}
               </p>
             </div>
@@ -89,11 +89,11 @@ export default function ZoningCard({ section }) {
 
 function MetricCell({ label, value }) {
   return (
-    <div className="rounded-lg border border-gray-100 bg-gray-50/50 px-3 py-2.5 text-center">
-      <p className="text-[9px] font-bold uppercase tracking-widest text-gray-500">
+    <div className="rounded-lg border border-gray-100 dark:border-[#30363d] bg-gray-50/50 dark:bg-[#1c2128] px-3 py-2.5 text-center">
+      <p className="text-[9px] font-bold uppercase tracking-widest text-gray-500 dark:text-[#7d8590]">
         {label}
       </p>
-      <p className="mt-1 text-sm font-bold text-gray-900 tabular-nums">
+      <p className="mt-1 text-sm font-bold text-gray-900 dark:text-[#e6edf3] tabular-nums">
         {value ?? "—"}
       </p>
     </div>
@@ -105,7 +105,7 @@ function UsesList({ icon: Icon, iconColor, label, uses }) {
     <div>
       <div className="mb-2 flex items-center gap-1.5">
         <Icon className={`h-3 w-3 ${iconColor}`} strokeWidth={2.5} />
-        <p className="text-[10px] font-bold uppercase tracking-widest text-gray-500">
+        <p className="text-[10px] font-bold uppercase tracking-widest text-gray-500 dark:text-[#7d8590]">
           {label}
         </p>
       </div>
@@ -113,7 +113,7 @@ function UsesList({ icon: Icon, iconColor, label, uses }) {
         {uses.map((u) => (
           <span
             key={u}
-            className="rounded-md bg-gray-100 px-2 py-0.5 text-[11px] font-semibold text-gray-700"
+            className="rounded-md bg-gray-100 dark:bg-[#1c2128] px-2 py-0.5 text-[11px] font-semibold text-gray-700 dark:text-[#e6edf3]"
           >
             {u}
           </span>

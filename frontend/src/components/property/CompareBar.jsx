@@ -5,17 +5,6 @@ import { useRouter } from "next/navigation";
 import { GitCompare, X, Plus } from "lucide-react";
 import { getPropertyImage } from "@/constants/propertyImages";
 
-/**
- * CompareBar — floating bottom bar shown when 1+ properties selected.
- *
- * Shows:
- *   - Thumbnail + address for each selected property (max 3)
- *   - Empty slot placeholders up to 3
- *   - "Compare" CTA (enabled at 2+)
- *   - Individual remove + clear all
- *
- * Appears with a slide-up animation via CSS translate.
- */
 export default function CompareBar({
   compareList = [],
   onRemove,
@@ -40,40 +29,37 @@ export default function CompareBar({
       `}
       aria-hidden={!visible}
     >
-      {/* Backdrop blur strip */}
       <div className="mx-auto max-w-[1400px] px-4 pb-4">
-        <div className="rounded-2xl border border-gray-200 bg-white/95 backdrop-blur-xl shadow-[0_-8px_40px_rgba(0,0,0,0.12)] px-5 py-4">
+        <div className="rounded-2xl border border-gray-200 dark:border-[#30363d] bg-white/95 dark:bg-[#161b22]/95 backdrop-blur-xl shadow-[0_-8px_40px_rgba(0,0,0,0.12)] dark:shadow-[0_-8px_40px_rgba(0,0,0,0.5)] px-5 py-4">
           <div className="flex items-center gap-4">
 
             {/* Icon + label */}
             <div className="flex items-center gap-2.5 flex-shrink-0">
-              <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-green-50 ring-1 ring-green-200">
-                <GitCompare className="h-4.5 w-4.5 text-[#16a34a]" strokeWidth={2} />
+              <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-green-50 dark:bg-[#0d2818] ring-1 ring-green-200 dark:ring-green-900">
+                <GitCompare className="h-4.5 w-4.5 text-[#16a34a] dark:text-green-400" strokeWidth={2} />
               </div>
               <div>
-                <p className="text-[11px] font-black uppercase tracking-widest text-gray-400">
+                <p className="text-[11px] font-black uppercase tracking-widest text-gray-400 dark:text-[#6e7681]">
                   Compare
                 </p>
-                <p className="text-sm font-bold text-gray-900 leading-none">
+                <p className="text-sm font-bold text-gray-900 dark:text-[#e6edf3] leading-none">
                   {count} of 3 selected
                 </p>
               </div>
             </div>
 
-            <div className="h-10 w-px bg-gray-100 flex-shrink-0" />
+            <div className="h-10 w-px bg-gray-100 dark:bg-[#30363d] flex-shrink-0" />
 
             {/* Property slots */}
             <div className="flex flex-1 items-center gap-3 overflow-hidden">
-              {/* Filled slots */}
               {compareList.map((p) => {
                 const thumb = getPropertyImage(p);
                 return (
                   <div
                     key={p.id}
-                    className="flex items-center gap-2.5 rounded-xl border border-gray-200 bg-gray-50 px-3 py-2 min-w-0 flex-shrink-0"
+                    className="flex items-center gap-2.5 rounded-xl border border-gray-200 dark:border-[#30363d] bg-gray-50 dark:bg-[#1c2128] px-3 py-2 min-w-0 flex-shrink-0"
                   >
-                    {/* Thumbnail */}
-                    <div className="h-8 w-8 flex-shrink-0 overflow-hidden rounded-lg bg-gray-200">
+                    <div className="h-8 w-8 flex-shrink-0 overflow-hidden rounded-lg bg-gray-200 dark:bg-[#30363d]">
                       {thumb ? (
                         <img
                           src={thumb}
@@ -81,22 +67,20 @@ export default function CompareBar({
                           className="h-full w-full object-cover"
                         />
                       ) : (
-                        <div className="h-full w-full bg-gradient-to-br from-gray-100 to-gray-200" />
+                        <div className="h-full w-full bg-gradient-to-br from-gray-100 to-gray-200 dark:from-[#1c2128] dark:to-[#30363d]" />
                       )}
                     </div>
-                    {/* Address */}
                     <div className="min-w-0">
-                      <p className="text-xs font-bold text-gray-900 truncate max-w-[140px]">
+                      <p className="text-xs font-bold text-gray-900 dark:text-[#e6edf3] truncate max-w-[140px]">
                         {p.address}
                       </p>
-                      <p className="text-[10px] text-gray-500 truncate">
+                      <p className="text-[10px] text-gray-500 dark:text-[#7d8590] truncate">
                         {p.city}{p.state ? `, ${p.state}` : ""}
                       </p>
                     </div>
-                    {/* Remove */}
                     <button
                       onClick={() => onRemove(p)}
-                      className="ml-1 flex h-5 w-5 flex-shrink-0 items-center justify-center rounded-full text-gray-400 hover:bg-gray-200 hover:text-gray-700 transition"
+                      className="ml-1 flex h-5 w-5 flex-shrink-0 items-center justify-center rounded-full text-gray-400 dark:text-[#7d8590] hover:bg-gray-200 dark:hover:bg-[#30363d] hover:text-gray-700 dark:hover:text-[#e6edf3] transition"
                       aria-label={`Remove ${p.address}`}
                     >
                       <X className="h-3 w-3" strokeWidth={2.5} />
@@ -105,11 +89,10 @@ export default function CompareBar({
                 );
               })}
 
-              {/* Empty slots */}
               {Array.from({ length: 3 - count }).map((_, i) => (
                 <div
                   key={`empty-${i}`}
-                  className="flex h-12 w-36 flex-shrink-0 items-center justify-center gap-1.5 rounded-xl border border-dashed border-gray-200 text-gray-300"
+                  className="flex h-12 w-36 flex-shrink-0 items-center justify-center gap-1.5 rounded-xl border border-dashed border-gray-200 dark:border-[#30363d] text-gray-300 dark:text-[#6e7681]"
                 >
                   <Plus className="h-3.5 w-3.5" strokeWidth={2} />
                   <span className="text-[11px] font-semibold">Add property</span>
@@ -121,7 +104,7 @@ export default function CompareBar({
             <div className="flex items-center gap-2 flex-shrink-0">
               <button
                 onClick={onClear}
-                className="rounded-xl border border-gray-200 bg-white px-4 py-2.5 text-xs font-semibold text-gray-600 transition hover:bg-gray-50 hover:border-gray-300"
+                className="rounded-xl border border-gray-200 dark:border-[#30363d] bg-white dark:bg-[#1c2128] px-4 py-2.5 text-xs font-semibold text-gray-600 dark:text-[#e6edf3] transition hover:bg-gray-50 dark:hover:bg-[#30363d] hover:border-gray-300 dark:hover:border-[#484f58]"
               >
                 Clear
               </button>

@@ -8,7 +8,7 @@ export default function MainLayout({ children }) {
   const [isSidebarOpen, setIsSidebarOpen] = useState(true);
 
   return (
-    <div className="h-screen bg-[#F6F8FB] flex flex-col">
+    <div className="h-screen bg-[#F6F8FB] dark:bg-[#0d1117] flex flex-col">
 
       <Navbar toggleSidebar={() => setIsSidebarOpen(!isSidebarOpen)} />
 
@@ -16,7 +16,7 @@ export default function MainLayout({ children }) {
 
         <Sidebar isOpen={isSidebarOpen} onClose={() => setIsSidebarOpen(false)} />
 
-                <main role="main" aria-label="Dashboard content" id="main-content" className="flex-1 overflow-y-auto p-8">
+        <main role="main" aria-label="Dashboard content" id="main-content" className="flex-1 overflow-y-auto p-8">
           {children}
         </main>
 

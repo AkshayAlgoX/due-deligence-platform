@@ -4,17 +4,6 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { ChevronRight, Home } from "lucide-react";
 
-/**
- * Auto-generates breadcrumbs from URL path.
- *
- * Usage:
- *   <Breadcrumbs />
- *
- * Or with custom labels:
- *   <Breadcrumbs
- *     overrides={{ "abc123": "456 MG Road" }}
- *   />
- */
 export default function Breadcrumbs({ overrides = {} }) {
   const pathname = usePathname();
 
@@ -34,20 +23,20 @@ export default function Breadcrumbs({ overrides = {} }) {
     >
       <Link
         href="/dashboard"
-        className="flex items-center gap-1 text-gray-500 hover:text-[#22C55E] transition"
+        className="flex items-center gap-1 text-gray-500 dark:text-[#7d8590] hover:text-[#22C55E] dark:hover:text-[#22C55E] transition"
       >
         <Home className="h-3.5 w-3.5" />
       </Link>
 
       {crumbs.map((crumb, i) => (
         <div key={crumb.href} className="flex items-center gap-1.5">
-          <ChevronRight className="h-3.5 w-3.5 text-gray-300" />
+          <ChevronRight className="h-3.5 w-3.5 text-gray-300 dark:text-[#30363d]" />
           {crumb.isLast ? (
-            <span className="font-semibold text-gray-800">{crumb.label}</span>
+            <span className="font-semibold text-gray-800 dark:text-[#e6edf3]">{crumb.label}</span>
           ) : (
             <Link
               href={crumb.href}
-              className="text-gray-500 hover:text-[#22C55E] transition"
+              className="text-gray-500 dark:text-[#7d8590] hover:text-[#22C55E] dark:hover:text-[#22C55E] transition"
             >
               {crumb.label}
             </Link>
@@ -58,9 +47,7 @@ export default function Breadcrumbs({ overrides = {} }) {
   );
 }
 
-// Convert "property-search" → "Property Search"
 function humanize(segment) {
-  // Numeric IDs → "Details"
   if (/^\d+$/.test(segment)) return "Details";
   return segment
     .split("-")

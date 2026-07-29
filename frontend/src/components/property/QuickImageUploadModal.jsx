@@ -7,14 +7,6 @@ import { X, Camera, Loader2, Save, AlertTriangle } from "lucide-react";
 import { updateProperty } from "@/services/propertyService";
 import ImageUploader from "./ImageUploader";
 
-/**
- * Small focused modal for updating just the property image.
- * Opens from the card's "Add photo" or "Change photo" button.
- * Does NOT touch any other fields.
- *
- * Note: Removing the photo inside ImageUploader only stages the change
- * locally — nothing persists until user clicks Save. Cancel discards it.
- */
 export default function QuickImageUploadModal({
   isOpen,
   onClose,
@@ -24,7 +16,6 @@ export default function QuickImageUploadModal({
   const [imageUrl, setImageUrl] = useState("");
   const [saving, setSaving] = useState(false);
 
-    // Reset local state every time modal opens (not just on property change)
   useEffect(() => {
     if (isOpen && property) {
       setImageUrl(property.imageUrl ?? "");
@@ -46,11 +37,10 @@ export default function QuickImageUploadModal({
 
   const originalImage = property.imageUrl ?? "";
   const hasChanged = imageUrl !== originalImage;
-  const willRemove = originalImage && !imageUrl;   // staged deletion
-  const willAdd = !originalImage && imageUrl;      // brand-new photo
+  const willRemove = originalImage && !imageUrl;
+  const willAdd = !originalImage && imageUrl;
   const willReplace = originalImage && imageUrl && imageUrl !== originalImage;
 
-  // Action-specific save label
   const saveLabel = willRemove
     ? "Remove photo"
     : willReplace
@@ -96,8 +86,8 @@ export default function QuickImageUploadModal({
       onClose();
     } catch (err) {
       toast.error("Couldn't update photo", {
-  description: err.message || "Please try again in a moment.",
-});
+        description: err.message || "Please try again in a moment.",
+      });
     } finally {
       setSaving(false);
     }
@@ -105,16 +95,16 @@ export default function QuickImageUploadModal({
 
   return (
     <div
-      className="fixed inset-0 z-[9999] flex items-center justify-center bg-slate-900/50 p-4 backdrop-blur-sm animate-in fade-in duration-200"
+      className="fixed inset-0 z-[9999] flex items-center justify-center bg-slate-900/50 dark:bg-black/80 p-4 backdrop-blur-sm animate-in fade-in duration-200"
       role="dialog"
       aria-modal="true"
       onMouseDown={(e) => {
         if (e.target === e.currentTarget && !saving) onClose();
       }}
     >
-      <div className="w-full max-w-md overflow-hidden rounded-3xl bg-white shadow-[0_30px_80px_rgba(0,0,0,0.3)] animate-in zoom-in-95 duration-200">
+      <div className="w-full max-w-md overflow-hidden rounded-3xl bg-white dark:bg-[#161b22] shadow-[0_30px_80px_rgba(0,0,0,0.3)] dark:shadow-[0_30px_80px_rgba(0,0,0,0.6)] animate-in zoom-in-95 duration-200">
 
-        {/* Header */}
+        {/* Header — green gradient stays vibrant */}
         <div className="relative bg-gradient-to-br from-[#22C55E] via-[#22C55E] to-[#16a34a] px-5 py-4">
           <div
             className="absolute inset-0 opacity-10"
@@ -156,15 +146,14 @@ export default function QuickImageUploadModal({
             disabled={saving}
           />
 
-          {/* Staged-removal warning */}
           {willRemove && (
-            <div className="mt-3 flex items-start gap-2 rounded-xl border border-amber-200 bg-amber-50 px-3 py-2.5">
-              <AlertTriangle className="h-4 w-4 flex-shrink-0 text-amber-600 mt-0.5" strokeWidth={2.2} />
+            <div className="mt-3 flex items-start gap-2 rounded-xl border border-amber-200 dark:border-amber-900 bg-amber-50 dark:bg-[#282a10] px-3 py-2.5">
+              <AlertTriangle className="h-4 w-4 flex-shrink-0 text-amber-600 dark:text-amber-400 mt-0.5" strokeWidth={2.2} />
               <div className="flex-1">
-                <p className="text-[11px] font-bold text-amber-800 leading-tight">
+                <p className="text-[11px] font-bold text-amber-800 dark:text-amber-300 leading-tight">
                   Photo staged for removal
                 </p>
-                <p className="text-[11px] text-amber-700 mt-0.5 leading-snug">
+                <p className="text-[11px] text-amber-700 dark:text-amber-400 mt-0.5 leading-snug">
                   Click <span className="font-bold">Remove photo</span> to confirm, or <span className="font-bold">Cancel</span> to keep the current photo.
                 </p>
               </div>
@@ -172,7 +161,7 @@ export default function QuickImageUploadModal({
           )}
 
           {!willRemove && (
-            <p className="mt-3 text-[11px] text-gray-500">
+            <p className="mt-3 text-[11px] text-gray-500 dark:text-[#7d8590]">
               {originalImage
                 ? "Replace the current photo, or remove it to use a placeholder."
                 : "Add a photo to help identify this property in search results."}
@@ -181,12 +170,12 @@ export default function QuickImageUploadModal({
         </div>
 
         {/* Footer */}
-        <div className="flex items-center justify-end gap-2 border-t border-gray-100 bg-gray-50/70 px-5 py-3">
+        <div className="flex items-center justify-end gap-2 border-t border-gray-100 dark:border-[#30363d] bg-gray-50/70 dark:bg-[#0d1117] px-5 py-3">
           <button
             type="button"
             onClick={onClose}
             disabled={saving}
-            className="rounded-xl border border-gray-200 bg-white px-4 py-2 text-sm font-semibold text-gray-700 transition hover:bg-gray-100 disabled:opacity-50"
+            className="rounded-xl border border-gray-200 dark:border-[#30363d] bg-white dark:bg-[#1c2128] px-4 py-2 text-sm font-semibold text-gray-700 dark:text-[#e6edf3] transition hover:bg-gray-100 dark:hover:bg-[#30363d] disabled:opacity-50"
           >
             Cancel
           </button>

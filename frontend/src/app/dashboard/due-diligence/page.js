@@ -11,7 +11,7 @@ export default function Page() {
 
   return (
     <div className="w-full max-w-[1400px] mx-auto">
-      <div className="rounded-2xl border border-gray-100 bg-white shadow-sm">
+      <div className="rounded-2xl border border-gray-100 dark:border-[#30363d] bg-white dark:bg-[#161b22] shadow-sm">
         <EmptyState
           icon={ShieldCheck}
           title="Due Diligence dashboard coming soon"

@@ -15,7 +15,6 @@ import BuildingInformationCard from "@/components/property/BuildingInformationCa
 import RiskScoreCard from "@/components/property/RiskScoreCard";
 import EditPropertyModal from "@/components/property/EditPropertyModal";
 
-// ── Aggregation cards ─────────────────────────────────────────────────
 import OwnershipCard from "@/components/property/aggregation/OwnershipCard";
 import TaxHistorySection from "@/components/property/aggregation/TaxHistorySection";
 import ZoningCard from "@/components/property/aggregation/ZoningCard";
@@ -84,7 +83,7 @@ export default function PropertyDetailPage() {
   if (loadingProperty) {
     return (
       <div className="mx-auto w-full max-w-[1400px] space-y-6 pb-16">
-        <div className="h-8 w-36 animate-pulse rounded-lg bg-gray-100" />
+        <div className="h-8 w-36 animate-pulse rounded-lg bg-gray-100 dark:bg-[#1c2128]" />
         <PropertyHeroSkeleton />
       </div>
     );
@@ -96,32 +95,21 @@ export default function PropertyDetailPage() {
     <div className="mx-auto w-full max-w-[1400px] space-y-6 pb-16">
       <Breadcrumbs overrides={{ [id]: property?.address || "Property" }} />
 
-      {/* ── Back navigation ────────────────────────────────────────── */}
       <button
         type="button"
         onClick={() => router.push("/dashboard/property-search")}
-        className="flex items-center gap-2 text-sm font-semibold text-gray-500 transition hover:text-gray-900 cursor-pointer"
+        className="flex items-center gap-2 text-sm font-semibold text-gray-500 dark:text-[#7d8590] transition hover:text-gray-900 dark:hover:text-[#e6edf3] cursor-pointer"
       >
         <ArrowLeft className="h-4 w-4" />
         Back to search
       </button>
 
-      {/* ── Hero ───────────────────────────────────────────────────── */}
       <ErrorBoundary>
         <PropertyDetails property={property} onEdit={handleEdit} />
       </ErrorBoundary>
 
-      {/* ══════════════════════════════════════════════════════════════
-          BENTO GRID LAYOUT
-          Priority-based, asymmetric, handles empty states gracefully
-      ══════════════════════════════════════════════════════════════ */}
       <ErrorBoundary>
         <div className="space-y-6">
-
-          {/* ── TIER 1: Executive Summary Row ─────────────────────────
-              Compact stats side-by-side (Risk Score + Data Completeness)
-              These are LIGHT cards — they set the context
-          ───────────────────────────────────────────────────────────── */}
           <div className="grid grid-cols-1 gap-6 lg:grid-cols-2">
             <RiskScoreCard propertyId={property.id} />
             <DataCompletenessCard
@@ -131,9 +119,6 @@ export default function PropertyDetailPage() {
             />
           </div>
 
-          {/* ── TIER 2: Financial + Legal (asymmetric pair) ───────────
-              Ownership (compact) + Tax History (wider — table needs space)
-          ───────────────────────────────────────────────────────────── */}
           <div className="grid grid-cols-1 gap-6 lg:grid-cols-12">
             <div className="lg:col-span-5">
               <OwnershipCard section={aggregated?.ownership} />
@@ -143,23 +128,13 @@ export default function PropertyDetailPage() {
             </div>
           </div>
 
-          {/* ── TIER 3: Location Intelligence (equal pair) ─────────────
-              Zoning + Flood Risk — both need equal visual weight
-          ───────────────────────────────────────────────────────────── */}
           <div className="grid grid-cols-1 gap-6 lg:grid-cols-2">
             <ZoningCard section={aggregated?.zoning} />
             <FloodZoneCard section={aggregated?.floodZone} />
           </div>
 
-          {/* ── TIER 4: Permits (FULL WIDTH — timeline needs space) ───
-              Permits often has 3-5 items in a list — deserves full width
-          ───────────────────────────────────────────────────────────── */}
           <PermitsSection section={aggregated?.permits} />
 
-          {/* ── TIER 5: Context Row (asymmetric pair) ─────────────────
-              Environmental (wider — has AQI + multiple stats)
-              Building Info (compact — often user-provided/empty)
-          ───────────────────────────────────────────────────────────── */}
           <div className="grid grid-cols-1 gap-6 lg:grid-cols-12">
             <div className="lg:col-span-7">
               <EnvironmentalCard section={aggregated?.environmental} />
@@ -171,11 +146,9 @@ export default function PropertyDetailPage() {
               />
             </div>
           </div>
-
         </div>
       </ErrorBoundary>
 
-      {/* ── Edit modal ─────────────────────────────────────────────── */}
       <EditPropertyModal
         isOpen={editModalOpen}
         onClose={() => setEditModalOpen(false)}

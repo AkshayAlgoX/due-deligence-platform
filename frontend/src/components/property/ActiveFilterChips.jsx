@@ -3,10 +3,6 @@
 import { X } from "lucide-react";
 import { formatINR } from "@/utils/currency";
 
-/**
- * ActiveFilterChips — horizontal row of removable filter chips.
- * Shows above the results grid when filters are active.
- */
 export default function ActiveFilterChips({ filters, removeFilter, clearAll }) {
   const chips = [];
 
@@ -62,15 +58,15 @@ export default function ActiveFilterChips({ filters, removeFilter, clearAll }) {
   if (chips.length === 0) return null;
 
   const colorClasses = {
-    green: "bg-green-50 text-green-700 ring-green-200 hover:bg-green-100",
-    blue:  "bg-blue-50 text-blue-700 ring-blue-200 hover:bg-blue-100",
-    gray:  "bg-gray-100 text-gray-700 ring-gray-200 hover:bg-gray-200",
-    purple:"bg-purple-50 text-purple-700 ring-purple-200 hover:bg-purple-100",
+    green:  "bg-green-50 dark:bg-[#0d2818] text-green-700 dark:text-green-400 ring-green-200 dark:ring-green-900 hover:bg-green-100 dark:hover:bg-[#0d2818]/70",
+    blue:   "bg-blue-50 dark:bg-[#0c1f33] text-blue-700 dark:text-blue-400 ring-blue-200 dark:ring-blue-900 hover:bg-blue-100 dark:hover:bg-[#0c1f33]/70",
+    gray:   "bg-gray-100 dark:bg-[#1c2128] text-gray-700 dark:text-[#e6edf3] ring-gray-200 dark:ring-[#30363d] hover:bg-gray-200 dark:hover:bg-[#30363d]",
+    purple: "bg-purple-50 dark:bg-[#1f0e2e] text-purple-700 dark:text-purple-400 ring-purple-200 dark:ring-purple-900 hover:bg-purple-100 dark:hover:bg-[#1f0e2e]/70",
   };
 
   return (
     <div className="flex flex-wrap items-center gap-2 mb-4">
-      <span className="text-[10px] font-bold tracking-widest uppercase text-gray-400 mr-1">
+      <span className="text-[10px] font-bold tracking-widest uppercase text-gray-400 dark:text-[#6e7681] mr-1">
         Active:
       </span>
 
@@ -89,7 +85,7 @@ export default function ActiveFilterChips({ filters, removeFilter, clearAll }) {
           <button
             type="button"
             onClick={chip.onRemove}
-            className="flex h-4 w-4 items-center justify-center rounded-full transition hover:bg-white/60"
+            className="flex h-4 w-4 items-center justify-center rounded-full transition hover:bg-white/60 dark:hover:bg-black/30"
             aria-label={`Remove ${chip.label}`}
           >
             <X className="h-3 w-3" strokeWidth={2.5} />
@@ -99,7 +95,7 @@ export default function ActiveFilterChips({ filters, removeFilter, clearAll }) {
 
       <button
         onClick={clearAll}
-        className="ml-1 text-[11px] font-bold text-gray-500 hover:text-red-600 transition"
+        className="ml-1 text-[11px] font-bold text-gray-500 dark:text-[#7d8590] hover:text-red-600 dark:hover:text-red-400 transition"
       >
         Clear all
       </button>

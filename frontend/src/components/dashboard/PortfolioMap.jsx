@@ -15,7 +15,6 @@ import { getCurrentUser } from "@/services/authService";
 import api from "@/services/api";
 import "leaflet/dist/leaflet.css";
 
-// ── INR formatter ───────────────────────────────────────────────
 function formatINR(value) {
   if (value == null) return "—";
   if (value >= 1_00_00_000) return `₹${(value / 1_00_00_000).toFixed(2)} Cr`;
@@ -23,9 +22,19 @@ function formatINR(value) {
   return `₹${value.toLocaleString("en-IN")}`;
 }
 
-// India-centered default view
 const INDIA_CENTER = [20.5937, 78.9629];
 const DEFAULT_ZOOM = 5;
+
+// ── Tile sources for light/dark ────────────────────────────────
+const TILE_LIGHT = {
+  url: "https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",
+  attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>',
+};
+
+const TILE_DARK = {
+  url: "https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png",
+  attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> &copy; <a href="https://carto.com/attributions">CARTO</a>',
+};
 
 export default function PortfolioMap({ refreshKey }) {
   const [properties, setProperties]     = useState([]);
@@ -35,8 +44,21 @@ export default function PortfolioMap({ refreshKey }) {
   const [isAdmin, setIsAdmin]           = useState(false);
   const [retrying, setRetrying]         = useState(false);
   const [MapComponents, setMapComponents] = useState(null);
+  const [isDark, setIsDark]             = useState(false);
 
-  // ── Load Leaflet dynamically (SSR-safe) ──────────────────────
+  // Detect dark mode → forces re-render of tile layer
+  useEffect(() => {
+    const check = () =>
+      setIsDark(document.documentElement.classList.contains("dark"));
+    check();
+    const observer = new MutationObserver(check);
+    observer.observe(document.documentElement, {
+      attributes: true,
+      attributeFilter: ["class"],
+    });
+    return () => observer.disconnect();
+  }, []);
+
   useEffect(() => {
     (async () => {
       const [
@@ -58,7 +80,6 @@ export default function PortfolioMap({ refreshKey }) {
     })();
   }, []);
 
-  // ── Detect admin role ────────────────────────────────────────
   useEffect(() => {
     (async () => {
       try {
@@ -70,7 +91,6 @@ export default function PortfolioMap({ refreshKey }) {
     })();
   }, []);
 
-  // ── Load geo + total property count (parallel) ───────────────
   const load = async () => {
     try {
       setLoading(true);
@@ -92,7 +112,6 @@ export default function PortfolioMap({ refreshKey }) {
     load();
   }, [refreshKey]);
 
-  // ── Admin: trigger backfill for missing coordinates ──────────
   const handleRetryGeocode = async () => {
     try {
       setRetrying(true);
@@ -117,7 +136,6 @@ export default function PortfolioMap({ refreshKey }) {
     }
   };
 
-  // ── Marker sizing + color ────────────────────────────────────
   const maxValue = Math.max(...properties.map((p) => p.marketValue || 0), 1);
   const getRadius = (value) => {
     if (!value || value <= 0) return 6;
@@ -128,33 +146,34 @@ export default function PortfolioMap({ refreshKey }) {
   const missingCount = Math.max(0, totalCount - properties.length);
   const hasMissing = !loading && missingCount > 0;
 
+  const tile = isDark ? TILE_DARK : TILE_LIGHT;
+
   return (
-    <div className="overflow-hidden rounded-2xl border border-gray-100 bg-white shadow-sm">
-      {/* ── Header ────────────────────────────────────────────── */}
-      <div className="flex items-center justify-between border-b border-gray-100 p-6 flex-wrap gap-3">
+    <div className="overflow-hidden rounded-2xl border border-gray-100 dark:border-[#30363d] bg-white dark:bg-[#161b22] shadow-sm">
+      <div className="flex items-center justify-between border-b border-gray-100 dark:border-[#30363d] p-6 flex-wrap gap-3">
         <div className="flex items-center gap-3">
-          <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-[#edf7f3]">
-            <MapIcon className="h-4 w-4 text-[#16a34a]" strokeWidth={2.2} />
+          <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-[#edf7f3] dark:bg-[#0d2818]">
+            <MapIcon className="h-4 w-4 text-[#16a34a] dark:text-green-400" strokeWidth={2.2} />
           </div>
           <div>
-            <h3 className="text-sm font-bold text-gray-900">
+            <h3 className="text-sm font-bold text-gray-900 dark:text-[#e6edf3]">
               Portfolio geography
             </h3>
-            <p className="mt-0.5 text-xs text-gray-500">
+            <p className="mt-0.5 text-xs text-gray-500 dark:text-[#7d8590]">
               {loading ? (
                 "Loading map..."
               ) : totalCount === 0 ? (
                 "No properties yet"
               ) : (
                 <>
-                  <span className="font-semibold text-gray-700">
+                  <span className="font-semibold text-gray-700 dark:text-[#e6edf3]">
                     {properties.length}
                   </span>{" "}
                   of {totalCount} mapped
                   {hasMissing && (
                     <>
                       {" · "}
-                      <span className="text-amber-600 font-medium">
+                      <span className="text-amber-600 dark:text-amber-400 font-medium">
                         {missingCount} pending
                       </span>
                     </>
@@ -165,13 +184,12 @@ export default function PortfolioMap({ refreshKey }) {
           </div>
         </div>
 
-        <div className="flex items-center gap-4 text-xs text-gray-500">
-          {/* Admin: retry geocode button */}
+        <div className="flex items-center gap-4 text-xs text-gray-500 dark:text-[#7d8590]">
           {isAdmin && hasMissing && (
             <button
               onClick={handleRetryGeocode}
               disabled={retrying}
-              className="flex items-center gap-1.5 rounded-lg border border-gray-200 bg-white px-3 py-1.5 text-xs font-semibold text-gray-700 transition-all hover:border-[#22C55E] hover:text-[#16a34a] disabled:opacity-60"
+              className="flex items-center gap-1.5 rounded-lg border border-gray-200 dark:border-[#30363d] bg-white dark:bg-[#1c2128] px-3 py-1.5 text-xs font-semibold text-gray-700 dark:text-[#e6edf3] transition-all hover:border-[#22C55E] hover:text-[#16a34a] dark:hover:text-green-400 disabled:opacity-60"
             >
               <RefreshCw
                 size={12}
@@ -182,10 +200,9 @@ export default function PortfolioMap({ refreshKey }) {
             </button>
           )}
 
-          {/* Legend */}
           {!loading && properties.length > 0 && (
             <>
-              <span className="hidden md:inline text-[11px] text-gray-400">
+              <span className="hidden md:inline text-[11px] text-gray-400 dark:text-[#6e7681]">
                 Use +/− to zoom
               </span>
               <span className="flex items-center gap-1.5">
@@ -201,28 +218,27 @@ export default function PortfolioMap({ refreshKey }) {
         </div>
       </div>
 
-      {/* ── Body ──────────────────────────────────────────────── */}
       <div className="relative h-[420px] w-full">
         {loading || !MapComponents ? (
-          <div className="flex h-full items-center justify-center">
-            <Loader2 className="h-6 w-6 animate-spin text-gray-300" />
+          <div className="flex h-full items-center justify-center bg-white dark:bg-[#0d1117]">
+            <Loader2 className="h-6 w-6 animate-spin text-gray-300 dark:text-[#7d8590]" />
           </div>
         ) : error ? (
-          <div className="flex h-full items-center justify-center text-sm text-gray-400">
+          <div className="flex h-full items-center justify-center text-sm text-gray-400 dark:text-[#7d8590]">
             Couldn't load map data.
           </div>
         ) : properties.length === 0 ? (
           <div className="flex h-full flex-col items-center justify-center gap-3 px-6 text-center">
-            <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-[#edf7f3]">
-              <MapPin size={22} className="text-[#22C55E]" strokeWidth={2} />
+            <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-[#edf7f3] dark:bg-[#0d2818]">
+              <MapPin size={22} className="text-[#22C55E] dark:text-green-400" strokeWidth={2} />
             </div>
             <div>
-              <p className="text-sm font-semibold text-gray-800">
+              <p className="text-sm font-semibold text-gray-800 dark:text-[#e6edf3]">
                 {totalCount === 0
                   ? "No mapped properties yet"
                   : "No coordinates captured yet"}
               </p>
-              <p className="mt-1 text-xs text-gray-400 leading-relaxed">
+              <p className="mt-1 text-xs text-gray-400 dark:text-[#7d8590] leading-relaxed">
                 {totalCount === 0
                   ? "Add properties using the address suggestions to see them on the map."
                   : "Properties exist but need geocoding. Admins can trigger it above."}
@@ -231,6 +247,7 @@ export default function PortfolioMap({ refreshKey }) {
           </div>
         ) : (
           <MapComponents.MapContainer
+            key={isDark ? "dark" : "light"}
             center={INDIA_CENTER}
             zoom={DEFAULT_ZOOM}
             scrollWheelZoom={false}
@@ -239,8 +256,8 @@ export default function PortfolioMap({ refreshKey }) {
             style={{ borderRadius: 0 }}
           >
             <MapComponents.TileLayer
-              attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>'
-              url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+              attribution={tile.attribution}
+              url={tile.url}
             />
 
             {properties.map((p) => (
@@ -251,7 +268,7 @@ export default function PortfolioMap({ refreshKey }) {
                 pathOptions={{
                   fillColor: getColor(p.verified),
                   fillOpacity: 0.75,
-                  color: "#ffffff",
+                  color: isDark ? "#161b22" : "#ffffff",
                   weight: 2,
                 }}
               >

@@ -13,11 +13,9 @@ export default function BackButton({ fallback = "/login", label = "Back" }) {
   const router = useRouter();
 
   const handleBack = () => {
-    // If user came from another page in our app, use browser back
     if (typeof window !== "undefined" && window.history.length > 1) {
       router.back();
     } else {
-      // Direct URL visit — send to safe fallback
       router.push(fallback);
     }
   };
@@ -26,7 +24,7 @@ export default function BackButton({ fallback = "/login", label = "Back" }) {
     <button
       type="button"
       onClick={handleBack}
-      className="inline-flex items-center gap-1.5 text-sm font-medium text-gray-500 transition hover:text-gray-900"
+      className="inline-flex items-center gap-1.5 text-sm font-medium text-gray-500 dark:text-[#7d8590] transition hover:text-gray-900 dark:hover:text-[#e6edf3]"
     >
       <ArrowLeft className="h-4 w-4" />
       {label}

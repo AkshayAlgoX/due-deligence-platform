@@ -5,25 +5,15 @@ import CookieConsentBanner from "./CookieConsentBanner";
 import CookiePreferencesModal from "./CookiePreferencesModal";
 import TrackingScripts from "./TrackingScripts";
 
-/**
- * CookieConsentRoot — the CMP orchestrator.
- *
- * Responsibilities:
- *  - Read/write consent to localStorage (versioned)
- *  - Show banner to first-time visitors only
- *  - Manage preferences modal
- *  - Gate tracking scripts behind consent (prior consent principle)
- */
-
 const CONSENT_KEY = "cookie-consent";
-const CONSENT_VERSION = 2; // bumped: removed marketing category
+const CONSENT_VERSION = 2;
 
 function buildConsent({ analytics = false }) {
   return {
     version: CONSENT_VERSION,
     updatedAt: new Date().toISOString(),
     categories: {
-      necessary: true, // always on — required for the app to function
+      necessary: true,
       analytics,
     },
   };
@@ -35,8 +25,6 @@ function readConsent() {
     const raw = localStorage.getItem(CONSENT_KEY);
     if (!raw) return null;
     const parsed = JSON.parse(raw);
-
-    // Version guard — if we bump the CMP schema, force re-consent
     if (parsed?.version !== CONSENT_VERSION) return null;
     if (!parsed?.categories) return null;
     return parsed;
@@ -88,7 +76,6 @@ export default function CookieConsentRoot() {
 
   return (
     <>
-      {/* Prior consent principle: tracking loads ONLY after choice */}
       {consent?.categories && <TrackingScripts categories={consent.categories} />}
 
       {shouldShowBanner && (

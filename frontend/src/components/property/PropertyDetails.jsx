@@ -23,23 +23,7 @@ const DownloadPDFButton = dynamic(
   { ssr: false }
 );
 
-/**
- * Hero card for property details.
- *
- * Design principle: HONEST DATA
- *  - Never invent values (no "0.45 Acres" default)
- *  - Only render fields that have real backend data
- *  - Grid auto-adapts to available fields (2/3/4 cols)
- *  - Bedrooms/bathrooms shown Zillow-style: "4 bd · 2 ba · 1,848 sqft"
- *  - Empty means empty. No ghost labels.
- *
- * Milestone 2 note:
- *  - lotSize, zoning, yearBuilt currently user-entered
- *  - After aggregation lands, they may come from land-registry service
- *  - "Data source" pill will differentiate MANUAL vs AGGREGATED
- */
 export default function PropertyDetails({ property, onEdit }) {
-
   if (!property) return null;
 
   const currentUser = getUser();
@@ -71,12 +55,8 @@ export default function PropertyDetails({ property, onEdit }) {
   ]
     .filter(Boolean)
     .join(", ")
-    .replace(/, ([\d]{6})$/, " $1"); // PIN sits after location without comma
+    .replace(/, ([\d]{6})$/, " $1");
 
-  
-
-  // ── Zillow-style quick facts pill ────────────────────────────────
-  // Only shown if at least one exists
   const quickFacts = [
     bedrooms != null && { icon: Bed, value: `${bedrooms} bd` },
     bathrooms != null && { icon: Bath, value: `${bathrooms} ba` },
@@ -86,8 +66,6 @@ export default function PropertyDetails({ property, onEdit }) {
     },
   ].filter(Boolean);
 
-  // ── Hero stat blocks (grid) ──────────────────────────────────────
-  // Only show if data exists. No "N/A", no defaults.
   const stats = [
     yearBuilt != null && {
       icon: Calendar,
@@ -112,7 +90,7 @@ export default function PropertyDetails({ property, onEdit }) {
   ].filter(Boolean);
 
   return (
-    <div className="overflow-hidden rounded-2xl border border-gray-100 bg-white shadow-sm">
+    <div className="overflow-hidden rounded-2xl border border-gray-100 dark:border-[#30363d] bg-white dark:bg-[#161b22] shadow-sm">
       <div className="grid grid-cols-1 lg:grid-cols-2">
         {/* LEFT: Image */}
         <div className="relative min-h-[380px]">
@@ -129,7 +107,7 @@ export default function PropertyDetails({ property, onEdit }) {
             />
           )}
 
-          {/* Verification badge — REAL backend value */}
+          {/* Verification badge — stays white pill on image */}
           {verified && (
             <div className="absolute top-4 left-4 flex items-center gap-1.5 rounded-full bg-white/95 px-3 py-1.5 shadow-md backdrop-blur-sm">
               <BadgeCheck className="h-4 w-4 text-[#22C55E]" strokeWidth={2.5} />
@@ -151,48 +129,47 @@ export default function PropertyDetails({ property, onEdit }) {
 
         {/* RIGHT: Details */}
         <div className="flex flex-col p-8">
-                   {/* Property type + data source pill + edit */}
+          {/* Property type + data source pill + edit */}
           <div className="flex items-center justify-between gap-2 flex-wrap">
-  <div className="flex items-center gap-2 flex-wrap">
-    {propertyType && (
-      <p className="text-xs font-bold uppercase tracking-widest text-[#22C55E]">
-        {propertyType}
-      </p>
-    )}
-    <span className="inline-flex items-center gap-1 rounded-full bg-gray-50 px-2 py-0.5 text-[10px] font-semibold text-gray-500 ring-1 ring-gray-200">
-      <UserRound className="h-2.5 w-2.5" strokeWidth={2.5} />
-      User provided
-    </span>
-  </div>
+            <div className="flex items-center gap-2 flex-wrap">
+              {propertyType && (
+                <p className="text-xs font-bold uppercase tracking-widest text-[#22C55E] dark:text-green-400">
+                  {propertyType}
+                </p>
+              )}
+              <span className="inline-flex items-center gap-1 rounded-full bg-gray-50 dark:bg-[#1c2128] px-2 py-0.5 text-[10px] font-semibold text-gray-500 dark:text-[#7d8590] ring-1 ring-gray-200 dark:ring-[#30363d]">
+                <UserRound className="h-2.5 w-2.5" strokeWidth={2.5} />
+                User provided
+              </span>
+            </div>
 
-  {/* Action buttons */}
-  <div className="flex items-center gap-2">
-    <DownloadPDFButton property={property} />
-        {canEdit && (
-      <button
-        type="button"
-        onClick={() => onEdit(property)}
-        className="flex items-center gap-1.5 rounded-lg border border-gray-200 bg-white px-3 py-1.5 text-xs font-semibold text-gray-700 transition-all duration-150 hover:border-[#22C55E] hover:text-[#16a34a] active:scale-95"
-      >
-        <Pencil className="h-3 w-3" strokeWidth={2.4} />
-        Edit details
-      </button>
-    )}
-  </div>
-</div>
+            <div className="flex items-center gap-2">
+              <DownloadPDFButton property={property} />
+              {canEdit && (
+                <button
+                  type="button"
+                  onClick={() => onEdit(property)}
+                  className="flex items-center gap-1.5 rounded-lg border border-gray-200 dark:border-[#30363d] bg-white dark:bg-[#1c2128] px-3 py-1.5 text-xs font-semibold text-gray-700 dark:text-[#e6edf3] transition-all duration-150 hover:border-[#22C55E] hover:text-[#16a34a] dark:hover:text-green-400 active:scale-95"
+                >
+                  <Pencil className="h-3 w-3" strokeWidth={2.4} />
+                  Edit details
+                </button>
+              )}
+            </div>
+          </div>
 
           {/* Address + price */}
           <div className="mt-3 flex items-start justify-between gap-6">
-            <h2 className="text-[26px] font-black leading-[30px] tracking-tight text-gray-900">
+            <h2 className="text-[26px] font-black leading-[30px] tracking-tight text-gray-900 dark:text-[#e6edf3]">
               {fullAddress}
             </h2>
 
             {marketValue != null && marketValue > 0 && (
               <div className="flex-shrink-0 text-right">
-                <p className="text-[30px] font-black leading-none tracking-tight text-gray-900">
+                <p className="text-[30px] font-black leading-none tracking-tight text-gray-900 dark:text-[#e6edf3]">
                   {formatINRFull(marketValue)}
                 </p>
-                <p className="mt-1 text-xs text-gray-500">
+                <p className="mt-1 text-xs text-gray-500 dark:text-[#7d8590]">
                   Estimated market value
                 </p>
               </div>
@@ -208,15 +185,15 @@ export default function PropertyDetails({ property, onEdit }) {
                   <React.Fragment key={fact.value}>
                     <div className="flex items-center gap-1.5">
                       <Icon
-                        className="h-4 w-4 text-gray-400"
+                        className="h-4 w-4 text-gray-400 dark:text-[#7d8590]"
                         strokeWidth={2}
                       />
-                      <span className="text-sm font-bold text-gray-900">
+                      <span className="text-sm font-bold text-gray-900 dark:text-[#e6edf3]">
                         {fact.value}
                       </span>
                     </div>
                     {idx < quickFacts.length - 1 && (
-                      <span className="text-gray-300">·</span>
+                      <span className="text-gray-300 dark:text-[#30363d]">·</span>
                     )}
                   </React.Fragment>
                 );
@@ -224,10 +201,10 @@ export default function PropertyDetails({ property, onEdit }) {
             </div>
           )}
 
-          {/* Stats grid — only if any exists */}
+          {/* Stats grid */}
           {stats.length > 0 && (
             <>
-              <div className="my-6 h-px bg-gray-100" />
+              <div className="my-6 h-px bg-gray-100 dark:bg-[#30363d]" />
               <div
                 className={`grid gap-6 ${
                   stats.length === 1
@@ -243,11 +220,11 @@ export default function PropertyDetails({ property, onEdit }) {
                   const Icon = stat.icon;
                   return (
                     <div key={stat.label}>
-                      <Icon className="h-4 w-4 text-gray-400" strokeWidth={2} />
-                      <p className="mt-2 text-[10px] font-semibold uppercase tracking-wider text-gray-500">
+                      <Icon className="h-4 w-4 text-gray-400 dark:text-[#7d8590]" strokeWidth={2} />
+                      <p className="mt-2 text-[10px] font-semibold uppercase tracking-wider text-gray-500 dark:text-[#7d8590]">
                         {stat.label}
                       </p>
-                      <p className="mt-1 text-base font-bold text-gray-900">
+                      <p className="mt-1 text-base font-bold text-gray-900 dark:text-[#e6edf3]">
                         {stat.value}
                       </p>
                     </div>
@@ -256,8 +233,6 @@ export default function PropertyDetails({ property, onEdit }) {
               </div>
             </>
           )}
-
-          
         </div>
       </div>
     </div>

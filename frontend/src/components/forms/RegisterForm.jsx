@@ -50,7 +50,7 @@ function validateField(field, value) {
   }
 }
 
-// ── Inline SVG icons ─────────────────────────────────────────────────────────
+// ── Inline SVG icons (unchanged) ─────────────────────────────────────────────
 const UserIcon = () => (
   <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24"
     fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
@@ -104,19 +104,19 @@ const ArrowRight = () => (
   </svg>
 );
 
-// ── Compact labelled field ────────────────────────────────────────────────────
+// ── Field wrapper ─────────────────────────────────────────────────────────────
 function Field({ label, htmlFor, error, required, children }) {
   return (
     <div className="flex flex-col gap-1">
       {label && (
-        <label htmlFor={htmlFor} className="text-xs font-semibold text-gray-700">
+        <label htmlFor={htmlFor} className="text-xs font-semibold text-gray-700 dark:text-[#e6edf3]">
           {label}
           {required && <span className="text-red-500 ml-0.5">*</span>}
         </label>
       )}
       {children}
       {error && (
-        <p role="alert" className="text-[10px] text-red-500 mt-0.5 leading-tight">
+        <p role="alert" className="text-[10px] text-red-500 dark:text-red-400 mt-0.5 leading-tight">
           {error}
         </p>
       )}
@@ -128,20 +128,20 @@ function Field({ label, htmlFor, error, required, children }) {
 function StrengthBar({ strength }) {
   if (!strength) return null;
   const colors = {
-    Weak: "bg-red-500",
-    Fair: "bg-yellow-400",
-    Good: "bg-blue-500",
+    Weak:   "bg-red-500",
+    Fair:   "bg-yellow-400",
+    Good:   "bg-blue-500",
     Strong: "bg-green-500",
   };
   const widths = {
-    Weak: "w-1/4",
-    Fair: "w-2/4",
-    Good: "w-3/4",
+    Weak:   "w-1/4",
+    Fair:   "w-2/4",
+    Good:   "w-3/4",
     Strong: "w-full",
   };
   return (
     <div className="mt-1">
-      <div className="h-0.5 w-full rounded-full bg-gray-100 overflow-hidden">
+      <div className="h-0.5 w-full rounded-full bg-gray-100 dark:bg-[#30363d] overflow-hidden">
         <div
           className={`h-full rounded-full transition-all duration-300 ${colors[strength.label]} ${widths[strength.label]}`}
         />
@@ -155,12 +155,8 @@ export default function RegisterForm() {
   const { loading, register } = useAuth();
 
   const [form, setForm] = useState({
-    fullName: "",
-    email: "",
-    password: "",
-    confirmPassword: "",
-    phoneNumber: "",
-    role: "",
+    fullName: "", email: "", password: "", confirmPassword: "",
+    phoneNumber: "", role: "",
   });
   const [fieldErrors, setFieldErrors] = useState({});
   const [showPassword, setShowPassword] = useState(false);
@@ -169,16 +165,15 @@ export default function RegisterForm() {
   const [capsLockOn, setCapsLockOn] = useState(false);
   const [passwordFocused, setPasswordFocused] = useState(false);
 
-  // Refs — for autofocus on first error field
   const refs = {
-    fullName: useRef(null),
-    email: useRef(null),
-    password: useRef(null),
+    fullName:        useRef(null),
+    email:           useRef(null),
+    password:        useRef(null),
     confirmPassword: useRef(null),
-    phoneNumber: useRef(null),
+    phoneNumber:     useRef(null),
   };
 
-    const handleChange = (field) => (e) => {
+  const handleChange = (field) => (e) => {
     const value = e.target.value;
     setForm((prev) => ({ ...prev, [field]: value }));
     setFieldErrors((prev) => ({ ...prev, [field]: validateField(field, value) }));
@@ -189,7 +184,6 @@ export default function RegisterForm() {
     setFieldErrors((prev) => ({ ...prev, role: validateField("role", value) }));
   };
 
-  // ── Autofocus first field with error (in DOM order) ──────────────────────
   useEffect(() => {
     const order = ["fullName", "email", "password", "confirmPassword", "phoneNumber"];
     for (const key of order) {
@@ -198,86 +192,61 @@ export default function RegisterForm() {
         break;
       }
     }
-    // Note: role is a Select — can't focus programmatically the same way.
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [fieldErrors]);
 
-  // ── Caps Lock detection ──────────────────────────────────────────────────
   const handlePasswordKeyEvent = (e) => {
     if (typeof e.getModifierState === "function") {
       setCapsLockOn(e.getModifierState("CapsLock"));
     }
   };
 
-  // ── Submit handler with min 400ms loader (Stripe pattern) ────────────────
   const handleSubmit = async (e) => {
-  e.preventDefault();
-
-  const errors = validateRegisterForm(form);
-  if (Object.keys(errors).length > 0) {
-    setFieldErrors(errors);
-    return;
-  }
-
-  setFieldErrors({});
-
-  const minDuration = new Promise((resolve) => setTimeout(resolve, 400));
-
-  try {
-    await Promise.all([
-      register({
-        fullName: form.fullName.trim(),
-        email: form.email.trim().toLowerCase(),
-        password: form.password,
-        phoneNumber: form.phoneNumber.trim(),
-        role: form.role,
-      }),
-      minDuration,
-    ]);
-
-    // Auto-login: user is already authenticated, go straight to dashboard
-    setJustRegistered(true);
-    toast.success("Welcome aboard", {
-      description: "Your account is ready. Redirecting…",
-    });
-
-    setTimeout(() => {
-      window.location.href = "/dashboard";
-    }, 800);
-  } catch (err) {
-    await minDuration;
-
-    const backendMsg = err?.message || "";
-
-    if (
-      backendMsg.toLowerCase().includes("email") &&
-      backendMsg.toLowerCase().includes("exist")
-    ) {
-      setFieldErrors({ email: "An account with this email already exists." });
-      toast.error("Email already registered", {
-        description: "Try signing in instead, or use a different email.",
-      });
-    } else if (err?.errors && typeof err.errors === "object") {
-      setFieldErrors(err.errors);
-      toast.error("Please check your details", {
-        description: "Some fields need attention.",
-      });
-    } else {
-      toast.error("Registration failed", {
-        description: backendMsg || "Please try again.",
-      });
+    e.preventDefault();
+    const errors = validateRegisterForm(form);
+    if (Object.keys(errors).length > 0) { setFieldErrors(errors); return; }
+    setFieldErrors({});
+    const minDuration = new Promise((resolve) => setTimeout(resolve, 400));
+    try {
+      await Promise.all([
+        register({
+          fullName:    form.fullName.trim(),
+          email:       form.email.trim().toLowerCase(),
+          password:    form.password,
+          phoneNumber: form.phoneNumber.trim(),
+          role:        form.role,
+        }),
+        minDuration,
+      ]);
+      setJustRegistered(true);
+      toast.success("Welcome aboard", { description: "Your account is ready. Redirecting…" });
+      setTimeout(() => { window.location.href = "/dashboard"; }, 800);
+    } catch (err) {
+      await minDuration;
+      const backendMsg = err?.message || "";
+      if (backendMsg.toLowerCase().includes("email") && backendMsg.toLowerCase().includes("exist")) {
+        setFieldErrors({ email: "An account with this email already exists." });
+        toast.error("Email already registered", { description: "Try signing in instead, or use a different email." });
+      } else if (err?.errors && typeof err.errors === "object") {
+        setFieldErrors(err.errors);
+        toast.error("Please check your details", { description: "Some fields need attention." });
+      } else {
+        toast.error("Registration failed", { description: backendMsg || "Please try again." });
+      }
     }
-  }
-};
+  };
 
   const passwordStrength = getPasswordStrength(form.password);
 
   const getInputClasses = (hasError) =>
-    `h-10 rounded-xl pl-9 text-sm focus-visible:ring-2 transition-colors ${
-      hasError
-        ? "border-red-300 focus-visible:ring-red-400"
-        : "border-gray-200 focus-visible:ring-green-500"
-    }`;
+    `h-10 rounded-xl pl-9 text-sm focus-visible:ring-2 transition-colors
+     bg-white dark:bg-[#0d1117]
+     text-gray-900 dark:text-[#e6edf3]
+     placeholder:text-gray-400 dark:placeholder:text-[#6e7681]
+     ${hasError
+       ? "border-red-300 dark:border-red-800 focus-visible:ring-red-400"
+       : "border-gray-200 dark:border-[#30363d] focus-visible:ring-green-500 dark:focus-visible:ring-green-700"
+     }`;
 
   return (
     <div className="w-full">
@@ -293,22 +262,22 @@ export default function RegisterForm() {
       </div>
 
       {/* Title */}
-      <h2 className="mt-5 text-[36px] font-black leading-[40px] tracking-tight text-[#111827]">
+      <h2 className="mt-5 text-[36px] font-black leading-[40px] tracking-tight text-[#111827] dark:text-[#e6edf3]">
         Create your account
       </h2>
-      <p className="mt-2 text-sm leading-5 text-gray-500">
+      <p className="mt-2 text-sm leading-5 text-gray-500 dark:text-[#7d8590]">
         Join the platform to begin secure due diligence.
       </p>
 
       {/* Form Card */}
-      <div className="mt-4 w-full rounded-[24px] border border-white bg-white p-5 shadow-[0_20px_60px_rgba(0,0,0,0.08)]">
+      <div className="mt-4 w-full rounded-[24px] border border-white dark:border-[#30363d] bg-white dark:bg-[#161b22] p-5 shadow-[0_20px_60px_rgba(0,0,0,0.08)] dark:shadow-[0_20px_60px_rgba(0,0,0,0.4)]">
         <form onSubmit={handleSubmit} noValidate className="space-y-3">
 
           {/* Row 1: Full Name + Email */}
           <div className="grid grid-cols-2 gap-3">
             <Field label="Full name" htmlFor="fullName" error={fieldErrors.fullName} required>
               <div className="relative">
-                <span className="absolute inset-y-0 left-3 flex items-center text-gray-400 pointer-events-none z-10">
+                <span className="absolute inset-y-0 left-3 flex items-center text-gray-400 dark:text-[#6e7681] pointer-events-none z-10">
                   <UserIcon />
                 </span>
                 <Input
@@ -328,7 +297,7 @@ export default function RegisterForm() {
 
             <Field label="Email" htmlFor="email" error={fieldErrors.email} required>
               <div className="relative">
-                <span className="absolute inset-y-0 left-3 flex items-center text-gray-400 pointer-events-none z-10">
+                <span className="absolute inset-y-0 left-3 flex items-center text-gray-400 dark:text-[#6e7681] pointer-events-none z-10">
                   <MailIcon />
                 </span>
                 <Input
@@ -351,7 +320,7 @@ export default function RegisterForm() {
           <div className="grid grid-cols-2 gap-3">
             <Field label="Password" htmlFor="password" error={fieldErrors.password} required>
               <div className="relative">
-                <span className="absolute inset-y-0 left-3 flex items-center text-gray-400 pointer-events-none z-10">
+                <span className="absolute inset-y-0 left-3 flex items-center text-gray-400 dark:text-[#6e7681] pointer-events-none z-10">
                   <LockIcon />
                 </span>
                 <Input
@@ -373,7 +342,7 @@ export default function RegisterForm() {
                 <button
                   type="button"
                   onClick={() => setShowPassword((s) => !s)}
-                  className="absolute inset-y-0 right-3 flex items-center text-gray-400 hover:text-gray-600 z-10"
+                  className="absolute inset-y-0 right-3 flex items-center text-gray-400 dark:text-[#6e7681] hover:text-gray-600 dark:hover:text-[#e6edf3] z-10"
                   aria-label={showPassword ? "Hide password" : "Show password"}
                   tabIndex={-1}
                 >
@@ -381,24 +350,17 @@ export default function RegisterForm() {
                 </button>
               </div>
               {form.password && <StrengthBar strength={passwordStrength} />}
-
-              {/* Caps Lock warning under password */}
               {capsLockOn && passwordFocused && !fieldErrors.password && (
-                <p className="flex items-center gap-1 text-[10px] text-amber-600 leading-tight mt-1">
+                <p className="flex items-center gap-1 text-[10px] text-amber-600 dark:text-amber-400 leading-tight mt-1">
                   <AlertCircle className="h-3 w-3" strokeWidth={2.5} />
                   Caps Lock is on
                 </p>
               )}
             </Field>
 
-            <Field
-              label="Confirm"
-              htmlFor="confirmPassword"
-              error={fieldErrors.confirmPassword}
-              required
-            >
+            <Field label="Confirm" htmlFor="confirmPassword" error={fieldErrors.confirmPassword} required>
               <div className="relative">
-                <span className="absolute inset-y-0 left-3 flex items-center text-gray-400 pointer-events-none z-10">
+                <span className="absolute inset-y-0 left-3 flex items-center text-gray-400 dark:text-[#6e7681] pointer-events-none z-10">
                   <LockIcon />
                 </span>
                 <Input
@@ -416,7 +378,7 @@ export default function RegisterForm() {
                 <button
                   type="button"
                   onClick={() => setShowConfirmPassword((s) => !s)}
-                  className="absolute inset-y-0 right-3 flex items-center text-gray-400 hover:text-gray-600 z-10"
+                  className="absolute inset-y-0 right-3 flex items-center text-gray-400 dark:text-[#6e7681] hover:text-gray-600 dark:hover:text-[#e6edf3] z-10"
                   aria-label={showConfirmPassword ? "Hide password" : "Show password"}
                   tabIndex={-1}
                 >
@@ -426,22 +388,21 @@ export default function RegisterForm() {
             </Field>
           </div>
 
-          {/* Row 3: Phone (+91 prefix) + Role */}
+          {/* Row 3: Phone + Role */}
           <div className="grid grid-cols-2 gap-3">
-            <Field
-              label="Phone number"
-              htmlFor="phoneNumber"
-              error={fieldErrors.phoneNumber}
-              required
-            >
+            <Field label="Phone number" htmlFor="phoneNumber" error={fieldErrors.phoneNumber} required>
               <div className="relative flex">
                 <div
                   className={`
                     flex items-center gap-1 h-10 px-3
                     rounded-l-xl border border-r-0
-                    bg-gray-50 text-xs font-semibold text-gray-600
+                    bg-gray-50 dark:bg-[#1c2128]
+                    text-xs font-semibold text-gray-600 dark:text-[#7d8590]
                     select-none
-                    ${fieldErrors.phoneNumber ? "border-red-300" : "border-gray-200"}
+                    ${fieldErrors.phoneNumber
+                      ? "border-red-300 dark:border-red-800"
+                      : "border-gray-200 dark:border-[#30363d]"
+                    }
                   `}
                   aria-hidden="true"
                 >
@@ -456,7 +417,7 @@ export default function RegisterForm() {
                   maxLength={10}
                   placeholder="9876543210"
                   value={form.phoneNumber}
-                                    onChange={(e) => {
+                  onChange={(e) => {
                     const digitsOnly = e.target.value.replace(/\D/g, "");
                     setForm((prev) => ({ ...prev, phoneNumber: digitsOnly }));
                     setFieldErrors((prev) => ({ ...prev, phoneNumber: validateField("phoneNumber", digitsOnly) }));
@@ -467,10 +428,12 @@ export default function RegisterForm() {
                   className={`
                     h-10 rounded-l-none rounded-r-xl text-sm
                     focus-visible:ring-2 transition-colors
-                    ${
-                      fieldErrors.phoneNumber
-                        ? "border-red-300 focus-visible:ring-red-400"
-                        : "border-gray-200 focus-visible:ring-green-500"
+                    bg-white dark:bg-[#0d1117]
+                    text-gray-900 dark:text-[#e6edf3]
+                    placeholder:text-gray-400 dark:placeholder:text-[#6e7681]
+                    ${fieldErrors.phoneNumber
+                      ? "border-red-300 dark:border-red-800 focus-visible:ring-red-400"
+                      : "border-gray-200 dark:border-[#30363d] focus-visible:ring-green-500 dark:focus-visible:ring-green-700"
                     }
                   `}
                 />
@@ -479,7 +442,7 @@ export default function RegisterForm() {
 
             <Field label="Role" htmlFor="role" error={fieldErrors.role} required>
               <div className="relative">
-                <span className="absolute inset-y-0 left-3 flex items-center text-gray-400 pointer-events-none z-10">
+                <span className="absolute inset-y-0 left-3 flex items-center text-gray-400 dark:text-[#6e7681] pointer-events-none z-10">
                   <BriefcaseIcon />
                 </span>
                 <Select
@@ -490,7 +453,15 @@ export default function RegisterForm() {
                   <SelectTrigger
                     hideIcon
                     id="role"
-                    className="h-10 w-full rounded-xl border border-gray-200 bg-white pl-9 pr-3 text-sm focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-offset-0 focus:border-transparent data-[placeholder]:text-gray-400"
+                    className={`h-10 w-full rounded-xl border pl-9 pr-3 text-sm
+                      focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-offset-0 focus:border-transparent
+                      bg-white dark:bg-[#0d1117]
+                      text-gray-900 dark:text-[#e6edf3]
+                      data-[placeholder]:text-gray-400 dark:data-[placeholder]:text-[#6e7681]
+                      ${fieldErrors.role
+                        ? "border-red-300 dark:border-red-800"
+                        : "border-gray-200 dark:border-[#30363d]"
+                      }`}
                     aria-invalid={!!fieldErrors.role}
                   >
                     <div className="flex w-full items-center justify-between gap-2">
@@ -499,10 +470,9 @@ export default function RegisterForm() {
                           ? ROLES.find((r) => r.value === form.role)?.label
                           : "Choose role"}
                       </span>
-
                       <svg
                         xmlns="http://www.w3.org/2000/svg"
-                        className="h-4 w-4 flex-shrink-0 text-gray-400"
+                        className="h-4 w-4 flex-shrink-0 text-gray-400 dark:text-[#6e7681]"
                         viewBox="0 0 24 24"
                         fill="none"
                         stroke="currentColor"
@@ -517,7 +487,7 @@ export default function RegisterForm() {
                   </SelectTrigger>
 
                   <SelectContent
-                    className="z-50 rounded-xl border border-gray-200 bg-white shadow-xl w-[min(380px,calc(100vw-2rem))]"
+                    className="z-50 rounded-xl border border-gray-200 dark:border-[#30363d] bg-white dark:bg-[#1c2128] shadow-xl dark:shadow-[0_20px_50px_rgba(0,0,0,0.5)] w-[min(380px,calc(100vw-2rem))]"
                     position="popper"
                     side="bottom"
                     align="end"
@@ -529,19 +499,24 @@ export default function RegisterForm() {
                         <SelectItem
                           key={role.value}
                           value={role.value}
-                          className="relative flex w-full cursor-pointer select-none items-center rounded-lg py-3 pl-3 pr-9 text-sm outline-none focus:bg-green-50 focus:text-green-700 data-[disabled]:pointer-events-none data-[disabled]:opacity-50 data-[state=checked]:bg-green-50 data-[state=checked]:text-green-700"
+                          className="relative flex w-full cursor-pointer select-none items-center rounded-lg py-3 pl-3 pr-9 text-sm outline-none
+                            text-gray-900 dark:text-[#e6edf3]
+                            focus:bg-green-50 dark:focus:bg-[#0d2818]
+                            focus:text-green-700 dark:focus:text-green-400
+                            data-[state=checked]:bg-green-50 dark:data-[state=checked]:bg-[#0d2818]
+                            data-[state=checked]:text-green-700 dark:data-[state=checked]:text-green-400
+                            data-[disabled]:pointer-events-none data-[disabled]:opacity-50"
                         >
                           <div className="flex items-start gap-3">
-                            <div className="flex-shrink-0 mt-0.5 w-8 h-8 rounded-lg bg-gray-100 flex items-center justify-center group-focus:bg-green-100">
-                              <RoleIcon className="h-4 w-4 text-gray-600" strokeWidth={2} />
+                            <div className="flex-shrink-0 mt-0.5 w-8 h-8 rounded-lg bg-gray-100 dark:bg-[#0d1117] flex items-center justify-center">
+                              <RoleIcon className="h-4 w-4 text-gray-600 dark:text-[#7d8590]" strokeWidth={2} />
                             </div>
-
                             <div className="flex flex-col gap-0.5 min-w-0">
                               <span className="text-sm font-semibold leading-tight">
                                 {role.label}
                               </span>
                               {role.description && (
-                                <span className="text-[11px] text-gray-500 font-normal leading-snug">
+                                <span className="text-[11px] text-gray-500 dark:text-[#7d8590] font-normal leading-snug">
                                   {role.description}
                                 </span>
                               )}
@@ -556,7 +531,7 @@ export default function RegisterForm() {
             </Field>
           </div>
 
-          {/* Submit */}
+          {/* Submit — green gradient, unchanged */}
           <Button
             type="submit"
             disabled={loading || justRegistered}
@@ -570,32 +545,29 @@ export default function RegisterForm() {
                 </svg>
                 Please wait…
               </span>
-           ) : justRegistered ? (
-  <span>Welcome ✓</span>
-) : (
+            ) : justRegistered ? (
+              <span>Welcome ✓</span>
+            ) : (
               <>
                 Create account
-                <span className="ml-2">
-                  <ArrowRight />
-                </span>
+                <span className="ml-2"><ArrowRight /></span>
               </>
             )}
           </Button>
 
           {/* Divider */}
           <div className="my-4 flex items-center">
-            <div className="h-px flex-1 bg-gray-200"></div>
-            <span className="mx-3 text-[10px] text-gray-500">OR CONTINUE WITH</span>
-            <div className="h-px flex-1 bg-gray-200"></div>
+            <div className="h-px flex-1 bg-gray-200 dark:bg-[#30363d]" />
+            <span className="mx-3 text-[10px] text-gray-500 dark:text-[#6e7681]">OR CONTINUE WITH</span>
+            <div className="h-px flex-1 bg-gray-200 dark:bg-[#30363d]" />
           </div>
 
-          {/* Google Sign-In */}
           <GoogleSignInButton />
         </form>
       </div>
 
       {/* Sign in link */}
-      <p className="mt-3 text-center text-xs text-gray-600">
+      <p className="mt-3 text-center text-xs text-gray-600 dark:text-[#7d8590]">
         Already have an account?{" "}
         <Link
           href="/login"
@@ -605,16 +577,15 @@ export default function RegisterForm() {
         </Link>
       </p>
 
-      {/* Honest security footer */}
-      <div className="mt-4 border-t border-gray-200 pt-3 text-center">
-        <p className="text-[10px] uppercase tracking-widest text-gray-400">
+      {/* Security footer */}
+      <div className="mt-4 border-t border-gray-200 dark:border-[#30363d] pt-3 text-center">
+        <p className="text-[10px] uppercase tracking-widest text-gray-400 dark:text-[#6e7681]">
           Secure by design
         </p>
-        <p className="mt-1 text-[11px] text-gray-400">
+        <p className="mt-1 text-[11px] text-gray-400 dark:text-[#6e7681]">
           JWT authentication · BCrypt hashing · Role-based access control
         </p>
       </div>
-
     </div>
   );
 }

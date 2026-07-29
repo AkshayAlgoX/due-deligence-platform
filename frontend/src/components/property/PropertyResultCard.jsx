@@ -24,17 +24,17 @@ const RISK_CONFIG = {
   LOW: {
     label: "Low risk",
     icon: ShieldCheck,
-    className: "bg-green-50 text-green-700 ring-green-200",
+    className: "bg-green-50 dark:bg-[#0d2818] text-green-700 dark:text-green-400 ring-green-200 dark:ring-green-900",
   },
   MEDIUM: {
     label: "Medium risk",
     icon: Shield,
-    className: "bg-amber-50 text-amber-700 ring-amber-200",
+    className: "bg-amber-50 dark:bg-[#282a10] text-amber-700 dark:text-amber-400 ring-amber-200 dark:ring-amber-900",
   },
   HIGH: {
     label: "High risk",
     icon: ShieldAlert,
-    className: "bg-red-50 text-red-700 ring-red-200",
+    className: "bg-red-50 dark:bg-[#2d1214] text-red-700 dark:text-red-400 ring-red-200 dark:ring-red-900",
   },
 };
 
@@ -118,13 +118,13 @@ export default function PropertyResultCard({
       tabIndex={0}
       onClick={goToDetails}
       onKeyDown={handleCardKeyDown}
-      className={`group relative flex h-full w-full min-h-0 flex-col overflow-hidden rounded-3xl bg-white text-left transition-all duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#22C55E] focus-visible:ring-offset-2 ${
+      className={`group relative flex h-full w-full min-h-0 flex-col overflow-hidden rounded-3xl bg-white dark:bg-[#161b22] text-left transition-all duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#22C55E] focus-visible:ring-offset-2 ${
         isSelected
           ? "scale-[1.02] shadow-[0_20px_60px_rgba(34,197,94,0.3)] ring-2 ring-[#22C55E]"
-          : "shadow-[0_2px_10px_rgba(0,0,0,0.04)] ring-1 ring-gray-100 hover:-translate-y-1 hover:shadow-[0_20px_50px_rgba(0,0,0,0.12)] hover:ring-gray-200 active:translate-y-0 active:shadow-[0_2px_10px_rgba(0,0,0,0.04)]"
+          : "shadow-[0_2px_10px_rgba(0,0,0,0.04)] ring-1 ring-gray-100 dark:ring-[#30363d] hover:-translate-y-1 hover:shadow-[0_20px_50px_rgba(0,0,0,0.12)] dark:hover:shadow-[0_20px_50px_rgba(0,0,0,0.5)] hover:ring-gray-200 dark:hover:ring-[#484f58] active:translate-y-0 active:shadow-[0_2px_10px_rgba(0,0,0,0.04)]"
       }`}
     >
-      {/* IMAGE AREA */}
+      {/* IMAGE AREA — stays as-is (photos are naturally colored) */}
       <div className="relative h-44 overflow-hidden">
         {thumbnail ? (
           <img
@@ -174,11 +174,15 @@ export default function PropertyResultCard({
           </div>
         )}
 
-        {/* VERIFICATION BADGE */}
+        {/* VERIFICATION BADGE — stays white pill on photo */}
         <div
-          className={`absolute top-3 flex cursor-help items-center gap-1.5 rounded-full bg-white/95 py-1.5 pl-2 pr-3 shadow-xl backdrop-blur-md ${
-            onCompare ? "left-11" : "left-3"
-          } ${verified ? "ring-1 ring-white/40" : "ring-1 ring-amber-200"}`}
+  className={`absolute top-3 flex cursor-help items-center gap-1.5 rounded-full py-1.5 pl-2 pr-3 shadow-xl backdrop-blur-md ${
+    onCompare ? "left-11" : "left-3"
+  } ${
+    verified
+      ? "bg-white/95 ring-1 ring-white/40"
+      : "bg-amber-50 dark:bg-[#3a2a10]/95 ring-1 ring-amber-200 dark:ring-amber-800/60"
+  }`}
           title={
             verified
               ? `Verified — all ${totalChecks} data quality checks passed`
@@ -199,9 +203,9 @@ export default function PropertyResultCard({
               <div className="flex h-4 w-4 items-center justify-center rounded-full bg-gray-300">
                 <AlertTriangle className="h-2.5 w-2.5 text-white" strokeWidth={3} />
               </div>
-              <span className="text-[10px] font-semibold uppercase tracking-wider text-gray-700">
-                Incomplete · {passedChecks}/{totalChecks}
-              </span>
+              <span className="text-[10px] font-semibold uppercase tracking-wider text-amber-800 dark:text-amber-300">
+  Incomplete · {passedChecks}/{totalChecks}
+</span>
             </>
           )}
         </div>
@@ -231,23 +235,23 @@ export default function PropertyResultCard({
 
         {/* ADD PHOTO */}
         {!hasRealImage && onQuickPhoto && (
-          <div
-            role="button"
-            tabIndex={0}
-            onClick={handleQuickPhotoClick}
-            onKeyDown={handleKeyActivate(handleQuickPhotoClick)}
-            className="pointer-events-none absolute left-1/2 top-1/2 flex -translate-x-1/2 -translate-y-1/2 cursor-pointer items-center gap-2 rounded-xl bg-white/95 px-4 py-2 opacity-0 shadow-xl ring-1 ring-white/40 backdrop-blur-md transition-all duration-300 group-hover:pointer-events-auto group-hover:opacity-100 hover:scale-105"
-            title="Add photo"
-            aria-label="Add photo"
-          >
-            <ImagePlus className="h-4 w-4 text-[#16a34a]" strokeWidth={2.5} />
-            <span className="text-xs font-black uppercase tracking-wider text-gray-900">
-              Add photo
-            </span>
-          </div>
+         <div
+  role="button"
+  tabIndex={0}
+  onClick={handleQuickPhotoClick}
+  onKeyDown={handleKeyActivate(handleQuickPhotoClick)}
+  className="pointer-events-none absolute left-1/2 top-1/2 flex -translate-x-1/2 -translate-y-1/2 cursor-pointer items-center gap-2 rounded-xl bg-white/95 dark:bg-[#22C55E]/95 px-4 py-2 opacity-0 shadow-xl ring-1 ring-white/40 dark:ring-white/20 backdrop-blur-md transition-all duration-300 group-hover:pointer-events-auto group-hover:opacity-100 hover:scale-105"
+  title="Add photo"
+  aria-label="Add photo"
+>
+  <ImagePlus className="h-4 w-4 text-[#16a34a] dark:text-white" strokeWidth={2.5} />
+  <span className="text-xs font-black uppercase tracking-wider text-gray-900 dark:text-white">
+    Add photo
+  </span>
+</div>
         )}
 
-        {/* MARKET VALUE */}
+        {/* MARKET VALUE — stays white pill on photo */}
         {marketValue != null && (
           <div className="pointer-events-none absolute bottom-3 left-3 right-3 flex items-end justify-between">
             <div className="rounded-2xl bg-white/95 px-3 py-2 shadow-xl ring-1 ring-white/40 backdrop-blur-md">
@@ -272,19 +276,19 @@ export default function PropertyResultCard({
         )}
       </div>
 
-      {/* CARD BODY */}
+      {/* CARD BODY — DARK MODE */}
       <div className="flex flex-1 min-h-0 flex-col p-5">
         <div className="flex items-start gap-2">
-          <div className="mt-0.5 flex h-5 w-5 flex-shrink-0 items-center justify-center rounded-md bg-green-50">
+          <div className="mt-0.5 flex h-5 w-5 flex-shrink-0 items-center justify-center rounded-md bg-green-50 dark:bg-[#0d2818]">
             <Home className="h-3 w-3 text-[#22C55E]" strokeWidth={2.5} />
           </div>
-          <h3 className="line-clamp-1 text-[15px] font-black leading-tight tracking-tight text-gray-900">
+          <h3 className="line-clamp-1 text-[15px] font-black leading-tight tracking-tight text-gray-900 dark:text-[#e6edf3]">
             {address}
           </h3>
         </div>
 
-        <div className="mt-2 flex items-center gap-1.5 pl-7 text-xs text-gray-500">
-          <MapPin className="h-3 w-3 flex-shrink-0 text-gray-400" />
+        <div className="mt-2 flex items-center gap-1.5 pl-7 text-xs text-gray-500 dark:text-[#7d8590]">
+          <MapPin className="h-3 w-3 flex-shrink-0 text-gray-400 dark:text-[#6e7681]" />
           <span className="truncate font-semibold">
             {city}
             {state && `, ${state}`}
@@ -292,27 +296,27 @@ export default function PropertyResultCard({
           </span>
         </div>
 
-        <div className="my-4 h-px bg-gradient-to-r from-transparent via-gray-200 to-transparent" />
+        <div className="my-4 h-px bg-gradient-to-r from-transparent via-gray-200 dark:via-[#30363d] to-transparent" />
 
         <div className="flex flex-wrap items-center gap-1.5">
           {area && (
-            <div className="flex items-center gap-1 rounded-full bg-gray-50 py-1 pl-2 pr-2.5 ring-1 ring-gray-100">
-              <Maximize className="h-3 w-3 text-gray-500" strokeWidth={2.5} />
-              <span className="text-[11px] font-bold text-gray-700">
+            <div className="flex items-center gap-1 rounded-full bg-gray-50 dark:bg-[#1c2128] py-1 pl-2 pr-2.5 ring-1 ring-gray-100 dark:ring-[#30363d]">
+              <Maximize className="h-3 w-3 text-gray-500 dark:text-[#7d8590]" strokeWidth={2.5} />
+              <span className="text-[11px] font-bold text-gray-700 dark:text-[#e6edf3]">
                 {area.toLocaleString()} sqft
               </span>
             </div>
           )}
 
           {bedrooms && (
-            <div className="rounded-full bg-green-50 px-2.5 py-1 ring-1 ring-green-100">
-              <span className="text-[11px] font-bold text-green-700">{bedrooms} BR</span>
+            <div className="rounded-full bg-green-50 dark:bg-[#0d2818] px-2.5 py-1 ring-1 ring-green-100 dark:ring-green-900">
+              <span className="text-[11px] font-bold text-green-700 dark:text-green-400">{bedrooms} BR</span>
             </div>
           )}
 
           {bathrooms && (
-            <div className="rounded-full bg-blue-50 px-2.5 py-1 ring-1 ring-blue-100">
-              <span className="text-[11px] font-bold text-blue-700">{bathrooms} BA</span>
+            <div className="rounded-full bg-blue-50 dark:bg-[#0c1f33] px-2.5 py-1 ring-1 ring-blue-100 dark:ring-blue-900">
+              <span className="text-[11px] font-bold text-blue-700 dark:text-blue-400">{bathrooms} BA</span>
             </div>
           )}
 
@@ -329,8 +333,8 @@ export default function PropertyResultCard({
 
         <div className="mt-auto pt-4">
           {!verified ? (
-            <div className="min-h-[76px] rounded-xl border border-amber-200 bg-amber-50/50 p-3">
-              <p className="text-[11px] font-semibold leading-tight text-amber-800">
+            <div className="min-h-[76px] rounded-xl border border-amber-200 dark:border-amber-900 bg-amber-50/50 dark:bg-[#282a10] p-3">
+              <p className="text-[11px] font-semibold leading-tight text-amber-800 dark:text-amber-300">
                 Missing: {missingFields.slice(0, 2).join(", ")}
                 {missingFields.length > 2 && ` +${missingFields.length - 2} more`}
               </p>

@@ -1,7 +1,14 @@
 @import "tailwindcss";
 
+/* ── Tailwind v4: enable class-based dark mode ──────────────────────────────
+   This single line makes every dark:* utility class work.
+   Without it, dark:bg-* dark:text-* etc. are silently ignored in v4.
+   Must come BEFORE @theme inline block.                                     */
+@custom-variant dark (&:where(.dark, .dark *));
+
 :root {
-  --background: #ffffff;
+  /* ── Light mode (unchanged) ──────────────────────────────────────────── */
+  --background: #F6F8FB;
   --foreground: #171717;
 
   /* shadcn/ui CSS variables */
@@ -23,6 +30,44 @@
   --input: #e2e8f0;
   --ring: #16a34a;
   --radius: 0.5rem;
+
+  /* ── GitHub Dark palette as CSS vars (used in Chunks B-J) ───────────── */
+  --gh-bg: #0d1117;
+  --gh-card: #161b22;
+  --gh-card-elevated: #1c2128;
+  --gh-border: #30363d;
+  --gh-text-primary: #e6edf3;
+  --gh-text-secondary: #7d8590;
+  --gh-text-tertiary: #6e7681;
+  --gh-success-bg: #0d2818;
+  --gh-error-bg: #2d1214;
+  --gh-warning-bg: #282a10;
+}
+
+/* ── Dark mode overrides (GitHub Dark exact hex values) ─────────────────────
+   Applied when <html class="dark"> is present.
+   Only overrides CSS vars — light mode values are preserved above.          */
+.dark {
+  --background: #0d1117;
+  --foreground: #e6edf3;
+
+  --card: #161b22;
+  --card-foreground: #e6edf3;
+  --popover: #1c2128;
+  --popover-foreground: #e6edf3;
+  --primary: #22C55E;
+  --primary-foreground: #0d1117;
+  --secondary: #1c2128;
+  --secondary-foreground: #e6edf3;
+  --muted: #161b22;
+  --muted-foreground: #7d8590;
+  --accent: #1c2128;
+  --accent-foreground: #e6edf3;
+  --destructive: #f85149;
+  --destructive-foreground: #e6edf3;
+  --border: #30363d;
+  --input: #1c2128;
+  --ring: #22C55E;
 }
 
 @theme inline {
@@ -48,8 +93,9 @@
   --font-mono: var(--font-geist-mono);
 }
 
-/* ── Global interactive cursor styles ───────────────────────────── */
+/* ── Global interactive cursor styles ─────────────────────────────────────── */
 @layer base {
+
   button:not(:disabled),
   a,
   [role="button"]:not([aria-disabled="true"]),
@@ -68,41 +114,39 @@
   }
 }
 
-/* @media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-    --card: #0a0a0a;
-    --card-foreground: #ededed;
-    --popover: #0a0a0a;
-    --popover-foreground: #ededed;
-    --primary: #16a34a;
-    --primary-foreground: #ffffff;
-    --secondary: #1e293b;
-    --secondary-foreground: #f8fafc;
-    --muted: #1e293b;
-    --muted-foreground: #94a3b8;
-    --accent: #1e293b;
-    --accent-foreground: #f8fafc;
-    --destructive: #ef4444;
-    --border: #1e293b;
-    --input: #1e293b;
-    --ring: #16a34a;
-  }
-} */
-
 body {
   background: var(--background);
   color: var(--foreground);
   font-family: Arial, Helvetica, sans-serif;
 }
 
-/* ── Custom animations ───────────────────────────────────────────── */
+/* ── Smooth theme transition ─────────────────────────────────────────────────
+   200ms ease on bg/border/color so the dark↔light flip feels premium.
+   Scoped to these 3 properties only — does NOT interfere with framer-motion
+   (which uses transform/opacity, not listed here).
+   The .no-transition class is applied briefly during page load to prevent
+   the "fade from white" flash on dark-mode users' first paint.              */
+/* Theme transition — only body-level color shifts smoothly when toggling dark mode.
+   Individual elements handle their own transitions via Tailwind utility classes,
+   which preserves the sidebar's transition-transform duration-300 animation. */
+body {
+  transition: background-color 200ms ease, color 200ms ease;
+}
+
+.no-transition,
+.no-transition *,
+.no-transition *::before,
+.no-transition *::after {
+  transition: none !important;
+}
+
+/* ── Custom animations ─────────────────────────────────────────────────────── */
 @keyframes fadeIn {
   from {
     opacity: 0;
     transform: translateY(8px);
   }
+
   to {
     opacity: 1;
     transform: translateY(0);
@@ -119,6 +163,7 @@ body {
     opacity: 0;
     transform: translateY(-6px);
   }
+
   to {
     opacity: 1;
     transform: translateY(0);
@@ -141,14 +186,13 @@ body {
   animation-duration: 300ms;
 }
 
-/* ── Accessibility: visible focus ring on keyboard nav ─────────── */
+/* ── Accessibility: visible focus ring on keyboard nav ───────────────────── */
 *:focus-visible {
   outline: 2px solid #22C55E;
   outline-offset: 2px;
   border-radius: 6px;
 }
 
-/* Hide focus ring on mouse click (only show for keyboard users) */
 *:focus:not(:focus-visible) {
   outline: none;
 }

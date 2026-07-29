@@ -1,5 +1,6 @@
 "use client";
 
+import { useEffect, useState } from "react";
 import {
   LineChart,
   Line,
@@ -12,15 +13,13 @@ import {
 } from "recharts";
 import { TrendingUp } from "lucide-react";
 
-// ── Generate 6 months of mock trend data ────────────────────────────────────
+// ── Generate 6 months of mock trend data ─────────────────────────────────────
 function generateMockData(properties) {
   const months = ["Feb", "Mar", "Apr", "May", "Jun", "Jul"];
-
   return months.map((month, i) => {
     const point = { month };
     properties.forEach((p, idx) => {
       if (!p?.marketValue) return;
-      // Simulate ±5% fluctuation over 6 months
       const trend = 1 + (i - 2) * 0.018;
       const noise = 1 + (Math.sin(idx * 3 + i) * 0.025);
       point[`prop_${idx}`] = Math.round(p.marketValue * trend * noise);
@@ -38,24 +37,69 @@ function formatYAxis(value) {
   return `₹${value.toLocaleString("en-IN")}`;
 }
 
-function CustomTooltip({ active, payload, label }) {
+// ── Custom tooltip — uses isDark prop for inline styles ───────────────────────
+function CustomTooltip({ active, payload, label, isDark }) {
   if (!active || !payload?.length) return null;
 
   return (
-    <div className="rounded-xl border border-gray-100 bg-white p-3 shadow-lg">
-      <p className="text-[10px] font-black uppercase tracking-widest text-gray-400 mb-2">
+    <div
+      style={{
+        backgroundColor: isDark ? "#1c2128" : "#ffffff",
+        border: `1px solid ${isDark ? "#30363d" : "#f3f4f6"}`,
+        borderRadius: "12px",
+        padding: "12px",
+        boxShadow: isDark
+          ? "0 8px 24px rgba(0,0,0,0.4)"
+          : "0 4px 16px rgba(0,0,0,0.1)",
+      }}
+    >
+      <p
+        style={{
+          fontSize: "10px",
+          fontWeight: 900,
+          textTransform: "uppercase",
+          letterSpacing: "0.08em",
+          color: isDark ? "#6e7681" : "#9ca3af",
+          marginBottom: "8px",
+        }}
+      >
         {label}
       </p>
       {payload.map((entry, i) => (
-        <div key={i} className="flex items-center gap-2 mb-1 last:mb-0">
+        <div
+          key={i}
+          style={{
+            display: "flex",
+            alignItems: "center",
+            gap: "8px",
+            marginBottom: i < payload.length - 1 ? "4px" : 0,
+          }}
+        >
           <span
-            className="h-2 w-2 rounded-full flex-shrink-0"
-            style={{ backgroundColor: entry.color }}
+            style={{
+              height: "8px",
+              width: "8px",
+              borderRadius: "50%",
+              backgroundColor: entry.color,
+              flexShrink: 0,
+            }}
           />
-          <span className="text-xs font-semibold text-gray-600">
+          <span
+            style={{
+              fontSize: "12px",
+              fontWeight: 600,
+              color: isDark ? "#7d8590" : "#4b5563",
+            }}
+          >
             {entry.name}:
           </span>
-          <span className="text-xs font-black text-gray-900">
+          <span
+            style={{
+              fontSize: "12px",
+              fontWeight: 900,
+              color: isDark ? "#e6edf3" : "#111827",
+            }}
+          >
             {formatYAxis(entry.value)}
           </span>
         </div>
@@ -65,32 +109,50 @@ function CustomTooltip({ active, payload, label }) {
 }
 
 export default function MarketValueChart({ properties = [] }) {
-  const validProperties = properties.filter(Boolean);
+  const [isDark, setIsDark] = useState(false);
 
+  // MutationObserver — same pattern as PortfolioTrendChart
+  useEffect(() => {
+    const check = () =>
+      setIsDark(document.documentElement.classList.contains("dark"));
+    check();
+    const observer = new MutationObserver(check);
+    observer.observe(document.documentElement, {
+      attributes: true,
+      attributeFilter: ["class"],
+    });
+    return () => observer.disconnect();
+  }, []);
+
+  const validProperties = properties.filter(Boolean);
   if (validProperties.length < 2) return null;
 
   const data = generateMockData(validProperties);
 
+  // Dark-aware recharts colors
+  const gridStroke = isDark ? "#30363d" : "#f1f5f9";
+  const axisTickFill = isDark ? "#7d8590" : "#94a3b8";
+
   return (
-    <div className="rounded-2xl border border-gray-100 bg-white p-6 shadow-sm">
+    <div className="rounded-2xl border border-gray-100 dark:border-[#30363d] bg-white dark:bg-[#161b22] p-6 shadow-sm">
       {/* Header */}
       <div className="flex items-center justify-between mb-6">
         <div className="flex items-center gap-3">
-          <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-green-50 ring-1 ring-green-200">
+          <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-green-50 dark:bg-[#0d2818] ring-1 ring-green-200 dark:ring-green-900/50">
             <TrendingUp className="h-4 w-4 text-[#16a34a]" strokeWidth={2} />
           </div>
           <div>
-            <h3 className="text-sm font-black text-gray-900">
+            <h3 className="text-sm font-black text-gray-900 dark:text-[#e6edf3]">
               Market value trend
             </h3>
-            <p className="text-[11px] text-gray-400 font-medium">
+            <p className="text-[11px] text-gray-400 dark:text-[#6e7681] font-medium">
               6-month estimated trend · indicative only
             </p>
           </div>
         </div>
 
-        {/* Mock data disclaimer */}
-        <span className="rounded-full bg-amber-50 px-2.5 py-1 text-[10px] font-bold text-amber-600 ring-1 ring-amber-100">
+        {/* Mock data disclaimer pill */}
+        <span className="rounded-full bg-amber-50 dark:bg-[#282a10] px-2.5 py-1 text-[10px] font-bold text-amber-600 dark:text-amber-400 ring-1 ring-amber-100 dark:ring-amber-900/50">
           Estimated data
         </span>
       </div>
@@ -103,26 +165,32 @@ export default function MarketValueChart({ properties = [] }) {
         >
           <CartesianGrid
             strokeDasharray="3 3"
-            stroke="#f1f5f9"
+            stroke={gridStroke}
             vertical={false}
           />
           <XAxis
             dataKey="month"
-            tick={{ fontSize: 11, fontWeight: 700, fill: "#94a3b8" }}
+            tick={{ fontSize: 11, fontWeight: 700, fill: axisTickFill }}
             axisLine={false}
             tickLine={false}
           />
           <YAxis
             tickFormatter={formatYAxis}
-            tick={{ fontSize: 10, fontWeight: 700, fill: "#94a3b8" }}
+            tick={{ fontSize: 10, fontWeight: 700, fill: axisTickFill }}
             axisLine={false}
             tickLine={false}
             width={60}
           />
-          <Tooltip content={<CustomTooltip />} />
+          <Tooltip content={<CustomTooltip isDark={isDark} />} />
           <Legend
             formatter={(value) => (
-              <span className="text-[11px] font-bold text-gray-600">
+              <span
+                style={{
+                  fontSize: "11px",
+                  fontWeight: 700,
+                  color: isDark ? "#7d8590" : "#4b5563",
+                }}
+              >
                 {value}
               </span>
             )}
