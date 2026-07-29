@@ -1,7 +1,11 @@
 package com.realestate.duediligence.security;
 
 import java.io.IOException;
+import java.time.Instant;
 import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.util.Date;
+import java.util.Optional;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -13,6 +17,8 @@ import org.springframework.security.web.authentication.WebAuthenticationDetailsS
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 
+import com.realestate.duediligence.entity.User;
+import com.realestate.duediligence.repository.UserRepository;
 import com.realestate.duediligence.service.impl.CustomUserDetailsService;
 import com.realestate.duediligence.util.JwtService;
 
@@ -32,6 +38,9 @@ import lombok.RequiredArgsConstructor;
  * Extracts and validates the Bearer token on every request. If the token is
  * malformed, expired, or signed incorrectly, returns a clean 401 JSON
  * response (instead of letting Spring bubble it to a generic 500).
+ *
+ * Also enforces "Logout of all devices" — tokens issued before a user's
+ * tokenValidFrom timestamp are rejected as if expired.
  */
 @Component
 @RequiredArgsConstructor
@@ -39,6 +48,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
     private final JwtService jwtService;
     private final CustomUserDetailsService userDetailsService;
+    private final UserRepository userRepository;
 
     @Override
     protected void doFilterInternal(
@@ -66,6 +76,26 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
                 UserDetails userDetails = userDetailsService.loadUserByUsername(email);
 
                 if (jwtService.isTokenValid(jwt, userDetails.getUsername())) {
+
+                    // ── "Logout of all devices" check ──────────────────────
+                    // Reject tokens issued before the user's tokenValidFrom.
+                    Optional<User> userOpt = userRepository.findByEmail(email);
+                    if (userOpt.isPresent() && userOpt.get().getTokenValidFrom() != null) {
+                        LocalDateTime validFrom = userOpt.get().getTokenValidFrom();
+                        Date issuedAt = jwtService.extractIssuedAt(jwt);
+                        Instant issuedAtInstant = issuedAt.toInstant();
+                        Instant validFromInstant =
+                                validFrom.atZone(ZoneId.systemDefault()).toInstant();
+
+                        if (issuedAtInstant.isBefore(validFromInstant)) {
+                            writeError(response, HttpStatus.UNAUTHORIZED,
+                                    "SESSION_INVALIDATED",
+                                    "Your session was ended. Please log in again.");
+                            return;
+                        }
+                    }
+                    // ────────────────────────────────────────────────────────
+
                     UsernamePasswordAuthenticationToken authToken =
                             new UsernamePasswordAuthenticationToken(
                                     userDetails,

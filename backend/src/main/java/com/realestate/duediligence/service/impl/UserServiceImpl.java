@@ -457,7 +457,7 @@ if (changed) {
     //  CHANGE PASSWORD (authenticated user, knows current password)
     // ══════════════════════════════════════════════════════════════
 
-    @Override
+       @Override
     public ApiResponse changePassword(String email, ChangePasswordRequest request) {
         User user = userRepository.findByEmail(email)
                 .orElseThrow(() -> new RuntimeException("User not found"));
@@ -484,6 +484,23 @@ if (changed) {
         userRepository.save(user);
 
         return new ApiResponse(true, "Password changed successfully.");
+    }
+
+    // ══════════════════════════════════════════════════════════════
+    //  LOGOUT OF ALL DEVICES (session invalidation across every session)
+    // ══════════════════════════════════════════════════════════════
+
+    @Override
+    public ApiResponse logoutAllDevices(String email) {
+        User user = userRepository.findByEmail(email)
+                .orElseThrow(() -> new RuntimeException("User not found"));
+
+        // Set the cutoff — JWT filter will reject any token issued before this
+        user.setTokenValidFrom(LocalDateTime.now());
+        user.setUpdatedAt(LocalDateTime.now());
+        userRepository.save(user);
+
+        return new ApiResponse(true, "Signed out from all devices successfully.");
     }
     
 }

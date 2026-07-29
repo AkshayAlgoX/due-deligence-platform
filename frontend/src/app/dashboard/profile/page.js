@@ -16,10 +16,13 @@ import {
   Lock,
   BadgeCheck,
   Briefcase,
+  ShieldOff,
+  MonitorSmartphone,
 } from "lucide-react";
 
 import DeleteAccountModal from "@/components/profile/DeleteAccountModal";
 import ChangePasswordModal from "@/components/profile/ChangePasswordModal";
+import SignOutAllModal from "@/components/profile/SignOutAllModal";
 import { ProfileSkeleton } from "@/components/ui/Skeleton";
 import { getCurrentUser, updateProfile } from "@/services/authService";
 import AvatarUploader from "@/components/profile/AvatarUploader";
@@ -30,8 +33,9 @@ export default function ProfilePage() {
   }, []);
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
-  const [deleteOpen, setDeleteOpen] = useState(false);
-  const [passwordOpen, setPasswordOpen] = useState(false);
+const [deleteOpen, setDeleteOpen] = useState(false);
+const [passwordOpen, setPasswordOpen] = useState(false);
+const [signOutAllOpen, setSignOutAllOpen] = useState(false);
 
   const [editing, setEditing] = useState(false);
   const [saving, setSaving] = useState(false);
@@ -357,29 +361,60 @@ export default function ProfilePage() {
           </p>
         </div>
 
-        <div className="rounded-2xl border border-gray-100 bg-white p-5 shadow-sm">
-          <div className="flex items-start justify-between gap-4">
-            <div className="flex items-start gap-3">
-              <div className="flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-xl bg-[#edf7f3] ring-1 ring-green-100">
-                <Lock className="h-4 w-4 text-[#16a34a]" strokeWidth={2.2} />
+               <div className="space-y-3">
+          {/* Change password card */}
+          <div className="rounded-2xl border border-gray-100 bg-white p-5 shadow-sm">
+            <div className="flex items-start justify-between gap-4">
+              <div className="flex items-start gap-3">
+                <div className="flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-xl bg-[#edf7f3] ring-1 ring-green-100">
+                  <Lock className="h-4 w-4 text-[#16a34a]" strokeWidth={2.2} />
+                </div>
+                <div className="min-w-0">
+                  <p className="text-sm font-black text-gray-900">Account password</p>
+                  <p className="mt-1 text-xs text-gray-500">
+                    {isGoogleOnly
+                      ? "You sign in with Google. No password is set."
+                      : "Update your password anytime to keep your account secure."}
+                  </p>
+                </div>
               </div>
-              <div className="min-w-0">
-                <p className="text-sm font-black text-gray-900">Account password</p>
-                <p className="mt-1 text-xs text-gray-500">
-                  {isGoogleOnly
-                    ? "You sign in with Google. No password is set."
-                    : "Update your password anytime to keep your account secure."}
-                </p>
-              </div>
+              <button
+                type="button"
+                onClick={() => setPasswordOpen(true)}
+                disabled={isGoogleOnly}
+                className="flex-shrink-0 rounded-xl border border-gray-200 bg-white px-4 py-2 text-xs font-bold text-gray-700 transition hover:border-[#22C55E] hover:text-[#16a34a] disabled:cursor-not-allowed disabled:opacity-50 cursor-pointer"
+              >
+                Change password
+              </button>
             </div>
-            <button
-              type="button"
-              onClick={() => setPasswordOpen(true)}
-              disabled={isGoogleOnly}
-              className="flex-shrink-0 rounded-xl border border-gray-200 bg-white px-4 py-2 text-xs font-bold text-gray-700 transition hover:border-[#22C55E] hover:text-[#16a34a] disabled:cursor-not-allowed disabled:opacity-50 cursor-pointer"
-            >
-              Change password
-            </button>
+          </div>
+
+          {/* Sign out everywhere card */}
+          <div className="rounded-2xl border border-gray-100 bg-white p-5 shadow-sm">
+            <div className="flex items-start justify-between gap-4">
+              <div className="flex items-start gap-3">
+                <div className="flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-xl bg-orange-50 ring-1 ring-orange-100">
+                  <MonitorSmartphone className="h-4 w-4 text-orange-600" strokeWidth={2.2} />
+                </div>
+                <div className="min-w-0">
+                  <p className="text-sm font-black text-gray-900">
+                    Sign out of all devices
+                  </p>
+                  <p className="mt-1 text-xs text-gray-500 leading-relaxed">
+                    End your session everywhere — phones, tablets, and other browsers.
+                    Useful if you shared your device or lost access to one.
+                  </p>
+                </div>
+              </div>
+              <button
+                type="button"
+                onClick={() => setSignOutAllOpen(true)}
+                className="flex-shrink-0 flex items-center gap-1.5 rounded-xl border border-orange-200 bg-white px-4 py-2 text-xs font-bold text-orange-700 transition hover:border-orange-500 hover:bg-orange-50 cursor-pointer"
+              >
+                <ShieldOff className="h-3.5 w-3.5" strokeWidth={2.4} />
+                Sign out everywhere
+              </button>
+            </div>
           </div>
         </div>
       </section>
@@ -424,7 +459,7 @@ export default function ProfilePage() {
         </div>
       </section>
 
-      {/* ── Modals ──────────────────────────────────────────────────────── */}
+            {/* ── Modals ──────────────────────────────────────────────────────── */}
       <DeleteAccountModal
         isOpen={deleteOpen}
         onClose={() => setDeleteOpen(false)}
@@ -433,6 +468,10 @@ export default function ProfilePage() {
       <ChangePasswordModal
         isOpen={passwordOpen}
         onClose={() => setPasswordOpen(false)}
+      />
+      <SignOutAllModal
+        isOpen={signOutAllOpen}
+        onClose={() => setSignOutAllOpen(false)}
       />
     </div>
   );

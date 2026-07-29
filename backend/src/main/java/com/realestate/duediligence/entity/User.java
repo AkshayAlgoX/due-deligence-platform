@@ -77,4 +77,13 @@ public class User {
     /** Profile picture URL from Google (nullable). */
     @Column(name = "profile_picture", length = 500)
     private String profilePicture;
+
+    // ── Session invalidation (Logout of all devices) ──────────────
+    /**
+     * Timestamp marking when the user last invalidated all sessions.
+     * JWT filter rejects any token whose `iat` claim is before this value.
+     * Null for existing users → treated as "no restriction" (safe default).
+     */
+    @Column(name = "token_valid_from")
+    private LocalDateTime tokenValidFrom;
 }

@@ -105,6 +105,23 @@ export const logoutUser = () => {
   removeToken();
 };
 
+/**
+ * Sign out from all devices — server-side session invalidation.
+ * Sets the user's tokenValidFrom timestamp on the backend, causing
+ * ALL existing JWTs (including this one) to be rejected on next request.
+ *
+ * Caller is responsible for clearing local storage and redirecting.
+ *
+ * @returns {Promise<{ success: boolean, message: string }>}
+ */
+export const logoutAllDevices = async () => {
+  const response = await api.post(API_ROUTES.LOGOUT_ALL_DEVICES);
+  if (response.data.success === false) {
+    throw new Error(response.data.message || "Failed to sign out everywhere.");
+  }
+  return response.data;
+};
+
 // ── Password Reset Flow ──────────────────────────────────────────
 
 /**

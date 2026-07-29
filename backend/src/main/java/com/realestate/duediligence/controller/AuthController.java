@@ -140,4 +140,10 @@ public UserProfileResponse getCurrentUser(
         }
         return userService.changePassword(principal.getUsername(), request);
     }
+
+    @PostMapping("/logout-all-devices")
+public ApiResponse logoutAllDevices(@AuthenticationPrincipal UserDetails principal) {
+    if (principal == null) return new ApiResponse(false, "Not authenticated");
+    return userService.logoutAllDevices(principal.getUsername());
+}
 }

@@ -19,6 +19,7 @@ export const API_ROUTES = {
   RESET_PASSWORD: "/api/auth/reset-password",
   UPDATE_PROFILE: "/api/auth/me",
   CHANGE_PASSWORD: "/api/auth/change-password",
+  LOGOUT_ALL_DEVICES: "/api/auth/logout-all-devices",
 
   // ── Properties ────────────────────────────────────────────────────────────
   PROPERTIES:      "/api/properties",

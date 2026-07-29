@@ -41,5 +41,14 @@ UserProfileResponse updateProfile(String email, UpdateProfileRequest request);
 
 ApiResponse changePassword(String email, ChangePasswordRequest request);
 
+/**
+ * Invalidate all active sessions for this user across all devices.
+ * Sets the user's tokenValidFrom to now — any JWT issued before this
+ * moment will be rejected by the auth filter on the next request.
+ *
+ * @param email Authenticated user's email
+ * @return ApiResponse success/message
+ */
+ApiResponse logoutAllDevices(String email);
 
 }

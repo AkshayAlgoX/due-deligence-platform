@@ -48,9 +48,29 @@ public class JwtService {
 
     }
 
-    public boolean isTokenValid(String token, String email) {
+        public boolean isTokenValid(String token, String email) {
 
         return extractUsername(token).equals(email);
+
+    }
+
+    /**
+     * Extract the "issued at" (iat) claim from a JWT.
+     * Used by the auth filter to enforce "Logout of all devices" — any token
+     * issued BEFORE a user's tokenValidFrom timestamp is rejected.
+     *
+     * @param token JWT string
+     * @return Date the token was issued
+     */
+    public Date extractIssuedAt(String token) {
+
+        Claims claims = Jwts.parser()
+                .verifyWith(getSigningKey())
+                .build()
+                .parseSignedClaims(token)
+                .getPayload();
+
+        return claims.getIssuedAt();
 
     }
 
