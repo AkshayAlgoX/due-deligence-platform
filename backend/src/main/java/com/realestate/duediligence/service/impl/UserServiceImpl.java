@@ -420,13 +420,23 @@ public UserProfileResponse getCurrentUserProfile(String email) {
         }
 
         if (request.getPhoneNumber() != null && !request.getPhoneNumber().isBlank()) {
-            if (!request.getPhoneNumber().equals(user.getPhoneNumber())) {
-                user.setPhoneNumber(request.getPhoneNumber());
-                changed = true;
-            }
-        }
+    if (!request.getPhoneNumber().equals(user.getPhoneNumber())) {
+        user.setPhoneNumber(request.getPhoneNumber());
+        changed = true;
+    }
+}
 
-        if (changed) {
+// Profile picture: null = leave unchanged, "" = remove, otherwise = update
+if (request.getProfilePicture() != null) {
+    String newPic = request.getProfilePicture().isBlank() ? null : request.getProfilePicture().trim();
+    if ((newPic == null && user.getProfilePicture() != null) ||
+        (newPic != null && !newPic.equals(user.getProfilePicture()))) {
+        user.setProfilePicture(newPic);
+        changed = true;
+    }
+}
+
+if (changed) {
             user.setUpdatedAt(LocalDateTime.now());
             userRepository.save(user);
         }

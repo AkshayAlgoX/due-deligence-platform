@@ -65,14 +65,14 @@ export default function LogoutConfirmModal({ isOpen, onClose, onConfirm }) {
   return (
     <div
       onMouseDown={handleBackdropClick}
-      className="fixed inset-0 z-[100] flex items-center justify-center bg-black/60 p-4 backdrop-blur-md animate-in fade-in duration-200"
+      className="fixed inset-0 z-[9999] flex items-center justify-center bg-black/60 p-4 backdrop-blur-md animate-in fade-in duration-200"
       role="dialog"
       aria-modal="true"
       aria-labelledby="logout-title"
     >
       <div
         ref={modalRef}
-        className="w-full max-w-md overflow-hidden rounded-3xl bg-white shadow-[0_25px_80px_rgba(0,0,0,0.25)] animate-in zoom-in-95 slide-in-from-bottom-4 duration-300 ring-1 ring-black/5"
+        className="relative w-full max-w-md overflow-hidden rounded-3xl bg-white shadow-[0_25px_80px_rgba(0,0,0,0.25)] animate-in zoom-in-95 slide-in-from-bottom-4 duration-300 ring-1 ring-black/5"
       >
         {/* ── Close button (top right, floating) ── */}
         <button

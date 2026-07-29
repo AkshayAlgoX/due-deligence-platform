@@ -264,7 +264,7 @@ export default function CommandPalette({ open, onClose, onAction }) {
 
   return (
     <div
-      className="fixed inset-0 z-[100] flex items-start justify-center px-4 pt-[10vh] pb-4"
+      className="fixed inset-0 z-[9999] flex items-start justify-center px-4 pt-[10vh] pb-4"
       role="dialog"
       aria-modal="true"
       aria-labelledby="command-palette-title"

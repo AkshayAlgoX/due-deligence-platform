@@ -14,9 +14,10 @@ import {
   ShieldAlert,
   ShieldCheck,
   Shield,
-  FileDown,
   Loader2,
   SearchX,
+  Bookmark,
+  BookmarkCheck,
 } from "lucide-react";
 import { toast } from "sonner";
 import Link from "next/link";
@@ -25,7 +26,13 @@ import Breadcrumbs from "@/components/ui/Breadcrumbs";
 
 import { getPropertyById, getPropertyRisk } from "@/services/propertyService";
 import { getAggregatedProperty } from "@/services/aggregationService";
-import { formatINR, formatINRFull } from "@/utils/currency";
+import { formatINR } from "@/utils/currency";
+import { useSavedComparisons } from "@/hooks/useSavedComparisons";
+
+import SaveComparisonModal from "@/components/property/SaveComparisonModal";
+import SavedComparisonsSheet from "@/components/property/SavedComparisonsSheet";
+import PropertyHeroCard from "@/components/property/PropertyHeroCard";
+import MarketValueChart from "@/components/property/MarketValueChart";
 
 const DownloadComparisonPDFButton = dynamic(
   () => import("@/components/property/pdf/DownloadComparisonPDFButton"),
@@ -34,20 +41,14 @@ const DownloadComparisonPDFButton = dynamic(
 
 // ── Helpers ────────────────────────────────────────────────────────────────
 
-function fmt(val, suffix = "") {
+function fmt(val) {
   if (val == null || val === "") return "—";
-  return `${val}${suffix}`;
+  return `${val}`;
 }
 
 function fmtArea(val) {
   if (val == null) return "—";
   return `${val.toLocaleString()} sqft`;
-}
-
-function fmtPricePerSqft(marketValue, area) {
-  if (marketValue == null || area == null || area === 0) return "—";
-  const ppsf = Math.round(marketValue / area);
-  return `₹${ppsf.toLocaleString("en-IN")}/sqft`;
 }
 
 function fmtRaw(val) {
@@ -56,8 +57,6 @@ function fmtRaw(val) {
 }
 
 // ── Delta logic ────────────────────────────────────────────────────────────
-// For a given row across N properties, mark best / worst.
-// direction: "lower-better" | "higher-better" | "none"
 
 function computeDeltas(values, direction) {
   const nums = values.map(fmtRaw);
@@ -84,19 +83,37 @@ function computeDeltas(values, direction) {
 }
 
 function DeltaCell({ value, delta, displayValue }) {
-  const base = "px-4 py-3 text-sm font-bold text-center align-middle transition-colors";
+  const base =
+    "px-4 py-3 text-sm font-bold text-center align-middle transition-colors";
   const colors = {
-    best:    "bg-green-50 text-green-800",
-    worst:   "bg-red-50 text-red-700",
+    best: "bg-green-50 text-green-800",
+    worst: "bg-red-50 text-red-700",
     neutral: "text-gray-900",
   };
 
   return (
-    <td className={`${base} ${colors[delta] ?? colors.neutral} border-r border-gray-100 last:border-r-0`}>
+    <td
+      className={`${base} ${colors[delta] ?? colors.neutral} border-r border-gray-100 last:border-r-0`}
+    >
       <div className="flex items-center justify-center gap-1.5">
-        {delta === "best" && <TrendingUp className="h-3.5 w-3.5 text-green-600 flex-shrink-0" strokeWidth={2.5} />}
-        {delta === "worst" && <TrendingDown className="h-3.5 w-3.5 text-red-500 flex-shrink-0" strokeWidth={2.5} />}
-        {delta === "neutral" && value != null && <Minus className="h-3 w-3 text-gray-300 flex-shrink-0" strokeWidth={2} />}
+        {delta === "best" && (
+          <TrendingUp
+            className="h-3.5 w-3.5 text-green-600 flex-shrink-0"
+            strokeWidth={2.5}
+          />
+        )}
+        {delta === "worst" && (
+          <TrendingDown
+            className="h-3.5 w-3.5 text-red-500 flex-shrink-0"
+            strokeWidth={2.5}
+          />
+        )}
+        {delta === "neutral" && value != null && (
+          <Minus
+            className="h-3 w-3 text-gray-300 flex-shrink-0"
+            strokeWidth={2}
+          />
+        )}
         <span>{displayValue}</span>
       </div>
     </td>
@@ -106,14 +123,14 @@ function DeltaCell({ value, delta, displayValue }) {
 // ── Risk display ──────────────────────────────────────────────────────────
 
 const RISK_ICON = {
-  LOW:    ShieldCheck,
+  LOW: ShieldCheck,
   MEDIUM: Shield,
-  HIGH:   ShieldAlert,
+  HIGH: ShieldAlert,
 };
 const RISK_COLOR = {
-  LOW:    "text-green-700 bg-green-50",
+  LOW: "text-green-700 bg-green-50",
   MEDIUM: "text-amber-700 bg-amber-50",
-  HIGH:   "text-red-700 bg-red-50",
+  HIGH: "text-red-700 bg-red-50",
 };
 
 function RiskCell({ risk }) {
@@ -124,20 +141,29 @@ function RiskCell({ risk }) {
       </td>
     );
   }
-  const Icon  = RISK_ICON[risk.riskLabel] ?? Shield;
+  const Icon = RISK_ICON[risk.riskLabel] ?? Shield;
   const color = RISK_COLOR[risk.riskLabel] ?? "text-gray-700 bg-gray-50";
-  const delta = risk.riskLabel === "HIGH"
-    ? "worst"
-    : risk.riskLabel === "LOW"
-    ? "best"
-    : "neutral";
+  const delta =
+    risk.riskLabel === "HIGH"
+      ? "worst"
+      : risk.riskLabel === "LOW"
+        ? "best"
+        : "neutral";
 
   return (
-    <td className={`px-4 py-3 text-center border-r border-gray-100 last:border-r-0 ${delta === "best" ? "bg-green-50" : delta === "worst" ? "bg-red-50" : ""}`}>
+    <td
+      className={`px-4 py-3 text-center border-r border-gray-100 last:border-r-0 ${delta === "best" ? "bg-green-50" : delta === "worst" ? "bg-red-50" : ""}`}
+    >
       <div className="flex flex-col items-center gap-1">
-        <span className={`inline-flex items-center gap-1 rounded-full px-2.5 py-1 text-xs font-bold ${color}`}>
+        <span
+          className={`inline-flex items-center gap-1 rounded-full px-2.5 py-1 text-xs font-bold ${color}`}
+        >
           <Icon className="h-3.5 w-3.5" strokeWidth={2.5} />
-          {risk.riskLabel === "LOW" ? "Low risk" : risk.riskLabel === "MEDIUM" ? "Medium risk" : "High risk"}
+          {risk.riskLabel === "LOW"
+            ? "Low risk"
+            : risk.riskLabel === "MEDIUM"
+              ? "Medium risk"
+              : "High risk"}
         </span>
         <span className="text-[11px] text-gray-500 tabular-nums font-semibold">
           {risk.overallScore}/100
@@ -150,32 +176,37 @@ function RiskCell({ risk }) {
 // ── Section status cell ────────────────────────────────────────────────────
 
 const STATUS_COLORS = {
-  LIVE:        "bg-green-100 text-green-700",
-  CACHED:      "bg-green-100 text-green-700",
-  MOCK:        "bg-amber-100 text-amber-700",
+  LIVE: "bg-green-100 text-green-700",
+  CACHED: "bg-green-100 text-green-700",
+  MOCK: "bg-amber-100 text-amber-700",
   UNAVAILABLE: "bg-red-100 text-red-600",
-  TIMEOUT:     "bg-red-100 text-red-600",
-  ERROR:       "bg-red-100 text-red-600",
-  NO_DATA:     "bg-gray-100 text-gray-500",
+  TIMEOUT: "bg-red-100 text-red-600",
+  ERROR: "bg-red-100 text-red-600",
+  NO_DATA: "bg-gray-100 text-gray-500",
 };
 const STATUS_LABELS = {
-  LIVE:        "Live",
-  CACHED:      "Cached",
-  MOCK:        "Sample",
+  LIVE: "Live",
+  CACHED: "Cached",
+  MOCK: "Sample",
   UNAVAILABLE: "Unavailable",
-  TIMEOUT:     "Timed out",
-  ERROR:       "Error",
-  NO_DATA:     "No data",
+  TIMEOUT: "Timed out",
+  ERROR: "Error",
+  NO_DATA: "No data",
 };
 
 function StatusCell({ section }) {
   const status = section?.status;
-  if (!status) return (
-    <td className="px-4 py-3 text-center text-sm text-gray-400 border-r border-gray-100 last:border-r-0">—</td>
-  );
+  if (!status)
+    return (
+      <td className="px-4 py-3 text-center text-sm text-gray-400 border-r border-gray-100 last:border-r-0">
+        —
+      </td>
+    );
   return (
     <td className="px-4 py-3 text-center border-r border-gray-100 last:border-r-0">
-      <span className={`inline-flex rounded-full px-2.5 py-1 text-[11px] font-bold ${STATUS_COLORS[status] ?? "bg-gray-100 text-gray-500"}`}>
+      <span
+        className={`inline-flex rounded-full px-2.5 py-1 text-[11px] font-bold ${STATUS_COLORS[status] ?? "bg-gray-100 text-gray-500"}`}
+      >
         {STATUS_LABELS[status] ?? status}
       </span>
     </td>
@@ -223,7 +254,10 @@ function PlainRow({ label, values }) {
         {label}
       </td>
       {values.map((v, i) => (
-        <td key={i} className="px-4 py-3 text-sm font-bold text-center text-gray-900 border-r border-gray-100 last:border-r-0">
+        <td
+          key={i}
+          className="px-4 py-3 text-sm font-bold text-center text-gray-900 border-r border-gray-100 last:border-r-0"
+        >
           {v ?? "—"}
         </td>
       ))}
@@ -231,9 +265,9 @@ function PlainRow({ label, values }) {
   );
 }
 
-// ── Property hero column header ────────────────────────────────────────────
+// ── Property hero column header (table thead) ──────────────────────────────
 
-function PropertyHeader({ property, risk, index }) {
+function PropertyHeader({ property, index }) {
   if (!property) {
     return (
       <th className="px-4 py-4 text-center border-r border-gray-200 last:border-r-0">
@@ -250,35 +284,36 @@ function PropertyHeader({ property, risk, index }) {
   return (
     <th className="px-4 py-4 text-center font-normal border-r border-gray-200 last:border-r-0 min-w-[220px] max-w-[280px]">
       <div className="flex flex-col items-center gap-2">
-        {/* Index badge */}
         <div className="flex h-8 w-8 items-center justify-center rounded-full bg-gradient-to-br from-[#22C55E] to-[#16a34a] shadow-[0_4px_12px_rgba(34,197,94,0.3)]">
           <span className="text-sm font-black text-white">{LABELS[index]}</span>
         </div>
-
-        {/* Address */}
         <div className="text-center min-w-0 w-full px-2">
           <p className="text-sm font-black text-gray-900 line-clamp-2 leading-tight">
             {property.address}
           </p>
           <p className="mt-0.5 text-[11px] text-gray-500">
-            {property.city}{property.state ? `, ${property.state}` : ""}
+            {property.city}
+            {property.state ? `, ${property.state}` : ""}
           </p>
         </div>
-
-        {/* Verified badge */}
         {property.verified ? (
           <div className="flex items-center gap-1 rounded-full bg-green-50 px-2.5 py-1 ring-1 ring-green-200">
             <BadgeCheck className="h-3 w-3 text-green-600" strokeWidth={2.5} />
-            <span className="text-[10px] font-bold text-green-700">Verified</span>
+            <span className="text-[10px] font-bold text-green-700">
+              Verified
+            </span>
           </div>
         ) : (
           <div className="flex items-center gap-1 rounded-full bg-amber-50 px-2.5 py-1 ring-1 ring-amber-200">
-            <AlertTriangle className="h-3 w-3 text-amber-600" strokeWidth={2.5} />
-            <span className="text-[10px] font-bold text-amber-700">Pending</span>
+            <AlertTriangle
+              className="h-3 w-3 text-amber-600"
+              strokeWidth={2.5}
+            />
+            <span className="text-[10px] font-bold text-amber-700">
+              Pending
+            </span>
           </div>
         )}
-
-        {/* Property type */}
         {property.propertyType && (
           <span className="text-[10px] font-black uppercase tracking-widest text-[#22C55E]">
             {property.propertyType}
@@ -294,10 +329,18 @@ function PropertyHeader({ property, risk, index }) {
 function CompareSkeleton({ count }) {
   return (
     <div className="rounded-2xl border border-gray-100 bg-white shadow-sm overflow-hidden animate-pulse">
-      <div className="grid border-b border-gray-200" style={{ gridTemplateColumns: `160px repeat(${count}, 1fr)` }}>
+      <div
+        className="grid border-b border-gray-200"
+        style={{
+          gridTemplateColumns: `160px repeat(${count}, 1fr)`,
+        }}
+      >
         <div className="px-4 py-4 bg-gray-50" />
         {Array.from({ length: count }).map((_, i) => (
-          <div key={i} className="px-4 py-4 border-l border-gray-200 flex flex-col items-center gap-3">
+          <div
+            key={i}
+            className="px-4 py-4 border-l border-gray-200 flex flex-col items-center gap-3"
+          >
             <div className="h-8 w-8 rounded-full bg-gray-200" />
             <div className="h-4 w-32 rounded bg-gray-200" />
             <div className="h-3 w-20 rounded bg-gray-200" />
@@ -311,7 +354,10 @@ function CompareSkeleton({ count }) {
             <div className="h-3 w-20 rounded bg-gray-200" />
           </div>
           {Array.from({ length: count }).map((_, j) => (
-            <div key={j} className="flex-1 px-4 py-3 border-l border-gray-100 flex justify-center">
+            <div
+              key={j}
+              className="flex-1 px-4 py-3 border-l border-gray-100 flex justify-center"
+            >
               <div className="h-4 w-24 rounded bg-gray-100" />
             </div>
           ))}
@@ -325,20 +371,26 @@ function CompareSkeleton({ count }) {
 
 function PropertyComparisonInner() {
   const searchParams = useSearchParams();
-  const router       = useRouter();
+  const router = useRouter();
 
   const idsParam = searchParams.get("ids") ?? "";
-  const ids      = idsParam
+  const ids = idsParam
     .split(",")
     .map((s) => parseInt(s.trim(), 10))
     .filter((n) => !isNaN(n) && n > 0)
     .slice(0, 3);
 
-  const [properties,  setProperties]  = useState([]);
-  const [aggregated,  setAggregated]  = useState([]);
-  const [risks,       setRisks]       = useState([]);
-  const [loading,     setLoading]     = useState(true);
-  const [error,       setError]       = useState(null);
+  const [properties, setProperties] = useState([]);
+  const [aggregated, setAggregated] = useState([]);
+  const [risks, setRisks] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+
+  // ── Save modal + sheet state ─────────────────────────────────────────────
+  const [saveModalOpen, setSaveModalOpen] = useState(false);
+  const [sheetOpen, setSheetOpen] = useState(false);
+
+  const { save, isSaving } = useSavedComparisons({ autoFetch: false });
 
   const loadAll = useCallback(async () => {
     if (ids.length < 1) {
@@ -350,7 +402,6 @@ function PropertyComparisonInner() {
       setLoading(true);
       setError(null);
 
-      // Fetch all in parallel — property + aggregation + risk for each
       const results = await Promise.allSettled(
         ids.map(async (id) => {
           const [prop, agg, risk] = await Promise.allSettled([
@@ -359,9 +410,9 @@ function PropertyComparisonInner() {
             getPropertyRisk(id),
           ]);
           return {
-            property:   prop.status   === "fulfilled" ? prop.value   : null,
-            aggregated: agg.status    === "fulfilled" ? agg.value    : null,
-            risk:       risk.status   === "fulfilled" ? risk.value   : null,
+            property: prop.status === "fulfilled" ? prop.value : null,
+            aggregated: agg.status === "fulfilled" ? agg.value : null,
+            risk: risk.status === "fulfilled" ? risk.value : null,
           };
         })
       );
@@ -383,9 +434,11 @@ function PropertyComparisonInner() {
     }
   }, [idsParam]);
 
-  useEffect(() => { loadAll(); }, [loadAll]);
+  useEffect(() => {
+    loadAll();
+  }, [loadAll]);
 
-  // ── Empty / error states ───────────────────────────────────────
+  // ── Empty / error states ───────────────────────────────────────────────
   if (!loading && (ids.length < 2 || error)) {
     return (
       <div className="flex flex-col items-center justify-center rounded-2xl border border-gray-100 bg-white py-24 text-center shadow-sm">
@@ -411,22 +464,25 @@ function PropertyComparisonInner() {
   }
 
   const colCount = ids.length;
-
-  // ── Table data helpers ─────────────────────────────────────────
-  const P  = properties;   // array of PropertyResponse
-  const A  = aggregated;   // array of AggregatedPropertyResponse
-  const R  = risks;        // array of RiskScoreResponse
+  const P = properties;
+  const A = aggregated;
+  const R = risks;
 
   const pricePerSqft = P.map((p) =>
     p?.marketValue && p?.area ? Math.round(p.marketValue / p.area) : null
   );
 
+  // ── Default comparison name ──────────────────────────────────────────────
+  const defaultName = P.filter(Boolean)
+    .map((p) => p.city || p.address?.split(",")[0])
+    .filter(Boolean)
+    .join(" vs ");
+
   return (
     <div className="w-full max-w-[1400px] mx-auto space-y-6">
-       <Breadcrumbs />
+      <Breadcrumbs />
 
-
-      {/* ── Page header ───────────────────────────────────────────── */}
+      {/* ── Page header ─────────────────────────────────────────────────── */}
       <div className="rounded-2xl border border-gray-100 bg-white p-8 shadow-sm">
         <div className="flex items-center justify-between gap-4 flex-wrap">
           <div className="flex items-center gap-4">
@@ -440,39 +496,79 @@ function PropertyComparisonInner() {
             <div>
               <div className="flex items-center gap-2">
                 <div className="flex h-8 w-8 items-center justify-center rounded-xl bg-green-50 ring-1 ring-green-200">
-                  <GitCompare className="h-4 w-4 text-[#16a34a]" strokeWidth={2} />
+                  <GitCompare
+                    className="h-4 w-4 text-[#16a34a]"
+                    strokeWidth={2}
+                  />
                 </div>
                 <h1 className="text-2xl font-extrabold text-gray-900 tracking-tight">
                   Property comparison
                 </h1>
               </div>
               <p className="mt-1 text-sm text-gray-500">
-                Side-by-side analysis of {colCount} {colCount === 1 ? "property" : "properties"} · real data only
+                Side-by-side analysis of {colCount}{" "}
+                {colCount === 1 ? "property" : "properties"} · real data only
               </p>
             </div>
           </div>
 
-          <div className="flex items-center gap-2">
-  {!loading && properties.filter(Boolean).length > 0 && (
-    <DownloadComparisonPDFButton
-      properties={properties}
-      aggregated={aggregated}
-      risks={risks}
-    />
-  )}
-</div>
+          {/* Action buttons */}
+          <div className="flex items-center gap-2 flex-wrap">
+            {/* My Saved button */}
+            <button
+              type="button"
+              onClick={() => setSheetOpen(true)}
+              className="flex items-center gap-2 rounded-xl border border-gray-200 bg-white px-4 py-2.5 text-sm font-bold text-gray-600 transition hover:border-[#22C55E] hover:text-[#16a34a] cursor-pointer"
+            >
+              <BookmarkCheck className="h-4 w-4" strokeWidth={2} />
+              My saved
+            </button>
+
+            {/* Save Comparison button */}
+            {!loading && properties.filter(Boolean).length >= 2 && (
+              <button
+                type="button"
+                onClick={() => setSaveModalOpen(true)}
+                disabled={isSaving}
+                className="flex items-center gap-2 rounded-xl bg-gradient-to-br from-[#22C55E] to-[#16a34a] px-4 py-2.5 text-sm font-bold text-white shadow-[0_4px_12px_rgba(34,197,94,0.3)] transition hover:shadow-[0_8px_20px_rgba(34,197,94,0.4)] hover:scale-[1.02] disabled:opacity-70 cursor-pointer"
+              >
+                {isSaving ? (
+                  <Loader2 className="h-4 w-4 animate-spin" />
+                ) : (
+                  <Bookmark className="h-4 w-4" strokeWidth={2.5} />
+                )}
+                Save comparison
+              </button>
+            )}
+
+            {/* PDF download */}
+            {!loading && properties.filter(Boolean).length > 0 && (
+              <DownloadComparisonPDFButton
+                properties={properties}
+                aggregated={aggregated}
+                risks={risks}
+              />
+            )}
+          </div>
         </div>
       </div>
 
-      {/* ── Comparison table ──────────────────────────────────────── */}
+      {/* ── Hero cards row ───────────────────────────────────────────────── */}
+      {!loading && properties.filter(Boolean).length > 0 && (
+        <div className="flex gap-4 flex-wrap">
+          {P.map((prop, i) => (
+            <PropertyHeroCard key={ids[i]} property={prop} index={i} />
+          ))}
+        </div>
+      )}
+
+      {/* ── Comparison table ─────────────────────────────────────────────── */}
       {loading ? (
         <CompareSkeleton count={colCount} />
       ) : (
         <div className="rounded-2xl border border-gray-100 bg-white shadow-sm overflow-hidden">
           <div className="overflow-x-auto">
             <table className="w-full border-collapse">
-
-              {/* Column group for widths */}
               <colgroup>
                 <col style={{ width: "160px", minWidth: "140px" }} />
                 {Array.from({ length: colCount }).map((_, i) => (
@@ -480,7 +576,6 @@ function PropertyComparisonInner() {
                 ))}
               </colgroup>
 
-              {/* ── THEAD: property hero headers ──────────────────── */}
               <thead>
                 <tr className="border-b-2 border-gray-200">
                   <th className="px-4 py-4 text-left bg-gray-50 border-r border-gray-200">
@@ -489,42 +584,46 @@ function PropertyComparisonInner() {
                     </span>
                   </th>
                   {P.map((prop, i) => (
-                    <PropertyHeader
-                      key={ids[i]}
-                      property={prop}
-                      risk={R[i]}
-                      index={i}
-                    />
+                    <PropertyHeader key={ids[i]} property={prop} index={i} />
                   ))}
                 </tr>
               </thead>
 
               <tbody>
-                {/* ── FINANCIAL ──────────────────────────────────── */}
+                {/* ── FINANCIAL ──────────────────────────────────────────── */}
                 <SectionHeader label="Financial" colCount={colCount} />
-
                 <MetricRow
                   label="Market value"
                   values={P.map((p) => p?.marketValue)}
-                  displayValues={P.map((p) => p?.marketValue ? formatINR(p.marketValue) : null)}
+                  displayValues={P.map((p) =>
+                    p?.marketValue ? formatINR(p.marketValue) : null
+                  )}
                   direction="higher-better"
                 />
                 <MetricRow
                   label="Area"
                   values={P.map((p) => p?.area)}
-                  displayValues={P.map((p) => p?.area ? fmtArea(p.area) : null)}
+                  displayValues={P.map((p) =>
+                    p?.area ? fmtArea(p.area) : null
+                  )}
                   direction="higher-better"
                 />
                 <MetricRow
                   label="Price / sqft"
                   values={pricePerSqft}
-                  displayValues={P.map((p, i) => pricePerSqft[i] ? `₹${pricePerSqft[i].toLocaleString("en-IN")}` : null)}
+                  displayValues={P.map((p, i) =>
+                    pricePerSqft[i]
+                      ? `₹${pricePerSqft[i].toLocaleString("en-IN")}`
+                      : null
+                  )}
                   direction="lower-better"
                 />
                 <MetricRow
                   label="Lot size"
                   values={P.map((p) => p?.lotSize)}
-                  displayValues={P.map((p) => p?.lotSize ? fmtArea(p.lotSize) : null)}
+                  displayValues={P.map((p) =>
+                    p?.lotSize ? fmtArea(p.lotSize) : null
+                  )}
                   direction="higher-better"
                 />
                 <MetricRow
@@ -534,9 +633,11 @@ function PropertyComparisonInner() {
                   direction="higher-better"
                 />
 
-                {/* ── PROPERTY DETAILS ───────────────────────────── */}
-                <SectionHeader label="Property details" colCount={colCount} />
-
+                {/* ── PROPERTY DETAILS ───────────────────────────────────── */}
+                <SectionHeader
+                  label="Property details"
+                  colCount={colCount}
+                />
                 <PlainRow
                   label="Type"
                   values={P.map((p) => p?.propertyType)}
@@ -570,9 +671,8 @@ function PropertyComparisonInner() {
                   values={P.map((p) => p?.zoning ?? null)}
                 />
 
-                {/* ── RISK ASSESSMENT ────────────────────────────── */}
+                {/* ── RISK ASSESSMENT ────────────────────────────────────── */}
                 <SectionHeader label="Risk assessment" colCount={colCount} />
-
                 <tr className="border-b border-gray-100">
                   <td className="px-4 py-3 text-xs font-semibold text-gray-500 border-r border-gray-200 bg-gray-50/30">
                     Overall risk
@@ -584,37 +684,47 @@ function PropertyComparisonInner() {
                 <MetricRow
                   label="Financial risk"
                   values={R.map((r) => r?.financialScore)}
-                  displayValues={R.map((r) => r ? `${r.financialScore}/100` : null)}
+                  displayValues={R.map((r) =>
+                    r ? `${r.financialScore}/100` : null
+                  )}
                   direction="lower-better"
                 />
                 <MetricRow
                   label="Legal risk"
                   values={R.map((r) => r?.legalScore)}
-                  displayValues={R.map((r) => r ? `${r.legalScore}/100` : null)}
+                  displayValues={R.map((r) =>
+                    r ? `${r.legalScore}/100` : null
+                  )}
                   direction="lower-better"
                 />
                 <MetricRow
                   label="Environmental risk"
                   values={R.map((r) => r?.environmentalScore)}
-                  displayValues={R.map((r) => r ? `${r.environmentalScore}/100` : null)}
+                  displayValues={R.map((r) =>
+                    r ? `${r.environmentalScore}/100` : null
+                  )}
                   direction="lower-better"
                 />
                 <MetricRow
                   label="Structural risk"
                   values={R.map((r) => r?.structuralScore)}
-                  displayValues={R.map((r) => r ? `${r.structuralScore}/100` : null)}
+                  displayValues={R.map((r) =>
+                    r ? `${r.structuralScore}/100` : null
+                  )}
                   direction="lower-better"
                 />
 
-                {/* ── VERIFICATION ───────────────────────────────── */}
+                {/* ── DATA QUALITY ────────────────────────────────────────── */}
                 <SectionHeader label="Data quality" colCount={colCount} />
-
                 <tr className="border-b border-gray-100">
                   <td className="px-4 py-3 text-xs font-semibold text-gray-500 border-r border-gray-200 bg-gray-50/30">
                     Verification
                   </td>
                   {P.map((p, i) => (
-                    <td key={i} className="px-4 py-3 text-center border-r border-gray-100 last:border-r-0">
+                    <td
+                      key={i}
+                      className="px-4 py-3 text-center border-r border-gray-100 last:border-r-0"
+                    >
                       {p?.verified ? (
                         <span className="inline-flex items-center gap-1 rounded-full bg-green-50 px-2.5 py-1 text-xs font-bold text-green-700 ring-1 ring-green-200">
                           <BadgeCheck className="h-3.5 w-3.5" strokeWidth={2.5} />
@@ -622,7 +732,10 @@ function PropertyComparisonInner() {
                         </span>
                       ) : (
                         <span className="inline-flex items-center gap-1 rounded-full bg-amber-50 px-2.5 py-1 text-xs font-bold text-amber-700 ring-1 ring-amber-200">
-                          <AlertTriangle className="h-3.5 w-3.5" strokeWidth={2.5} />
+                          <AlertTriangle
+                            className="h-3.5 w-3.5"
+                            strokeWidth={2.5}
+                          />
                           Pending
                         </span>
                       )}
@@ -630,18 +743,23 @@ function PropertyComparisonInner() {
                   ))}
                 </tr>
 
-                {/* ── INTEGRATION SOURCES ────────────────────────── */}
-                <SectionHeader label="Integration data sources" colCount={colCount} />
-
+                {/* ── INTEGRATION SOURCES ────────────────────────────────── */}
+                <SectionHeader
+                  label="Integration data sources"
+                  colCount={colCount}
+                />
                 {[
-                  ["Ownership",     (a) => a?.ownership],
-                  ["Tax history",   (a) => a?.taxHistory],
-                  ["Zoning",        (a) => a?.zoning],
-                  ["Flood zone",    (a) => a?.floodZone],
-                  ["Permits",       (a) => a?.permits],
+                  ["Ownership", (a) => a?.ownership],
+                  ["Tax history", (a) => a?.taxHistory],
+                  ["Zoning", (a) => a?.zoning],
+                  ["Flood zone", (a) => a?.floodZone],
+                  ["Permits", (a) => a?.permits],
                   ["Environmental", (a) => a?.environmental],
                 ].map(([label, getter]) => (
-                  <tr key={label} className="border-b border-gray-100 hover:bg-gray-50/50 transition-colors">
+                  <tr
+                    key={label}
+                    className="border-b border-gray-100 hover:bg-gray-50/50 transition-colors"
+                  >
                     <td className="px-4 py-3 text-xs font-semibold text-gray-500 border-r border-gray-200 bg-gray-50/30">
                       {label}
                     </td>
@@ -651,12 +769,13 @@ function PropertyComparisonInner() {
                   </tr>
                 ))}
 
-                {/* ── ENVIRONMENTAL ──────────────────────────────── */}
+                {/* ── ENVIRONMENTAL ──────────────────────────────────────── */}
                 <SectionHeader label="Environmental" colCount={colCount} />
-
                 <MetricRow
                   label="AQI"
-                  values={A.map((a) => a?.environmental?.data?.airQualityIndex)}
+                  values={A.map(
+                    (a) => a?.environmental?.data?.airQualityIndex
+                  )}
                   displayValues={A.map((a) => {
                     const aqi = a?.environmental?.data?.airQualityIndex;
                     const cat = a?.environmental?.data?.aqiCategory;
@@ -671,7 +790,9 @@ function PropertyComparisonInner() {
                 />
                 <PlainRow
                   label="Flood zone"
-                  values={A.map((a) => a?.floodZone?.data?.zoneClassification ?? null)}
+                  values={A.map(
+                    (a) => a?.floodZone?.data?.zoneClassification ?? null
+                  )}
                 />
                 <tr className="border-b border-gray-100 hover:bg-gray-50/50 transition-colors">
                   <td className="px-4 py-3 text-xs font-semibold text-gray-500 border-r border-gray-200 bg-gray-50/30">
@@ -680,7 +801,10 @@ function PropertyComparisonInner() {
                   {A.map((a, i) => {
                     const val = a?.environmental?.data?.nearIndustrialZone;
                     return (
-                      <td key={i} className="px-4 py-3 text-sm font-bold text-center border-r border-gray-100 last:border-r-0">
+                      <td
+                        key={i}
+                        className="px-4 py-3 text-sm font-bold text-center border-r border-gray-100 last:border-r-0"
+                      >
                         {val == null ? "—" : val ? (
                           <span className="text-red-600">Yes</span>
                         ) : (
@@ -690,27 +814,38 @@ function PropertyComparisonInner() {
                     );
                   })}
                 </tr>
-
               </tbody>
             </table>
           </div>
 
           {/* Table legend */}
-          <div className="flex items-center gap-6 border-t border-gray-100 bg-gray-50/50 px-6 py-3">
+          <div className="flex items-center gap-6 border-t border-gray-100 bg-gray-50/50 px-6 py-3 flex-wrap">
             <p className="text-[10px] font-black uppercase tracking-widest text-gray-400">
               Legend
             </p>
             <div className="flex items-center gap-1.5">
-              <TrendingUp className="h-3.5 w-3.5 text-green-600" strokeWidth={2.5} />
-              <span className="text-[11px] font-semibold text-gray-600">Best value</span>
+              <TrendingUp
+                className="h-3.5 w-3.5 text-green-600"
+                strokeWidth={2.5}
+              />
+              <span className="text-[11px] font-semibold text-gray-600">
+                Best value
+              </span>
             </div>
             <div className="flex items-center gap-1.5">
-              <TrendingDown className="h-3.5 w-3.5 text-red-500" strokeWidth={2.5} />
-              <span className="text-[11px] font-semibold text-gray-600">Worst value</span>
+              <TrendingDown
+                className="h-3.5 w-3.5 text-red-500"
+                strokeWidth={2.5}
+              />
+              <span className="text-[11px] font-semibold text-gray-600">
+                Worst value
+              </span>
             </div>
             <div className="flex items-center gap-1.5">
               <Minus className="h-3 w-3 text-gray-300" strokeWidth={2} />
-              <span className="text-[11px] font-semibold text-gray-600">Middle</span>
+              <span className="text-[11px] font-semibold text-gray-600">
+                Middle
+              </span>
             </div>
             <span className="text-[11px] text-gray-400">
               Comparisons are relative — no external benchmarks used
@@ -718,6 +853,27 @@ function PropertyComparisonInner() {
           </div>
         </div>
       )}
+
+      {/* ── Market value chart ───────────────────────────────────────────── */}
+      {!loading && properties.filter(Boolean).length >= 2 && (
+        <MarketValueChart properties={properties} />
+      )}
+
+      {/* ── Save modal ───────────────────────────────────────────────────── */}
+      <SaveComparisonModal
+        isOpen={saveModalOpen}
+        onClose={() => setSaveModalOpen(false)}
+        onSave={save}
+        isSaving={isSaving}
+        propertyIds={ids}
+        defaultName={defaultName}
+      />
+
+      {/* ── Saved comparisons sheet ──────────────────────────────────────── */}
+      <SavedComparisonsSheet
+        isOpen={sheetOpen}
+        onClose={() => setSheetOpen(false)}
+      />
     </div>
   );
 }

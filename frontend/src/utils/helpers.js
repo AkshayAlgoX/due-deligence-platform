@@ -90,3 +90,34 @@ export const getPasswordStrength = (password) => {
   if (score === 3) return { label: "Good", color: "bg-blue-500", width: "w-3/4" };
   return { label: "Strong", color: "bg-green-500", width: "w-full" };
 };
+
+/**
+ * Merge a partial patch into the currently stored user object.
+ * Preserves the original storage strategy (local vs session).
+ * Also updates the auth_user cookie for middleware.
+ *
+ * Broadcasts a "user-updated" window event so UI (Navbar, etc.)
+ * can re-render without a full page refresh.
+ *
+ * @param {object} patch - Partial fields to merge, e.g. { profilePicture: "https://..." }
+ */
+export const updateStoredUser = (patch) => {
+  if (typeof window === "undefined") return;
+
+  const current = getUser();
+  if (!current) return;
+
+  const merged = { ...current, ...patch };
+
+  // Detect which storage held the user, keep it there
+  const inLocal = !!window.localStorage.getItem(USER_KEY);
+  const storage = inLocal ? window.localStorage : window.sessionStorage;
+  storage.setItem(USER_KEY, JSON.stringify(merged));
+
+  // Refresh cookie so middleware sees the new value
+  const maxAge = inLocal ? 60 * 60 * 24 * 7 : 0;
+  document.cookie = `auth_user=${encodeURIComponent(JSON.stringify(merged))}; path=/; max-age=${maxAge}; SameSite=Strict`;
+
+  // Broadcast — any listener (Navbar) can react
+  window.dispatchEvent(new CustomEvent("user-updated", { detail: merged }));
+};

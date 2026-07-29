@@ -8,7 +8,8 @@ export default function Loader({ message = "Loading…" }) {
     <div
       role="status"
       aria-label={message}
-      className="fixed inset-0 z-50 flex flex-col items-center justify-center bg-white/70 backdrop-blur-sm"
+      className="fixed inset-0 z-[9999] flex
+ flex-col items-center justify-center bg-white/70 backdrop-blur-sm"
     >
       <svg
         className="animate-spin h-10 w-10 text-green-500"

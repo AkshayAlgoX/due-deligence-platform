@@ -81,7 +81,6 @@ export default function PropertyDetailPage() {
     loadAggregation(updated.id);
   };
 
-  // ── Loading state ────────────────────────────────────────────────
   if (loadingProperty) {
     return (
       <div className="mx-auto w-full max-w-[1400px] space-y-6 pb-16">
@@ -95,91 +94,84 @@ export default function PropertyDetailPage() {
 
   return (
     <div className="mx-auto w-full max-w-[1400px] space-y-6 pb-16">
-        <Breadcrumbs
-      overrides={{ [id]: property?.address || "Property" }}
-    />
+      <Breadcrumbs overrides={{ [id]: property?.address || "Property" }} />
 
       {/* ── Back navigation ────────────────────────────────────────── */}
       <button
         type="button"
         onClick={() => router.push("/dashboard/property-search")}
-        className="flex items-center gap-2 text-sm font-semibold text-gray-500 transition hover:text-gray-900"
+        className="flex items-center gap-2 text-sm font-semibold text-gray-500 transition hover:text-gray-900 cursor-pointer"
       >
         <ArrowLeft className="h-4 w-4" />
         Back to search
       </button>
 
-      {/* ── Hero (same component as search page) ───────────────────── */}
+      {/* ── Hero ───────────────────────────────────────────────────── */}
       <ErrorBoundary>
         <PropertyDetails property={property} onEdit={handleEdit} />
       </ErrorBoundary>
 
-      {/* ── Aggregation + Risk sections ────────────────────────────── */}
+      {/* ══════════════════════════════════════════════════════════════
+          BENTO GRID LAYOUT
+          Priority-based, asymmetric, handles empty states gracefully
+      ══════════════════════════════════════════════════════════════ */}
       <ErrorBoundary>
         <div className="space-y-6">
 
-          {/* Row 1: Ownership + Tax history */}
-          <div className="grid grid-cols-12 gap-6 items-stretch">
-            <div className="col-span-12 lg:col-span-5 flex">
-              <div className="w-full">
-                <OwnershipCard section={aggregated?.ownership} />
-              </div>
+          {/* ── TIER 1: Executive Summary Row ─────────────────────────
+              Compact stats side-by-side (Risk Score + Data Completeness)
+              These are LIGHT cards — they set the context
+          ───────────────────────────────────────────────────────────── */}
+          <div className="grid grid-cols-1 gap-6 lg:grid-cols-2">
+            <RiskScoreCard propertyId={property.id} />
+            <DataCompletenessCard
+              aggregated={aggregated}
+              onRefresh={() => loadAggregation(id)}
+              refreshing={loadingAggregated}
+            />
+          </div>
+
+          {/* ── TIER 2: Financial + Legal (asymmetric pair) ───────────
+              Ownership (compact) + Tax History (wider — table needs space)
+          ───────────────────────────────────────────────────────────── */}
+          <div className="grid grid-cols-1 gap-6 lg:grid-cols-12">
+            <div className="lg:col-span-5">
+              <OwnershipCard section={aggregated?.ownership} />
             </div>
-            <div className="col-span-12 lg:col-span-7 flex">
-              <div className="w-full">
-                <TaxHistorySection section={aggregated?.taxHistory} />
-              </div>
+            <div className="lg:col-span-7">
+              <TaxHistorySection section={aggregated?.taxHistory} />
             </div>
           </div>
 
-          {/* Row 2: Zoning + Flood zone */}
-          <div className="grid grid-cols-12 gap-6 items-stretch">
-            <div className="col-span-12 lg:col-span-6 flex">
-              <div className="w-full">
-                <ZoningCard section={aggregated?.zoning} />
-              </div>
+          {/* ── TIER 3: Location Intelligence (equal pair) ─────────────
+              Zoning + Flood Risk — both need equal visual weight
+          ───────────────────────────────────────────────────────────── */}
+          <div className="grid grid-cols-1 gap-6 lg:grid-cols-2">
+            <ZoningCard section={aggregated?.zoning} />
+            <FloodZoneCard section={aggregated?.floodZone} />
+          </div>
+
+          {/* ── TIER 4: Permits (FULL WIDTH — timeline needs space) ───
+              Permits often has 3-5 items in a list — deserves full width
+          ───────────────────────────────────────────────────────────── */}
+          <PermitsSection section={aggregated?.permits} />
+
+          {/* ── TIER 5: Context Row (asymmetric pair) ─────────────────
+              Environmental (wider — has AQI + multiple stats)
+              Building Info (compact — often user-provided/empty)
+          ───────────────────────────────────────────────────────────── */}
+          <div className="grid grid-cols-1 gap-6 lg:grid-cols-12">
+            <div className="lg:col-span-7">
+              <EnvironmentalCard section={aggregated?.environmental} />
             </div>
-            <div className="col-span-12 lg:col-span-6 flex">
-              <div className="w-full">
-                <FloodZoneCard section={aggregated?.floodZone} />
-              </div>
+            <div className="lg:col-span-5">
+              <BuildingInformationCard
+                property={property}
+                onEdit={handleEdit}
+              />
             </div>
           </div>
 
-          {/* Row 3: Permits + Environmental */}
-          <div className="grid grid-cols-12 gap-6 items-stretch">
-            <div className="col-span-12 lg:col-span-7 flex">
-              <div className="w-full">
-                <PermitsSection section={aggregated?.permits} />
-              </div>
-            </div>
-            <div className="col-span-12 lg:col-span-5 flex">
-              <div className="w-full">
-                <EnvironmentalCard section={aggregated?.environmental} />
-              </div>
-            </div>
-          </div>
-
-          {/* Row 4: Risk score + Building info */}
-          <div className="grid grid-cols-12 gap-6 items-stretch">
-            <div className="col-span-12 lg:col-span-6 flex">
-              <div className="w-full">
-                <RiskScoreCard propertyId={property.id} />
-              </div>
-            </div>
-            <div className="col-span-12 lg:col-span-6 flex">
-              <div className="w-full">
-                <BuildingInformationCard property={property} />
-              </div>
-            </div>
-          </div>
-
-          {/* Row 5: Data completeness (full width) */}
-          <DataCompletenessCard
-            aggregated={aggregated}
-            onRefresh={() => loadAggregation(id)}
-            refreshing={loadingAggregated}
-          />
         </div>
       </ErrorBoundary>
 

@@ -29,4 +29,12 @@ public class UpdateProfileRequest {
             regexp = "^[6-9]\\d{9}$",
             message = "Phone number must be a valid 10-digit Indian mobile number")
     private String phoneNumber;
+
+    /**
+     * Optional — Cloudinary secure URL of user's profile picture.
+     * Pass empty string ("") to remove existing photo.
+     * Pass null to leave unchanged.
+     */
+    @Size(max = 500, message = "Profile picture URL cannot exceed 500 characters")
+    private String profilePicture;
 }

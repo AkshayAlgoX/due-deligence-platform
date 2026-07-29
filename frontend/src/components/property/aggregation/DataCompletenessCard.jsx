@@ -7,31 +7,36 @@ import {
   Radio,
   Database,
   RefreshCw,
+  Clock,
+  Zap,
+  User,
+  Receipt,
+  Map as MapIcon,
+  Waves,
+  FileCheck,
+  Wind,
 } from "lucide-react";
 
-/**
- * Aggregation health summary.
- *
- * Shows at-a-glance:
- *   - How many of the 6 sections returned data
- *   - How many are LIVE vs MOCK vs UNAVAILABLE
- *   - Total aggregation time
- *   - When it was last aggregated
- *   - Refresh button
- *
- * Reads `overallStatus` from AggregatedPropertyResponse.
- */
+// ── Section metadata (icon + human label for each source) ────────
+const SECTION_META = {
+  ownership:     { key: "ownership",     label: "Ownership Registry",    icon: User },
+  taxHistory:    { key: "taxHistory",    label: "Municipal Tax Records", icon: Receipt },
+  zoning:        { key: "zoning",        label: "Zoning Authority",      icon: MapIcon },
+  floodZone:     { key: "floodZone",     label: "Flood Risk Assessment", icon: Waves },
+  permits:       { key: "permits",       label: "Permits Database",      icon: FileCheck },
+  environmental: { key: "environmental", label: "Environmental Monitoring", icon: Wind },
+};
+
 export default function DataCompletenessCard({ aggregated, onRefresh, refreshing }) {
   if (!aggregated) return null;
 
-  const sections = [
-    aggregated.ownership,
-    aggregated.taxHistory,
-    aggregated.zoning,
-    aggregated.floodZone,
-    aggregated.permits,
-    aggregated.environmental,
-  ];
+  // Build section list with metadata
+  const sectionList = Object.keys(SECTION_META).map((key) => ({
+    ...SECTION_META[key],
+    section: aggregated[key],
+  }));
+
+  const sections = sectionList.map((s) => s.section);
 
   const liveCount = sections.filter(
     (s) => s?.status === "LIVE" || s?.status === "CACHED"
@@ -49,19 +54,33 @@ export default function DataCompletenessCard({ aggregated, onRefresh, refreshing
     ((liveCount + mockCount) / sections.length) * 100
   );
 
+  // Freshness stats
+  const timestamps = sections
+    .map((s) => s?.retrievedAt)
+    .filter(Boolean)
+    .map((t) => new Date(t).getTime());
+
+  const oldest = timestamps.length ? Math.min(...timestamps) : null;
+  const newest = timestamps.length ? Math.max(...timestamps) : null;
+
   return (
-    <div className="rounded-2xl border border-gray-100 bg-white shadow-sm flex flex-col w-full">
-      {/* Header */}
-      <div className="flex items-start justify-between gap-3 border-b border-gray-100 px-5 py-4">
-        <div className="flex items-start gap-3">
-          <div className={`flex h-9 w-9 flex-shrink-0 items-center justify-center rounded-xl ${config.iconBg}`}>
-            <OverallIcon className={`h-4 w-4 ${config.iconColor}`} strokeWidth={2.2} />
+    <div className="group flex h-full w-full flex-col overflow-hidden rounded-2xl border border-gray-200 bg-white shadow-sm transition-all duration-200 hover:border-gray-300 hover:shadow-md">
+      {/* ── Header ─────────────────────────────────────────── */}
+      <div className="flex items-start justify-between gap-3 border-b border-gray-100 px-6 py-5">
+        <div className="flex min-w-0 items-start gap-3">
+          <div
+            className={`flex h-11 w-11 flex-shrink-0 items-center justify-center rounded-xl ring-1 transition-transform duration-200 group-hover:scale-105 ${config.iconBg} ${config.iconRing}`}
+          >
+            <OverallIcon
+              className={`h-5 w-5 ${config.iconColor}`}
+              strokeWidth={2.2}
+            />
           </div>
-          <div>
-            <h3 className="text-sm font-black text-gray-900 tracking-tight">
+          <div className="min-w-0">
+            <h3 className="text-base font-bold tracking-tight text-gray-900">
               Data completeness
             </h3>
-            <p className="text-[11px] text-gray-500 mt-0.5">
+            <p className="mt-0.5 text-sm text-gray-500">
               Aggregation health across 6 data sources
             </p>
           </div>
@@ -72,22 +91,23 @@ export default function DataCompletenessCard({ aggregated, onRefresh, refreshing
             type="button"
             onClick={onRefresh}
             disabled={refreshing}
-            className="flex h-8 w-8 items-center justify-center rounded-lg border border-gray-200 bg-white text-gray-500 transition hover:border-[#22C55E] hover:text-[#16a34a] disabled:opacity-50"
+            className="flex h-9 w-9 flex-shrink-0 items-center justify-center rounded-lg border border-gray-200 bg-white text-gray-500 transition hover:border-[#22C55E] hover:text-[#16a34a] disabled:cursor-not-allowed disabled:opacity-50 cursor-pointer"
             aria-label="Refresh aggregation"
-            title="Refresh"
+            title="Refresh all sources"
           >
             <RefreshCw
-              className={`h-3.5 w-3.5 ${refreshing ? "animate-spin" : ""}`}
+              className={`h-4 w-4 ${refreshing ? "animate-spin" : ""}`}
               strokeWidth={2.2}
             />
           </button>
         )}
       </div>
 
-      {/* Body */}
-      <div className="p-5 space-y-4 flex-1">
-        {/* Overall status */}
-        <div className={`rounded-xl px-4 py-3 ring-1 ${config.panelClass}`}>
+      {/* ── Body ───────────────────────────────────────────── */}
+      <div className="flex flex-1 flex-col gap-5 p-6">
+
+        {/* ── 1. Overall status banner ──────────────────────── */}
+        <div className={`rounded-xl px-4 py-3.5 ring-1 ${config.panelClass}`}>
           <div className="flex items-baseline justify-between gap-4">
             <div>
               <p className={`text-[10px] font-bold uppercase tracking-widest ${config.textColor}`}>
@@ -101,46 +121,98 @@ export default function DataCompletenessCard({ aggregated, onRefresh, refreshing
               <p className={`text-2xl font-black tabular-nums ${config.textColor}`}>
                 {completionPercent}%
               </p>
-              <p className={`text-[10px] font-bold uppercase tracking-widest ${config.textColor} opacity-80`}>
+              <p className={`text-[10px] font-bold uppercase tracking-widest opacity-80 ${config.textColor}`}>
                 Coverage
               </p>
             </div>
           </div>
         </div>
 
-        {/* Source breakdown */}
+        {/* ── 2. Source count row ──────────────────────────── */}
         <div className="grid grid-cols-3 gap-2">
           <SourceCell
             icon={Radio}
             iconColor="text-green-600"
+            bgColor="bg-green-50/50"
+            ringColor="ring-green-100"
             count={liveCount}
             label={liveCount === 1 ? "Live source" : "Live sources"}
           />
           <SourceCell
             icon={Database}
             iconColor="text-amber-600"
+            bgColor="bg-amber-50/50"
+            ringColor="ring-amber-100"
             count={mockCount}
             label={mockCount === 1 ? "Mock source" : "Mock sources"}
           />
           <SourceCell
             icon={XCircle}
             iconColor="text-red-500"
+            bgColor="bg-red-50/50"
+            ringColor="ring-red-100"
             count={failedCount}
-            label={failedCount === 1 ? "Unavailable" : "Unavailable"}
+            label="Unavailable"
           />
         </div>
 
-        {/* Meta info */}
-        {(aggregated.aggregatedAt || aggregated.totalDurationMs) && (
-          <div className="flex items-center justify-between border-t border-gray-100 pt-3 text-[11px] text-gray-500">
-            {aggregated.aggregatedAt && (
-              <span>Fetched {formatTimeAgo(aggregated.aggregatedAt)}</span>
-            )}
-            {aggregated.totalDurationMs != null && (
-              <span className="font-mono tabular-nums">
-                {aggregated.totalDurationMs} ms
-              </span>
-            )}
+        {/* ── 3. Source breakdown list ─────────────────────── */}
+        <div>
+          <div className="mb-2.5 flex items-center justify-between">
+            <p className="text-[10px] font-bold uppercase tracking-widest text-gray-500">
+              Data sources
+            </p>
+            <p className="text-[10px] font-semibold text-gray-400">
+              {sections.length} total
+            </p>
+          </div>
+
+          <div className="divide-y divide-gray-100 rounded-xl border border-gray-100 bg-white">
+            {sectionList.map(({ key, label, icon: Icon, section }) => (
+              <SourceRow
+                key={key}
+                icon={Icon}
+                label={label}
+                status={section?.status}
+                retrievedAt={section?.retrievedAt}
+                durationMs={section?.durationMs}
+              />
+            ))}
+          </div>
+        </div>
+
+        {/* ── 4. Freshness footer ─────────────────────────── */}
+        {(oldest || newest || aggregated.totalDurationMs != null) && (
+          <div className="mt-auto rounded-xl bg-gray-50 px-4 py-3">
+            <div className="flex flex-wrap items-center justify-between gap-3 text-[11px]">
+              {newest && (
+                <div className="flex items-center gap-1.5">
+                  <Clock className="h-3 w-3 text-gray-400" />
+                  <span className="text-gray-500">Latest fetch:</span>
+                  <span className="font-bold text-gray-800">
+                    {formatTimeAgo(newest)}
+                  </span>
+                </div>
+              )}
+              {oldest && oldest !== newest && (
+                <div className="flex items-center gap-1.5">
+                  <Clock className="h-3 w-3 text-gray-400" />
+                  <span className="text-gray-500">Oldest:</span>
+                  <span className="font-bold text-gray-800">
+                    {formatTimeAgo(oldest)}
+                  </span>
+                </div>
+              )}
+              {aggregated.totalDurationMs != null && (
+                <div className="flex items-center gap-1.5">
+                  <Zap className="h-3 w-3 text-gray-400" />
+                  <span className="text-gray-500">Duration:</span>
+                  <span className="font-mono font-bold tabular-nums text-gray-800">
+                    {aggregated.totalDurationMs}ms
+                  </span>
+                </div>
+              )}
+            </div>
           </div>
         )}
       </div>
@@ -148,19 +220,61 @@ export default function DataCompletenessCard({ aggregated, onRefresh, refreshing
   );
 }
 
-function SourceCell({ icon: Icon, iconColor, count, label }) {
+// ═══════════════════════════════════════════════════════════════════
+// Sub-components
+// ═══════════════════════════════════════════════════════════════════
+
+function SourceCell({ icon: Icon, iconColor, bgColor, ringColor, count, label }) {
   return (
-    <div className="rounded-lg border border-gray-100 bg-gray-50/50 px-2 py-2.5 text-center">
-      <Icon className={`h-3.5 w-3.5 mx-auto ${iconColor}`} strokeWidth={2.2} />
-      <p className="mt-1 text-lg font-black text-gray-900 tabular-nums leading-none">
+    <div className={`rounded-lg px-2 py-2.5 text-center ring-1 ${bgColor} ${ringColor}`}>
+      <Icon className={`mx-auto h-3.5 w-3.5 ${iconColor}`} strokeWidth={2.2} />
+      <p className="mt-1 text-lg font-black leading-none tabular-nums text-gray-900">
         {count}
       </p>
-      <p className="mt-1 text-[9px] font-bold uppercase tracking-wider text-gray-500 leading-tight">
+      <p className="mt-1 text-[9px] font-bold uppercase leading-tight tracking-wider text-gray-500">
         {label}
       </p>
     </div>
   );
 }
+
+function SourceRow({ icon: Icon, label, status, retrievedAt, durationMs }) {
+  const statusConfig = getStatusConfig(status);
+
+  return (
+    <div className="flex items-center justify-between gap-3 px-3 py-2.5 transition-colors hover:bg-gray-50/60">
+      {/* Left: icon + label */}
+      <div className="flex min-w-0 items-center gap-2.5">
+        <div className="flex h-7 w-7 flex-shrink-0 items-center justify-center rounded-lg bg-gray-50 ring-1 ring-gray-100">
+          <Icon className="h-3.5 w-3.5 text-gray-500" strokeWidth={2} />
+        </div>
+        <div className="min-w-0">
+          <p className="truncate text-xs font-semibold text-gray-800">
+            {label}
+          </p>
+          {retrievedAt && (
+            <p className="text-[10px] text-gray-400">
+              {formatTimeAgo(new Date(retrievedAt).getTime())}
+              {durationMs != null && ` • ${durationMs}ms`}
+            </p>
+          )}
+        </div>
+      </div>
+
+      {/* Right: status badge */}
+      <span
+        className={`inline-flex flex-shrink-0 items-center gap-1 rounded-md px-2 py-0.5 text-[9px] font-bold uppercase tracking-wider ring-1 ${statusConfig.className}`}
+      >
+        <span className={`h-1.5 w-1.5 rounded-full ${statusConfig.dot}`} />
+        {statusConfig.label}
+      </span>
+    </div>
+  );
+}
+
+// ═══════════════════════════════════════════════════════════════════
+// Helpers
+// ═══════════════════════════════════════════════════════════════════
 
 function getOverallConfig(status) {
   switch (status) {
@@ -169,6 +283,7 @@ function getOverallConfig(status) {
         label: "All sources available",
         icon: CheckCircle2,
         iconBg: "bg-green-50",
+        iconRing: "ring-green-100",
         iconColor: "text-green-600",
         textColor: "text-green-700",
         panelClass: "bg-green-50 ring-green-200",
@@ -178,6 +293,7 @@ function getOverallConfig(status) {
         label: "Partial data",
         icon: AlertTriangle,
         iconBg: "bg-amber-50",
+        iconRing: "ring-amber-100",
         iconColor: "text-amber-600",
         textColor: "text-amber-700",
         panelClass: "bg-amber-50 ring-amber-200",
@@ -187,6 +303,7 @@ function getOverallConfig(status) {
         label: "Degraded — some sources down",
         icon: XCircle,
         iconBg: "bg-red-50",
+        iconRing: "ring-red-100",
         iconColor: "text-red-500",
         textColor: "text-red-700",
         panelClass: "bg-red-50 ring-red-200",
@@ -196,6 +313,7 @@ function getOverallConfig(status) {
         label: "Loading",
         icon: RefreshCw,
         iconBg: "bg-gray-50",
+        iconRing: "ring-gray-100",
         iconColor: "text-gray-400",
         textColor: "text-gray-700",
         panelClass: "bg-gray-50 ring-gray-200",
@@ -203,8 +321,52 @@ function getOverallConfig(status) {
   }
 }
 
-function formatTimeAgo(iso) {
-  const secs = Math.floor((Date.now() - new Date(iso).getTime()) / 1000);
+function getStatusConfig(status) {
+  switch (status) {
+    case "LIVE":
+      return {
+        label: "Live",
+        className: "bg-green-50 text-green-700 ring-green-200",
+        dot: "bg-green-500 animate-pulse",
+      };
+    case "CACHED":
+      return {
+        label: "Cached",
+        className: "bg-blue-50 text-blue-700 ring-blue-200",
+        dot: "bg-blue-500",
+      };
+    case "MOCK":
+      return {
+        label: "Mock",
+        className: "bg-amber-50 text-amber-700 ring-amber-200",
+        dot: "bg-amber-500",
+      };
+    case "NO_DATA":
+      return {
+        label: "Empty",
+        className: "bg-gray-100 text-gray-600 ring-gray-200",
+        dot: "bg-gray-400",
+      };
+    case "UNAVAILABLE":
+    case "TIMEOUT":
+    case "ERROR":
+      return {
+        label: "Down",
+        className: "bg-red-50 text-red-700 ring-red-200",
+        dot: "bg-red-500",
+      };
+    default:
+      return {
+        label: "—",
+        className: "bg-gray-50 text-gray-500 ring-gray-200",
+        dot: "bg-gray-300",
+      };
+  }
+}
+
+function formatTimeAgo(input) {
+  const ms = typeof input === "number" ? input : new Date(input).getTime();
+  const secs = Math.floor((Date.now() - ms) / 1000);
   if (secs < 60) return "just now";
   if (secs < 3600) return `${Math.floor(secs / 60)}m ago`;
   if (secs < 86400) return `${Math.floor(secs / 3600)}h ago`;

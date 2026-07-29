@@ -9,7 +9,7 @@ import { Cookie } from "lucide-react";
 export default function CookieConsentBanner({ onAcceptAll, onRejectAll, onManage }) {
   return (
     <div
-      className="fixed inset-x-0 bottom-0 z-[80] px-4 pb-4 animate-in slide-in-from-bottom-4 duration-300"
+      className="fixed inset-x-0 bottom-0 z-[9997] px-4 pb-4 animate-in slide-in-from-bottom-4 duration-300"
       role="region"
       aria-label="Cookie consent"
     >

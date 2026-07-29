@@ -70,7 +70,7 @@ const activeFilterCount =
   (filters.maxPrice != null ? 1 : 0) +
   (filters.sortBy !== "recent" ? 1 : 0);
   return (
-    <div className="fixed inset-0 z-[90]" role="dialog" aria-modal="true">
+    <div className="fixed inset-0 z-[9999]" role="dialog" aria-modal="true">
       {/* Backdrop */}
       <div
         className="absolute inset-0 bg-slate-900/40 backdrop-blur-sm animate-in fade-in duration-150"

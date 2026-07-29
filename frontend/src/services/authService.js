@@ -52,10 +52,18 @@ export const registerUser = async ({
   // Fetch fresh profile to get role (needed by middleware for RBAC)
   try {
     const profile = await getCurrentUser();
-    saveUser({ email, fullName, role: profile.role }, true);
+    saveUser(
+      {
+        email,
+        fullName,
+        role: profile.role,
+        profilePicture: profile.profilePicture || null,
+      },
+      true
+    );
   } catch {
     // Fallback if profile fetch fails — save role from payload
-    saveUser({ email, fullName, role }, true);
+    saveUser({ email, fullName, role, profilePicture: null }, true);
   }
 }
 
@@ -79,9 +87,14 @@ export const loginUser = async ({ email, password, rememberMe = true }) => {
   // Fetch fresh profile to get role (needed by middleware for RBAC)
   const profile = await getCurrentUser();
   saveUser(
-    { email, fullName: profile.fullName, role: profile.role },
-    rememberMe
-  );
+  {
+    email,
+    fullName: profile.fullName,
+    role: profile.role,
+    profilePicture: profile.profilePicture || null,
+  },
+  rememberMe
+);
 }
 
 return response.data;
@@ -162,9 +175,14 @@ export const loginWithGoogle = async (credential) => {
   // Fetch fresh profile to get role (needed by middleware for RBAC)
   const profile = await getCurrentUser();
   saveUser(
-    { email: data.email, fullName: data.name, role: profile.role },
-    true
-  );
+  {
+    email: data.email,
+    fullName: data.name,
+    role: profile.role,
+    profilePicture: profile.profilePicture || null,
+  },
+  true
+);
 }
 
 return data;
@@ -188,13 +206,14 @@ if (token) {
   // Fetch fresh profile to get role (needed by middleware for RBAC)
   const profile = await getCurrentUser();
   saveUser(
-    {
-      email: profile.email,
-      fullName: profile.fullName,
-      role: profile.role,
-    },
-    true
-  );
+  {
+    email: profile.email,
+    fullName: profile.fullName,
+    role: profile.role,
+    profilePicture: profile.profilePicture || null,
+  },
+  true
+);
 }
 
 return response.data;

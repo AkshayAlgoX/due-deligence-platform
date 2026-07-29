@@ -30,12 +30,17 @@ export default function Navbar({ toggleSidebar }) {
   const menuRef = useRef(null);
 
   useEffect(() => {
-    setUser(getUser());
-    // Detect Mac to show ⌘ vs Ctrl
-    if (typeof window !== "undefined") {
-      setIsMac(/Mac|iPhone|iPad|iPod/.test(window.navigator.platform));
-    }
-  }, []);
+  setUser(getUser());
+  // Detect Mac to show ⌘ vs Ctrl
+  if (typeof window !== "undefined") {
+    setIsMac(/Mac|iPhone|iPad|iPod/.test(window.navigator.platform));
+  }
+
+  // Listen for profile updates (avatar upload/remove) — re-read from storage
+  const handleUserUpdate = () => setUser(getUser());
+  window.addEventListener("user-updated", handleUserUpdate);
+  return () => window.removeEventListener("user-updated", handleUserUpdate);
+}, []);
 
   useEffect(() => {
     const handleClickOutside = (e) => {
@@ -88,7 +93,7 @@ export default function Navbar({ toggleSidebar }) {
 
   return (
     <>
-      <header className="h-[68px] border-b border-gray-100 bg-white px-6 flex items-center justify-between z-10 relative shadow-sm">
+      <header className="h-[68px] border-b border-gray-100 bg-white px-6 flex items-center justify-between z-[1000] relative shadow-sm">
         <div className="flex items-center gap-10">
           {/* Sidebar toggle + brand */}
           <div className="flex items-center gap-4">
@@ -188,11 +193,27 @@ export default function Navbar({ toggleSidebar }) {
               </div>
 
               <div className="relative">
-                <div className="h-10 w-10 rounded-full bg-gradient-to-br from-[#22C55E] to-[#16a34a] flex items-center justify-center text-white text-sm font-black shadow-lg shadow-green-500/30">
-                  {initials}
-                </div>
-                <span className="absolute bottom-0 right-0 w-2.5 h-2.5 bg-green-500 rounded-full border-2 border-white animate-pulse" />
-              </div>
+  {user?.profilePicture ? (
+    <img
+      src={user.profilePicture}
+      alt={fullName}
+      className="h-10 w-10 rounded-full object-cover shadow-lg shadow-green-500/30 ring-2 ring-white"
+      onError={(e) => {
+        // If image fails to load, hide it — fallback initials div takes over
+        e.currentTarget.style.display = "none";
+        e.currentTarget.nextElementSibling?.classList.remove("hidden");
+      }}
+    />
+  ) : null}
+  <div
+    className={`${
+      user?.profilePicture ? "hidden" : "flex"
+    } h-10 w-10 rounded-full bg-gradient-to-br from-[#22C55E] to-[#16a34a] items-center justify-center text-white text-sm font-black shadow-lg shadow-green-500/30`}
+  >
+    {initials}
+  </div>
+  <span className="absolute bottom-0 right-0 w-2.5 h-2.5 bg-green-500 rounded-full border-2 border-white animate-pulse" />
+</div>
 
               <ChevronDown
                 size={16}
@@ -202,20 +223,35 @@ export default function Navbar({ toggleSidebar }) {
               />
             </button>
 
-            {menuOpen && (
-              <div className="absolute right-0 top-full mt-2 w-64 rounded-2xl border border-gray-100 bg-white shadow-2xl z-50 overflow-hidden animate-in fade-in slide-in-from-top-2 duration-150">
+           {menuOpen && (
+  <div className="absolute right-0 top-full mt-2 w-64 rounded-2xl border border-gray-100 bg-white shadow-2xl z-[1001] overflow-hidden animate-in fade-in slide-in-from-top-2 duration-150">
                 <div className="border-b border-gray-100 bg-gradient-to-br from-green-50 to-emerald-50 px-4 py-3">
-                  <div className="flex items-center gap-3">
-                    <div className="h-11 w-11 rounded-full bg-gradient-to-br from-[#22C55E] to-[#16a34a] flex items-center justify-center text-white text-sm font-black shadow-lg shadow-green-500/30 flex-shrink-0">
-                      {initials}
-                    </div>
-                    <div className="min-w-0 flex-1">
-                      <p className="text-sm font-bold text-gray-900 truncate">
-                        {fullName}
-                      </p>
-                      <p className="text-xs text-gray-500 truncate">{email}</p>
-                    </div>
-                  </div>
+                 <div className="flex items-center gap-3">
+  {user?.profilePicture ? (
+    <img
+      src={user.profilePicture}
+      alt={fullName}
+      className="h-11 w-11 rounded-full object-cover shadow-lg shadow-green-500/30 ring-2 ring-white flex-shrink-0"
+      onError={(e) => {
+        e.currentTarget.style.display = "none";
+        e.currentTarget.nextElementSibling?.classList.remove("hidden");
+      }}
+    />
+  ) : null}
+  <div
+    className={`${
+      user?.profilePicture ? "hidden" : "flex"
+    } h-11 w-11 rounded-full bg-gradient-to-br from-[#22C55E] to-[#16a34a] items-center justify-center text-white text-sm font-black shadow-lg shadow-green-500/30 flex-shrink-0`}
+  >
+    {initials}
+  </div>
+  <div className="min-w-0 flex-1">
+    <p className="text-sm font-bold text-gray-900 truncate">
+      {fullName}
+    </p>
+    <p className="text-xs text-gray-500 truncate">{email}</p>
+  </div>
+</div>
                 </div>
 
                 <div className="p-1.5">

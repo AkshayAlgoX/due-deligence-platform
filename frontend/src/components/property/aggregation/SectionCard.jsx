@@ -1,20 +1,8 @@
 "use client";
 
-import { AlertTriangle, Info } from "lucide-react";
+import { AlertTriangle, Info, Inbox } from "lucide-react";
 import DataSourceBadge from "./DataSourceBadge";
 
-/**
- * Standard wrapper for every aggregation section.
- * Handles loading / no-data / error uniformly so cards look consistent.
- *
- * Renders:
- *   - Header (title + icon + data source badge)
- *   - Body:
- *       - loading  → children (already a skeleton)
- *       - error    → gray card with reason
- *       - no data  → "No records" message
- *       - success  → children (the real content)
- */
 export default function SectionCard({
   title,
   subtitle,
@@ -22,34 +10,40 @@ export default function SectionCard({
   section,
   loading = false,
   children,
+  emptyAction,      // { label: "Add details", onClick: fn }
+  emptyIcon: EmptyIcon,
 }) {
   const hasData =
     section &&
     ["LIVE", "CACHED", "MOCK"].includes(section.status) &&
-    section.data != null;
+    section.data != null &&
+    (!Array.isArray(section.data) || section.data.length > 0);
 
   const isError =
     section &&
     ["UNAVAILABLE", "TIMEOUT", "ERROR"].includes(section.status);
 
-  const isNoData = section && section.status === "NO_DATA";
+  const isNoData =
+    section &&
+    (section.status === "NO_DATA" ||
+      (Array.isArray(section.data) && section.data.length === 0));
 
   return (
-    <div className="group rounded-2xl border border-gray-100 bg-white shadow-sm flex flex-col w-full transition-colors duration-200 hover:border-gray-200">
-      {/* Header */}
-      <div className="flex items-start justify-between gap-3 border-b border-gray-100 px-5 py-4">
-        <div className="flex items-start gap-3 min-w-0">
+    <div className="group flex h-full w-full flex-col overflow-hidden rounded-2xl border border-gray-200 bg-white shadow-sm transition-all duration-200 hover:border-gray-300 hover:shadow-md">
+      {/* ── Header ─────────────────────────────────────────────── */}
+      <div className="flex items-start justify-between gap-3 border-b border-gray-100 px-6 py-5">
+        <div className="flex min-w-0 items-start gap-3">
           {Icon && (
-            <div className="flex h-9 w-9 flex-shrink-0 items-center justify-center rounded-xl bg-[#edf7f3] transition-transform duration-200 group-hover:scale-110">
-              <Icon className="h-4 w-4 text-[#16a34a]" strokeWidth={2.2} />
+            <div className="flex h-11 w-11 flex-shrink-0 items-center justify-center rounded-xl bg-[#edf7f3] ring-1 ring-green-100 transition-transform duration-200 group-hover:scale-105">
+              <Icon className="h-5 w-5 text-[#16a34a]" strokeWidth={2.2} />
             </div>
           )}
           <div className="min-w-0">
-            <h3 className="text-sm font-black text-gray-900 tracking-tight">
+            <h3 className="text-base font-bold tracking-tight text-gray-900">
               {title}
             </h3>
             {subtitle && (
-              <p className="text-[11px] text-gray-500 mt-0.5">{subtitle}</p>
+              <p className="mt-0.5 text-sm text-gray-500">{subtitle}</p>
             )}
           </div>
         </div>
@@ -63,32 +57,36 @@ export default function SectionCard({
         )}
       </div>
 
-      {/* Body */}
-      <div className="p-5 flex-1">
+      {/* ── Body ───────────────────────────────────────────────── */}
+      <div className="flex-1 p-6">
         {loading ? (
-          <div className="space-y-3">
-            <div className="h-4 w-3/4 animate-pulse rounded bg-gray-100" />
-            <div className="h-4 w-full animate-pulse rounded bg-gray-100" />
-            <div className="h-4 w-5/6 animate-pulse rounded bg-gray-100" />
-            <div className="h-4 w-2/3 animate-pulse rounded bg-gray-100" />
-          </div>
+          <LoadingSkeleton />
         ) : isError ? (
           <ErrorState reason={section.reason} />
         ) : isNoData ? (
-          <NoDataState reason={section.reason} />
+          <EmptyState
+            reason={section.reason}
+            icon={EmptyIcon || Icon}
+            title={title}
+            action={emptyAction}
+          />
         ) : hasData ? (
           children
         ) : (
-          <ErrorState reason="Section not loaded yet" />
+          <EmptyState
+            reason="Waiting for data..."
+            icon={EmptyIcon || Icon}
+            title={title}
+          />
         )}
       </div>
 
-      {/* Footer — mock reason (only when data present but source is mock) */}
+      {/* ── Footer note (only when mock) ─────────────────────── */}
       {hasData && section.status === "MOCK" && section.reason && (
-        <div className="border-t border-gray-100 bg-gray-50/60 px-5 py-2.5">
+        <div className="border-t border-gray-100 bg-gray-50/60 px-6 py-3">
           <div className="flex items-start gap-2">
-            <Info className="h-3 w-3 flex-shrink-0 mt-0.5 text-gray-400" />
-            <p className="text-[10px] text-gray-500 leading-relaxed">
+            <Info className="mt-0.5 h-3.5 w-3.5 flex-shrink-0 text-gray-400" />
+            <p className="text-[11px] leading-relaxed text-gray-500">
               {section.reason}
             </p>
           </div>
@@ -98,32 +96,64 @@ export default function SectionCard({
   );
 }
 
-function ErrorState({ reason }) {
+// ── Loading skeleton ─────────────────────────────────────────────
+function LoadingSkeleton() {
   return (
-    <div className="flex items-start gap-3 rounded-xl bg-gray-50 p-4">
-      <AlertTriangle
-        className="h-4 w-4 flex-shrink-0 mt-0.5 text-gray-400"
-        strokeWidth={2}
-      />
-      <div className="min-w-0">
-        <p className="text-sm font-semibold text-gray-700">
-          Section unavailable
-        </p>
-        <p className="mt-1 text-xs text-gray-500 leading-relaxed">
-          {reason || "External service could not be reached."}
-        </p>
-      </div>
+    <div className="space-y-3">
+      <div className="h-4 w-3/4 animate-pulse rounded bg-gray-100" />
+      <div className="h-4 w-full animate-pulse rounded bg-gray-100" />
+      <div className="h-4 w-5/6 animate-pulse rounded bg-gray-100" />
+      <div className="h-4 w-2/3 animate-pulse rounded bg-gray-100" />
     </div>
   );
 }
 
-function NoDataState({ reason }) {
+// ── Error state (external service down) ─────────────────────────
+function ErrorState({ reason }) {
   return (
-    <div className="rounded-xl bg-gray-50 p-4 text-center">
-      <p className="text-sm font-semibold text-gray-700">No records found</p>
-      <p className="mt-1 text-xs text-gray-500">
-        {reason || "No data exists for this property."}
+    <div className="flex h-full min-h-[180px] flex-col items-center justify-center text-center">
+      <div className="mb-3 flex h-12 w-12 items-center justify-center rounded-full bg-amber-50 ring-1 ring-amber-100">
+        <AlertTriangle
+          className="h-5 w-5 text-amber-500"
+          strokeWidth={2.2}
+        />
+      </div>
+      <p className="text-sm font-semibold text-gray-800">
+        Section temporarily unavailable
       </p>
+      <p className="mt-1.5 max-w-xs text-xs leading-relaxed text-gray-500">
+        {reason || "External data source could not be reached. Try again shortly."}
+      </p>
+    </div>
+  );
+}
+
+// ── Empty state (no records exist) ──────────────────────────────
+function EmptyState({ reason, icon: Icon, title, action }) {
+  return (
+    <div className="flex h-full min-h-[180px] flex-col items-center justify-center text-center">
+      <div className="mb-3 flex h-12 w-12 items-center justify-center rounded-full bg-gray-100">
+        {Icon ? (
+          <Icon className="h-5 w-5 text-gray-400" strokeWidth={2} />
+        ) : (
+          <Inbox className="h-5 w-5 text-gray-400" strokeWidth={2} />
+        )}
+      </div>
+      <p className="text-sm font-semibold text-gray-800">
+        No {title?.toLowerCase() || "data"} available
+      </p>
+      <p className="mt-1.5 max-w-xs text-xs leading-relaxed text-gray-500">
+        {reason || "No records exist for this property yet."}
+      </p>
+      {action && (
+        <button
+          onClick={action.onClick}
+          className="mt-4 inline-flex items-center gap-1.5 rounded-lg bg-[#22C55E] px-3.5 py-1.5 text-xs font-bold text-white shadow-sm transition hover:bg-[#16a34a] hover:shadow-md cursor-pointer"
+        >
+          {action.icon && <action.icon className="h-3.5 w-3.5" strokeWidth={2.5} />}
+          {action.label}
+        </button>
+      )}
     </div>
   );
 }
