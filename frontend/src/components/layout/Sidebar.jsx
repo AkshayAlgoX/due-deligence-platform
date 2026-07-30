@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useEffect, useState } from "react";
+import { useTranslation } from "react-i18next";
 import {
   LayoutDashboard,
   Search,
@@ -21,18 +22,18 @@ import {
 import { getUser } from "@/utils/helpers";
 
 const ROUTE_ROLES = {
-  "/dashboard":                    ["BUYER", "REAL_ESTATE_AGENT", "LEGAL_REVIEWER", "FINANCIAL_INSTITUTION", "ADMIN"],
-  "/dashboard/property-search":    ["BUYER", "REAL_ESTATE_AGENT", "LEGAL_REVIEWER", "FINANCIAL_INSTITUTION", "ADMIN"],
-  "/dashboard/due-diligence":      ["BUYER", "REAL_ESTATE_AGENT", "LEGAL_REVIEWER", "FINANCIAL_INSTITUTION", "ADMIN"],
-  "/dashboard/risk-assessment":    ["BUYER", "REAL_ESTATE_AGENT", "LEGAL_REVIEWER", "FINANCIAL_INSTITUTION", "ADMIN"],
-  "/dashboard/property-comparison":["BUYER", "REAL_ESTATE_AGENT", "LEGAL_REVIEWER", "FINANCIAL_INSTITUTION", "ADMIN"],
-  "/dashboard/saved-comparisons":  ["BUYER", "REAL_ESTATE_AGENT", "LEGAL_REVIEWER", "FINANCIAL_INSTITUTION", "ADMIN"],
-  "/dashboard/reports":            ["REAL_ESTATE_AGENT", "LEGAL_REVIEWER", "FINANCIAL_INSTITUTION", "ADMIN"],
-  "/dashboard/notifications":      ["BUYER", "REAL_ESTATE_AGENT", "LEGAL_REVIEWER", "FINANCIAL_INSTITUTION", "ADMIN"],
-  "/dashboard/audit-logs":         ["ADMIN"],
-  "/dashboard/profile":            ["BUYER", "REAL_ESTATE_AGENT", "LEGAL_REVIEWER", "FINANCIAL_INSTITUTION", "ADMIN"],
-  "/dashboard/settings":           ["BUYER", "REAL_ESTATE_AGENT", "LEGAL_REVIEWER", "FINANCIAL_INSTITUTION", "ADMIN"],
-  "/support":                      ["BUYER", "REAL_ESTATE_AGENT", "LEGAL_REVIEWER", "FINANCIAL_INSTITUTION", "ADMIN"],
+  "/dashboard":                     ["BUYER", "REAL_ESTATE_AGENT", "LEGAL_REVIEWER", "FINANCIAL_INSTITUTION", "ADMIN"],
+  "/dashboard/property-search":     ["BUYER", "REAL_ESTATE_AGENT", "LEGAL_REVIEWER", "FINANCIAL_INSTITUTION", "ADMIN"],
+  "/dashboard/due-diligence":       ["BUYER", "REAL_ESTATE_AGENT", "LEGAL_REVIEWER", "FINANCIAL_INSTITUTION", "ADMIN"],
+  "/dashboard/risk-assessment":     ["BUYER", "REAL_ESTATE_AGENT", "LEGAL_REVIEWER", "FINANCIAL_INSTITUTION", "ADMIN"],
+  "/dashboard/property-comparison": ["BUYER", "REAL_ESTATE_AGENT", "LEGAL_REVIEWER", "FINANCIAL_INSTITUTION", "ADMIN"],
+  "/dashboard/saved-comparisons":   ["BUYER", "REAL_ESTATE_AGENT", "LEGAL_REVIEWER", "FINANCIAL_INSTITUTION", "ADMIN"],
+  "/dashboard/reports":             ["REAL_ESTATE_AGENT", "LEGAL_REVIEWER", "FINANCIAL_INSTITUTION", "ADMIN"],
+  "/dashboard/notifications":       ["BUYER", "REAL_ESTATE_AGENT", "LEGAL_REVIEWER", "FINANCIAL_INSTITUTION", "ADMIN"],
+  "/dashboard/audit-logs":          ["ADMIN"],
+  "/dashboard/profile":             ["BUYER", "REAL_ESTATE_AGENT", "LEGAL_REVIEWER", "FINANCIAL_INSTITUTION", "ADMIN"],
+  "/dashboard/settings":            ["BUYER", "REAL_ESTATE_AGENT", "LEGAL_REVIEWER", "FINANCIAL_INSTITUTION", "ADMIN"],
+  "/support":                       ["BUYER", "REAL_ESTATE_AGENT", "LEGAL_REVIEWER", "FINANCIAL_INSTITUTION", "ADMIN"],
 };
 
 function canAccess(href, role) {
@@ -42,53 +43,55 @@ function canAccess(href, role) {
   return allowed.includes(role);
 }
 
-const menuSections = [
+// ─── Key-based config (no hardcoded strings — resolved via t() inside component) ───
+const MENU_SECTION_CONFIGS = [
   {
-    label: "Main",
+    sectionKey: "nav.sections.main",
     items: [
-      { title: "Dashboard",       href: "/dashboard",                 icon: LayoutDashboard, badge: null },
-      { title: "Property Search", href: "/dashboard/property-search", icon: Search,          badge: null },
+      { titleKey: "nav.dashboard",      href: "/dashboard",                  icon: LayoutDashboard, badge: null },
+      { titleKey: "nav.propertySearch", href: "/dashboard/property-search",  icon: Search,          badge: null },
     ],
   },
   {
-    label: "Analysis",
+    sectionKey: "nav.sections.analysis",
     items: [
-      { title: "Due Diligence",        href: "/dashboard/due-diligence",        icon: ShieldCheck,   badge: null },
-      { title: "Risk Assessment",      href: "/dashboard/risk-assessment",      icon: AlertTriangle, badge: null },
-      { title: "Property Comparison",  href: "/dashboard/property-comparison",  icon: GitCompare,    badge: null },
-      { title: "Saved Comparisons",    href: "/dashboard/saved-comparisons",    icon: Bookmark,      badge: null },
+      { titleKey: "nav.dueDiligence",       href: "/dashboard/due-diligence",       icon: ShieldCheck,   badge: null },
+      { titleKey: "nav.riskAssessment",     href: "/dashboard/risk-assessment",     icon: AlertTriangle, badge: null },
+      { titleKey: "nav.propertyComparison", href: "/dashboard/property-comparison", icon: GitCompare,    badge: null },
+      { titleKey: "nav.savedComparisons",   href: "/dashboard/saved-comparisons",   icon: Bookmark,      badge: null },
     ],
   },
   {
-    label: "Insights",
+    sectionKey: "nav.sections.insights",
     items: [
-      { title: "Reports",       href: "/dashboard/reports",       icon: FileText,      badge: null },
-      { title: "Notifications", href: "/dashboard/notifications", icon: Bell,          badge: null },
-      { title: "Audit Logs",    href: "/dashboard/audit-logs",    icon: ClipboardList, badge: null },
+      { titleKey: "nav.reports",       href: "/dashboard/reports",       icon: FileText,      badge: null },
+      { titleKey: "nav.notifications", href: "/dashboard/notifications", icon: Bell,          badge: null },
+      { titleKey: "nav.auditLogs",     href: "/dashboard/audit-logs",    icon: ClipboardList, badge: null },
     ],
   },
   {
-    label: "Account",
+    sectionKey: "nav.sections.account",
     items: [
-      { title: "Profile",  href: "/dashboard/profile",   icon: User,     badge: null },
-      { title: "Settings", href: "/dashboard/settings",  icon: Settings, badge: null },
-      { title: "Support",  href: "/support",             icon: LifeBuoy, badge: null },
+      { titleKey: "nav.profile",  href: "/dashboard/profile",  icon: User,     badge: null },
+      { titleKey: "nav.settings", href: "/dashboard/settings", icon: Settings, badge: null },
+      { titleKey: "nav.support",  href: "/support",            icon: LifeBuoy, badge: null },
     ],
   },
 ];
 
-function timeAgo(date) {
+function timeAgo(date, t) {
   const seconds = Math.floor((Date.now() - date.getTime()) / 1000);
-  if (seconds < 60) return "just now";
+  if (seconds < 60) return t("common.justNow");
   const mins = Math.floor(seconds / 60);
-  if (mins < 60) return `${mins}m ago`;
+  if (mins < 60) return t("common.minutesAgo", { n: mins });
   const hrs = Math.floor(mins / 60);
-  if (hrs < 24) return `${hrs}h ago`;
+  if (hrs < 24) return t("common.hoursAgo", { n: hrs });
   return date.toLocaleDateString();
 }
 
 export default function Sidebar({ isOpen = true, onClose }) {
   const pathname = usePathname();
+  const { t } = useTranslation();
   const [sessionStart] = useState(() => new Date());
   const [, tick] = useState(0);
   const [userRole, setUserRole] = useState("");
@@ -99,7 +102,7 @@ export default function Sidebar({ isOpen = true, onClose }) {
   }, []);
 
   useEffect(() => {
-    const interval = setInterval(() => tick((t) => t + 1), 30000);
+    const interval = setInterval(() => tick((prev) => prev + 1), 30000);
     return () => clearInterval(interval);
   }, []);
 
@@ -120,7 +123,7 @@ export default function Sidebar({ isOpen = true, onClose }) {
         }`}
       >
         <nav className="flex-1 overflow-y-auto px-3 py-5">
-          {menuSections.map((section) => {
+          {MENU_SECTION_CONFIGS.map((section) => {
             const visibleItems = section.items.filter((item) =>
               canAccess(item.href, userRole)
             );
@@ -128,9 +131,9 @@ export default function Sidebar({ isOpen = true, onClose }) {
             if (visibleItems.length === 0) return null;
 
             return (
-              <div key={section.label} className="mb-5">
+              <div key={section.sectionKey} className="mb-5">
                 <p className="mb-2 px-4 text-[10px] font-bold uppercase tracking-widest text-gray-400 dark:text-[#6e7681]">
-                  {section.label}
+                  {t(section.sectionKey)}
                 </p>
 
                 {visibleItems.map((item) => {
@@ -144,7 +147,7 @@ export default function Sidebar({ isOpen = true, onClose }) {
 
                   return (
                     <Link
-                      key={item.title}
+                      key={item.titleKey}
                       href={item.href}
                       onClick={() => {
                         if (typeof window !== "undefined" && window.innerWidth < 1024) {
@@ -174,11 +177,15 @@ export default function Sidebar({ isOpen = true, onClose }) {
                         <Icon
                           size={15}
                           strokeWidth={isActive ? 2.5 : 2}
-                          className={isActive ? "text-white" : "text-gray-500 group-hover:text-[#22C55E] dark:text-[#7d8590] dark:group-hover:text-[#22C55E]"}
+                          className={
+                            isActive
+                              ? "text-white"
+                              : "text-gray-500 group-hover:text-[#22C55E] dark:text-[#7d8590] dark:group-hover:text-[#22C55E]"
+                          }
                         />
                       </div>
 
-                      <span className="flex-1 truncate">{item.title}</span>
+                      <span className="flex-1 truncate">{t(item.titleKey)}</span>
 
                       {item.badge && (
                         <span
@@ -209,10 +216,12 @@ export default function Sidebar({ isOpen = true, onClose }) {
                 <span className="relative inline-flex h-1.5 w-1.5 rounded-full bg-green-500" />
               </span>
               <span className="font-semibold text-gray-500 dark:text-[#7d8590] truncate">
-                Session active · {timeAgo(sessionStart)}
+                {t("nav.sessionActive")} · {timeAgo(sessionStart, t)}
               </span>
             </div>
-            <span className="font-medium text-gray-400 dark:text-[#6e7681] flex-shrink-0 ml-2">v1.0</span>
+            <span className="font-medium text-gray-400 dark:text-[#6e7681] flex-shrink-0 ml-2">
+              {t("nav.version")}
+            </span>
           </div>
         </div>
       </aside>

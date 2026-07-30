@@ -1,6 +1,8 @@
 "use client";
 
+import { translatePropertyType } from "@/utils/enumTranslations";
 import React from "react";
+import { useTranslation } from "react-i18next";
 import {
   BadgeCheck,
   Ruler,
@@ -24,10 +26,16 @@ const DownloadPDFButton = dynamic(
 );
 
 export default function PropertyDetails({ property, onEdit }) {
+  const { t } = useTranslation();
+
   if (!property) return null;
 
   const currentUser = getUser();
-  const canEdit = onEdit && currentUser && (currentUser.role === "ADMIN" || ["BUYER", "REAL_ESTATE_AGENT"].includes(currentUser.role));
+  const canEdit =
+    onEdit &&
+    currentUser &&
+    (currentUser.role === "ADMIN" ||
+      ["BUYER", "REAL_ESTATE_AGENT"].includes(currentUser.role));
 
   const {
     id,
@@ -48,43 +56,45 @@ export default function PropertyDetails({ property, onEdit }) {
   } = property;
 
   const locationLine = [city, state].filter(Boolean).join(", ");
-  const fullAddress = [
-    address,
-    locationLine || null,
-    zipCode || null,
-  ]
+  const fullAddress = [address, locationLine || null, zipCode || null]
     .filter(Boolean)
     .join(", ")
     .replace(/, ([\d]{6})$/, " $1");
 
   const quickFacts = [
-    bedrooms != null && { icon: Bed, value: `${bedrooms} bd` },
-    bathrooms != null && { icon: Bath, value: `${bathrooms} ba` },
+    bedrooms != null && {
+      icon: Bed,
+      value: `${bedrooms} ${t("property.details.beds")}`,
+    },
+    bathrooms != null && {
+      icon: Bath,
+      value: `${bathrooms} ${t("property.details.baths")}`,
+    },
     area != null && area > 0 && {
       icon: Ruler,
-      value: `${area.toLocaleString()} sqft`,
+      value: `${area.toLocaleString()} ${t("property.details.sqft")}`,
     },
   ].filter(Boolean);
 
   const stats = [
     yearBuilt != null && {
       icon: Calendar,
-      label: "Year built",
+      label: t("property.details.yearBuilt"),
       value: String(yearBuilt),
     },
     stories != null && {
       icon: Layers,
-      label: "Stories",
+      label: t("property.details.stories"),
       value: String(stories),
     },
     lotSize != null && lotSize > 0 && {
       icon: Ruler,
-      label: "Lot size",
-      value: `${lotSize.toLocaleString()} sqft`,
+      label: t("property.details.lotSize"),
+      value: `${lotSize.toLocaleString()} ${t("property.details.sqft")}`,
     },
     zoning && {
       icon: Building,
-      label: "Zoning",
+      label: t("property.details.zoning"),
       value: zoning,
     },
   ].filter(Boolean);
@@ -97,7 +107,7 @@ export default function PropertyDetails({ property, onEdit }) {
           {getPropertyHeroImage(property) ? (
             <img
               src={getPropertyHeroImage(property)}
-              alt={address || "Property"}
+              alt={address || t("property.card.propertyFallback")}
               className="absolute inset-0 h-full w-full object-cover"
             />
           ) : (
@@ -112,7 +122,7 @@ export default function PropertyDetails({ property, onEdit }) {
             <div className="absolute top-4 left-4 flex items-center gap-1.5 rounded-full bg-white/95 px-3 py-1.5 shadow-md backdrop-blur-sm">
               <BadgeCheck className="h-4 w-4 text-[#22C55E]" strokeWidth={2.5} />
               <span className="text-xs font-bold text-gray-800">
-                Verified property
+                {t("property.details.verifiedProperty")}
               </span>
             </div>
           )}
@@ -121,7 +131,7 @@ export default function PropertyDetails({ property, onEdit }) {
             <div className="absolute top-4 left-4 flex items-center gap-1.5 rounded-full bg-amber-50 px-3 py-1.5 shadow-md backdrop-blur-sm ring-1 ring-amber-200">
               <span className="h-1.5 w-1.5 rounded-full bg-amber-500" />
               <span className="text-xs font-bold text-amber-800">
-                Pending verification
+                {t("property.details.pendingVerification")}
               </span>
             </div>
           )}
@@ -133,13 +143,13 @@ export default function PropertyDetails({ property, onEdit }) {
           <div className="flex items-center justify-between gap-2 flex-wrap">
             <div className="flex items-center gap-2 flex-wrap">
               {propertyType && (
-                <p className="text-xs font-bold uppercase tracking-widest text-[#22C55E] dark:text-green-400">
-                  {propertyType}
-                </p>
-              )}
+  <p className="text-xs font-bold uppercase tracking-widest text-[#22C55E] dark:text-green-400">
+    {translatePropertyType(t, propertyType)}
+  </p>
+)}
               <span className="inline-flex items-center gap-1 rounded-full bg-gray-50 dark:bg-[#1c2128] px-2 py-0.5 text-[10px] font-semibold text-gray-500 dark:text-[#7d8590] ring-1 ring-gray-200 dark:ring-[#30363d]">
                 <UserRound className="h-2.5 w-2.5" strokeWidth={2.5} />
-                User provided
+                {t("property.details.userProvided")}
               </span>
             </div>
 
@@ -152,7 +162,7 @@ export default function PropertyDetails({ property, onEdit }) {
                   className="flex items-center gap-1.5 rounded-lg border border-gray-200 dark:border-[#30363d] bg-white dark:bg-[#1c2128] px-3 py-1.5 text-xs font-semibold text-gray-700 dark:text-[#e6edf3] transition-all duration-150 hover:border-[#22C55E] hover:text-[#16a34a] dark:hover:text-green-400 active:scale-95"
                 >
                   <Pencil className="h-3 w-3" strokeWidth={2.4} />
-                  Edit details
+                  {t("property.details.editDetails")}
                 </button>
               )}
             </div>
@@ -170,7 +180,7 @@ export default function PropertyDetails({ property, onEdit }) {
                   {formatINRFull(marketValue)}
                 </p>
                 <p className="mt-1 text-xs text-gray-500 dark:text-[#7d8590]">
-                  Estimated market value
+                  {t("property.details.estimatedMarketValue")}
                 </p>
               </div>
             )}
@@ -220,7 +230,10 @@ export default function PropertyDetails({ property, onEdit }) {
                   const Icon = stat.icon;
                   return (
                     <div key={stat.label}>
-                      <Icon className="h-4 w-4 text-gray-400 dark:text-[#7d8590]" strokeWidth={2} />
+                      <Icon
+                        className="h-4 w-4 text-gray-400 dark:text-[#7d8590]"
+                        strokeWidth={2}
+                      />
                       <p className="mt-2 text-[10px] font-semibold uppercase tracking-wider text-gray-500 dark:text-[#7d8590]">
                         {stat.label}
                       </p>

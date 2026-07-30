@@ -1,6 +1,7 @@
 "use client";
-
+import { translatePropertyType } from "@/utils/enumTranslations";
 import { useRouter } from "next/navigation";
+import { useTranslation } from "react-i18next";
 import {
   BadgeCheck,
   MapPin,
@@ -20,19 +21,20 @@ import { formatINR } from "@/utils/currency";
 import { getPropertyImage } from "@/constants/propertyImages";
 import PropertyImagePlaceholder from "./PropertyImagePlaceholder";
 
+// Risk config now stores translation keys instead of raw labels
 const RISK_CONFIG = {
   LOW: {
-    label: "Low risk",
+    labelKey: "property.card.lowRisk",
     icon: ShieldCheck,
     className: "bg-green-50 dark:bg-[#0d2818] text-green-700 dark:text-green-400 ring-green-200 dark:ring-green-900",
   },
   MEDIUM: {
-    label: "Medium risk",
+    labelKey: "property.card.mediumRisk",
     icon: Shield,
     className: "bg-amber-50 dark:bg-[#282a10] text-amber-700 dark:text-amber-400 ring-amber-200 dark:ring-amber-900",
   },
   HIGH: {
-    label: "High risk",
+    labelKey: "property.card.highRisk",
     icon: ShieldAlert,
     className: "bg-red-50 dark:bg-[#2d1214] text-red-700 dark:text-red-400 ring-red-200 dark:ring-red-900",
   },
@@ -49,14 +51,17 @@ export default function PropertyResultCard({
   isInCompare = false,
   canAddToCompare = true,
 }) {
+  const { t } = useTranslation();
+  const router = useRouter();
+
   if (!property) return null;
 
   const {
-    address = "Unknown Address",
+    address = t("property.card.unknownAddress"),
     city = "",
     state = "",
     zipCode = "",
-    propertyType = "Property",
+    propertyType = t("property.card.propertyFallback"),
     marketValue,
     area,
     bedrooms,
@@ -73,8 +78,6 @@ export default function PropertyResultCard({
   const riskConfig = riskScore?.riskLabel
     ? RISK_CONFIG[riskScore.riskLabel] ?? null
     : null;
-
-  const router = useRouter();
 
   const goToDetails = () => {
     onClick?.();
@@ -112,6 +115,25 @@ export default function PropertyResultCard({
     }
   };
 
+  // Pre-compute tooltips
+  const compareTooltip = isInCompare
+    ? t("property.card.removeFromCompare")
+    : !canAddToCompare
+    ? t("property.card.maxCompareReached")
+    : t("property.card.addToCompare");
+
+  const compareAriaLabel = isInCompare
+    ? t("property.card.removeFromCompare")
+    : t("property.card.addToCompare");
+
+  const verificationTooltip = verified
+    ? t("property.card.verifiedTooltip", { n: totalChecks })
+    : t("property.card.pendingTooltip", {
+        passed: passedChecks,
+        total: totalChecks,
+        missing: missingFields.join(", "),
+      });
+
   return (
     <div
       role="button"
@@ -124,7 +146,7 @@ export default function PropertyResultCard({
           : "shadow-[0_2px_10px_rgba(0,0,0,0.04)] ring-1 ring-gray-100 dark:ring-[#30363d] hover:-translate-y-1 hover:shadow-[0_20px_50px_rgba(0,0,0,0.12)] dark:hover:shadow-[0_20px_50px_rgba(0,0,0,0.5)] hover:ring-gray-200 dark:hover:ring-[#484f58] active:translate-y-0 active:shadow-[0_2px_10px_rgba(0,0,0,0.04)]"
       }`}
     >
-      {/* IMAGE AREA — stays as-is (photos are naturally colored) */}
+      {/* IMAGE AREA */}
       <div className="relative h-44 overflow-hidden">
         {thumbnail ? (
           <img
@@ -148,14 +170,8 @@ export default function PropertyResultCard({
             tabIndex={0}
             onClick={handleCompareClick}
             onKeyDown={handleKeyActivate(handleCompareClick)}
-            title={
-              isInCompare
-                ? "Remove from comparison"
-                : !canAddToCompare
-                ? "Maximum 3 properties for comparison"
-                : "Add to comparison"
-            }
-            aria-label={isInCompare ? "Remove from comparison" : "Add to comparison"}
+            title={compareTooltip}
+            aria-label={compareAriaLabel}
             className={`
               absolute left-3 top-3 flex h-6 w-6 items-center justify-center rounded-md border-2 shadow-lg backdrop-blur-md transition-all duration-150
               ${
@@ -174,20 +190,16 @@ export default function PropertyResultCard({
           </div>
         )}
 
-        {/* VERIFICATION BADGE — stays white pill on photo */}
+        {/* VERIFICATION BADGE */}
         <div
-  className={`absolute top-3 flex cursor-help items-center gap-1.5 rounded-full py-1.5 pl-2 pr-3 shadow-xl backdrop-blur-md ${
-    onCompare ? "left-11" : "left-3"
-  } ${
-    verified
-      ? "bg-white/95 ring-1 ring-white/40"
-      : "bg-amber-50 dark:bg-[#3a2a10]/95 ring-1 ring-amber-200 dark:ring-amber-800/60"
-  }`}
-          title={
+          className={`absolute top-3 flex cursor-help items-center gap-1.5 rounded-full py-1.5 pl-2 pr-3 shadow-xl backdrop-blur-md ${
+            onCompare ? "left-11" : "left-3"
+          } ${
             verified
-              ? `Verified — all ${totalChecks} data quality checks passed`
-              : `Pending — ${passedChecks} of ${totalChecks} checks passed.\nMissing: ${missingFields.join(", ")}`
-          }
+              ? "bg-white/95 ring-1 ring-white/40"
+              : "bg-amber-50 dark:bg-[#3a2a10]/95 ring-1 ring-amber-200 dark:ring-amber-800/60"
+          }`}
+          title={verificationTooltip}
         >
           {verified ? (
             <>
@@ -195,7 +207,7 @@ export default function PropertyResultCard({
                 <BadgeCheck className="h-3 w-3 text-white" strokeWidth={3} />
               </div>
               <span className="text-[10px] font-black uppercase tracking-wider text-gray-900">
-                Verified
+                {t("property.card.verified")}
               </span>
             </>
           ) : (
@@ -204,8 +216,8 @@ export default function PropertyResultCard({
                 <AlertTriangle className="h-2.5 w-2.5 text-white" strokeWidth={3} />
               </div>
               <span className="text-[10px] font-semibold uppercase tracking-wider text-amber-800 dark:text-amber-300">
-  Incomplete · {passedChecks}/{totalChecks}
-</span>
+                {t("property.card.incomplete")} · {passedChecks}/{totalChecks}
+              </span>
             </>
           )}
         </div>
@@ -219,44 +231,44 @@ export default function PropertyResultCard({
               onClick={handleQuickPhotoClick}
               onKeyDown={handleKeyActivate(handleQuickPhotoClick)}
               className="pointer-events-none flex h-7 w-7 cursor-pointer items-center justify-center rounded-full bg-white/95 opacity-0 shadow-lg ring-1 ring-white/40 backdrop-blur-md transition-all duration-200 group-hover:pointer-events-auto group-hover:opacity-100 hover:scale-110 hover:bg-white"
-              title="Change photo"
-              aria-label="Change photo"
+              title={t("property.card.changePhoto")}
+              aria-label={t("property.card.changePhoto")}
             >
               <Camera className="h-3.5 w-3.5 text-gray-700" strokeWidth={2.5} />
             </div>
           )}
 
           <div className="rounded-full bg-gradient-to-r from-[#22C55E] to-[#16a34a] px-3 py-1.5 shadow-xl shadow-green-500/50 ring-1 ring-white/30">
-            <span className="text-[10px] font-black uppercase tracking-wider text-white">
-              {propertyType}
-            </span>
-          </div>
+  <span className="text-[10px] font-black uppercase tracking-wider text-white">
+    {translatePropertyType(t, propertyType)}
+  </span>
+</div>
         </div>
 
         {/* ADD PHOTO */}
         {!hasRealImage && onQuickPhoto && (
-         <div
-  role="button"
-  tabIndex={0}
-  onClick={handleQuickPhotoClick}
-  onKeyDown={handleKeyActivate(handleQuickPhotoClick)}
-  className="pointer-events-none absolute left-1/2 top-1/2 flex -translate-x-1/2 -translate-y-1/2 cursor-pointer items-center gap-2 rounded-xl bg-white/95 dark:bg-[#22C55E]/95 px-4 py-2 opacity-0 shadow-xl ring-1 ring-white/40 dark:ring-white/20 backdrop-blur-md transition-all duration-300 group-hover:pointer-events-auto group-hover:opacity-100 hover:scale-105"
-  title="Add photo"
-  aria-label="Add photo"
->
-  <ImagePlus className="h-4 w-4 text-[#16a34a] dark:text-white" strokeWidth={2.5} />
-  <span className="text-xs font-black uppercase tracking-wider text-gray-900 dark:text-white">
-    Add photo
-  </span>
-</div>
+          <div
+            role="button"
+            tabIndex={0}
+            onClick={handleQuickPhotoClick}
+            onKeyDown={handleKeyActivate(handleQuickPhotoClick)}
+            className="pointer-events-none absolute left-1/2 top-1/2 flex -translate-x-1/2 -translate-y-1/2 cursor-pointer items-center gap-2 rounded-xl bg-white/95 dark:bg-[#22C55E]/95 px-4 py-2 opacity-0 shadow-xl ring-1 ring-white/40 dark:ring-white/20 backdrop-blur-md transition-all duration-300 group-hover:pointer-events-auto group-hover:opacity-100 hover:scale-105"
+            title={t("property.card.addPhoto")}
+            aria-label={t("property.card.addPhoto")}
+          >
+            <ImagePlus className="h-4 w-4 text-[#16a34a] dark:text-white" strokeWidth={2.5} />
+            <span className="text-xs font-black uppercase tracking-wider text-gray-900 dark:text-white">
+              {t("property.card.addPhoto")}
+            </span>
+          </div>
         )}
 
-        {/* MARKET VALUE — stays white pill on photo */}
+        {/* MARKET VALUE */}
         {marketValue != null && (
           <div className="pointer-events-none absolute bottom-3 left-3 right-3 flex items-end justify-between">
             <div className="rounded-2xl bg-white/95 px-3 py-2 shadow-xl ring-1 ring-white/40 backdrop-blur-md">
               <p className="text-[9px] font-bold uppercase tracking-widest text-gray-500">
-                Market value
+                {t("property.card.marketValue")}
               </p>
               <p className="text-base font-black leading-none tracking-tight text-[#16a34a]">
                 {formatINR(marketValue)}
@@ -276,7 +288,7 @@ export default function PropertyResultCard({
         )}
       </div>
 
-      {/* CARD BODY — DARK MODE */}
+      {/* CARD BODY */}
       <div className="flex flex-1 min-h-0 flex-col p-5">
         <div className="flex items-start gap-2">
           <div className="mt-0.5 flex h-5 w-5 flex-shrink-0 items-center justify-center rounded-md bg-green-50 dark:bg-[#0d2818]">
@@ -303,30 +315,34 @@ export default function PropertyResultCard({
             <div className="flex items-center gap-1 rounded-full bg-gray-50 dark:bg-[#1c2128] py-1 pl-2 pr-2.5 ring-1 ring-gray-100 dark:ring-[#30363d]">
               <Maximize className="h-3 w-3 text-gray-500 dark:text-[#7d8590]" strokeWidth={2.5} />
               <span className="text-[11px] font-bold text-gray-700 dark:text-[#e6edf3]">
-                {area.toLocaleString()} sqft
+                {area.toLocaleString()} {t("property.details.sqft")}
               </span>
             </div>
           )}
 
           {bedrooms && (
             <div className="rounded-full bg-green-50 dark:bg-[#0d2818] px-2.5 py-1 ring-1 ring-green-100 dark:ring-green-900">
-              <span className="text-[11px] font-bold text-green-700 dark:text-green-400">{bedrooms} BR</span>
+              <span className="text-[11px] font-bold text-green-700 dark:text-green-400">
+                {t("property.card.bedroomsShort", { n: bedrooms })}
+              </span>
             </div>
           )}
 
           {bathrooms && (
             <div className="rounded-full bg-blue-50 dark:bg-[#0c1f33] px-2.5 py-1 ring-1 ring-blue-100 dark:ring-blue-900">
-              <span className="text-[11px] font-bold text-blue-700 dark:text-blue-400">{bathrooms} BA</span>
+              <span className="text-[11px] font-bold text-blue-700 dark:text-blue-400">
+                {t("property.card.bathroomsShort", { n: bathrooms })}
+              </span>
             </div>
           )}
 
           {riskConfig && (
             <div
               className={`flex items-center gap-1 rounded-full px-2.5 py-1 ring-1 ${riskConfig.className}`}
-              title={`Risk score: ${riskScore.overallScore}/100`}
+              title={t("property.card.riskScoreTooltip", { score: riskScore.overallScore })}
             >
               <riskConfig.icon className="h-3 w-3" strokeWidth={2.5} />
-              <span className="text-[11px] font-bold">{riskConfig.label}</span>
+              <span className="text-[11px] font-bold">{t(riskConfig.labelKey)}</span>
             </div>
           )}
         </div>
@@ -335,8 +351,9 @@ export default function PropertyResultCard({
           {!verified ? (
             <div className="min-h-[76px] rounded-xl border border-amber-200 dark:border-amber-900 bg-amber-50/50 dark:bg-[#282a10] p-3">
               <p className="text-[11px] font-semibold leading-tight text-amber-800 dark:text-amber-300">
-                Missing: {missingFields.slice(0, 2).join(", ")}
-                {missingFields.length > 2 && ` +${missingFields.length - 2} more`}
+                {t("property.card.missing")} {missingFields.slice(0, 2).join(", ")}
+                {missingFields.length > 2 &&
+                  ` ${t("property.card.moreItems", { n: missingFields.length - 2 })}`}
               </p>
               <span
                 role="button"
@@ -346,7 +363,7 @@ export default function PropertyResultCard({
                 className="mt-2 inline-flex cursor-pointer items-center gap-1.5 rounded-lg bg-amber-500 px-2.5 py-1 text-[11px] font-bold text-white transition hover:bg-amber-600"
               >
                 <Pencil className="h-3 w-3" />
-                Complete to verify
+                {t("property.card.completeToVerify")}
               </span>
             </div>
           ) : (

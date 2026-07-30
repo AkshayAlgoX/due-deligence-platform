@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useMemo } from "react";
+import { useTranslation } from "react-i18next";
 import {
   X,
   ListFilter,
@@ -12,13 +13,21 @@ import {
 } from "lucide-react";
 import { formatINR } from "@/utils/currency";
 
+// Sort options now store translation keys instead of hardcoded labels
 const SORT_OPTIONS = [
-  { value: "recent",     label: "Recently Added" },
-  { value: "price-asc",  label: "Price: Low → High" },
-  { value: "price-desc", label: "Price: High → Low" },
-  { value: "alpha",      label: "Alphabetical (A–Z)" },
-  { value: "risk-desc",  label: "Highest risk first" },
+  { value: "recent",     labelKey: "property.filter.sortOptions.recent" },
+  { value: "price-asc",  labelKey: "property.filter.sortOptions.priceAsc" },
+  { value: "price-desc", labelKey: "property.filter.sortOptions.priceDesc" },
+  { value: "alpha",      labelKey: "property.filter.sortOptions.alpha" },
+  { value: "risk-desc",  labelKey: "property.filter.sortOptions.riskDesc" },
 ];
+
+// Helper: translate backend enum → localized display. Falls back to raw enum.
+function translateType(t, type) {
+  const key = `property.propertyTypes.${type}`;
+  const translated = t(key);
+  return translated === key ? type : translated; // if key doesn't exist, show raw
+}
 
 export default function FilterPanel({
   isOpen,
@@ -30,6 +39,8 @@ export default function FilterPanel({
   properties = [],
   filteredCount = 0,
 }) {
+  const { t } = useTranslation();
+
   const availableTypes = useMemo(
     () => [...new Set(properties.map((p) => p.propertyType).filter(Boolean))].sort(),
     [properties]
@@ -62,8 +73,8 @@ export default function FilterPanel({
     filters.types.length +
     filters.cities.length +
     (filters.verifiedOnly ? 1 : 0) +
-    (filters.pendingOnly  ? 1 : 0) +
-    (filters.highRisk     ? 1 : 0) +
+    (filters.pendingOnly ? 1 : 0) +
+    (filters.highRisk ? 1 : 0) +
     (filters.minPrice != null ? 1 : 0) +
     (filters.maxPrice != null ? 1 : 0) +
     (filters.sortBy !== "recent" ? 1 : 0);
@@ -123,13 +134,12 @@ export default function FilterPanel({
 
             <div>
               <h2 className="text-lg font-black text-gray-900 dark:text-[#e6edf3] tracking-tight leading-tight">
-                Filters
+                {t("property.filter.title")}
               </h2>
               <p className="text-[11px] text-gray-500 dark:text-[#7d8590] mt-0.5">
                 {activeFilterCount > 0
-                  ? `${activeFilterCount} filter${activeFilterCount === 1 ? "" : "s"} active`
-                  : "Refine your property list"
-                }
+                  ? t("property.filter.activeCount", { count: activeFilterCount })
+                  : t("property.filter.subtitle")}
               </p>
             </div>
           </div>
@@ -137,7 +147,7 @@ export default function FilterPanel({
           <button
             onClick={onClose}
             className="flex h-9 w-9 items-center justify-center rounded-xl text-gray-400 dark:text-[#7d8590] transition hover:bg-gray-100 dark:hover:bg-[#1c2128] hover:text-gray-700 dark:hover:text-[#e6edf3]"
-            aria-label="Close"
+            aria-label={t("common.close")}
           >
             <X className="h-5 w-5" />
           </button>
@@ -146,10 +156,12 @@ export default function FilterPanel({
         {/* Filter body */}
         <div className="flex-1 overflow-y-auto px-6 py-5 space-y-6">
 
-          <FilterSection title="Property Type">
+          <FilterSection title={t("property.filter.sections.propertyType")}>
             <div className="flex flex-wrap gap-2">
               {availableTypes.length === 0 ? (
-                <p className="text-xs text-gray-400 dark:text-[#6e7681] italic">No types in data yet</p>
+                <p className="text-xs text-gray-400 dark:text-[#6e7681] italic">
+                  {t("property.filter.noTypesYet")}
+                </p>
               ) : (
                 availableTypes.map((type) => {
                   const active = filters.types.includes(type);
@@ -167,7 +179,7 @@ export default function FilterPanel({
                       `}
                     >
                       {active && <Check className="h-3 w-3" strokeWidth={3} />}
-                      {type}
+                      {translateType(t, type)}
                     </button>
                   );
                 })
@@ -175,10 +187,12 @@ export default function FilterPanel({
             </div>
           </FilterSection>
 
-          <FilterSection title="City">
+          <FilterSection title={t("property.filter.sections.city")}>
             <div className="flex flex-wrap gap-2">
               {availableCities.length === 0 ? (
-                <p className="text-xs text-gray-400 dark:text-[#6e7681] italic">No cities in data yet</p>
+                <p className="text-xs text-gray-400 dark:text-[#6e7681] italic">
+                  {t("property.filter.noCitiesYet")}
+                </p>
               ) : (
                 availableCities.map((city) => {
                   const active = filters.cities.includes(city);
@@ -203,12 +217,12 @@ export default function FilterPanel({
             </div>
           </FilterSection>
 
-          <FilterSection title="Price Range">
+          <FilterSection title={t("property.filter.sections.priceRange")}>
             <div className="space-y-3">
               <div className="grid grid-cols-2 gap-3">
                 <div>
                   <label className="text-[10px] font-bold tracking-wider uppercase text-gray-500 dark:text-[#7d8590] mb-1 block">
-                    Min (₹)
+                    {t("property.filter.minPrice")}
                   </label>
                   <input
                     type="number"
@@ -222,11 +236,11 @@ export default function FilterPanel({
                 </div>
                 <div>
                   <label className="text-[10px] font-bold tracking-wider uppercase text-gray-500 dark:text-[#7d8590] mb-1 block">
-                    Max (₹)
+                    {t("property.filter.maxPrice")}
                   </label>
                   <input
                     type="number"
-                    placeholder="Any"
+                    placeholder={t("property.filter.anyPrice")}
                     value={filters.maxPrice ?? ""}
                     onChange={(e) =>
                       setFilter("maxPrice", e.target.value ? +e.target.value : null)
@@ -236,12 +250,12 @@ export default function FilterPanel({
                 </div>
               </div>
               <p className="text-[10px] text-gray-400 dark:text-[#6e7681]">
-                Highest in database: {formatINR(maxPriceInData)}
+                {t("property.filter.highestInDb", { amount: formatINR(maxPriceInData) })}
               </p>
             </div>
           </FilterSection>
 
-          <FilterSection title="Data quality">
+          <FilterSection title={t("property.filter.sections.dataQuality")}>
             {/* Verified only toggle */}
             <label className="flex items-center justify-between cursor-pointer group gap-3">
               <div className="flex items-center gap-3 min-w-0 flex-1">
@@ -249,9 +263,11 @@ export default function FilterPanel({
                   <BadgeCheck className="h-4 w-4" strokeWidth={2.5} />
                 </div>
                 <div className="min-w-0">
-                  <p className="text-sm font-bold text-gray-900 dark:text-[#e6edf3]">Verified only</p>
+                  <p className="text-sm font-bold text-gray-900 dark:text-[#e6edf3]">
+                    {t("property.filter.verifiedOnly")}
+                  </p>
                   <p className="text-[11px] text-gray-500 dark:text-[#7d8590]">
-                    Show properties that passed all quality checks
+                    {t("property.filter.verifiedOnlyDesc")}
                   </p>
                 </div>
               </div>
@@ -264,7 +280,7 @@ export default function FilterPanel({
                   filters.verifiedOnly ? "bg-[#22C55E]" : "bg-gray-200 dark:bg-[#30363d]"
                 }`}
               >
-                <span className="sr-only">Toggle verified-only filter</span>
+                <span className="sr-only">{t("property.filter.toggleVerified")}</span>
                 <span
                   aria-hidden="true"
                   className={`inline-block h-5 w-5 transform rounded-full bg-white shadow-sm ring-0 transition-transform duration-200 ${
@@ -283,9 +299,11 @@ export default function FilterPanel({
                   <ShieldAlert className="h-4 w-4" strokeWidth={2.5} />
                 </div>
                 <div className="min-w-0">
-                  <p className="text-sm font-bold text-gray-900 dark:text-[#e6edf3]">High risk only</p>
+                  <p className="text-sm font-bold text-gray-900 dark:text-[#e6edf3]">
+                    {t("property.filter.highRiskOnly")}
+                  </p>
                   <p className="text-[11px] text-gray-500 dark:text-[#7d8590]">
-                    Show properties with risk score above 66
+                    {t("property.filter.highRiskDesc")}
                   </p>
                 </div>
               </div>
@@ -298,7 +316,7 @@ export default function FilterPanel({
                   filters.highRisk ? "bg-red-500" : "bg-gray-200 dark:bg-[#30363d]"
                 }`}
               >
-                <span className="sr-only">Toggle high-risk filter</span>
+                <span className="sr-only">{t("property.filter.toggleHighRisk")}</span>
                 <span
                   aria-hidden="true"
                   className={`inline-block h-5 w-5 transform rounded-full bg-white shadow-sm ring-0 transition-transform duration-200 ${
@@ -309,7 +327,7 @@ export default function FilterPanel({
             </label>
           </FilterSection>
 
-          <FilterSection title="Sort By">
+          <FilterSection title={t("property.filter.sections.sortBy")}>
             <div className="space-y-2">
               {SORT_OPTIONS.map((opt) => (
                 <label
@@ -326,7 +344,9 @@ export default function FilterPanel({
                   <div className="flex items-center gap-2.5">
                     <ArrowUpDown
                       className={`h-3.5 w-3.5 ${
-                        filters.sortBy === opt.value ? "text-[#22C55E] dark:text-green-400" : "text-gray-400 dark:text-[#7d8590]"
+                        filters.sortBy === opt.value
+                          ? "text-[#22C55E] dark:text-green-400"
+                          : "text-gray-400 dark:text-[#7d8590]"
                       }`}
                     />
                     <span
@@ -336,7 +356,7 @@ export default function FilterPanel({
                           : "font-medium text-gray-700 dark:text-[#e6edf3]"
                       }`}
                     >
-                      {opt.label}
+                      {t(opt.labelKey)}
                     </span>
                   </div>
                   <input
@@ -358,7 +378,7 @@ export default function FilterPanel({
 
           <div className="mb-3 flex items-center justify-between text-[11px]">
             <span className="text-gray-500 dark:text-[#7d8590]">
-              Matching{" "}
+              {t("property.filter.matching")}{" "}
               <span className="font-black text-gray-900 dark:text-[#e6edf3] text-sm tabular-nums">
                 {filteredCount}
               </span>
@@ -373,7 +393,7 @@ export default function FilterPanel({
                   underline-offset-2 hover:underline
                 "
               >
-                Reset filters
+                {t("property.filter.resetFilters")}
               </button>
             )}
           </div>
@@ -392,7 +412,7 @@ export default function FilterPanel({
                 disabled:opacity-40 disabled:cursor-not-allowed disabled:hover:bg-white dark:disabled:hover:bg-[#1c2128]
               "
             >
-              Clear
+              {t("common.clear")}
             </button>
 
             <button
@@ -416,9 +436,8 @@ export default function FilterPanel({
 
               <span className="relative z-10">
                 {filteredCount === 0
-                  ? "No matches"
-                  : `View ${filteredCount} ${filteredCount === 1 ? "Property" : "Properties"}`
-                }
+                  ? t("property.search.noMatches")
+                  : t("property.filter.viewProperties", { count: filteredCount })}
               </span>
 
               {filteredCount > 0 && (

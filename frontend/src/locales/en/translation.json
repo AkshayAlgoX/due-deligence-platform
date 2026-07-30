@@ -10,6 +10,7 @@
     "notifications": "Notifications",
     "auditLogs": "Audit Logs",
     "profile": "Profile",
+    "settings": "Settings",
     "support": "Support",
     "sections": {
       "main": "Main",
@@ -157,13 +158,58 @@
       "tryAgain": "Please try again in a moment.",
       "couldntLoad": "Couldn't load properties",
       "pleaseRefresh": "Please refresh the page.",
-      "found": "Found {{n}} {{unit}}"
+      "found": "Found {{n}} {{unit}}",
+      "ofTotal": "(of {{n}})",
+      "pageTitle": "Property Search | Real Estate Due Diligence"
+    
+    },
+    "propertyTypes": {
+      "COMMERCIAL": "Commercial",
+      "RESIDENTIAL": "Residential",
+      "INDUSTRIAL": "Industrial",
+      "LAND": "Land",
+      "MIXED_USE": "Mixed use",
+      "AGRICULTURAL": "Agricultural"
     },
     "filter": {
       "filter": "Filter",
       "clearFilters": "Clear filters",
       "noMatchFilters": "No properties match your filters",
-      "tryRemoving": "Try removing some filters or clearing them all"
+      "tryRemoving": "Try removing some filters or clearing them all",
+      "title": "Filters",
+      "subtitle": "Refine your property list",
+      "activeCount_one": "{{count}} filter active",
+      "activeCount_other": "{{count}} filters active",
+      "resetFilters": "Reset filters",
+      "matching": "Matching",
+      "viewProperties_one": "View {{count}} Property",
+      "viewProperties_other": "View {{count}} Properties",
+      "sections": {
+        "propertyType": "Property Type",
+        "city": "City",
+        "priceRange": "Price Range",
+        "dataQuality": "Data quality",
+        "sortBy": "Sort By"
+      },
+      "noTypesYet": "No types in data yet",
+      "noCitiesYet": "No cities in data yet",
+      "minPrice": "Min (₹)",
+      "maxPrice": "Max (₹)",
+      "anyPrice": "Any",
+      "highestInDb": "Highest in database: {{amount}}",
+      "verifiedOnly": "Verified only",
+      "verifiedOnlyDesc": "Show properties that passed all quality checks",
+      "toggleVerified": "Toggle verified-only filter",
+      "highRiskOnly": "High risk only",
+      "highRiskDesc": "Show properties with risk score above 66",
+      "toggleHighRisk": "Toggle high-risk filter",
+      "sortOptions": {
+        "recent": "Recently Added",
+        "priceAsc": "Price: Low → High",
+        "priceDesc": "Price: High → Low",
+        "alpha": "Alphabetical (A–Z)",
+        "riskDesc": "Highest risk first"
+      }
     },
     "card": {
       "verified": "Verified",
@@ -176,8 +222,45 @@
       "changePhoto": "Change photo",
       "lowRisk": "Low risk",
       "mediumRisk": "Medium risk",
-      "highRisk": "High risk"
+      "highRisk": "High risk",
+      "unknownAddress": "Unknown Address",
+      "propertyFallback": "Property",
+      "addToCompare": "Add to comparison",
+      "removeFromCompare": "Remove from comparison",
+      "maxCompareReached": "Maximum 3 properties for comparison",
+      "verifiedTooltip": "Verified — all {{n}} data quality checks passed",
+      "pendingTooltip": "Pending — {{passed}} of {{total}} checks passed.\nMissing: {{missing}}",
+      "bedroomsShort": "{{n}} BR",
+      "bathroomsShort": "{{n}} BA",
+      "riskScoreTooltip": "Risk score: {{score}}/100",
+      "moreItems": "+{{n}} more",
+      "photoPending": "Photo pending"
     },
+    "risk": {
+  "title": "Risk assessment",
+  "subtitle": "Based on real aggregated data",
+  "unavailable": "Risk score unavailable",
+  "couldntLoad": "Could not load risk score",
+  "categoryBreakdown": "Category breakdown",
+  "weight": "weight {{pct}}",
+  "factorsCount": "Risk factors · {{n}}",
+  "incompleteNote": "Some data sources returned mock or unavailable data. Score may improve as more real data becomes available.",
+  "categories": {
+    "financial": "Financial",
+    "legal": "Legal",
+    "environmental": "Environmental",
+    "structural": "Structural"
+  }
+},
+"building": {
+  "title": "Building information",
+  "subtitle": "Structural details you provided",
+  "storiesCount_one": "{{count}} story",
+  "storiesCount_other": "{{count}} stories",
+  "emptyTitle": "No building details added",
+  "emptyDesc": "Add structure type, year built, bedrooms and more to improve risk scoring accuracy.",
+  "addDetails": "Add building details"
+},
     "details": {
       "verifiedProperty": "Verified property",
       "pendingVerification": "Pending verification",
@@ -248,6 +331,7 @@
         "medium": "Medium risk",
         "high": "High risk"
       },
+
       "status": {
         "live": "Live",
         "cached": "Cached",
@@ -367,8 +451,13 @@
     "minutesAgo": "{{n}}m ago",
     "hoursAgo": "{{n}}h ago",
     "secondsAgo": "{{n}}s ago",
-    "syncedAgo": "Synced"
-  },
+    "syncedAgo": "Synced",
+      "breadcrumbLabel": "Breadcrumb",
+"breadcrumbs": {
+  "details": "Details"
+}
+  }
+  ,
   "pages": {
     "dueDiligence": {
       "title": "Due Diligence dashboard coming soon",

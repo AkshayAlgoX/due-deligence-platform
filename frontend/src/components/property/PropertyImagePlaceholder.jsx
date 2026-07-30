@@ -1,5 +1,6 @@
 "use client";
 
+import { useTranslation } from "react-i18next";
 import { Home, Building2, Warehouse, Trees, Building } from "lucide-react";
 import {
   getPlaceholderGradient,
@@ -7,6 +8,8 @@ import {
 } from "@/constants/propertyImages";
 
 export default function PropertyImagePlaceholder({ propertyType, size = "default" }) {
+  const { t } = useTranslation();
+
   const icons = {
     Residential: Home,
     Commercial: Building2,
@@ -62,7 +65,7 @@ export default function PropertyImagePlaceholder({ propertyType, size = "default
         <p
           className={`${labelSize} font-bold uppercase tracking-[0.15em] text-gray-500 dark:text-[#6e7681]`}
         >
-          Photo pending
+          {t("property.card.photoPending")}
         </p>
       </div>
     </div>

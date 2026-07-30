@@ -1,5 +1,6 @@
 "use client";
 
+import { useTranslation } from "react-i18next";
 import {
   Building2,
   Home,
@@ -12,37 +13,39 @@ import {
 } from "lucide-react";
 
 export default function BuildingInformationCard({ property, onEdit }) {
+  const { t } = useTranslation();
+
   if (!property) return null;
 
   const rows = [
     property.structureType && {
       icon: Building2,
-      label: "Structure type",
+      label: t("property.comparison.metrics.structureType"),
       value: property.structureType,
     },
     property.condition && {
       icon: CheckCircle2,
-      label: "Condition",
+      label: t("property.comparison.metrics.condition"),
       value: property.condition,
     },
     property.stories != null && {
       icon: Layers,
-      label: "Stories",
-      value: `${property.stories} ${property.stories === 1 ? "story" : "stories"}`,
+      label: t("property.details.stories"),
+      value: t("property.building.storiesCount", { count: property.stories }),
     },
     property.bedrooms != null && {
       icon: Bed,
-      label: "Bedrooms",
+      label: t("property.comparison.metrics.bedrooms"),
       value: property.bedrooms,
     },
     property.bathrooms != null && {
       icon: Bath,
-      label: "Bathrooms",
+      label: t("property.comparison.metrics.bathrooms"),
       value: property.bathrooms,
     },
     property.yearBuilt != null && {
       icon: Home,
-      label: "Year built",
+      label: t("property.details.yearBuilt"),
       value: property.yearBuilt,
     },
   ].filter(Boolean);
@@ -57,17 +60,17 @@ export default function BuildingInformationCard({ property, onEdit }) {
           </div>
           <div className="min-w-0">
             <h3 className="text-base font-bold tracking-tight text-gray-900 dark:text-[#e6edf3]">
-              Building information
+              {t("property.building.title")}
             </h3>
             <p className="mt-0.5 text-sm text-gray-500 dark:text-[#7d8590]">
-              Structural details you provided
+              {t("property.building.subtitle")}
             </p>
           </div>
         </div>
 
         <div className="inline-flex flex-shrink-0 items-center gap-1 rounded-md bg-blue-50 dark:bg-[#0c1f33] px-2 py-0.5 text-[10px] font-bold uppercase tracking-wider text-blue-700 dark:text-blue-400 ring-1 ring-blue-200 dark:ring-blue-900">
           <ShieldCheck className="h-2.5 w-2.5" strokeWidth={2.5} />
-          User provided
+          {t("property.details.userProvided")}
         </div>
       </div>
 
@@ -79,10 +82,10 @@ export default function BuildingInformationCard({ property, onEdit }) {
               <Building2 className="h-5 w-5 text-gray-400 dark:text-[#7d8590]" strokeWidth={2} />
             </div>
             <p className="text-sm font-semibold text-gray-800 dark:text-[#e6edf3]">
-              No building details added
+              {t("property.building.emptyTitle")}
             </p>
             <p className="mt-1.5 max-w-xs text-xs leading-relaxed text-gray-500 dark:text-[#7d8590]">
-              Add structure type, year built, bedrooms and more to improve risk scoring accuracy.
+              {t("property.building.emptyDesc")}
             </p>
             {onEdit && (
               <button
@@ -90,7 +93,7 @@ export default function BuildingInformationCard({ property, onEdit }) {
                 className="mt-4 inline-flex items-center gap-1.5 rounded-lg bg-[#22C55E] px-3.5 py-1.5 text-xs font-bold text-white shadow-sm transition hover:bg-[#16a34a] hover:shadow-md cursor-pointer"
               >
                 <Plus className="h-3.5 w-3.5" strokeWidth={2.5} />
-                Add building details
+                {t("property.building.addDetails")}
               </button>
             )}
           </div>

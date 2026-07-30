@@ -5,11 +5,12 @@
     "dueDiligence": "उचित परिश्रम",
     "riskAssessment": "जोखिम मूल्यांकन",
     "propertyComparison": "संपत्ति तुलना",
-    "savedComparisons": "सहेजी गई तुलनाएं",
+    "savedComparisons": "सहेजी गई तुलनाएँ",
     "reports": "रिपोर्ट",
-    "notifications": "सूचनाएं",
+    "notifications": "सूचनाएँ",
     "auditLogs": "ऑडिट लॉग",
     "profile": "प्रोफ़ाइल",
+    "settings": "सेटिंग्स",
     "support": "सहायता",
     "sections": {
       "main": "मुख्य",
@@ -33,7 +34,34 @@
       "contactSupport": "सहायता से संपर्क करें",
       "orContinueWith": "या इसके साथ जारी रखें",
       "newToPlatform": "प्लेटफ़ॉर्म पर नए हैं?",
-      "createAccount": "निःशुल्क खाता बनाएं",
+      "createAccount": "निःशुल्क खाता बनाएँ",
+      "features": {
+        "analysis": "व्यापक संपत्ति विश्लेषण",
+        "auditing": "सुरक्षित उचित परिश्रम ऑडिटिंग",
+        "risk": "स्वचालित जोखिम मूल्यांकन"
+      },
+      "secureBy": "डिज़ाइन से सुरक्षित",
+      "learnHow": "जानें कैसे",
+      "platformOnline": "प्लेटफ़ॉर्म ऑनलाइन",
+      "builtForTrust": "विश्वास के लिए निर्मित",
+      "verifiedListings": "केवल सत्यापित लिस्टिंग",
+      "secureByDefault": "डिफ़ॉल्ट रूप से सुरक्षित",
+      "roleBasedAccess": "भूमिका-आधारित पहुँच"
+    },
+    "register": {
+      "whyPlatform": "यह प्लेटफ़ॉर्म क्यों",
+      "headline": "संपत्ति उचित परिश्रम के लिए ईमानदार उपकरण",
+      "features": {
+        "verificationFirst": "सत्यापन-प्रथम लिस्टिंग",
+        "verificationFirstDesc": "प्रत्येक संपत्ति को सत्यापित चिह्नित किए जाने से पहले सात-बिंदु डेटा-गुणवत्ता इंजन से गुजरना पड़ता है।",
+        "secure": "डिफ़ॉल्ट रूप से सुरक्षित",
+        "secureDesc": "JWT सत्र, BCrypt पासवर्ड हैशिंग और प्रत्येक एंडपॉइंट पर भूमिका-आधारित पहुँच।",
+        "teams": "वास्तविक टीमों के लिए निर्मित",
+        "teamsDesc": "पाँच अलग-अलग भूमिकाएँ — खरीदार, एजेंट, कानूनी समीक्षक, वित्तीय संस्थान और व्यवस्थापक।",
+        "consent": "सहमति-प्रथम विश्लेषण",
+        "consentDesc": "जब तक आप ऑप्ट-इन नहीं करते कुछ भी लोड नहीं होता। कुकी प्राथमिकताओं का सख्ती से सम्मान किया जाता है।"
+      },
+      "platformOnline": "प्लेटफ़ॉर्म ऑनलाइन",
       "secureBy": "डिज़ाइन से सुरक्षित",
       "learnHow": "जानें कैसे"
     },
@@ -44,13 +72,14 @@
       "sendCode": "कोड भेजें",
       "alreadyHaveCode": "मेरे पास पहले से कोड है",
       "step2Title": "कोड दर्ज करें",
-      "step2Subtitle": "यहां भेजा गया",
+      "step2Subtitle": "यहाँ भेजा गया",
       "verifyCode": "कोड सत्यापित करें",
       "changeEmail": "ईमेल बदलें",
       "resendCode": "कोड फिर से भेजें",
       "resendIn": "{{n}}s में फिर से भेजें",
+      "waitBefore": "फिर से भेजने से पहले {{n}}s प्रतीक्षा करें",
       "step3Title": "नया पासवर्ड सेट करें",
-      "step3Subtitle": "कम से कम 8 अक्षर, बड़े-छोटे अक्षर और एक अंक।",
+      "step3Subtitle": "कम से कम 8 अक्षर, बड़े-छोटे अक्षर और एक अंक के मिश्रण का उपयोग करें।",
       "newPassword": "नया पासवर्ड",
       "confirmPassword": "पासवर्ड की पुष्टि करें",
       "resetPassword": "पासवर्ड रीसेट करें",
@@ -62,8 +91,19 @@
       },
       "step4Title": "पासवर्ड अपडेट किया गया",
       "step4Subtitle": "जारी रखने के लिए अपने नए पासवर्ड से साइन इन करें।",
-      "backToSignIn": "साइन इन पर वापस जाएं",
-      "redirectingIn": "{{n}}s में रीडायरेक्ट हो रहा है…"
+      "backToSignIn": "साइन इन पर वापस जाएँ",
+      "redirectingIn": "{{n}}s में रीडायरेक्ट हो रहा है…",
+      "capsLock": "कैप्स लॉक चालू है"
+    },
+    "errors": {
+      "emailRequired": "अपना ईमेल दर्ज करें",
+      "emailInvalid": "एक वैध ईमेल पता दर्ज करें",
+      "passwordRequired": "अपना पासवर्ड दर्ज करें",
+      "passwordLength": "कम से कम 8 अक्षर",
+      "fieldErrors": "कृपया अपना विवरण जाँचें",
+      "someFieldsNeedAttention": "कुछ फ़ील्ड पर ध्यान देने की आवश्यकता है।",
+      "signInFailed": "साइन इन विफल",
+      "checkCredentials": "कृपया अपने क्रेडेंशियल जाँचें और फिर से प्रयास करें।"
     }
   },
   "dashboard": {
@@ -73,61 +113,259 @@
       "evening": "शुभ संध्या"
     },
     "subtitle": "आपका पोर्टफोलियो एक नज़र में",
+    "platformOverview": "प्लेटफ़ॉर्म अवलोकन",
     "stats": {
-      "totalProperties": "कुल संपत्तियां",
+      "totalProperties": "कुल संपत्तियाँ",
       "verified": "सत्यापित",
       "pending": "लंबित",
       "platformUsers": "प्लेटफ़ॉर्म उपयोगकर्ता",
+      "ofTotal": "कुल का {{pct}}%",
       "awaitingVerification": "सत्यापन की प्रतीक्षा में",
-      "allCaughtUp": "सब ठीक है"
+      "allCaughtUp": "सब ठीक है",
+      "activeIn30Days": "30 दिनों में {{n}} सक्रिय",
+      "noPropertiesAdded": "कोई संपत्ति नहीं जोड़ी गई",
+      "nothingToVerify": "अभी सत्यापित करने के लिए कुछ नहीं"
     },
     "empty": {
       "title": "अभी तक कोई संपत्ति नहीं",
       "description": "सत्यापन परिणाम और पोर्टफोलियो अंतर्दृष्टि देखने के लिए अपनी पहली संपत्ति जोड़ें।",
       "addFirst": "अपनी पहली संपत्ति जोड़ें"
-    }
+    },
+    "refresh": "ताज़ा करें"
   },
   "property": {
     "addProperty": "संपत्ति जोड़ें",
+    "addFirstProperty": "अपनी पहली संपत्ति जोड़ें",
     "search": {
       "title": "संपत्ति खोज",
+      "placeholder": "पेज, संपत्ति, क्रियाएँ खोजें...",
+      "loadingPortfolio": "पोर्टफोलियो लोड हो रहा है...",
+      "readyToIndex": "अपनी पहली संपत्ति को अनुक्रमित करने के लिए तैयार",
       "live": "लाइव",
+      "propertiesIndexed": "{{n}} {{unit}} अनुक्रमित",
+      "propertyUnit": "संपत्ति",
+      "propertiesUnit": "संपत्तियाँ",
+      "citiesCovered": "{{n}} {{unit}} कवर किए गए",
+      "cityUnit": "शहर",
+      "citiesUnit": "शहर",
+      "synced": "सिंक किया गया",
+      "highRisk": "{{n}} उच्च जोखिम",
       "noPropertiesFound": "कोई संपत्ति नहीं मिली",
-      "searchFailed": "खोज विफल"
+      "trySearching": "शहर के नाम, पते या ZIP कोड से खोजने का प्रयास करें — या अपनी पहली संपत्ति जोड़ें।",
+      "noMatches": "कोई मिलान नहीं",
+      "tryDifferent": "एक अलग शहर, पता या ZIP कोड आज़माएँ।",
+      "searchFailed": "खोज विफल",
+      "tryAgain": "कृपया एक क्षण में फिर से प्रयास करें।",
+      "couldntLoad": "संपत्तियाँ लोड नहीं हो सकीं",
+      "pleaseRefresh": "कृपया पेज को ताज़ा करें।",
+      "found": "{{n}} {{unit}} मिले",
+      "ofTotal": "({{n}} में से)",
+      "pageTitle": "संपत्ति खोज | Real Estate Due Diligence"
+    },
+    "propertyTypes": {
+      "COMMERCIAL": "वाणिज्यिक",
+      "RESIDENTIAL": "आवासीय",
+      "INDUSTRIAL": "औद्योगिक",
+      "LAND": "भूमि",
+      "MIXED_USE": "मिश्रित उपयोग",
+      "AGRICULTURAL": "कृषि"
     },
     "filter": {
       "filter": "फ़िल्टर",
-      "clearFilters": "फ़िल्टर साफ़ करें"
+      "clearFilters": "फ़िल्टर साफ़ करें",
+      "noMatchFilters": "आपके फ़िल्टर से कोई संपत्ति मेल नहीं खाती",
+      "tryRemoving": "कुछ फ़िल्टर हटाने या सभी को साफ़ करने का प्रयास करें",
+      "title": "फ़िल्टर",
+      "subtitle": "अपनी संपत्ति सूची परिष्कृत करें",
+      "activeCount_one": "{{count}} फ़िल्टर सक्रिय",
+      "activeCount_other": "{{count}} फ़िल्टर सक्रिय",
+      "resetFilters": "फ़िल्टर रीसेट करें",
+      "matching": "मिलान",
+      "viewProperties_one": "{{count}} संपत्ति देखें",
+      "viewProperties_other": "{{count}} संपत्तियाँ देखें",
+      "sections": {
+        "propertyType": "संपत्ति प्रकार",
+        "city": "शहर",
+        "priceRange": "मूल्य सीमा",
+        "dataQuality": "डेटा गुणवत्ता",
+        "sortBy": "क्रमबद्ध करें"
+      },
+      "noTypesYet": "अभी तक डेटा में कोई प्रकार नहीं",
+      "noCitiesYet": "अभी तक डेटा में कोई शहर नहीं",
+      "minPrice": "न्यूनतम (₹)",
+      "maxPrice": "अधिकतम (₹)",
+      "anyPrice": "कोई भी",
+      "highestInDb": "डेटाबेस में उच्चतम: {{amount}}",
+      "verifiedOnly": "केवल सत्यापित",
+      "verifiedOnlyDesc": "सभी गुणवत्ता जाँच पास करने वाली संपत्तियाँ दिखाएँ",
+      "toggleVerified": "केवल सत्यापित फ़िल्टर टॉगल करें",
+      "highRiskOnly": "केवल उच्च जोखिम",
+      "highRiskDesc": "66 से ऊपर जोखिम स्कोर वाली संपत्तियाँ दिखाएँ",
+      "toggleHighRisk": "उच्च जोखिम फ़िल्टर टॉगल करें",
+      "sortOptions": {
+        "recent": "हाल ही में जोड़ा गया",
+        "priceAsc": "मूल्य: कम → अधिक",
+        "priceDesc": "मूल्य: अधिक → कम",
+        "alpha": "वर्णानुक्रम (अ–ज्ञ)",
+        "riskDesc": "पहले उच्चतम जोखिम"
+      }
     },
     "card": {
       "verified": "सत्यापित",
       "pending": "लंबित",
+      "incomplete": "अपूर्ण",
       "marketValue": "बाज़ार मूल्य",
-      "completeToVerify": "सत्यापित करने के लिए पूरा करें"
+      "completeToVerify": "सत्यापित करने के लिए पूरा करें",
+      "missing": "गुम:",
+      "addPhoto": "फ़ोटो जोड़ें",
+      "changePhoto": "फ़ोटो बदलें",
+      "lowRisk": "कम जोखिम",
+      "mediumRisk": "मध्यम जोखिम",
+      "highRisk": "उच्च जोखिम",
+      "unknownAddress": "अज्ञात पता",
+      "propertyFallback": "संपत्ति",
+      "addToCompare": "तुलना में जोड़ें",
+      "removeFromCompare": "तुलना से हटाएँ",
+      "maxCompareReached": "तुलना के लिए अधिकतम 3 संपत्तियाँ",
+      "verifiedTooltip": "सत्यापित — सभी {{n}} डेटा गुणवत्ता जाँच पास हुईं",
+      "pendingTooltip": "लंबित — {{total}} में से {{passed}} जाँच पास हुईं।\nगुम: {{missing}}",
+      "bedroomsShort": "{{n}} BR",
+      "bathroomsShort": "{{n}} BA",
+      "riskScoreTooltip": "जोखिम स्कोर: {{score}}/100",
+      "moreItems": "+{{n}} और",
+      "photoPending": "फ़ोटो लंबित"
     },
+    "risk": {
+  "title": "जोखिम मूल्यांकन",
+  "subtitle": "वास्तविक समेकित डेटा पर आधारित",
+  "unavailable": "जोखिम स्कोर अनुपलब्ध",
+  "couldntLoad": "जोखिम स्कोर लोड नहीं हो सका",
+  "categoryBreakdown": "श्रेणी विवरण",
+  "weight": "भार {{pct}}",
+  "factorsCount": "जोखिम कारक · {{n}}",
+  "incompleteNote": "कुछ डेटा स्रोतों ने नमूना या अनुपलब्ध डेटा लौटाया। जैसे-जैसे अधिक वास्तविक डेटा उपलब्ध होगा स्कोर बेहतर हो सकता है।",
+  "categories": {
+    "financial": "वित्तीय",
+    "legal": "कानूनी",
+    "environmental": "पर्यावरणीय",
+    "structural": "संरचनात्मक"
+  }
+},
+"building": {
+  "title": "भवन जानकारी",
+  "subtitle": "आपके द्वारा प्रदान किए गए संरचनात्मक विवरण",
+  "storiesCount_one": "{{count}} मंज़िल",
+  "storiesCount_other": "{{count}} मंज़िलें",
+  "emptyTitle": "कोई भवन विवरण नहीं जोड़ा गया",
+  "emptyDesc": "जोखिम स्कोरिंग सटीकता में सुधार के लिए संरचना प्रकार, निर्माण वर्ष, बेडरूम आदि जोड़ें।",
+  "addDetails": "भवन विवरण जोड़ें"
+},
     "details": {
       "verifiedProperty": "सत्यापित संपत्ति",
       "pendingVerification": "सत्यापन लंबित",
+      "active": "सक्रिय",
+      "userProvided": "उपयोगकर्ता द्वारा प्रदान किया गया",
+      "editDetails": "विवरण संपादित करें",
+      "estimatedMarketValue": "अनुमानित बाज़ार मूल्य",
+      "yearBuilt": "निर्माण वर्ष",
+      "stories": "मंज़िलें",
+      "lotSize": "प्लॉट आकार",
+      "zoning": "ज़ोनिंग",
+      "beds": "बेड",
+      "baths": "बाथ",
+      "sqft": "वर्ग फुट",
+      "type": "प्रकार",
+      "pricePerSqft": "मूल्य/वर्ग फुट",
       "editProperty": "संपत्ति संपादित करें",
-      "backToSearch": "खोज पर वापस जाएं"
+      "backToSearch": "खोज पर वापस जाएँ",
+      "monthlyEst": "अनुमानित {{amount}}/माह",
+      "getPrequalified": "पूर्व-योग्य बनें"
+    },
+    "comparison": {
+      "title": "संपत्ति तुलना",
+      "subtitle": "{{n}} {{unit}} का साथ-साथ विश्लेषण · केवल वास्तविक डेटा",
+      "propertyUnit": "संपत्ति",
+      "propertiesUnit": "संपत्तियाँ",
+      "mySaved": "मेरी सहेजी गई",
+      "saveComparison": "तुलना सहेजें",
+      "goToSearch": "संपत्ति खोज पर जाएँ",
+      "selectAtLeast2": "तुलना करने के लिए कम से कम 2 संपत्तियाँ चुनें",
+      "sections": {
+        "financial": "वित्तीय",
+        "propertyDetails": "संपत्ति विवरण",
+        "riskAssessment": "जोखिम मूल्यांकन",
+        "dataQuality": "डेटा गुणवत्ता",
+        "integrationSources": "एकीकरण डेटा स्रोत",
+        "environmental": "पर्यावरणीय"
+      },
+      "metrics": {
+        "marketValue": "बाज़ार मूल्य",
+        "area": "क्षेत्रफल",
+        "pricePerSqft": "मूल्य / वर्ग फुट",
+        "lotSize": "प्लॉट आकार",
+        "yearBuilt": "निर्माण वर्ष",
+        "type": "प्रकार",
+        "bedrooms": "बेडरूम",
+        "bathrooms": "बाथरूम",
+        "stories": "मंज़िलें",
+        "condition": "स्थिति",
+        "structureType": "संरचना प्रकार",
+        "zoning": "ज़ोनिंग",
+        "overallRisk": "समग्र जोखिम",
+        "financialRisk": "वित्तीय जोखिम",
+        "legalRisk": "कानूनी जोखिम",
+        "environmentalRisk": "पर्यावरणीय जोखिम",
+        "structuralRisk": "संरचनात्मक जोखिम",
+        "verification": "सत्यापन",
+        "ownership": "स्वामित्व",
+        "taxHistory": "कर इतिहास",
+        "floodZone": "बाढ़ क्षेत्र",
+        "permits": "अनुमतियाँ",
+        "aqi": "AQI",
+        "floodRisk": "बाढ़ जोखिम",
+        "nearIndustrial": "औद्योगिक क्षेत्र के पास"
+      },
+      "risk": {
+        "low": "कम जोखिम",
+        "medium": "मध्यम जोखिम",
+        "high": "उच्च जोखिम"
+      },
+      "status": {
+        "live": "लाइव",
+        "cached": "कैश किया गया",
+        "sample": "नमूना",
+        "unavailable": "अनुपलब्ध",
+        "timedOut": "समय समाप्त",
+        "error": "त्रुटि",
+        "noData": "कोई डेटा नहीं"
+      },
+      "legend": {
+        "title": "लिजेंड",
+        "best": "सर्वोत्तम मूल्य",
+        "worst": "सबसे खराब मूल्य",
+        "middle": "मध्य",
+        "note": "तुलनाएँ सापेक्ष हैं — कोई बाहरी बेंचमार्क उपयोग नहीं किया गया"
+      }
     }
   },
   "profile": {
     "title": "खाता प्रबंधन",
-    "subtitle": "अपनी पेशेवर पहचान और एप्लिकेशन सुरक्षा नियंत्रित करें।",
+    "subtitle": "अपनी पेशेवर पहचान और एप्लिकेशन सुरक्षा को नियंत्रित करें।",
     "sections": {
       "accountDetails": "खाता विवरण",
-      "security": "सुरक्षा और पहुंच",
+      "accountDetailsSubtitle": "प्राथमिक संपर्क और संगठनात्मक जानकारी।",
+      "security": "सुरक्षा और पहुँच",
+      "securitySubtitle": "अपने प्रमाणीकरण तरीकों और सुरक्षा प्रोटोकॉल का प्रबंधन करें।",
       "dangerZone": "खतरनाक क्षेत्र",
-      "dangerZoneSubtitle": "अपरिवर्तनीय क्रियाएं। कृपया सावधानी से आगे बढ़ें।"
+      "dangerZoneSubtitle": "अपरिवर्तनीय क्रियाएँ। कृपया सावधानी से आगे बढ़ें।"
     },
     "fields": {
       "fullName": "पूरा नाम",
       "email": "ईमेल पता",
       "phone": "फ़ोन",
       "signInMethod": "साइन-इन विधि",
-      "accessLevel": "पहुंच स्तर",
-      "memberSince": "सदस्य बनने की तारीख"
+      "accessLevel": "पहुँच स्तर",
+      "memberSince": "सदस्य बनने की तारीख़"
     },
     "actions": {
       "editProfile": "प्रोफ़ाइल संपादित करें",
@@ -135,16 +373,42 @@
       "saveChanges": "परिवर्तन सहेजें",
       "saving": "सहेज रहे हैं...",
       "changePassword": "पासवर्ड बदलें",
-      "deleteAccount": "खाता हटाएं"
+      "deleteAccount": "खाता हटाएँ"
+    },
+    "password": {
+      "title": "खाता पासवर्ड",
+      "description": "अपने खाते को सुरक्षित रखने के लिए अपना पासवर्ड कभी भी अपडेट करें।",
+      "googleOnly": "आप Google से साइन इन करते हैं। कोई पासवर्ड सेट नहीं है।"
+    },
+    "delete": {
+      "title": "यह खाता हटाएँ",
+      "description": "आपकी प्रोफ़ाइल, आपके द्वारा जोड़ी गई सभी संपत्तियाँ और सभी सत्र डेटा स्थायी रूप से हटा देता है। यह पूर्ववत नहीं किया जा सकता।"
     },
     "roles": {
       "BUYER": "खरीदार",
       "REAL_ESTATE_AGENT": "रियल एस्टेट एजेंट",
       "LEGAL_REVIEWER": "कानूनी समीक्षक",
-      "FINANCIAL_INSTITUTION": "वित्तीय संस्था",
-      "ADMIN": "प्रशासक"
+      "FINANCIAL_INSTITUTION": "वित्तीय संस्थान",
+      "ADMIN": "व्यवस्थापक"
     },
-    "locked": "लॉक्ड"
+    "authProvider": {
+      "LOCAL": "ईमेल + पासवर्ड",
+      "GOOGLE": "Google",
+      "LOCAL_AND_GOOGLE": "ईमेल + Google"
+    },
+    "locked": "लॉक",
+    "verified": "सत्यापित {{role}}",
+    "errors": {
+      "nameValidation": "3–100 अक्षर, केवल अक्षर और स्थान",
+      "phoneValidation": "10 अंक, 6–9 से शुरू",
+      "couldntLoad": "प्रोफ़ाइल लोड नहीं हो सकी",
+      "pleaseRefresh": "कृपया पेज को ताज़ा करें।",
+      "unableToLoad": "प्रोफ़ाइल लोड करने में असमर्थ। कृपया पेज को ताज़ा करें।"
+    },
+    "success": {
+      "profileUpdated": "प्रोफ़ाइल अपडेट की गई",
+      "changesSaved": "आपके परिवर्तन सहेजे गए हैं।"
+    }
   },
   "settings": {
     "title": "सेटिंग्स",
@@ -163,36 +427,54 @@
     "retry": "फिर से प्रयास करें",
     "save": "सहेजें",
     "cancel": "रद्द करें",
-    "delete": "हटाएं",
+    "delete": "हटाएँ",
     "edit": "संपादित करें",
     "close": "बंद करें",
     "back": "वापस",
+    "next": "अगला",
+    "confirm": "पुष्टि करें",
+    "yes": "हाँ",
+    "no": "नहीं",
     "search": "खोजें",
     "filter": "फ़िल्टर",
     "clear": "साफ़ करें",
+    "clearAll": "सभी साफ़ करें",
+    "apply": "लागू करें",
+    "refresh": "ताज़ा करें",
+    "download": "डाउनलोड",
+    "upload": "अपलोड",
+    "submit": "सबमिट करें",
     "noData": "कोई डेटा उपलब्ध नहीं",
-    "justNow": "अभी-अभी"
+    "justNow": "अभी-अभी",
+    "minutesAgo": "{{n}} मिनट पहले",
+    "hoursAgo": "{{n}} घंटे पहले",
+    "secondsAgo": "{{n}} सेकंड पहले",
+    "syncedAgo": "सिंक किया गया",
+    "breadcrumbLabel": "ब्रेडक्रम्ब",
+"breadcrumbs": {
+  "details": "विवरण"
+}
   },
   "pages": {
     "dueDiligence": {
       "title": "उचित परिश्रम डैशबोर्ड जल्द आ रहा है",
-      "description": "आपकी सभी संपत्तियों की उचित परिश्रम स्थिति का समेकित दृश्य यहां दिखाई देगा।"
+      "description": "आपकी सभी संपत्तियों की उचित परिश्रम स्थिति का समेकित दृश्य यहाँ दिखाई देगा।"
     },
     "riskAssessment": {
       "title": "जोखिम मूल्यांकन अवलोकन जल्द आ रहा है",
-      "description": "पोर्टफोलियो-व्यापी जोखिम विश्लेषण और प्राथमिकता वाली कार्य वस्तुएं यहां दिखाई देंगी।"
+      "description": "पोर्टफोलियो-व्यापी जोखिम विश्लेषण और प्राथमिकता वाली कार्य वस्तुएँ यहाँ दिखाई देंगी।"
     },
     "reports": {
       "title": "रिपोर्ट जल्द आ रही हैं",
-      "description": "पोर्टफोलियो रिपोर्ट, जोखिम सारांश और उचित परिश्रम दस्तावेज़ बनाएं। यह सुविधा विकास के अधीन है।"
+      "description": "पोर्टफोलियो रिपोर्ट, जोखिम सारांश और उचित परिश्रम दस्तावेज़ बनाएँ। यह सुविधा विकास के अधीन है।"
     },
     "notifications": {
       "title": "आप सब जानकारी पर हैं",
-      "description": "कोई नई सूचनाएं नहीं। जब संपत्तियों को ध्यान की आवश्यकता होगी या रिपोर्ट तैयार होंगी तो हम आपको सतर्क करेंगे।"
+      "description": "कोई नई सूचनाएँ नहीं। जब संपत्तियों को ध्यान की आवश्यकता होगी या रिपोर्ट तैयार होंगी तो हम आपको सतर्क करेंगे।"
     },
     "auditLogs": {
       "title": "अभी तक कोई ऑडिट प्रविष्टि नहीं",
-      "description": "अनुपालन और सुरक्षा समीक्षा के लिए सिस्टम क्रियाएं और उपयोगकर्ता गतिविधि यहां ट्रैक की जाएगी।"
+      "description": "अनुपालन और सुरक्षा समीक्षा के लिए सिस्टम क्रियाएँ और उपयोगकर्ता गतिविधि यहाँ ट्रैक की जाएँगी।"
     }
   }
 }

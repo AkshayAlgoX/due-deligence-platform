@@ -18,7 +18,6 @@ import LogoutConfirmModal from "@/components/LogoutConfirmModal";
 import CommandPalette from "@/components/CommandPalette";
 import { useCommandPalette } from "@/hooks/useCommandPalette";
 import ThemeToggle from "@/components/ThemeToggle";
-import LanguageTrigger from "@/components/language/LanguageTrigger";
 
 export default function Navbar({ toggleSidebar }) {
   const router = useRouter();
@@ -171,14 +170,12 @@ export default function Navbar({ toggleSidebar }) {
             />
           </button>
 
-                    {/* Language Trigger — opens Airbnb-style modal */}
-          <LanguageTrigger variant="compact" />
-
           {/* Theme Toggle */}
           <ThemeToggle />
 
           {/* Divider */}
           <div className="h-8 w-px bg-gray-200 dark:bg-[#30363d]" />
+
           {/* User menu */}
           <div className="relative" ref={menuRef}>
             <button

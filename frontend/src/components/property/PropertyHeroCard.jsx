@@ -1,5 +1,7 @@
 "use client";
 
+import { translatePropertyType } from "@/utils/enumTranslations";
+import { useTranslation } from "react-i18next";
 import { BadgeCheck, AlertTriangle, MapPin, Home, Maximize2, ImageIcon } from "lucide-react";
 import { formatINR } from "@/utils/currency";
 
@@ -18,6 +20,7 @@ const GRADIENT_PLACEHOLDERS = [
 ];
 
 export default function PropertyHeroCard({ property, index = 0, totalCount = 2 }) {
+  const { t } = useTranslation();
   const imageHeight = totalCount === 3 ? "h-32" : "h-44";
   const showCompactStats = totalCount === 3;
 
@@ -59,12 +62,16 @@ export default function PropertyHeroCard({ property, index = 0, totalCount = 2 }
                 e.currentTarget.nextElementSibling?.classList.remove("hidden");
               }}
             />
-            <div className={`hidden absolute inset-0 bg-gradient-to-br ${GRADIENT_PLACEHOLDERS[index]} dark:brightness-75 flex items-center justify-center`}>
+            <div
+              className={`hidden absolute inset-0 bg-gradient-to-br ${GRADIENT_PLACEHOLDERS[index]} dark:brightness-75 flex items-center justify-center`}
+            >
               <ImageIcon className="h-10 w-10 text-white/60" strokeWidth={1.5} />
             </div>
           </>
         ) : (
-          <div className={`absolute inset-0 bg-gradient-to-br ${GRADIENT_PLACEHOLDERS[index]} dark:brightness-75 flex items-center justify-center`}>
+          <div
+            className={`absolute inset-0 bg-gradient-to-br ${GRADIENT_PLACEHOLDERS[index]} dark:brightness-75 flex items-center justify-center`}
+          >
             <ImageIcon className="h-10 w-10 text-gray-300 dark:text-gray-500" strokeWidth={1.5} />
           </div>
         )}
@@ -83,12 +90,16 @@ export default function PropertyHeroCard({ property, index = 0, totalCount = 2 }
           {property.verified ? (
             <div className="flex items-center gap-1 rounded-full bg-white/95 backdrop-blur-sm px-2.5 py-1 ring-1 ring-green-200 shadow-sm">
               <BadgeCheck className="h-3 w-3 text-green-600" strokeWidth={2.5} />
-              <span className="text-[9px] font-black text-green-700">Verified</span>
+              <span className="text-[9px] font-black text-green-700">
+                {t("property.card.verified")}
+              </span>
             </div>
           ) : (
             <div className="flex items-center gap-1 rounded-full bg-white/95 backdrop-blur-sm px-2.5 py-1 ring-1 ring-amber-200 shadow-sm">
               <AlertTriangle className="h-3 w-3 text-amber-500" strokeWidth={2.5} />
-              <span className="text-[9px] font-black text-amber-700">Pending</span>
+              <span className="text-[9px] font-black text-amber-700">
+                {t("property.card.pending")}
+              </span>
             </div>
           )}
         </div>
@@ -96,12 +107,12 @@ export default function PropertyHeroCard({ property, index = 0, totalCount = 2 }
         <div className="absolute inset-x-0 bottom-0 h-16 bg-gradient-to-t from-black/40 to-transparent" />
 
         {property.propertyType && (
-          <div className="absolute bottom-3 left-3">
-            <span className="rounded-full bg-white/95 backdrop-blur-sm px-2.5 py-1 text-[10px] font-black uppercase tracking-widest text-[#16a34a] shadow-sm">
-              {property.propertyType}
-            </span>
-          </div>
-        )}
+  <div className="absolute bottom-3 left-3">
+    <span className="rounded-full bg-white/95 backdrop-blur-sm px-2.5 py-1 text-[10px] font-black uppercase tracking-widest text-[#16a34a] shadow-sm">
+      {translatePropertyType(t, property.propertyType)}
+    </span>
+  </div>
+)}
       </div>
 
       {/* CARD BODY */}
@@ -117,38 +128,46 @@ export default function PropertyHeroCard({ property, index = 0, totalCount = 2 }
 
         <div className={showCompactStats ? "mt-3" : "mt-4"}>
           <p className="text-[10px] font-black uppercase tracking-widest text-gray-400 dark:text-[#6e7681] mb-0.5">
-            Market value
+            {t("property.card.marketValue")}
           </p>
-          <p className={`font-black text-gray-900 dark:text-[#e6edf3] tracking-tight ${showCompactStats ? "text-xl" : "text-2xl"}`}>
+          <p
+            className={`font-black text-gray-900 dark:text-[#e6edf3] tracking-tight ${
+              showCompactStats ? "text-xl" : "text-2xl"
+            }`}
+          >
             {property.marketValue ? formatINR(property.marketValue) : "—"}
           </p>
           {pricePerSqft && (
             <p className="text-[11px] text-gray-400 dark:text-[#6e7681] font-semibold mt-0.5">
-              ₹{pricePerSqft.toLocaleString("en-IN")}/sqft
+              ₹{pricePerSqft.toLocaleString("en-IN")}/{t("property.details.sqft")}
             </p>
           )}
         </div>
 
         <div className={`grid grid-cols-2 gap-2 ${showCompactStats ? "mt-3" : "mt-4"}`}>
+         <StatPill
+  label={t("property.details.type")}
+  value={property.propertyType ? translatePropertyType(t, property.propertyType) : "—"}
+  icon={<Home className="h-3 w-3" strokeWidth={2} />}
+  compact={showCompactStats}
+/>
           <StatPill
-            label="Type"
-            value={property.propertyType ?? "—"}
-            icon={<Home className="h-3 w-3" strokeWidth={2} />}
-            compact={showCompactStats}
-          />
-          <StatPill
-            label="Area"
-            value={property.area ? `${property.area.toLocaleString()} sqft` : "—"}
+            label={t("property.comparison.metrics.area")}
+            value={
+              property.area
+                ? `${property.area.toLocaleString()} ${t("property.details.sqft")}`
+                : "—"
+            }
             icon={<Maximize2 className="h-3 w-3" strokeWidth={2} />}
             compact={showCompactStats}
           />
           <StatPill
-            label="Bedrooms"
+            label={t("property.comparison.metrics.bedrooms")}
             value={property.bedrooms ?? "—"}
             compact={showCompactStats}
           />
           <StatPill
-            label="Year built"
+            label={t("property.details.yearBuilt")}
             value={property.yearBuilt ?? "—"}
             compact={showCompactStats}
           />
@@ -160,7 +179,11 @@ export default function PropertyHeroCard({ property, index = 0, totalCount = 2 }
 
 function StatPill({ label, value, icon, compact = false }) {
   return (
-    <div className={`rounded-xl bg-gray-50 dark:bg-[#1c2128] ring-1 ring-gray-100 dark:ring-[#30363d] ${compact ? "px-2.5 py-2" : "px-3 py-2.5"}`}>
+    <div
+      className={`rounded-xl bg-gray-50 dark:bg-[#1c2128] ring-1 ring-gray-100 dark:ring-[#30363d] ${
+        compact ? "px-2.5 py-2" : "px-3 py-2.5"
+      }`}
+    >
       <div className="flex items-center gap-1 mb-0.5">
         {icon && <span className="text-gray-400 dark:text-[#7d8590]">{icon}</span>}
         <p className="text-[9px] font-black uppercase tracking-widest text-gray-400 dark:text-[#6e7681]">
