@@ -1,4 +1,29 @@
 {
+  "cookies": {
+  "banner": {
+    "ariaLabel": "कुकी सहमति",
+    "title": "इस साइट पर कुकीज़",
+    "description": "आपको साइन इन रखने के लिए हम आवश्यक कुकीज़ का उपयोग करते हैं। एनालिटिक्स हमें बेहतर बनाने में मदद करते हैं — आपकी पसंद।",
+    "rejectNonEssential": "गैर-आवश्यक अस्वीकार करें",
+    "customize": "अनुकूलित करें",
+    "acceptAll": "सभी स्वीकार करें"
+  },
+  "prefs": {
+    "title": "कुकी प्राथमिकताएँ",
+    "subtitle": "आप नियंत्रित करते हैं कि हम क्या डेटा एकत्र करते हैं।",
+    "essential": {
+      "title": "आवश्यक",
+      "description": "प्रमाणीकरण, सत्र प्रबंधन और सुरक्षा के लिए आवश्यक। अक्षम नहीं किया जा सकता।"
+    },
+    "analytics": {
+      "title": "एनालिटिक्स",
+      "description": "Google Analytics 4 — अनाम पेज व्यूज़ और इवेंट्स। हमें समझने में मदद करता है कि कौन सी सुविधाएँ उपयोग होती हैं। डिफ़ॉल्ट रूप से बंद।"
+    },
+    "rejectAll": "सभी अस्वीकार करें",
+    "acceptAll": "सभी स्वीकार करें",
+    "saveChoices": "पसंद सहेजें"
+  }
+},
   "nav": {
     "dashboard": "डैशबोर्ड",
     "propertySearch": "संपत्ति खोज",
@@ -35,6 +60,20 @@
       "orContinueWith": "या इसके साथ जारी रखें",
       "newToPlatform": "प्लेटफ़ॉर्म पर नए हैं?",
       "createAccount": "निःशुल्क खाता बनाएँ",
+      "hidePassword": "पासवर्ड छुपाएं",
+      "showPassword": "पासवर्ड दिखाएं",
+      "redirectingToDashboard": "आपके डैशबोर्ड पर भेजा जा रहा है।",
+      "platformDesc": "प्रॉपर्टी इंटेलिजेंस के लिए एक वेरिफिकेशन-फर्स्ट प्लेटफ़ॉर्म — प्रत्येक लिस्टिंग लाइव होने से पहले सात डेटा-क्वालिटी जाँच पास करती है।",
+      "verifiedListingsDesc": "सात-बिंदु डेटा-गुणवत्ता इंजन",
+      "secureByDefaultDesc": "JWT सेशन, हैश किए गए पासवर्ड",
+      "roleBasedAccessDesc": "खरीदार, एजेंट, समीक्षक, एडमिन",
+      "imgAlt": "आधुनिक ग्लास गगनचुंबी इमारत",
+      "continueWithGoogle": "Google के साथ जारी रखें",
+      "signingIn": "साइन इन हो रहा है…",
+      "almostThere": "बस थोड़ा और",
+      "finishProfile": "आइए आपकी प्रोफ़ाइल सेटअप पूरी करें।",
+      "unexpectedResponse": "सर्वर से अप्रत्याशित प्रतिक्रिया। कृपया पुनः प्रयास करें।",
+      "googleFailed": "Google साइन-इन विफल",
       "features": {
         "analysis": "व्यापक संपत्ति विश्लेषण",
         "auditing": "सुरक्षित उचित परिश्रम ऑडिटिंग",
@@ -49,6 +88,51 @@
       "roleBasedAccess": "भूमिका-आधारित पहुँच"
     },
     "register": {
+      "title": "अपना खाता बनाएं",
+      "subtitle": "सुरक्षित due diligence शुरू करने के लिए प्लेटफ़ॉर्म से जुड़ें।",
+      "createAccount": "खाता बनाएं",
+      "pleaseWait": "कृपया प्रतीक्षा करें…",
+      "welcomeCheck": "स्वागत है ✓",
+      "alreadyHaveAccount": "पहले से खाता है?",
+      "signIn": "साइन इन",
+      "secureByDesign": "डिज़ाइन से सुरक्षित",
+      "securityTagline": "JWT प्रमाणीकरण · BCrypt हैशिंग · रोल-आधारित एक्सेस कंट्रोल",
+      "fields": {
+        "fullName": "पूरा नाम",
+        "email": "ईमेल",
+        "confirm": "पुष्टि करें",
+        "phoneNumber": "फ़ोन नंबर",
+        "role": "भूमिका"
+      },
+      "placeholders": {
+        "fullName": "जॉन स्मिथ",
+        "password": "न्यूनतम 8 अक्षर",
+        "confirm": "फिर से दर्ज करें",
+        "phone": "9876543210",
+        "role": "भूमिका चुनें"
+      },
+      "errors": {
+        "fullNameRequired": "पूरा नाम आवश्यक है।",
+        "fullNameShort": "पूरा नाम कम से कम 3 अक्षर का होना चाहिए।",
+        "fullNameLong": "पूरा नाम 100 अक्षरों से अधिक नहीं होना चाहिए।",
+        "emailRequired": "पेशेवर ईमेल आवश्यक है।",
+        "emailInvalid": "कृपया एक मान्य ईमेल पता दर्ज करें।",
+        "passwordLong": "पासवर्ड 20 अक्षरों से अधिक नहीं होना चाहिए।",
+        "confirmRequired": "कृपया अपना पासवर्ड पुष्टि करें।",
+        "passwordsMismatch": "पासवर्ड मेल नहीं खाते।",
+        "phoneRequired": "फ़ोन नंबर आवश्यक है।",
+        "phoneInvalid": "मान्य 10-अंकीय भारतीय मोबाइल नंबर दर्ज करें (6–9 से शुरू)।",
+        "roleRequired": "कृपया एक भूमिका चुनें।",
+        "emailExists": "इस ईमेल से खाता पहले से मौजूद है।"
+      },
+      "toasts": {
+        "welcome": "स्वागत है",
+        "welcomeDesc": "आपका खाता तैयार है। भेजा जा रहा है…",
+        "emailRegistered": "ईमेल पहले से पंजीकृत",
+        "emailRegisteredDesc": "कृपया साइन इन करें, या दूसरा ईमेल उपयोग करें।",
+        "failed": "पंजीकरण विफल",
+        "tryAgain": "कृपया पुनः प्रयास करें।"
+      },
       "whyPlatform": "यह प्लेटफ़ॉर्म क्यों",
       "headline": "संपत्ति उचित परिश्रम के लिए ईमानदार उपकरण",
       "features": {
@@ -76,8 +160,8 @@
       "verifyCode": "कोड सत्यापित करें",
       "changeEmail": "ईमेल बदलें",
       "resendCode": "कोड फिर से भेजें",
-      "resendIn": "{{n}}s में फिर से भेजें",
-      "waitBefore": "फिर से भेजने से पहले {{n}}s प्रतीक्षा करें",
+      "resendIn": "{{n}} सेकंड में पुनः भेजें",
+      "waitBefore": "पुनः भेजने से पहले {{n}} सेकंड प्रतीक्षा करें",
       "step3Title": "नया पासवर्ड सेट करें",
       "step3Subtitle": "कम से कम 8 अक्षर, बड़े-छोटे अक्षर और एक अंक के मिश्रण का उपयोग करें।",
       "newPassword": "नया पासवर्ड",
@@ -92,8 +176,27 @@
       "step4Title": "पासवर्ड अपडेट किया गया",
       "step4Subtitle": "जारी रखने के लिए अपने नए पासवर्ड से साइन इन करें।",
       "backToSignIn": "साइन इन पर वापस जाएँ",
-      "redirectingIn": "{{n}}s में रीडायरेक्ट हो रहा है…",
-      "capsLock": "कैप्स लॉक चालू है"
+      "redirectingIn": "{{n}} सेकंड में भेजा जा रहा है…",
+      "capsLock": "कैप्स लॉक चालू है",
+      "pleaseWait": "कृपया प्रतीक्षा करें",
+      "cooldownDesc": "आप {{n}} सेकंड में नया कोड मांग सकते हैं।",
+      "codeSent": "कोड भेजा गया",
+      "checkInbox": "6-अंकीय कोड के लिए अपना इनबॉक्स देखें।",
+      "sendFailed": "कोड नहीं भेज सके",
+      "newCodeSent": "नया कोड भेजा गया",
+      "resendFailed": "पुनः नहीं भेज सके",
+      "enterSixDigit": "6-अंकीय कोड दर्ज करें",
+      "invalidCode": "अमान्य या एक्सपायर्ड कोड",
+      "verifyFailed": "सत्यापन विफल",
+      "checkCodeAndRetry": "कृपया कोड जाँचें और पुनः प्रयास करें।",
+      "enterNewPassword": "एक नया पासवर्ड दर्ज करें",
+      "pwdComplexity": "अपरकेस, लोअरकेस और एक संख्या शामिल करें",
+      "confirmYourPassword": "अपने पासवर्ड की पुष्टि करें",
+      "resetFailed": "पासवर्ड रीसेट नहीं कर सके",
+      "codeAlreadySent": "एक कोड पहले ही भेजा जा चुका है। पहले अपना इनबॉक्स देखें।",
+      "enterEmailUsed": "वह ईमेल दर्ज करें जो आपने उपयोग किया था",
+      "sentTo": "भेजा गया",
+      "digitAria": "अंक {{n}}"
     },
     "errors": {
       "emailRequired": "अपना ईमेल दर्ज करें",
@@ -103,7 +206,9 @@
       "fieldErrors": "कृपया अपना विवरण जाँचें",
       "someFieldsNeedAttention": "कुछ फ़ील्ड पर ध्यान देने की आवश्यकता है।",
       "signInFailed": "साइन इन विफल",
-      "checkCredentials": "कृपया अपने क्रेडेंशियल जाँचें और फिर से प्रयास करें।"
+      "checkCredentials": "कृपया अपने क्रेडेंशियल जाँचें और फिर से प्रयास करें।",
+      "passwordLetter": "एक अक्षर होना चाहिए",
+      "passwordNumber": "एक अंक होना चाहिए"
     }
   },
   "dashboard": {
@@ -112,13 +217,17 @@
       "afternoon": "नमस्कार",
       "evening": "शुभ संध्या"
     },
+
     "subtitle": "आपका पोर्टफोलियो एक नज़र में",
     "platformOverview": "प्लेटफ़ॉर्म अवलोकन",
+    "pageTitle": "डैशबोर्ड | Real Estate Due Diligence Agent",
+    "refreshed": "डैशबोर्ड अपडेट किया गया",
     "stats": {
       "totalProperties": "कुल संपत्तियाँ",
       "verified": "सत्यापित",
       "pending": "लंबित",
       "platformUsers": "प्लेटफ़ॉर्म उपयोगकर्ता",
+      "plusThisWeek": "इस सप्ताह +{{count}}",
       "ofTotal": "कुल का {{pct}}%",
       "awaitingVerification": "सत्यापन की प्रतीक्षा में",
       "allCaughtUp": "सब ठीक है",
@@ -131,11 +240,179 @@
       "description": "सत्यापन परिणाम और पोर्टफोलियो अंतर्दृष्टि देखने के लिए अपनी पहली संपत्ति जोड़ें।",
       "addFirst": "अपनी पहली संपत्ति जोड़ें"
     },
-    "refresh": "ताज़ा करें"
+    "refresh": "ताज़ा करें",
+    "errors": {
+      "unauthorized": "आपके पास उस पेज तक पहुँचने की अनुमति नहीं है।",
+      "couldntLoad": "डैशबोर्ड लोड नहीं हो सका",
+      "pleaseRefresh": "कृपया पेज को ताज़ा करें या फिर से प्रयास करें।",
+      "unableToLoadStats": "आँकड़े लोड करने में असमर्थ। कृपया पेज को ताज़ा करें।"
+    }
   },
+  "hero": {
+  "portfolio": {
+    "label": "पोर्टफोलियो मूल्य",
+    "citiesCount_one": "{{count}} शहर",
+    "citiesCount_other": "{{count}} शहर",
+    "acrossProperties_one": "{{count}} प्रॉपर्टी में",
+    "acrossProperties_other": "{{count}} प्रॉपर्टी में",
+    "topAsset": "शीर्ष संपत्ति"
+  },
+  "verification": {
+    "label": "सत्यापन",
+    "allVerified": "सभी सत्यापित",
+    "noPropertiesYet": "अभी कोई प्रॉपर्टी नहीं",
+    "portfolioComplete": "पोर्टफोलियो पूर्ण",
+    "pendingCount_one": "{{count}} लंबित",
+    "pendingCount_other": "{{count}} लंबित"
+  },
+  "aqi": {
+    "label": "वायु गुणवत्ता",
+    "live": "लाइव",
+    "fetchingLive": "लाइव डेटा प्राप्त हो रहा है...",
+    "addPropertyToSee": "लाइव वायु गुणवत्ता देखने के लिए प्रॉपर्टी जोड़ें"
+  }
+},
+"trend": {
+  "title": "समय के साथ पोर्टफोलियो मूल्य",
+  "dataPointsInWindow_one": "चयनित विंडो में {{count}} डेटा बिंदु",
+  "dataPointsInWindow_other": "चयनित विंडो में {{count}} डेटा बिंदु",
+  "deltaVsAgo": "{{days}} दिन पहले से {{sign}}{{pct}}%",
+  "noChange": "कोई बदलाव नहीं",
+  "empty": {
+    "title": "ट्रैकिंग आज से शुरू",
+    "description": "अपनी पोर्टफोलियो मूल्य प्रवृत्ति देखने के लिए कल फिर आएं।"
+  },
+  "error": {
+    "couldntLoad": "प्रवृत्ति डेटा लोड नहीं हो सका।"
+  },
+  "tooltip": {
+    "propertiesCount_one": "{{count}} प्रॉपर्टी",
+    "propertiesCount_other": "{{count}} प्रॉपर्टी",
+    "verifiedCount_one": "{{count}} सत्यापित",
+    "verifiedCount_other": "{{count}} सत्यापित"
+  }
+},
+"breakdown": {
+  "title": "पोर्टफोलियो विभाजन",
+  "subtitle": "प्रॉपर्टी प्रकार के अनुसार",
+  "empty": {
+    "title": "अभी कोई डेटा नहीं",
+    "description": "विभाजन देखने के लिए प्रॉपर्टी जोड़ें"
+  },
+  "tooltip": {
+    "propertyCount_one": "{{count}} प्रॉपर्टी",
+    "propertyCount_other": "{{count}} प्रॉपर्टी",
+    "valueLabel": "मूल्य"
+  }
+},
+"map": {
+  "title": "पोर्टफोलियो भूगोल",
+  "status": {
+    "loading": "मानचित्र लोड हो रहा है...",
+    "noPropertiesYet": "अभी कोई प्रॉपर्टी नहीं",
+    "mappedOfTotal": "{{total}} में से {{mapped}} मानचित्र पर",
+    "pendingCount_one": "{{count}} लंबित",
+    "pendingCount_other": "{{count}} लंबित"
+  },
+  "zoomHint": "ज़ूम के लिए +/− का उपयोग करें",
+  "retryGeocoding": "जियोकोडिंग पुनः प्रयास करें",
+  "geocoding": "जियोकोडिंग हो रही है...",
+  "viewDetails": "विवरण देखें",
+  "empty": {
+    "noMappedTitle": "अभी कोई मानचित्रित प्रॉपर्टी नहीं",
+    "noMappedDesc": "मानचित्र पर देखने के लिए पता सुझावों का उपयोग करके प्रॉपर्टी जोड़ें।",
+    "noCoordsTitle": "अभी कोई निर्देशांक कैप्चर नहीं हुए",
+    "noCoordsDesc": "प्रॉपर्टी मौजूद हैं लेकिन जियोकोडिंग की आवश्यकता है। व्यवस्थापक इसे ऊपर से चालू कर सकते हैं।"
+  },
+  "error": {
+    "couldntLoad": "मानचित्र डेटा लोड नहीं हो सका।"
+  },
+  "toasts": {
+    "geocodedCount_one": "{{count}} प्रॉपर्टी जियोकोड की गई",
+    "geocodedCount_other": "{{count}} प्रॉपर्टी जियोकोड की गईं",
+    "reloadingMap": "मानचित्र फिर से लोड हो रहा है...",
+    "noNewLocations": "कोई नए स्थान नहीं मिले",
+    "tooVague": "शेष पते जियोकोड करने के लिए बहुत अस्पष्ट हो सकते हैं।",
+    "geocodingFailed": "जियोकोडिंग विफल",
+    "tryAgainLater": "कृपया बाद में पुनः प्रयास करें।"
+  }
+},
+"recommendations": {
+  "title": "अनुशंसाएँ",
+  "actionsCount_one": "पोर्टफोलियो सुधारने के लिए {{count}} कार्य",
+  "actionsCount_other": "पोर्टफोलियो सुधारने के लिए {{count}} कार्य",
+  "urgentCount_one": "{{count}} अत्यावश्यक",
+  "urgentCount_other": "{{count}} अत्यावश्यक",
+  "dismiss": "खारिज करें",
+  "showLess": "कम दिखाएँ",
+  "showMore_one": "{{count}} और दिखाएँ",
+  "showMore_other": "{{count}} और दिखाएँ",
+  "severity": {
+    "urgent": "अत्यावश्यक",
+    "action": "कार्रवाई",
+    "onTrack": "सही राह पर",
+    "tip": "सुझाव"
+  }
+},
+"activity": {
+  "title": "हाल की गतिविधि",
+  "subtitle": "प्लेटफ़ॉर्म पर नवीनतम कार्य",
+  "live": "लाइव",
+  "byActor": "{{name}} द्वारा",
+  "showAll": "सभी दिखाएँ",
+  "viewAllProperties": "सभी प्रॉपर्टी देखें",
+  "filters": {
+    "all": "सभी",
+    "added": "जोड़ी गई",
+    "verified": "सत्यापित",
+    "updated": "अपडेट की गई"
+  },
+  "types": {
+    "propertyAdded": "प्रॉपर्टी जोड़ी गई",
+    "propertyVerified": "प्रॉपर्टी सत्यापित",
+    "propertyUpdated": "प्रॉपर्टी अपडेट"
+  },
+  "empty": {
+    "noActivity": "अभी कोई गतिविधि नहीं",
+    "addProperties": "यहाँ गतिविधि देखने के लिए प्रॉपर्टी जोड़ें",
+    "noFiltered": "हाल की घटनाओं में कोई {{filter}} गतिविधि नहीं"
+  }
+},
+"recentTable": {
+  "title": "हाल की प्रॉपर्टी",
+  "subtitle": "प्लेटफ़ॉर्म पर नवीनतम अतिरिक्त",
+  "columns": {
+    "address": "पता",
+    "type": "प्रकार",
+    "status": "स्थिति",
+    "missingFields": "अनुपस्थित फ़ील्ड"
+  },
+  "missingCount_one": "{{count}} अनुपस्थित",
+  "missingCount_other": "{{count}} अनुपस्थित",
+  "noneMissing": "कोई नहीं",
+  "empty": {
+    "title": "कोई प्रॉपर्टी नहीं मिली",
+    "description": "यहाँ देखने के लिए प्रॉपर्टी जोड़ें।"
+  },
+  "error": {
+    "title": "प्रॉपर्टी लोड नहीं हो सकीं",
+    "description": "पुनः प्रयास करने के लिए कृपया पृष्ठ ताज़ा करें।"
+  }
+},
   "property": {
     "addProperty": "संपत्ति जोड़ें",
     "addFirstProperty": "अपनी पहली संपत्ति जोड़ें",
+    "pdf": {
+  "downloadReport": "रिपोर्ट डाउनलोड करें",
+  "generating": "बना रहे हैं...",
+  "buttonTooltip": "PDF रिपोर्ट डाउनलोड करें",
+  "preparing": "PDF इंजन तैयार हो रहा है...",
+  "downloaded": "रिपोर्ट डाउनलोड की गई",
+  "savedTo": "{{filename}} आपके डाउनलोड फ़ोल्डर में सहेजा गया।",
+  "loadFailed": "संपत्ति डेटा लोड नहीं हो सका",
+  "downloadFailed": "डाउनलोड विफल",
+  "generateFailed": "रिपोर्ट नहीं बना सके। पुनः प्रयास करें।"
+},
     "search": {
       "title": "संपत्ति खोज",
       "placeholder": "पेज, संपत्ति, क्रियाएँ खोजें...",
@@ -160,7 +437,357 @@
       "pleaseRefresh": "कृपया पेज को ताज़ा करें।",
       "found": "{{n}} {{unit}} मिले",
       "ofTotal": "({{n}} में से)",
-      "pageTitle": "संपत्ति खोज | Real Estate Due Diligence"
+      "pageTitle": "संपत्ति खोज | Real Estate Due Diligence",
+      "ariaLabel": "संपत्ति खोज",
+      "clearSearch": "खोज साफ़ करें",
+      "searching": "खोज रहे हैं...",
+      "searchButton": "खोजें",
+      "searchingFor": "\"{{query}}\" के लिए खोज रही है...",
+      "noMatchesFor": "\"{{query}}\" के लिए कोई मिलान नहीं",
+      "tryDifferentHint": "कोई अलग शहर, पता या ZIP आज़माएं",
+      "matchCount_one": "{{count}} मिलान",
+      "matchCount_other": "{{count}} मिलान",
+      "untitledProperty": "अज्ञात संपत्ति",
+      "locationUnknown": "स्थान अज्ञात",
+      "valueLabel": "मूल्य",
+      "seeAllResults_one": "सभी {{count}} परिणाम देखें",
+      "seeAllResults_other": "सभी {{count}} परिणाम देखें",
+      "kbNavigate": "नेविगेट करें",
+      "kbSelect": "चुनें",
+      "kbClose": "बंद करें"
+    },
+    "addModal": {
+      "title": "नई संपत्ति जोड़ें",
+      "subtitle": "मूल जानकारी से शुरू करें — बाकी विवरण कभी भी पूरा कर सकते हैं",
+      "closeAria": "बंद करें",
+      "verification": "सत्यापन",
+      "optional": "वैकल्पिक",
+      "poweredBy": "OpenStreetMap द्वारा संचालित",
+      "banner": {
+        "requiredPrefix": "केवल",
+        "requiredSuffix": "आवश्यक हैं",
+        "address": "पता",
+        "city": "शहर",
+        "requiredConnector": "और",
+        "hint": "बाकी विवरण कभी भी जोड़ें — बनाने के बाद संपत्तियाँ पूरी की जा सकती हैं।"
+      },
+      "sections": {
+        "location": "स्थान",
+        "locationSub": "यह संपत्ति कहाँ है?",
+        "propertyDetails": "संपत्ति विवरण",
+        "propertyDetailsSub": "हमें इसे वर्गीकृत करने और मूल्यांकन करने में मदद करें",
+        "extraDetails": "अतिरिक्त विवरण",
+        "extraDetailsSub": "वैकल्पिक — रिपोर्ट और तुलनाओं में मदद करता है",
+        "photo": "फ़ोटो",
+        "photoSub": "एक फ़ोटो जोड़ें या हम एक स्मार्ट प्लेसहोल्डर का उपयोग करेंगे"
+      },
+      "fields": {
+        "streetAddress": "गली का पता",
+        "city": "शहर",
+        "state": "राज्य",
+        "pinCode": "पिन कोड",
+        "propertyType": "संपत्ति प्रकार",
+        "area": "क्षेत्रफल",
+        "marketValue": "बाज़ार मूल्य",
+        "yearBuilt": "निर्माण वर्ष",
+        "bedrooms": "बेडरूम",
+        "bathrooms": "बाथरूम",
+        "stories": "मंज़िलें",
+        "propertyPhoto": "संपत्ति फ़ोटो"
+      },
+      "placeholders": {
+        "address": "पता टाइप करना शुरू करें...",
+        "city": "शहर चुनें या टाइप करें",
+        "state": "राज्य चुनें",
+        "pinCode": "560001",
+        "propertyType": "एक संपत्ति प्रकार चुनें",
+        "area": "1800",
+        "marketValue": "15000000",
+        "yearBuilt": "2015",
+        "bedrooms": "3",
+        "bathrooms": "2",
+        "stories": "2"
+      },
+      "hints": {
+        "characters": "{{count}} अक्षर",
+        "sqft": "वर्ग फुट",
+        "inr": "भारतीय रुपये",
+        "photoPlaceholder": "इसे छोड़ें और हम संपत्ति प्रकार के आधार पर एक प्लेसहोल्डर का उपयोग करेंगे।"
+      },
+      "types": {
+        "residentialLabel": "आवासीय",
+        "residentialDesc": "घर, अपार्टमेंट, विला",
+        "commercialLabel": "वाणिज्यिक",
+        "commercialDesc": "कार्यालय, दुकान, होटल",
+        "industrialLabel": "औद्योगिक",
+        "industrialDesc": "गोदाम, कारखाना",
+        "landLabel": "भूमि",
+        "landDesc": "प्लॉट, कृषि",
+        "mixedUseLabel": "मिश्रित-उपयोग",
+        "mixedUseDesc": "आवासीय + वाणिज्यिक"
+      },
+      "errors": {
+        "addressRequired": "पता आवश्यक है",
+        "addressLength": "पता कम से कम 6 अक्षर का होना चाहिए",
+        "cityRequired": "शहर आवश्यक है",
+        "pinInvalid": "पिन बिल्कुल 6 अंक होना चाहिए",
+        "areaInvalid": "क्षेत्रफल 0 से अधिक होना चाहिए",
+        "valueInvalid": "मूल्य 0 से अधिक होना चाहिए",
+        "yearRange": "वर्ष 1800 और {{max}} के बीच होना चाहिए",
+        "cannotBeNegative": "ऋणात्मक नहीं हो सकता",
+        "storiesRange": "मंज़िलें 1 और 200 के बीच होनी चाहिए",
+        "formHasErrors": "फ़ॉर्म में त्रुटियाँ हैं",
+        "reviewFields": "कृपया नीचे हाइलाइट किए गए फ़ील्ड की समीक्षा करें।",
+        "couldntAdd": "संपत्ति नहीं जोड़ी जा सकी",
+        "tryAgainMoment": "कृपया एक क्षण में पुनः प्रयास करें।"
+      },
+      "toasts": {
+        "addedVerified": "संपत्ति जोड़ी गई और पूरी तरह सत्यापित",
+        "addedVerifiedDesc": "सभी 7 डेटा गुणवत्ता जाँच पास हुईं।",
+        "added": "संपत्ति जोड़ी गई",
+        "addedDesc_one": "इसे बाद में पूरी तरह सत्यापित करने के लिए {{count}} और फ़ील्ड पूरा करें।",
+        "addedDesc_other": "इसे बाद में पूरी तरह सत्यापित करने के लिए {{count}} और फ़ील्ड पूरा करें।"
+      },
+      "footer": {
+        "willBeVerified": "तुरंत सत्यापित हो जाएगा",
+        "fieldsToVerification_one": "पूर्ण सत्यापन के लिए {{count}} फ़ील्ड",
+        "fieldsToVerification_other": "पूर्ण सत्यापन के लिए {{count}} फ़ील्ड",
+        "cancel": "रद्द करें",
+        "saving": "सहेज रहे हैं",
+        "addProperty": "संपत्ति जोड़ें"
+      }
+    },
+    "editModal": {
+      "title": "संपत्ति संपादित करें",
+      "sections": {
+        "photoSub": "एक संपत्ति फ़ोटो अपडेट करें या जोड़ें"
+      },
+      "placeholders": {
+        "address": "742 एवरग्रीन टेरेस"
+      },
+      "banner": {
+        "allPassed": "सभी डेटा गुणवत्ता जाँच पास हुईं",
+        "awayFromVerification_one": "पूर्ण सत्यापन से {{count}} फ़ील्ड दूर",
+        "awayFromVerification_other": "पूर्ण सत्यापन से {{count}} फ़ील्ड दूर",
+        "hint": "इस संपत्ति को सत्यापित चिह्नित करने के लिए सभी फ़ील्ड पूरे करें।"
+      },
+      "toasts": {
+        "verified": "संपत्ति सत्यापित",
+        "changesSaved": "परिवर्तन सहेजे गए",
+        "stillNeeded_one": "सत्यापन के लिए {{count}} फ़ील्ड की अभी भी आवश्यकता है।",
+        "stillNeeded_other": "सत्यापन के लिए {{count}} फ़ील्ड की अभी भी आवश्यकता है।",
+        "saveFailed": "परिवर्तन सहेजे नहीं जा सके"
+      },
+      "footer": {
+        "willMarkVerified": "सहेजने से यह सत्यापित हो जाएगा",
+        "saveChanges": "परिवर्तन सहेजें",
+        "fieldsToVerification_one": "पूर्ण सत्यापन के लिए {{count}} फ़ील्ड",
+        "fieldsToVerification_other": "पूर्ण सत्यापन के लिए {{count}} फ़ील्ड"
+      }
+    },
+    "aggregation": {
+      "enums": {
+  "taxStatus": {
+    "PAID": "भुगतान किया",
+    "PENDING": "लंबित",
+    "OVERDUE": "बकाया"
+  },
+  "permitType": {
+    "BUILDING": "भवन",
+    "RENOVATION": "नवीनीकरण",
+    "OCCUPANCY": "अधिभोग",
+    "DEMOLITION": "विध्वंस",
+    "ELECTRICAL": "विद्युत",
+    "PLUMBING": "जलकार्य"
+  },
+  "permitStatus": {
+    "APPROVED": "अनुमोदित",
+    "PENDING": "लंबित",
+    "EXPIRED": "समाप्त",
+    "REJECTED": "अस्वीकृत"
+  }
+},
+      "completeness": {
+  "title": "डेटा पूर्णता",
+  "subtitle": "6 डेटा स्रोतों में एकत्रीकरण स्वास्थ्य",
+  "refreshAria": "एकत्रीकरण ताज़ा करें",
+  "refreshTitle": "सभी स्रोत ताज़ा करें",
+  "overallStatus": "समग्र स्थिति",
+  "coverage": "कवरेज",
+  "liveSources_one": "लाइव स्रोत",
+  "liveSources_other": "लाइव स्रोत",
+  "mockSources_one": "मॉक स्रोत",
+  "mockSources_other": "मॉक स्रोत",
+  "unavailable": "अनुपलब्ध",
+  "dataSources": "डेटा स्रोत",
+  "totalCount": "कुल {{n}}",
+  "latestFetch": "नवीनतम फ़ेच:",
+  "oldest": "सबसे पुराना:",
+  "duration": "अवधि:",
+  "overallOk": "सभी स्रोत उपलब्ध",
+  "overallPartial": "आंशिक डेटा",
+  "overallDegraded": "क्षीण — कुछ स्रोत बंद",
+  "overallLoading": "लोड हो रहा है",
+  "statusEmpty": "खाली",
+  "statusDown": "बंद",
+  "sources": {
+    "ownership": "स्वामित्व रजिस्ट्री",
+    "taxHistory": "नगर निगम कर रिकॉर्ड",
+    "zoning": "ज़ोनिंग प्राधिकरण",
+    "floodZone": "बाढ़ जोखिम मूल्यांकन",
+    "permits": "परमिट डेटाबेस",
+    "environmental": "पर्यावरणीय निगरानी"
+  }
+},
+"environmental": {
+  "title": "पर्यावरणीय",
+  "subtitle": "वायु गुणवत्ता और परिवेश",
+  "emptyLabel": "पर्यावरणीय डेटा",
+  "aqi": "वायु गुणवत्ता सूचकांक",
+  "mainPollutant": "मुख्य प्रदूषक",
+  "nearestStation": "निकटतम निगरानी स्टेशन",
+  "measured": "{{ago}} मापा गया",
+  "greenCover": "हरित आवरण",
+  "noiseLevel": "शोर स्तर",
+  "soilType": "मिट्टी का प्रकार",
+  "industrialZone": "औद्योगिक क्षेत्र",
+  "nearby": "पास में",
+  "notNearby": "पास में नहीं"
+},
+"flood": {
+  "title": "बाढ़ जोखिम",
+  "subtitle": "बाढ़ क्षेत्र वर्गीकरण और इतिहास",
+  "emptyLabel": "बाढ़ डेटा",
+  "zone": "क्षेत्र",
+  "insuranceRecommended": "बाढ़ बीमा अनुशंसित",
+  "insuranceNotMandatory": "बाढ़ बीमा अनिवार्य नहीं",
+  "basedOn": "{{agency}} पर आधारित",
+  "regionalHazard": "क्षेत्रीय ख़तरा डेटा",
+  "nearestWater": "निकटतम जल निकाय",
+  "distance": "दूरी",
+  "lastFlood": "अंतिम बड़ी बाढ़:"
+},
+"zoning": {
+  "title": "ज़ोनिंग जानकारी",
+  "subtitle": "भूमि उपयोग वर्गीकरण और भवन नियम",
+  "emptyLabel": "ज़ोनिंग जानकारी",
+  "zoneCode": "ज़ोन कोड",
+  "category": "श्रेणी",
+  "maxFar": "अधिकतम FAR",
+  "groundCoverage": "भूमि कवरेज",
+  "maxHeight": "अधिकतम ऊँचाई",
+  "allowedUses": "अनुमत उपयोग",
+  "restrictedUses": "प्रतिबंधित उपयोग",
+  "referencePlan": "संदर्भ योजना"
+},
+      "section": {
+        "waiting": "डेटा की प्रतीक्षा हो रही है...",
+        "errorTitle": "सेक्शन अस्थायी रूप से अनुपलब्ध",
+        "errorReason": "बाहरी डेटा स्रोत तक नहीं पहुँच सके। थोड़ी देर में पुनः प्रयास करें।",
+        "emptyTitle": "कोई {{item}} उपलब्ध नहीं",
+        "emptyReason": "इस प्रॉपर्टी के लिए अभी तक कोई रिकॉर्ड मौजूद नहीं है।",
+        "dataFallback": "डेटा"
+      },
+      "badge": {
+        "mock": "मॉक"
+      },
+      "ownership": {
+        "title": "स्वामित्व",
+        "subtitle": "वर्तमान मालिक और पंजीकरण विवरण",
+        "emptyLabel": "स्वामित्व रिकॉर्ड",
+        "currentOwner": "वर्तमान मालिक",
+        "coOwners": "सह-मालिक:",
+        "ownershipType": "स्वामित्व प्रकार",
+        "registrationNo": "पंजीकरण संख्या",
+        "registeredOn": "पंजीकृत तिथि",
+        "subRegistrar": "उप-रजिस्ट्रार कार्यालय",
+        "registeredValue": "पंजीकृत मूल्य",
+        "stampDuty": "भुगतान की गई स्टाम्प ड्यूटी"
+      },
+      "permits": {
+        "title": "परमिट और अनुमोदन",
+        "subtitle": "भवन, अधिभोग और नवीकरण परमिट",
+        "emptyLabel": "परमिट",
+        "issued": "जारी:",
+        "expires": "समाप्ति:",
+        "noRecords": "इस संपत्ति के लिए कोई परमिट दर्ज नहीं है।"
+      },
+      "tax": {
+        "title": "संपत्ति कर इतिहास",
+        "subtitle": "मूल्यांकन और भुगतान रिकॉर्ड",
+        "emptyLabel": "कर रिकॉर्ड",
+        "year": "वर्ष",
+        "assessedValue": "मूल्यांकित मूल्य",
+        "taxDue": "देय कर",
+        "status": "स्थिति",
+        "receipt": "रसीद",
+        "noRecords": "इस संपत्ति के लिए कोई कर रिकॉर्ड उपलब्ध नहीं है।"
+      }
+    },
+    "quickImage": {
+      "addPhoto": "फ़ोटो जोड़ें",
+      "updatePhoto": "फ़ोटो अपडेट करें",
+      "closeAria": "बंद करें",
+      "cancel": "रद्द करें",
+      "saving": "सहेज रहे हैं",
+      "removePhoto": "फ़ोटो हटाएँ",
+      "savePhoto": "फ़ोटो सहेजें",
+      "saveChanges": "परिवर्तन सहेजें",
+      "noChanges": "कोई परिवर्तन नहीं",
+      "removedTitle": "फ़ोटो हटा दी गई",
+      "removedDesc": "संपत्ति अब एक प्लेसहोल्डर दिखाएगी।",
+      "updatedTitle": "फ़ोटो अपडेट की गई",
+      "updatedDesc": "आपकी संपत्ति फ़ोटो सहेज ली गई है।",
+      "updateFailed": "फ़ोटो अपडेट नहीं हो सकी",
+      "tryAgainMoment": "कृपया एक क्षण में पुनः प्रयास करें।",
+      "stagedWarningTitle": "फ़ोटो हटाने के लिए तैयार",
+      "stagedWarningDesc": "पुष्टि करने के लिए <1>फ़ोटो हटाएँ</1> पर क्लिक करें, या मौजूदा फ़ोटो रखने के लिए <3>रद्द करें</3> क्लिक करें।",
+      "replaceHint": "मौजूदा फ़ोटो बदलें, या प्लेसहोल्डर का उपयोग करने के लिए इसे हटाएँ।",
+      "addHint": "खोज परिणामों में इस संपत्ति की पहचान में मदद के लिए एक फ़ोटो जोड़ें।"
+    },
+    "saveComparison": {
+      "closeAria": "बंद करें",
+      "titleSave": "तुलना सहेजें",
+      "titleSaved": "तुलना सहेजी गई!",
+      "subtitleSave_one": "इस {{count}}-संपत्ति की तुलना को अपने खाते में सहेजें।",
+      "subtitleSave_other": "इस {{count}}-संपत्तियों की तुलना को अपने खाते में सहेजें।",
+      "subtitleSaved": "आप इस तुलना को अपनी सहेजी गई सूची से कभी भी लोड कर सकते हैं।",
+      "nameLabel": "नाम",
+      "namePlaceholder": "जैसे मुंबई बनाम पुणे तुलना",
+      "nameRequired": "नाम आवश्यक है",
+      "nameMin": "नाम कम से कम 3 अक्षर का होना चाहिए",
+      "nameMax": "नाम 100 अक्षरों से अधिक नहीं हो सकता",
+      "notesLabel": "नोट्स",
+      "notesOptional": "(वैकल्पिक)",
+      "notesPlaceholder": "इस तुलना के बारे में कोई भी नोट्स जोड़ें...",
+      "notesMax": "नोट्स 1000 अक्षरों से अधिक नहीं हो सकते",
+      "propertiesCount_one": "इस तुलना में {{count}} संपत्ति सहेजी जाएगी",
+      "propertiesCount_other": "इस तुलना में {{count}} संपत्तियाँ सहेजी जाएँगी",
+      "cancel": "रद्द करें",
+      "saveButton": "तुलना सहेजें",
+      "saving": "सहेज रहे हैं...",
+      "tipEsc": "टिप: दबाएँ",
+      "tipEscSuffix": "रद्द करने के लिए",
+      "closingAuto": "अपने आप बंद हो रहा है..."
+    },
+    "logout": {
+      "closeAria": "बंद करें",
+      "title": "साइन आउट करने के लिए तैयार?",
+      "subtitle": "अपने डैशबोर्ड और संपत्ति डेटा तक पहुँचने के लिए आपको फिर से लॉग इन करना होगा।",
+      "activeBadge": "सक्रिय",
+      "signedInFallback": "साइन इन किया हुआ",
+      "fallbackUser": "उपयोगकर्ता",
+      "stayIn": "साइन इन रहें",
+      "confirm": "हाँ, लॉग आउट करें",
+      "signingOut": "साइन आउट हो रहा है…",
+      "tipEsc": "टिप: दबाएँ",
+      "tipEscSuffix": "रद्द करने के लिए"
+    },
+    "detailPage": {
+      "pageTitle": "संपत्ति विवरण | Real Estate Due Diligence Agent",
+      "couldNotLoad": "संपत्ति विवरण लोड नहीं हो सके",
+      "notFound": "संपत्ति नहीं मिली",
+      "mayBeRemoved": "इसे हटाया जा सकता है।"
     },
     "propertyTypes": {
       "COMMERCIAL": "वाणिज्यिक",
@@ -190,6 +817,11 @@
         "dataQuality": "डेटा गुणवत्ता",
         "sortBy": "क्रमबद्ध करें"
       },
+      "activeLabel": "सक्रिय",
+      "chipMinPrice": "न्यूनतम: {{value}}",
+      "chipMaxPrice": "अधिकतम: {{value}}",
+      "chipSort": "क्रम: {{label}}",
+      "chipRemove": "{{label}} हटाएं",
       "noTypesYet": "अभी तक डेटा में कोई प्रकार नहीं",
       "noCitiesYet": "अभी तक डेटा में कोई शहर नहीं",
       "minPrice": "न्यूनतम (₹)",
@@ -236,30 +868,30 @@
       "photoPending": "फ़ोटो लंबित"
     },
     "risk": {
-  "title": "जोखिम मूल्यांकन",
-  "subtitle": "वास्तविक समेकित डेटा पर आधारित",
-  "unavailable": "जोखिम स्कोर अनुपलब्ध",
-  "couldntLoad": "जोखिम स्कोर लोड नहीं हो सका",
-  "categoryBreakdown": "श्रेणी विवरण",
-  "weight": "भार {{pct}}",
-  "factorsCount": "जोखिम कारक · {{n}}",
-  "incompleteNote": "कुछ डेटा स्रोतों ने नमूना या अनुपलब्ध डेटा लौटाया। जैसे-जैसे अधिक वास्तविक डेटा उपलब्ध होगा स्कोर बेहतर हो सकता है।",
-  "categories": {
-    "financial": "वित्तीय",
-    "legal": "कानूनी",
-    "environmental": "पर्यावरणीय",
-    "structural": "संरचनात्मक"
-  }
-},
-"building": {
-  "title": "भवन जानकारी",
-  "subtitle": "आपके द्वारा प्रदान किए गए संरचनात्मक विवरण",
-  "storiesCount_one": "{{count}} मंज़िल",
-  "storiesCount_other": "{{count}} मंज़िलें",
-  "emptyTitle": "कोई भवन विवरण नहीं जोड़ा गया",
-  "emptyDesc": "जोखिम स्कोरिंग सटीकता में सुधार के लिए संरचना प्रकार, निर्माण वर्ष, बेडरूम आदि जोड़ें।",
-  "addDetails": "भवन विवरण जोड़ें"
-},
+      "title": "जोखिम मूल्यांकन",
+      "subtitle": "वास्तविक समेकित डेटा पर आधारित",
+      "unavailable": "जोखिम स्कोर अनुपलब्ध",
+      "couldntLoad": "जोखिम स्कोर लोड नहीं हो सका",
+      "categoryBreakdown": "श्रेणी विवरण",
+      "weight": "भार {{pct}}",
+      "factorsCount": "जोखिम कारक · {{n}}",
+      "incompleteNote": "कुछ डेटा स्रोतों ने नमूना या अनुपलब्ध डेटा लौटाया। जैसे-जैसे अधिक वास्तविक डेटा उपलब्ध होगा स्कोर बेहतर हो सकता है।",
+      "categories": {
+        "financial": "वित्तीय",
+        "legal": "कानूनी",
+        "environmental": "पर्यावरणीय",
+        "structural": "संरचनात्मक"
+      }
+    },
+    "building": {
+      "title": "भवन जानकारी",
+      "subtitle": "आपके द्वारा प्रदान किए गए संरचनात्मक विवरण",
+      "storiesCount_one": "{{count}} मंज़िल",
+      "storiesCount_other": "{{count}} मंज़िलें",
+      "emptyTitle": "कोई भवन विवरण नहीं जोड़ा गया",
+      "emptyDesc": "जोखिम स्कोरिंग सटीकता में सुधार के लिए संरचना प्रकार, निर्माण वर्ष, बेडरूम आदि जोड़ें।",
+      "addDetails": "भवन विवरण जोड़ें"
+    },
     "details": {
       "verifiedProperty": "सत्यापित संपत्ति",
       "pendingVerification": "सत्यापन लंबित",
@@ -284,12 +916,25 @@
     "comparison": {
       "title": "संपत्ति तुलना",
       "subtitle": "{{n}} {{unit}} का साथ-साथ विश्लेषण · केवल वास्तविक डेटा",
+      "pageTitle": "संपत्ति तुलना | Real Estate Due Diligence Agent",
+      "couldNotLoad": "तुलना लोड नहीं हो सकी",
+      "pleaseGoBack": "कृपया वापस जाकर पुनः प्रयास करें।",
+      "loadFailed": "तुलना डेटा लोड करने में विफल",
+      "selectHelper": "संपत्ति खोज पर जाएँ, प्रत्येक कार्ड पर तुलना चेकबॉक्स का उपयोग करके 2–3 संपत्तियाँ चुनें, फिर \"तुलना करें\" पर क्लिक करें।",
+      "backToSearch": "संपत्ति खोज पर वापस जाएँ",
+      "metricHeader": "मेट्रिक",
       "propertyUnit": "संपत्ति",
       "propertiesUnit": "संपत्तियाँ",
       "mySaved": "मेरी सहेजी गई",
       "saveComparison": "तुलना सहेजें",
       "goToSearch": "संपत्ति खोज पर जाएँ",
       "selectAtLeast2": "तुलना करने के लिए कम से कम 2 संपत्तियाँ चुनें",
+      "compareLabel": "तुलना",
+      "selectedCount": "3 में से {{count}} चुने",
+      "compareCount_one": "{{count}} संपत्ति की तुलना करें",
+      "compareCount_other": "{{count}} संपत्तियों की तुलना करें",
+      "selectMinimum": "— कम से कम 2 चुनें",
+      "removeProperty": "{{address}} हटाएं",
       "sections": {
         "financial": "वित्तीय",
         "propertyDetails": "संपत्ति विवरण",
@@ -351,6 +996,8 @@
   "profile": {
     "title": "खाता प्रबंधन",
     "subtitle": "अपनी पेशेवर पहचान और एप्लिकेशन सुरक्षा को नियंत्रित करें।",
+    "pageTitle": "प्रोफ़ाइल | Real Estate Due Diligence Agent",
+    "fallbackUser": "उपयोगकर्ता",
     "sections": {
       "accountDetails": "खाता विवरण",
       "accountDetailsSubtitle": "प्राथमिक संपर्क और संगठनात्मक जानकारी।",
@@ -366,6 +1013,10 @@
       "signInMethod": "साइन-इन विधि",
       "accessLevel": "पहुँच स्तर",
       "memberSince": "सदस्य बनने की तारीख़"
+    },
+    "placeholders": {
+      "fullName": "आपका पूरा नाम",
+      "phone": "10-अंकीय मोबाइल"
     },
     "actions": {
       "editProfile": "प्रोफ़ाइल संपादित करें",
@@ -384,12 +1035,24 @@
       "title": "यह खाता हटाएँ",
       "description": "आपकी प्रोफ़ाइल, आपके द्वारा जोड़ी गई सभी संपत्तियाँ और सभी सत्र डेटा स्थायी रूप से हटा देता है। यह पूर्ववत नहीं किया जा सकता।"
     },
+    "signOutAll": {
+      "title": "सभी उपकरणों से साइन आउट करें",
+      "description": "अपने सत्र को हर जगह समाप्त करें — फ़ोन, टैबलेट और अन्य ब्राउज़र। उपयोगी यदि आपने अपना उपकरण साझा किया हो या किसी तक पहुँच खो दी हो।",
+      "button": "हर जगह साइन आउट करें"
+    },
     "roles": {
       "BUYER": "खरीदार",
       "REAL_ESTATE_AGENT": "रियल एस्टेट एजेंट",
       "LEGAL_REVIEWER": "कानूनी समीक्षक",
       "FINANCIAL_INSTITUTION": "वित्तीय संस्थान",
       "ADMIN": "व्यवस्थापक"
+    },
+    "roleTaglines": {
+      "BUYER": "संपत्ति खरीदार · उचित परिश्रम",
+      "REAL_ESTATE_AGENT": "रियल एस्टेट पेशेवर · बाज़ार विशेषज्ञ",
+      "LEGAL_REVIEWER": "कानूनी सलाहकार · अनुपालन समीक्षा",
+      "FINANCIAL_INSTITUTION": "वित्तीय संस्थान · संपत्ति मूल्यांकन",
+      "ADMIN": "सिस्टम व्यवस्थापक · पूर्ण पहुँच"
     },
     "authProvider": {
       "LOCAL": "ईमेल + पासवर्ड",
@@ -403,13 +1066,117 @@
       "phoneValidation": "10 अंक, 6–9 से शुरू",
       "couldntLoad": "प्रोफ़ाइल लोड नहीं हो सकी",
       "pleaseRefresh": "कृपया पेज को ताज़ा करें।",
-      "unableToLoad": "प्रोफ़ाइल लोड करने में असमर्थ। कृपया पेज को ताज़ा करें।"
+      "unableToLoad": "प्रोफ़ाइल लोड करने में असमर्थ। कृपया पेज को ताज़ा करें।",
+      "updateFailed": "अपडेट विफल"
     },
     "success": {
       "profileUpdated": "प्रोफ़ाइल अपडेट की गई",
       "changesSaved": "आपके परिवर्तन सहेजे गए हैं।"
     }
   },
+  "deleteAccount": {
+  "title": "खाता हटाएँ",
+  "subtitle": "यह क्रिया वापस नहीं ली जा सकती।",
+  "impactTitle": "निम्नलिखित स्थायी रूप से हटा दिए जाएँगे:",
+  "impact": {
+    "account": "आपका खाता और प्रोफ़ाइल",
+    "properties": "आपके द्वारा जोड़ी गई सभी प्रॉपर्टी",
+    "sessions": "आपका सारा सत्र डेटा"
+  },
+  "passwordLabel": "अपना पासवर्ड दर्ज करें",
+  "passwordPlaceholder": "वर्तमान पासवर्ड",
+  "emailLabel": "पुष्टि के लिए अपना ईमेल टाइप करें",
+  "typeToConfirmPrefix": "पुष्टि के लिए",
+  "typeToConfirmSuffix": "टाइप करें",
+  "deleteButton": "खाता हटाएँ",
+  "toasts": {
+    "confirmRequired": "पुष्टि आवश्यक",
+    "typeExactly": "इस क्रिया की पुष्टि के लिए DELETE बिल्कुल वैसा ही टाइप करें।",
+    "passwordRequired": "पासवर्ड आवश्यक",
+    "emailRequired": "ईमेल आवश्यक",
+    "enterPasswordToConfirm": "पुष्टि के लिए अपना पासवर्ड दर्ज करें।",
+    "enterEmailToConfirm": "पुष्टि के लिए अपना ईमेल दर्ज करें।",
+    "accountDeleted": "खाता हटा दिया गया",
+    "redirecting": "आपको एक क्षण में रीडायरेक्ट किया जाएगा।",
+    "couldNotDelete": "खाता हटाया नहीं जा सका",
+    "tryAgainMoment": "कृपया कुछ क्षण में पुनः प्रयास करें।",
+    "tryAgain": "कृपया पुनः प्रयास करें।"
+  }
+},
+"changePassword": {
+  "title": "पासवर्ड बदलें",
+  "subtitle": "अपना खाता पासवर्ड अपडेट करें",
+  "currentLabel": "वर्तमान पासवर्ड",
+  "currentPlaceholder": "वर्तमान पासवर्ड दर्ज करें",
+  "newLabel": "नया पासवर्ड",
+  "newPlaceholder": "कम से कम 8 अक्षर",
+  "confirmLabel": "नया पासवर्ड पुष्टि करें",
+  "confirmPlaceholder": "नया पासवर्ड फिर से दर्ज करें",
+  "submit": "पासवर्ड बदलें",
+  "saving": "सहेजा जा रहा है...",
+  "errors": {
+    "currentRequired": "वर्तमान पासवर्ड आवश्यक है",
+    "newRequired": "नया पासवर्ड आवश्यक है"
+  },
+  "toasts": {
+    "samePassword": "समान पासवर्ड",
+    "samePasswordDesc": "नया पासवर्ड आपके वर्तमान पासवर्ड से अलग होना चाहिए।",
+    "success": "पासवर्ड बदल दिया गया",
+    "successDesc": "आप अपने नए पासवर्ड से साइन इन कर सकते हैं।",
+    "failed": "बदलाव विफल"
+  }
+},
+"signOutAll": {
+  "title": "सभी डिवाइस से साइन आउट करें?",
+  "subtitle": "इससे इस खाते में साइन-इन प्रत्येक डिवाइस पर आपका सत्र समाप्त हो जाएगा।",
+  "confirmButton": "हाँ, सभी जगह साइन आउट करें",
+  "processing": "सभी जगह साइन आउट हो रहा है…",
+  "tipEsc": "टिप: दबाएँ",
+  "tipEscSuffix": "रद्द करने के लिए",
+  "useIfPrefix": "इसका उपयोग करें यदि:",
+  "useIfBody": "आपका खाता समझौता हो सकता है, आपने अपना डिवाइस साझा किया, या आप कहीं लॉग आउट करना भूल गए।",
+  "impact": {
+    "endSessions": {
+      "title": "सभी सक्रिय सत्र समाप्त होंगे",
+      "description": "फ़ोन, टैबलेट, अन्य ब्राउज़र — हर जगह जहाँ आप साइन इन हैं"
+    },
+    "logoutHere": {
+      "title": "आप यहाँ से भी लॉग आउट हो जाएँगे",
+      "description": "जारी रखने के लिए आपको फिर से साइन इन करना होगा"
+    }
+  },
+  "toasts": {
+    "signedOutTitle": "सभी जगह साइन आउट किया गया",
+    "signedOutDesc": "आपके सभी सक्रिय सत्र समाप्त कर दिए गए हैं।",
+    "failedTitle": "साइन आउट नहीं हो सका"
+  }
+},
+"avatar": {
+  "aria": {
+    "changePhoto": "प्रोफ़ाइल फ़ोटो बदलें",
+    "photoOptions": "फ़ोटो विकल्प"
+  },
+  "menu": {
+    "upload": "फ़ोटो अपलोड करें",
+    "change": "फ़ोटो बदलें",
+    "remove": "फ़ोटो हटाएँ",
+    "fileHint": "JPG, PNG, WebP · अधिकतम 5 MB"
+  },
+  "preview": {
+    "title": "पूर्वावलोकन और अपलोड",
+    "alt": "पूर्वावलोकन",
+    "fileSizeKB": "{{size}} KB",
+    "upload": "फ़ोटो अपलोड करें",
+    "uploading": "अपलोड हो रहा है..."
+  },
+  "toasts": {
+    "invalidFile": "अमान्य फ़ाइल",
+    "photoUpdated": "प्रोफ़ाइल फ़ोटो अपडेट किया गया",
+    "uploadFailed": "अपलोड विफल",
+    "photoRemoved": "प्रोफ़ाइल फ़ोटो हटा दिया गया",
+    "removeFailed": "फ़ोटो हटाने में विफल"
+  }
+},
   "settings": {
     "title": "सेटिंग्स",
     "language": {
@@ -421,6 +1188,159 @@
       "savedDescription": "इंटरफ़ेस भाषा {{language}} में बदल दी गई है।"
     }
   },
+  "commandPalette": {
+  "searchPlaceholder": "पेज, प्रॉपर्टी या कार्य खोजें...",
+  "ariaLabel": "कमांड पैलेट खोज",
+  "searchingProperties": "प्रॉपर्टी खोजी जा रही है...",
+  "clear": "साफ़ करें",
+  "recentSearchLabel": "हाल की खोज",
+  "sections": {
+    "recent": "हाल ही में",
+    "pages": "पेज",
+    "properties": "प्रॉपर्टी",
+    "propertiesSubtitle": "डेटाबेस से लाइव",
+    "actions": "कार्य"
+  },
+  "empty": {
+    "title": "\u201C{{query}}\u201D के लिए कोई मिलान नहीं",
+    "hint": "किसी पेज का नाम, प्रॉपर्टी का पता, या कार्य खोजें"
+  },
+  "kbd": {
+    "navigate": "नेविगेट",
+    "select": "चुनें",
+    "close": "बंद करें",
+    "esc": "esc"
+  },
+  "pages": {
+    "dashboard":     { "label": "डैशबोर्ड",              "description": "पोर्टफोलियो अवलोकन और KPI" },
+    "search":        { "label": "प्रॉपर्टी खोज",         "description": "प्रॉपर्टी खोजें और सत्यापित करें" },
+    "diligence":     { "label": "ड्यू डिलिजेंस",         "description": "गहन सत्यापन प्रक्रिया" },
+    "risk":          { "label": "जोखिम मूल्यांकन",       "description": "जोखिम स्कोर और चेतावनी" },
+    "compare":       { "label": "प्रॉपर्टी तुलना",        "description": "साथ-साथ विश्लेषण" },
+    "reports":       { "label": "रिपोर्ट्स",             "description": "जनरेट की गई PDF रिपोर्ट्स" },
+    "notifications": { "label": "सूचनाएं",              "description": "अलर्ट और गतिविधि फ़ीड" },
+    "audit":         { "label": "ऑडिट लॉग्स",           "description": "हर कार्य, टाइमस्टैम्प के साथ" },
+    "profile":       { "label": "मेरी प्रोफ़ाइल",        "description": "खाता और प्राथमिकताएं" }
+  },
+  "actions": {
+    "addProperty": { "label": "नई प्रॉपर्टी जोड़ें", "description": "नई लिस्टिंग पंजीकृत करें" },
+    "logout":      { "label": "लॉग आउट",           "description": "अपना सत्र समाप्त करें" }
+  }
+},
+"navbar": {
+  "toggleSidebar": "साइडबार टॉगल करें",
+  "openCommandPalette": "कमांड पैलेट खोलें",
+  "userMenu": "उपयोगकर्ता मेनू",
+  "signedIn": "साइन इन",
+  "myProfile": "मेरी प्रोफ़ाइल",
+  "logOut": "लॉग आउट"
+},
+"emptyState": {
+  "defaultTitle": "यहाँ अभी कुछ नहीं है",
+  "defaultDescription": "अपना पहला आइटम जोड़कर शुरू करें।"
+},
+"support": {
+  "hero": {
+    "title": "हम आपकी कैसे मदद कर सकते हैं?",
+    "subtitle": "सामान्य प्रश्नों के उत्तर और हम तक पहुंचने के सीधे तरीके। यदि आपको जो चाहिए वह नहीं मिलता, तो हमें ईमेल करें — हम कार्य दिवसों में 48 घंटे के भीतर जवाब देंगे।",
+    "searchPlaceholder": "लेख, प्रश्न, फ़ीचर खोजें...",
+    "statusOperational": "सभी सिस्टम चालू हैं"
+  },
+  "contact": {
+    "eyebrow": "संपर्क करें",
+    "title": "सीधे हमसे संपर्क करें",
+    "subtitle": "वह विकल्प चुनें जो सबसे उपयुक्त हो — क्लिक करने पर पहले से भरी विषय पंक्ति के साथ आपका ईमेल क्लाइंट खुलता है।",
+    "openEmail": "ईमेल खोलें",
+    "general": {
+      "title": "सामान्य प्रश्न",
+      "description": "उत्पाद सहायता, खाता संबंधी प्रश्न, या कुछ और जो अत्यावश्यक नहीं है।",
+      "subject": "सहायता अनुरोध — Due Diligence Platform",
+      "body": "नमस्ते टीम,\n\nमेरा एक प्रश्न है:\n\n"
+    },
+    "bug": {
+      "title": "बग रिपोर्ट करें",
+      "description": "कुछ अपेक्षित रूप से काम नहीं कर रहा? हमें बताएं कि आपने क्या देखा और क्या अपेक्षित था।",
+      "subject": "बग रिपोर्ट — Due Diligence Platform",
+      "body": "मैंने क्या किया:\n\nमुझे क्या अपेक्षित था:\n\nवास्तव में क्या हुआ:\n\nब्राउज़र और संस्करण:\n\n"
+    },
+    "feature": {
+      "title": "फ़ीचर का अनुरोध करें",
+      "description": "क्या आपके पास कोई विचार है जो प्लेटफ़ॉर्म को बेहतर बना सकता है? हम हर संदेश पढ़ते हैं।",
+      "subject": "फ़ीचर अनुरोध — Due Diligence Platform",
+      "body": "मैं देखना चाहूँगा:\n\nयह क्यों मददगार होगा:\n\n"
+    }
+  },
+  "faq": {
+    "eyebrow": "ज्ञान आधार",
+    "title": "अक्सर पूछे जाने वाले प्रश्न",
+    "allCategory": "सभी",
+    "articleCount_one": "{{count}} लेख",
+    "articleCount_other": "{{count}} लेख",
+    "noResults": {
+      "title": "आपकी खोज से कोई लेख मेल नहीं खाता",
+      "hint": "अलग कीवर्ड आज़माएँ या सभी लेख देखने के लिए फ़िल्टर हटाएँ।",
+      "emailButton": "यह प्रश्न हमें ईमेल करें",
+      "emailSubjectPrefix": "सहायता:",
+      "emailSubjectFallback": "FAQ में नहीं है प्रश्न"
+    }
+  },
+  "response": {
+    "eyebrow": "प्रतिक्रिया समय",
+    "headline": "48 घंटे के भीतर",
+    "description": "हम कार्य दिवसों (सोम–शुक्र) में ईमेल का जवाब देते हैं। जटिल मुद्दों में अधिक समय लग सकता है — हम हमेशा पहले प्राप्ति की पुष्टि करेंगे।"
+  },
+  "direct": {
+    "eyebrow": "सीधा ईमेल",
+    "headline": "टीम से संपर्क करें"
+  },
+  "related": {
+    "eyebrow": "संबंधित",
+    "title": "अधिक संसाधन",
+    "security": {
+      "title": "सुरक्षा",
+      "description": "हम आपके डेटा की सुरक्षा कैसे करते हैं — जो बना है और जो नियोजित है उसका पूरा खुलासा।"
+    },
+    "source": {
+      "title": "स्रोत कोड",
+      "description": "GitHub पर ओपन-सोर्स। समस्याएँ रिपोर्ट करें, कोड पढ़ें, या योगदान दें।"
+    }
+  },
+  "footer": {
+    "note": "यह सहायता पृष्ठ लाइव चैट, टिकट सिस्टम, या स्वचालित हेल्पडेस्क नहीं है। यह उस टीम की सीधी लाइन है जिसने प्लेटफ़ॉर्म बनाया। हम हर ईमेल पढ़ते हैं और व्यक्तिगत रूप से जवाब देते हैं।"
+}
+},
+  "savedComparisons": {
+    "pageTitle": "सहेजी गई तुलनाएँ | Real Estate Due Diligence Agent",
+    "title": "सहेजी गई तुलनाएँ",
+    "countLabel_one": "{{count}} सहेजी गई तुलना",
+    "countLabel_other": "{{count}} सहेजी गई तुलनाएँ",
+    "searchPlaceholder": "नाम या नोट्स से खोजें...",
+    "emptyTitle": "अभी तक कोई सहेजी गई तुलना नहीं",
+    "emptyDesc": "संपत्ति तुलना पर जाएँ, 2–3 संपत्तियाँ चुनें और \"तुलना सहेजें\" पर क्लिक करें।",
+    "startComparing": "संपत्तियों की तुलना शुरू करें",
+    "noResults": "\"{{query}}\" के लिए कोई परिणाम नहीं",
+    "propertyCount_one": "{{count}} संपत्ति",
+    "propertyCount_other": "{{count}} संपत्तियाँ",
+    "savedOn": "सहेजा गया {{date}}",
+    "updatedOn": "अपडेट किया गया {{date}}",
+    "deleteAria": "{{name}} हटाएँ",
+    "loadComparison": "तुलना लोड करें"
+  },
+  "savedSheet": {
+  "ariaLabel": "सहेजी गई तुलनाएँ",
+  "savedCount_one": "{{count}} सहेजी गई",
+  "savedCount_other": "{{count}} सहेजी गईं",
+  "loading": "सहेजी गई तुलनाएँ लोड हो रही हैं...",
+  "emptyHint": "प्रॉपर्टी की तुलना करें और उन्हें यहाँ रखने के लिए \"तुलना सहेजें\" पर क्लिक करें।",
+  "load": "लोड",
+  "viewAll": "सभी सहेजी गई तुलनाएँ देखें →"
+},
+"marketChart": {
+  "title": "बाज़ार मूल्य प्रवृत्ति",
+  "subtitle": "6 महीने की अनुमानित प्रवृत्ति · केवल संकेतात्मक",
+  "estimatedBadge": "अनुमानित डेटा",
+  "propertyLabel": "प्रॉपर्टी {{letter}}"
+},
   "common": {
     "loading": "लोड हो रहा है...",
     "error": "कुछ गलत हुआ",
@@ -448,12 +1368,13 @@
     "justNow": "अभी-अभी",
     "minutesAgo": "{{n}} मिनट पहले",
     "hoursAgo": "{{n}} घंटे पहले",
+    "daysAgo": "{{n}} दिन पहले",
     "secondsAgo": "{{n}} सेकंड पहले",
     "syncedAgo": "सिंक किया गया",
     "breadcrumbLabel": "ब्रेडक्रम्ब",
-"breadcrumbs": {
-  "details": "विवरण"
-}
+    "breadcrumbs": {
+      "details": "विवरण"
+    }
   },
   "pages": {
     "dueDiligence": {

@@ -2,6 +2,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
+import { useTranslation } from "react-i18next";
 import { toast } from "sonner";
 import { X, Camera, Loader2, Save, AlertTriangle } from "lucide-react";
 import { updateProperty } from "@/services/propertyService";
@@ -13,6 +14,7 @@ export default function QuickImageUploadModal({
   property,
   onSuccess,
 }) {
+  const { t } = useTranslation();
   const [imageUrl, setImageUrl] = useState("");
   const [saving, setSaving] = useState(false);
 
@@ -42,12 +44,12 @@ export default function QuickImageUploadModal({
   const willReplace = originalImage && imageUrl && imageUrl !== originalImage;
 
   const saveLabel = willRemove
-    ? "Remove photo"
+    ? t("property.quickImage.removePhoto")
     : willReplace
-    ? "Save changes"
+    ? t("property.quickImage.saveChanges")
     : willAdd
-    ? "Save photo"
-    : "No changes";
+    ? t("property.quickImage.savePhoto")
+    : t("property.quickImage.noChanges");
 
   const handleSave = async () => {
     if (!hasChanged) {
@@ -74,19 +76,21 @@ export default function QuickImageUploadModal({
       const updated = await updateProperty(property.id, payload);
 
       toast.success(
-        willRemove ? "Photo removed" : "Photo updated",
+        willRemove
+          ? t("property.quickImage.removedTitle")
+          : t("property.quickImage.updatedTitle"),
         {
           description: willRemove
-            ? "The property will now show a placeholder."
-            : "Your property photo has been saved.",
+            ? t("property.quickImage.removedDesc")
+            : t("property.quickImage.updatedDesc"),
         }
       );
 
       onSuccess?.(updated);
       onClose();
     } catch (err) {
-      toast.error("Couldn't update photo", {
-        description: err.message || "Please try again in a moment.",
+      toast.error(t("property.quickImage.updateFailed"), {
+        description: err.message || t("property.quickImage.tryAgainMoment"),
       });
     } finally {
       setSaving(false);
@@ -104,12 +108,13 @@ export default function QuickImageUploadModal({
     >
       <div className="w-full max-w-md overflow-hidden rounded-3xl bg-white dark:bg-[#161b22] shadow-[0_30px_80px_rgba(0,0,0,0.3)] dark:shadow-[0_30px_80px_rgba(0,0,0,0.6)] animate-in zoom-in-95 duration-200">
 
-        {/* Header — green gradient stays vibrant */}
+        {/* Header */}
         <div className="relative bg-gradient-to-br from-[#22C55E] via-[#22C55E] to-[#16a34a] px-5 py-4">
           <div
             className="absolute inset-0 opacity-10"
             style={{
-              backgroundImage: "linear-gradient(rgba(255,255,255,0.3) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.3) 1px, transparent 1px)",
+              backgroundImage:
+                "linear-gradient(rgba(255,255,255,0.3) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.3) 1px, transparent 1px)",
               backgroundSize: "20px 20px",
             }}
           />
@@ -119,7 +124,9 @@ export default function QuickImageUploadModal({
             </div>
             <div className="min-w-0 flex-1">
               <h2 className="text-lg font-black text-white tracking-tight">
-                {originalImage ? "Update photo" : "Add photo"}
+                {originalImage
+                  ? t("property.quickImage.updatePhoto")
+                  : t("property.quickImage.addPhoto")}
               </h2>
               <p className="text-[11px] text-white/80 mt-0.5 truncate">
                 {property.address}
@@ -132,7 +139,7 @@ export default function QuickImageUploadModal({
             onClick={onClose}
             disabled={saving}
             className="absolute right-3 top-3 flex h-8 w-8 items-center justify-center rounded-lg bg-white/20 text-white transition hover:bg-white/30 backdrop-blur-sm disabled:opacity-50"
-            aria-label="Close"
+            aria-label={t("property.quickImage.closeAria")}
           >
             <X className="h-4 w-4" strokeWidth={2.5} />
           </button>
@@ -148,13 +155,27 @@ export default function QuickImageUploadModal({
 
           {willRemove && (
             <div className="mt-3 flex items-start gap-2 rounded-xl border border-amber-200 dark:border-amber-900 bg-amber-50 dark:bg-[#282a10] px-3 py-2.5">
-              <AlertTriangle className="h-4 w-4 flex-shrink-0 text-amber-600 dark:text-amber-400 mt-0.5" strokeWidth={2.2} />
+              <AlertTriangle
+                className="h-4 w-4 flex-shrink-0 text-amber-600 dark:text-amber-400 mt-0.5"
+                strokeWidth={2.2}
+              />
               <div className="flex-1">
                 <p className="text-[11px] font-bold text-amber-800 dark:text-amber-300 leading-tight">
-                  Photo staged for removal
+                  {t("property.quickImage.stagedWarningTitle")}
                 </p>
+                {/* Split the warning desc into three parts to keep <bold> emphasis */}
                 <p className="text-[11px] text-amber-700 dark:text-amber-400 mt-0.5 leading-snug">
-                  Click <span className="font-bold">Remove photo</span> to confirm, or <span className="font-bold">Cancel</span> to keep the current photo.
+                  {t("property.quickImage.stagedWarningDesc")
+                    .split(/<1>|<\/1>|<3>|<\/3>/)
+                    .map((part, i) =>
+                      i % 2 === 1 ? (
+                        <span key={i} className="font-bold">
+                          {part}
+                        </span>
+                      ) : (
+                        <span key={i}>{part}</span>
+                      )
+                    )}
                 </p>
               </div>
             </div>
@@ -163,8 +184,8 @@ export default function QuickImageUploadModal({
           {!willRemove && (
             <p className="mt-3 text-[11px] text-gray-500 dark:text-[#7d8590]">
               {originalImage
-                ? "Replace the current photo, or remove it to use a placeholder."
-                : "Add a photo to help identify this property in search results."}
+                ? t("property.quickImage.replaceHint")
+                : t("property.quickImage.addHint")}
             </p>
           )}
         </div>
@@ -177,7 +198,7 @@ export default function QuickImageUploadModal({
             disabled={saving}
             className="rounded-xl border border-gray-200 dark:border-[#30363d] bg-white dark:bg-[#1c2128] px-4 py-2 text-sm font-semibold text-gray-700 dark:text-[#e6edf3] transition hover:bg-gray-100 dark:hover:bg-[#30363d] disabled:opacity-50"
           >
-            Cancel
+            {t("property.quickImage.cancel")}
           </button>
 
           <button
@@ -199,7 +220,7 @@ export default function QuickImageUploadModal({
             {saving ? (
               <>
                 <Loader2 className="h-4 w-4 animate-spin" />
-                Saving
+                {t("property.quickImage.saving")}
               </>
             ) : (
               <>

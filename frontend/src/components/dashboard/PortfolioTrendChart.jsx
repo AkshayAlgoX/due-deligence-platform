@@ -1,6 +1,7 @@
 "use client";
 
-import { useEffect, useState, useCallback } from "react";
+import { useEffect, useState, useCallback, useMemo } from "react";
+import { useTranslation } from "react-i18next";
 import {
   AreaChart,
   Area,
@@ -12,23 +13,26 @@ import {
 } from "recharts";
 import { TrendingUp, TrendingDown, Minus } from "lucide-react";
 import { getPortfolioHistory } from "@/services/dashboardService";
+import i18n from "@/i18n";
 
 // ── Helpers ───────────────────────────────────────────────────────────────
 
 function formatINRShort(value) {
+  // Cr / L are region-specific units (Indian numbering), kept as-is across languages.
   if (value == null) return "—";
   if (value >= 1_00_00_000) return `₹${(value / 1_00_00_000).toFixed(2)} Cr`;
   if (value >= 1_00_000)    return `₹${(value / 1_00_000).toFixed(1)} L`;
-  return `₹${value.toLocaleString("en-IN")}`;
+  return `₹${value.toLocaleString(i18n.language || "en-IN")}`;
 }
 
-function formatDateLabel(dateStr, days) {
+function formatDateLabel(dateStr, days, lang) {
   if (!dateStr) return "";
   const d = new Date(dateStr);
+  const locale = lang || "en-IN";
   if (days <= 7) {
-    return d.toLocaleDateString("en-IN", { weekday: "short" });
+    return d.toLocaleDateString(locale, { weekday: "short" });
   }
-  return d.toLocaleDateString("en-IN", { day: "numeric", month: "short" });
+  return d.toLocaleDateString(locale, { day: "numeric", month: "short" });
 }
 
 // ── Skeleton ──────────────────────────────────────────────────────────────
@@ -56,6 +60,7 @@ function ChartSkeleton() {
 // ── Custom tooltip (dark-aware) ───────────────────────────────────────────
 
 function CustomTooltip({ active, payload, label, isDark }) {
+  const { t } = useTranslation();
   if (!active || !payload?.length) return null;
   const point = payload[0]?.payload;
 
@@ -83,15 +88,19 @@ function CustomTooltip({ active, payload, label, isDark }) {
         className="mt-1.5 flex gap-3 text-xs"
         style={{ color: isDark ? "#7d8590" : "#6b7280" }}
       >
-        <span>{point?.propertyCount} properties</span>
-        <span>{point?.verifiedCount} verified</span>
+        <span>
+          {t("trend.tooltip.propertiesCount", { count: point?.propertyCount ?? 0 })}
+        </span>
+        <span>
+          {t("trend.tooltip.verifiedCount", { count: point?.verifiedCount ?? 0 })}
+        </span>
       </div>
     </div>
   );
 }
 
 // ── Main component ────────────────────────────────────────────────────────
-
+// Window labels (7d/30d/90d) are universal web conventions — kept English.
 const WINDOWS = [
   { label: "7d",  days: 7  },
   { label: "30d", days: 30 },
@@ -99,6 +108,7 @@ const WINDOWS = [
 ];
 
 export default function PortfolioTrendChart({ refreshKey }) {
+  const { t, i18n: i18nInst } = useTranslation();
   const [days, setDays]     = useState(30);
   const [data, setData]     = useState([]);
   const [loading, setLoading] = useState(true);
@@ -143,10 +153,15 @@ export default function PortfolioTrendChart({ refreshKey }) {
   const deltaPositive = delta != null && delta > 0;
   const deltaNeutral  = delta === 0 || delta == null;
 
-  const chartData = data.map((p) => ({
-    ...p,
-    label: formatDateLabel(p.date, days),
-  }));
+  // Re-compute date labels when language changes
+  const chartData = useMemo(
+    () =>
+      data.map((p) => ({
+        ...p,
+        label: formatDateLabel(p.date, days, i18nInst.language),
+      })),
+    [data, days, i18nInst.language]
+  );
 
   const tickInterval = days <= 7 ? 0 : days <= 30 ? 4 : 9;
 
@@ -161,12 +176,12 @@ export default function PortfolioTrendChart({ refreshKey }) {
         <ChartSkeleton />
       ) : error ? (
         <div className="flex h-64 items-center justify-center text-sm text-gray-400 dark:text-[#7d8590]">
-          Could not load trend data.{" "}
+          {t("trend.error.couldntLoad")}{" "}
           <button
             onClick={load}
             className="ml-1 text-[#22C55E] underline underline-offset-2"
           >
-            Retry
+            {t("common.retry")}
           </button>
         </div>
       ) : data.length === 0 ? (
@@ -176,10 +191,10 @@ export default function PortfolioTrendChart({ refreshKey }) {
           </div>
           <div>
             <p className="text-sm font-semibold text-gray-800 dark:text-[#e6edf3]">
-              Tracking starts today
+              {t("trend.empty.title")}
             </p>
             <p className="mt-1 text-xs text-gray-400 dark:text-[#7d8590] leading-relaxed">
-              Check back tomorrow to see your portfolio value trend.
+              {t("trend.empty.description")}
             </p>
           </div>
         </div>
@@ -189,10 +204,10 @@ export default function PortfolioTrendChart({ refreshKey }) {
           <div className="mb-5 flex flex-wrap items-start justify-between gap-4">
             <div>
               <h3 className="text-sm font-semibold text-gray-800 dark:text-[#e6edf3]">
-                Portfolio value over time
+                {t("trend.title")}
               </h3>
               <p className="mt-0.5 text-xs text-gray-400 dark:text-[#7d8590]">
-                {data.length} data point{data.length !== 1 ? "s" : ""} in selected window
+                {t("trend.dataPointsInWindow", { count: data.length })}
               </p>
             </div>
 
@@ -233,15 +248,18 @@ export default function PortfolioTrendChart({ refreshKey }) {
                 ) : (
                   <TrendingDown size={12} strokeWidth={2.5} />
                 )}
-                {deltaPositive ? "+" : ""}
-                {delta.toFixed(1)}% vs {days}d ago
+                {t("trend.deltaVsAgo", {
+                  sign: deltaPositive ? "+" : "",
+                  pct: delta.toFixed(1),
+                  days,
+                })}
               </span>
             )}
 
             {deltaNeutral && data.length > 1 && (
               <span className="mb-0.5 flex items-center gap-1 rounded-full bg-gray-100 dark:bg-[#1c2128] px-2.5 py-1 text-xs font-bold text-gray-500 dark:text-[#7d8590]">
                 <Minus size={12} strokeWidth={2.5} />
-                No change
+                {t("trend.noChange")}
               </span>
             )}
           </div>

@@ -20,6 +20,11 @@ export const isValidIndianPhone = (phone) =>
  * Field names match the backend RegisterRequest DTO exactly:
  *   fullName, email, password, phoneNumber, role
  *
+ * ⚠️ i18n: Returns translation KEYS (not English strings).
+ * The consuming component must render errors through t().
+ * If a key is missing, i18next falls back to returning the key itself,
+ * so backend error strings that happen to flow into this state also render safely.
+ *
  * @param {{ fullName, email, password, confirmPassword, phoneNumber, role }} fields
  * @returns {Object} errors — empty object means form is valid
  */
@@ -35,46 +40,46 @@ export const validateRegisterForm = ({
 
   // fullName — backend: @NotBlank, @Size(min=3, max=100)
   if (!fullName.trim()) {
-    errors.fullName = "Full name is required.";
+    errors.fullName = "auth.register.errors.fullNameRequired";
   } else if (fullName.trim().length < 3) {
-    errors.fullName = "Full name must be at least 3 characters.";
+    errors.fullName = "auth.register.errors.fullNameShort";
   } else if (fullName.trim().length > 100) {
-    errors.fullName = "Full name must not exceed 100 characters.";
+    errors.fullName = "auth.register.errors.fullNameLong";
   }
 
   // email — backend: @NotBlank, @Email
   if (!email.trim()) {
-    errors.email = "Professional email is required.";
+    errors.email = "auth.register.errors.emailRequired";
   } else if (!isValidEmail(email)) {
-    errors.email = "Please enter a valid email address.";
+    errors.email = "auth.register.errors.emailInvalid";
   }
 
   // password — backend: @NotBlank, @Size(min=8, max=20)
   if (!password) {
-    errors.password = "Password is required.";
+    errors.password = "auth.errors.passwordRequired";
   } else if (password.length < PASSWORD_MIN_LENGTH) {
-    errors.password = `Password must be at least ${PASSWORD_MIN_LENGTH} characters.`;
+    errors.password = "auth.errors.passwordLength";
   } else if (password.length > 20) {
-    errors.password = "Password must not exceed 20 characters.";
+    errors.password = "auth.register.errors.passwordLong";
   }
 
   // confirmPassword — frontend-only check
   if (!confirmPassword) {
-    errors.confirmPassword = "Please confirm your password.";
+    errors.confirmPassword = "auth.register.errors.confirmRequired";
   } else if (password !== confirmPassword) {
-    errors.confirmPassword = "Passwords do not match.";
+    errors.confirmPassword = "auth.register.errors.passwordsMismatch";
   }
 
   // phoneNumber — backend: @NotBlank, @Pattern(^[6-9]\d{9}$)
   if (!phoneNumber.trim()) {
-    errors.phoneNumber = "Phone number is required.";
+    errors.phoneNumber = "auth.register.errors.phoneRequired";
   } else if (!isValidIndianPhone(phoneNumber)) {
-    errors.phoneNumber = "Enter a valid 10-digit Indian mobile number (starts with 6–9).";
+    errors.phoneNumber = "auth.register.errors.phoneInvalid";
   }
 
   // role — backend: @NotNull
   if (!role) {
-    errors.role = "Please select a role.";
+    errors.role = "auth.register.errors.roleRequired";
   }
 
   return errors;

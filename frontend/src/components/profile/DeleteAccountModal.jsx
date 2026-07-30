@@ -2,12 +2,14 @@
 
 import { useState } from "react";
 import { toast } from "sonner";
+import { useTranslation } from "react-i18next";
 import { AlertTriangle, Loader2, X } from "lucide-react";
 
 import { deleteAccount } from "@/services/authService";
 import { removeToken } from "@/utils/helpers";
 
 export default function DeleteAccountModal({ isOpen, onClose, user }) {
+  const { t } = useTranslation();
   const [password, setPassword] = useState("");
   const [confirmation, setConfirmation] = useState("");
   const [loading, setLoading] = useState(false);
@@ -16,26 +18,31 @@ export default function DeleteAccountModal({ isOpen, onClose, user }) {
 
   const isGoogleOnly = user?.authProvider === "GOOGLE";
   const passwordLabel = isGoogleOnly
-    ? "Type your email to confirm"
-    : "Enter your password";
-  const passwordPlaceholder = isGoogleOnly ? user?.email : "Current password";
+    ? t("deleteAccount.emailLabel")
+    : t("deleteAccount.passwordLabel");
+  const passwordPlaceholder = isGoogleOnly ? user?.email : t("deleteAccount.passwordPlaceholder");
 
   const handleDelete = async (e) => {
     e.preventDefault();
 
     if (confirmation !== "DELETE") {
-      toast.error("Confirmation required", {
-        description: "Type DELETE exactly to confirm this action.",
+      toast.error(t("deleteAccount.toasts.confirmRequired"), {
+        description: t("deleteAccount.toasts.typeExactly"),
       });
       return;
     }
 
     if (!password.trim()) {
-      toast.error(isGoogleOnly ? "Email required" : "Password required", {
-        description: isGoogleOnly
-          ? "Enter your email to confirm."
-          : "Enter your password to confirm.",
-      });
+      toast.error(
+        isGoogleOnly
+          ? t("deleteAccount.toasts.emailRequired")
+          : t("deleteAccount.toasts.passwordRequired"),
+        {
+          description: isGoogleOnly
+            ? t("deleteAccount.toasts.enterEmailToConfirm")
+            : t("deleteAccount.toasts.enterPasswordToConfirm"),
+        }
+      );
       return;
     }
 
@@ -47,21 +54,21 @@ export default function DeleteAccountModal({ isOpen, onClose, user }) {
       });
 
       if (res.success) {
-        toast.success("Account deleted", {
-          description: "You'll be redirected in a moment.",
+        toast.success(t("deleteAccount.toasts.accountDeleted"), {
+          description: t("deleteAccount.toasts.redirecting"),
         });
         removeToken();
         setTimeout(() => {
           window.location.href = "/login";
         }, 1500);
       } else {
-        toast.error("Could not delete account", {
-          description: res.message || "Please try again in a moment.",
+        toast.error(t("deleteAccount.toasts.couldNotDelete"), {
+          description: res.message || t("deleteAccount.toasts.tryAgainMoment"),
         });
       }
     } catch (err) {
-      toast.error("Could not delete account", {
-        description: err?.message || "Please try again.",
+      toast.error(t("deleteAccount.toasts.couldNotDelete"), {
+        description: err?.message || t("deleteAccount.toasts.tryAgain"),
       });
     } finally {
       setLoading(false);
@@ -77,16 +84,18 @@ export default function DeleteAccountModal({ isOpen, onClose, user }) {
               <AlertTriangle className="h-5 w-5 text-red-600 dark:text-red-400" />
             </div>
             <div>
-              <h2 className="text-lg font-bold text-gray-900 dark:text-[#e6edf3]">Delete account</h2>
+              <h2 className="text-lg font-bold text-gray-900 dark:text-[#e6edf3]">
+                {t("deleteAccount.title")}
+              </h2>
               <p className="text-xs text-gray-500 dark:text-[#7d8590]">
-                This action cannot be undone.
+                {t("deleteAccount.subtitle")}
               </p>
             </div>
           </div>
           <button
             onClick={onClose}
             className="flex h-8 w-8 items-center justify-center rounded-lg text-gray-400 dark:text-[#7d8590] hover:bg-gray-100 dark:hover:bg-[#1c2128] hover:text-gray-700 dark:hover:text-[#e6edf3] transition"
-            aria-label="Close"
+            aria-label={t("common.close")}
           >
             <X className="h-4 w-4" />
           </button>
@@ -94,12 +103,12 @@ export default function DeleteAccountModal({ isOpen, onClose, user }) {
 
         <div className="mt-4 rounded-xl border border-red-100 dark:border-red-900 bg-red-50/60 dark:bg-[#2d1214]/40 p-4">
           <p className="text-sm font-semibold text-red-900 dark:text-red-300">
-            The following will be permanently deleted:
+            {t("deleteAccount.impactTitle")}
           </p>
           <ul className="mt-2 space-y-1 text-xs text-red-800 dark:text-red-400">
-            <li>• Your account and profile</li>
-            <li>• All properties you added</li>
-            <li>• All your session data</li>
+            <li>• {t("deleteAccount.impact.account")}</li>
+            <li>• {t("deleteAccount.impact.properties")}</li>
+            <li>• {t("deleteAccount.impact.sessions")}</li>
           </ul>
         </div>
 
@@ -120,8 +129,10 @@ export default function DeleteAccountModal({ isOpen, onClose, user }) {
 
           <div className="space-y-1.5">
             <label className="text-xs font-semibold text-gray-700 dark:text-[#e6edf3]">
-              Type <span className="font-mono font-black">DELETE</span> to
-              confirm
+              {/* "DELETE" stays Latin — used as literal confirmation string */}
+              {t("deleteAccount.typeToConfirmPrefix")}{" "}
+              <span className="font-mono font-black">DELETE</span>{" "}
+              {t("deleteAccount.typeToConfirmSuffix")}
             </label>
             <input
               type="text"
@@ -141,7 +152,7 @@ export default function DeleteAccountModal({ isOpen, onClose, user }) {
               disabled={loading}
               className="flex-1 h-11 rounded-xl border border-gray-200 dark:border-[#30363d] bg-white dark:bg-[#1c2128] text-sm font-semibold text-gray-700 dark:text-[#e6edf3] transition hover:bg-gray-50 dark:hover:bg-[#30363d] disabled:opacity-50"
             >
-              Cancel
+              {t("common.cancel")}
             </button>
             <button
               type="submit"
@@ -153,7 +164,7 @@ export default function DeleteAccountModal({ isOpen, onClose, user }) {
               {loading ? (
                 <Loader2 className="h-4 w-4 animate-spin" />
               ) : (
-                "Delete account"
+                t("deleteAccount.deleteButton")
               )}
             </button>
           </div>

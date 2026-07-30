@@ -3,6 +3,7 @@
 import { useState, useRef, useEffect } from "react";
 import Link from "next/link";
 import { toast } from "sonner";
+import { useTranslation } from "react-i18next";
 import { ShieldCheck, AlertCircle } from "lucide-react";
 
 import { Input } from "@/components/ui/input";
@@ -21,34 +22,6 @@ import { getPasswordStrength } from "@/utils/helpers";
 import { ROLES } from "@/constants/roles";
 import { APP_NAME } from "@/constants/appConstants";
 import GoogleSignInButton from "@/components/auth/GoogleSignInButton";
-
-function validateField(field, value) {
-  const trimmed = String(value ?? "").trim();
-  switch (field) {
-    case "email":
-      if (!trimmed) return "Email is required";
-      if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(trimmed)) return "Enter a valid email";
-      return "";
-    case "password":
-      if (!trimmed) return "Password is required";
-      if (trimmed.length < 8) return "At least 8 characters";
-      if (!/[A-Za-z]/.test(trimmed)) return "Must contain a letter";
-      if (!/\d/.test(trimmed)) return "Must contain a number";
-      return "";
-    case "fullName":
-      if (!trimmed) return "Full name is required";
-      if (trimmed.length < 3) return "At least 3 characters";
-      return "";
-    case "phoneNumber":
-      if (!/^[6-9]\d{9}$/.test(trimmed)) return "Enter a valid 10-digit mobile";
-      return "";
-    case "role":
-      if (!trimmed) return "Please select a role";
-      return "";
-    default:
-      return "";
-  }
-}
 
 // ── Inline SVG icons (unchanged) ─────────────────────────────────────────────
 const UserIcon = () => (
@@ -105,7 +78,7 @@ const ArrowRight = () => (
 );
 
 // ── Field wrapper ─────────────────────────────────────────────────────────────
-function Field({ label, htmlFor, error, required, children }) {
+function Field({ label, htmlFor, error, required, children, t }) {
   return (
     <div className="flex flex-col gap-1">
       {label && (
@@ -117,7 +90,7 @@ function Field({ label, htmlFor, error, required, children }) {
       {children}
       {error && (
         <p role="alert" className="text-[10px] text-red-500 dark:text-red-400 mt-0.5 leading-tight">
-          {error}
+          {t ? t(error) : error}
         </p>
       )}
     </div>
@@ -153,6 +126,7 @@ function StrengthBar({ strength }) {
 // ── Main Component ────────────────────────────────────────────────────────────
 export default function RegisterForm() {
   const { loading, register } = useAuth();
+  const { t } = useTranslation();
 
   const [form, setForm] = useState({
     fullName: "", email: "", password: "", confirmPassword: "",
@@ -171,6 +145,35 @@ export default function RegisterForm() {
     password:        useRef(null),
     confirmPassword: useRef(null),
     phoneNumber:     useRef(null),
+  };
+
+  // ── inline field validator (needs t()) ────────────────────────────────────
+  const validateField = (field, value) => {
+    const trimmed = String(value ?? "").trim();
+    switch (field) {
+      case "email":
+        if (!trimmed) return t("auth.errors.emailRequired");
+        if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(trimmed)) return t("auth.errors.emailInvalid");
+        return "";
+      case "password":
+        if (!trimmed) return t("auth.errors.passwordRequired");
+        if (trimmed.length < 8) return t("auth.errors.passwordLength");
+        if (!/[A-Za-z]/.test(trimmed)) return t("auth.errors.passwordLetter");
+        if (!/\d/.test(trimmed)) return t("auth.errors.passwordNumber");
+        return "";
+      case "fullName":
+        if (!trimmed) return t("auth.register.errors.fullNameRequired");
+        if (trimmed.length < 3) return t("auth.register.errors.fullNameShort");
+        return "";
+      case "phoneNumber":
+        if (!/^[6-9]\d{9}$/.test(trimmed)) return t("auth.register.errors.phoneInvalid");
+        return "";
+      case "role":
+        if (!trimmed) return t("auth.register.errors.roleRequired");
+        return "";
+      default:
+        return "";
+    }
   };
 
   const handleChange = (field) => (e) => {
@@ -219,19 +222,27 @@ export default function RegisterForm() {
         minDuration,
       ]);
       setJustRegistered(true);
-      toast.success("Welcome aboard", { description: "Your account is ready. Redirecting…" });
+      toast.success(t("auth.register.toasts.welcome"), {
+        description: t("auth.register.toasts.welcomeDesc"),
+      });
       setTimeout(() => { window.location.href = "/dashboard"; }, 800);
     } catch (err) {
       await minDuration;
       const backendMsg = err?.message || "";
       if (backendMsg.toLowerCase().includes("email") && backendMsg.toLowerCase().includes("exist")) {
-        setFieldErrors({ email: "An account with this email already exists." });
-        toast.error("Email already registered", { description: "Try signing in instead, or use a different email." });
+        setFieldErrors({ email: t("auth.register.errors.emailExists") });
+        toast.error(t("auth.register.toasts.emailRegistered"), {
+          description: t("auth.register.toasts.emailRegisteredDesc"),
+        });
       } else if (err?.errors && typeof err.errors === "object") {
         setFieldErrors(err.errors);
-        toast.error("Please check your details", { description: "Some fields need attention." });
+        toast.error(t("auth.errors.fieldErrors"), {
+          description: t("auth.errors.someFieldsNeedAttention"),
+        });
       } else {
-        toast.error("Registration failed", { description: backendMsg || "Please try again." });
+        toast.error(t("auth.register.toasts.failed"), {
+          description: backendMsg || t("auth.register.toasts.tryAgain"),
+        });
       }
     }
   };
@@ -251,7 +262,7 @@ export default function RegisterForm() {
   return (
     <div className="w-full">
 
-      {/* Brand Header */}
+      {/* Brand Header — APP_NAME stays English per rule #7 */}
       <div className="flex items-center gap-3 mb-4">
         <div className="flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-full bg-[#22C55E] shadow-md">
           <ShieldCheck className="h-5 w-5 text-white" strokeWidth={2.5} />
@@ -263,10 +274,10 @@ export default function RegisterForm() {
 
       {/* Title */}
       <h2 className="mt-5 text-[36px] font-black leading-[40px] tracking-tight text-[#111827] dark:text-[#e6edf3]">
-        Create your account
+        {t("auth.register.title")}
       </h2>
       <p className="mt-2 text-sm leading-5 text-gray-500 dark:text-[#7d8590]">
-        Join the platform to begin secure due diligence.
+        {t("auth.register.subtitle")}
       </p>
 
       {/* Form Card */}
@@ -275,7 +286,7 @@ export default function RegisterForm() {
 
           {/* Row 1: Full Name + Email */}
           <div className="grid grid-cols-2 gap-3">
-            <Field label="Full name" htmlFor="fullName" error={fieldErrors.fullName} required>
+            <Field label={t("auth.register.fields.fullName")} htmlFor="fullName" error={fieldErrors.fullName} required t={t}>
               <div className="relative">
                 <span className="absolute inset-y-0 left-3 flex items-center text-gray-400 dark:text-[#6e7681] pointer-events-none z-10">
                   <UserIcon />
@@ -284,7 +295,7 @@ export default function RegisterForm() {
                   ref={refs.fullName}
                   id="fullName"
                   type="text"
-                  placeholder="John Smith"
+                  placeholder={t("auth.register.placeholders.fullName")}
                   value={form.fullName}
                   onChange={handleChange("fullName")}
                   disabled={loading || justRegistered}
@@ -295,7 +306,8 @@ export default function RegisterForm() {
               </div>
             </Field>
 
-            <Field label="Email" htmlFor="email" error={fieldErrors.email} required>
+<Field label={t("auth.register.fields.email")} htmlFor="email" error={fieldErrors.email} required t={t}>
+
               <div className="relative">
                 <span className="absolute inset-y-0 left-3 flex items-center text-gray-400 dark:text-[#6e7681] pointer-events-none z-10">
                   <MailIcon />
@@ -304,7 +316,7 @@ export default function RegisterForm() {
                   ref={refs.email}
                   id="email"
                   type="email"
-                  placeholder="name@company.com"
+                  placeholder={t("auth.login.emailPlaceholder")}
                   value={form.email}
                   onChange={handleChange("email")}
                   disabled={loading || justRegistered}
@@ -318,7 +330,8 @@ export default function RegisterForm() {
 
           {/* Row 2: Password + Confirm */}
           <div className="grid grid-cols-2 gap-3">
-            <Field label="Password" htmlFor="password" error={fieldErrors.password} required>
+            <Field label={t("auth.login.passwordLabel")} htmlFor="password" error={fieldErrors.password} required t={t}>
+
               <div className="relative">
                 <span className="absolute inset-y-0 left-3 flex items-center text-gray-400 dark:text-[#6e7681] pointer-events-none z-10">
                   <LockIcon />
@@ -327,7 +340,7 @@ export default function RegisterForm() {
                   ref={refs.password}
                   id="password"
                   type={showPassword ? "text" : "password"}
-                  placeholder="Min. 8 chars"
+                  placeholder={t("auth.register.placeholders.password")}
                   value={form.password}
                   onChange={handleChange("password")}
                   onKeyDown={handlePasswordKeyEvent}
@@ -343,7 +356,7 @@ export default function RegisterForm() {
                   type="button"
                   onClick={() => setShowPassword((s) => !s)}
                   className="absolute inset-y-0 right-3 flex items-center text-gray-400 dark:text-[#6e7681] hover:text-gray-600 dark:hover:text-[#e6edf3] z-10"
-                  aria-label={showPassword ? "Hide password" : "Show password"}
+                  aria-label={showPassword ? t("auth.login.hidePassword") : t("auth.login.showPassword")}
                   tabIndex={-1}
                 >
                   {showPassword ? <EyeOffIcon /> : <EyeIcon />}
@@ -353,12 +366,12 @@ export default function RegisterForm() {
               {capsLockOn && passwordFocused && !fieldErrors.password && (
                 <p className="flex items-center gap-1 text-[10px] text-amber-600 dark:text-amber-400 leading-tight mt-1">
                   <AlertCircle className="h-3 w-3" strokeWidth={2.5} />
-                  Caps Lock is on
+                  {t("auth.forgotPassword.capsLock")}
                 </p>
               )}
             </Field>
 
-            <Field label="Confirm" htmlFor="confirmPassword" error={fieldErrors.confirmPassword} required>
+               <Field label={t("auth.register.fields.confirm")} htmlFor="confirmPassword" error={fieldErrors.confirmPassword} required t={t}>
               <div className="relative">
                 <span className="absolute inset-y-0 left-3 flex items-center text-gray-400 dark:text-[#6e7681] pointer-events-none z-10">
                   <LockIcon />
@@ -367,7 +380,7 @@ export default function RegisterForm() {
                   ref={refs.confirmPassword}
                   id="confirmPassword"
                   type={showConfirmPassword ? "text" : "password"}
-                  placeholder="Re-enter"
+                  placeholder={t("auth.register.placeholders.confirm")}
                   value={form.confirmPassword}
                   onChange={handleChange("confirmPassword")}
                   disabled={loading || justRegistered}
@@ -379,7 +392,7 @@ export default function RegisterForm() {
                   type="button"
                   onClick={() => setShowConfirmPassword((s) => !s)}
                   className="absolute inset-y-0 right-3 flex items-center text-gray-400 dark:text-[#6e7681] hover:text-gray-600 dark:hover:text-[#e6edf3] z-10"
-                  aria-label={showConfirmPassword ? "Hide password" : "Show password"}
+                  aria-label={showConfirmPassword ? t("auth.login.hidePassword") : t("auth.login.showPassword")}
                   tabIndex={-1}
                 >
                   {showConfirmPassword ? <EyeOffIcon /> : <EyeIcon />}
@@ -390,7 +403,7 @@ export default function RegisterForm() {
 
           {/* Row 3: Phone + Role */}
           <div className="grid grid-cols-2 gap-3">
-            <Field label="Phone number" htmlFor="phoneNumber" error={fieldErrors.phoneNumber} required>
+            <Field label={t("auth.register.fields.phoneNumber")} htmlFor="phoneNumber" error={fieldErrors.phoneNumber} required t={t}>
               <div className="relative flex">
                 <div
                   className={`
@@ -415,7 +428,7 @@ export default function RegisterForm() {
                   type="tel"
                   inputMode="numeric"
                   maxLength={10}
-                  placeholder="9876543210"
+                  placeholder={t("auth.register.placeholders.phone")}
                   value={form.phoneNumber}
                   onChange={(e) => {
                     const digitsOnly = e.target.value.replace(/\D/g, "");
@@ -440,7 +453,7 @@ export default function RegisterForm() {
               </div>
             </Field>
 
-            <Field label="Role" htmlFor="role" error={fieldErrors.role} required>
+            <Field label={t("auth.register.fields.role")} htmlFor="role" error={fieldErrors.role} required t={t}>
               <div className="relative">
                 <span className="absolute inset-y-0 left-3 flex items-center text-gray-400 dark:text-[#6e7681] pointer-events-none z-10">
                   <BriefcaseIcon />
@@ -468,7 +481,7 @@ export default function RegisterForm() {
                       <span className="truncate text-left">
                         {form.role
                           ? ROLES.find((r) => r.value === form.role)?.label
-                          : "Choose role"}
+                          : t("auth.register.placeholders.role")}
                       </span>
                       <svg
                         xmlns="http://www.w3.org/2000/svg"
@@ -531,7 +544,7 @@ export default function RegisterForm() {
             </Field>
           </div>
 
-          {/* Submit — green gradient, unchanged */}
+          {/* Submit */}
           <Button
             type="submit"
             disabled={loading || justRegistered}
@@ -543,13 +556,13 @@ export default function RegisterForm() {
                   <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
                   <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z" />
                 </svg>
-                Please wait…
+                {t("auth.register.pleaseWait")}
               </span>
             ) : justRegistered ? (
-              <span>Welcome ✓</span>
+              <span>{t("auth.register.welcomeCheck")}</span>
             ) : (
               <>
-                Create account
+                {t("auth.register.createAccount")}
                 <span className="ml-2"><ArrowRight /></span>
               </>
             )}
@@ -558,7 +571,9 @@ export default function RegisterForm() {
           {/* Divider */}
           <div className="my-4 flex items-center">
             <div className="h-px flex-1 bg-gray-200 dark:bg-[#30363d]" />
-            <span className="mx-3 text-[10px] text-gray-500 dark:text-[#6e7681]">OR CONTINUE WITH</span>
+            <span className="mx-3 text-[10px] text-gray-500 dark:text-[#6e7681]">
+              {t("auth.login.orContinueWith")}
+            </span>
             <div className="h-px flex-1 bg-gray-200 dark:bg-[#30363d]" />
           </div>
 
@@ -568,22 +583,22 @@ export default function RegisterForm() {
 
       {/* Sign in link */}
       <p className="mt-3 text-center text-xs text-gray-600 dark:text-[#7d8590]">
-        Already have an account?{" "}
+        {t("auth.register.alreadyHaveAccount")}{" "}
         <Link
           href="/login"
           className="font-semibold text-green-600 hover:text-green-700 hover:underline transition-colors"
         >
-          Sign in
+          {t("auth.register.signIn")}
         </Link>
       </p>
 
       {/* Security footer */}
       <div className="mt-4 border-t border-gray-200 dark:border-[#30363d] pt-3 text-center">
         <p className="text-[10px] uppercase tracking-widest text-gray-400 dark:text-[#6e7681]">
-          Secure by design
+          {t("auth.register.secureByDesign")}
         </p>
         <p className="mt-1 text-[11px] text-gray-400 dark:text-[#6e7681]">
-          JWT authentication · BCrypt hashing · Role-based access control
+          {t("auth.register.securityTagline")}
         </p>
       </div>
     </div>

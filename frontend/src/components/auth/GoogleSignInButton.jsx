@@ -3,6 +3,7 @@
 import { useState, useEffect, useRef } from "react";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
+import { useTranslation } from "react-i18next";
 import { Loader2 } from "lucide-react";
 
 import { loginWithGoogle } from "@/services/authService";
@@ -16,6 +17,7 @@ import { removeToken } from "@/utils/helpers";
  */
 export default function GoogleSignInButton() {
   const router = useRouter();
+  const { t } = useTranslation();
   const [loading, setLoading] = useState(false);
   const [gisReady, setGisReady] = useState(false);
   const handledRef = useRef(false);
@@ -28,8 +30,6 @@ export default function GoogleSignInButton() {
     console.error = (...args) => {
       const msg = typeof args[0] === "string" ? args[0] : "";
       if (msg.includes("[GSI_LOGGER]") && msg.includes("FedCM")) {
-        // Downgrade to warning so Next.js doesn't show the red error overlay.
-        // The fallback popup flow will still work correctly.
         console.warn("[GSI_LOGGER] FedCM blocked or failed. Using fallback.", ...args);
         return;
       }
@@ -53,15 +53,15 @@ export default function GoogleSignInButton() {
       const result = await loginWithGoogle(response.credential);
 
       if (result.status === "AUTHENTICATED") {
-        toast.success("Welcome back", {
-          description: "Redirecting to your dashboard.",
+        toast.success(t("auth.login.title"), {
+          description: t("auth.login.redirectingToDashboard"),
         });
         setTimeout(() => {
           window.location.href = "/dashboard";
         }, 400);
       } else if (result.status === "PROFILE_INCOMPLETE") {
-        toast.info("Almost there", {
-          description: "Let's finish setting up your profile.",
+        toast.info(t("auth.login.almostThere"), {
+          description: t("auth.login.finishProfile"),
         });
 
         sessionStorage.setItem(
@@ -78,14 +78,14 @@ export default function GoogleSignInButton() {
           window.location.href = "/complete-profile";
         }, 400);
       } else {
-        toast.error("Sign in failed", {
-          description: "Unexpected response from server. Please try again.",
+        toast.error(t("auth.errors.signInFailed"), {
+          description: t("auth.login.unexpectedResponse"),
         });
         handledRef.current = false;
       }
     } catch (err) {
-      toast.error("Google sign-in failed", {
-        description: err.message || "Please try again.",
+      toast.error(t("auth.login.googleFailed"), {
+        description: err.message || t("auth.register.toasts.tryAgain"),
       });
       handledRef.current = false;
     } finally {
@@ -151,7 +151,7 @@ export default function GoogleSignInButton() {
       type: "standard",
       theme: "outline",
       size: "large",
-      click_listener: () => {}, 
+      click_listener: () => {},
     });
 
     const googleBtn = container.querySelector('div[role="button"]');
@@ -171,17 +171,17 @@ export default function GoogleSignInButton() {
       type="button"
       onClick={handleClick}
       disabled={loading || !gisReady}
-      className="flex h-10 w-full items-center justify-center gap-2 rounded-xl border border-gray-200 bg-white text-xs font-medium text-gray-700 transition hover:bg-gray-50 disabled:cursor-not-allowed disabled:opacity-60"
+      className="flex h-10 w-full items-center justify-center gap-2 rounded-xl border border-gray-200 dark:border-[#30363d] bg-white dark:bg-[#0d1117] text-xs font-medium text-gray-700 dark:text-[#e6edf3] transition hover:bg-gray-50 dark:hover:bg-[#1c2128] disabled:cursor-not-allowed disabled:opacity-60"
     >
       {loading ? (
         <>
-          <Loader2 className="h-3.5 w-3.5 animate-spin text-gray-500" />
-          <span>Signing in…</span>
+          <Loader2 className="h-3.5 w-3.5 animate-spin text-gray-500 dark:text-[#7d8590]" />
+          <span>{t("auth.login.signingIn")}</span>
         </>
       ) : (
         <>
           <GoogleGlyph />
-          <span>Continue with Google</span>
+          <span>{t("auth.login.continueWithGoogle")}</span>
         </>
       )}
     </button>

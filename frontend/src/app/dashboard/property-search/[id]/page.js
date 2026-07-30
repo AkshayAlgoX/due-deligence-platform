@@ -2,6 +2,7 @@
 
 import { useEffect, useState, useCallback } from "react";
 import { useParams, useRouter } from "next/navigation";
+import { useTranslation } from "react-i18next";
 import { ArrowLeft } from "lucide-react";
 import { toast } from "sonner";
 
@@ -25,12 +26,13 @@ import DataCompletenessCard from "@/components/property/aggregation/DataComplete
 import Breadcrumbs from "@/components/ui/Breadcrumbs";
 
 export default function PropertyDetailPage() {
+  const { t } = useTranslation();
   const { id } = useParams();
   const router = useRouter();
 
   useEffect(() => {
-    document.title = "Property Details | Real Estate Due Diligence";
-  }, []);
+    document.title = t("property.detailPage.pageTitle");
+  }, [t]);
 
   const [property, setProperty] = useState(null);
   const [aggregated, setAggregated] = useState(null);
@@ -38,20 +40,23 @@ export default function PropertyDetailPage() {
   const [loadingAggregated, setLoadingAggregated] = useState(false);
   const [editModalOpen, setEditModalOpen] = useState(false);
 
-  const loadAggregation = useCallback(async (propertyId) => {
-    try {
-      setLoadingAggregated(true);
-      setAggregated(null);
-      const data = await getAggregatedProperty(propertyId);
-      setAggregated(data);
-    } catch (err) {
-      toast.error("Could not load property details", {
-        description: err?.message || "Please try again.",
-      });
-    } finally {
-      setLoadingAggregated(false);
-    }
-  }, []);
+  const loadAggregation = useCallback(
+    async (propertyId) => {
+      try {
+        setLoadingAggregated(true);
+        setAggregated(null);
+        const data = await getAggregatedProperty(propertyId);
+        setAggregated(data);
+      } catch (err) {
+        toast.error(t("property.detailPage.couldNotLoad"), {
+          description: err?.message || t("property.search.tryAgain"),
+        });
+      } finally {
+        setLoadingAggregated(false);
+      }
+    },
+    [t]
+  );
 
   useEffect(() => {
     if (!id) return;
@@ -62,8 +67,8 @@ export default function PropertyDetailPage() {
         setProperty(data);
         loadAggregation(id);
       } catch (err) {
-        toast.error("Property not found", {
-          description: err?.message || "It may have been removed.",
+        toast.error(t("property.detailPage.notFound"), {
+          description: err?.message || t("property.detailPage.mayBeRemoved"),
         });
         router.push("/dashboard/property-search");
       } finally {
@@ -71,7 +76,7 @@ export default function PropertyDetailPage() {
       }
     };
     load();
-  }, [id, router, loadAggregation]);
+  }, [id, router, loadAggregation, t]);
 
   const handleEdit = () => setEditModalOpen(true);
 
@@ -93,7 +98,11 @@ export default function PropertyDetailPage() {
 
   return (
     <div className="mx-auto w-full max-w-[1400px] space-y-6 pb-16">
-      <Breadcrumbs overrides={{ [id]: property?.address || "Property" }} />
+      <Breadcrumbs
+        overrides={{
+          [id]: property?.address || t("property.card.propertyFallback"),
+        }}
+      />
 
       <button
         type="button"
@@ -101,7 +110,7 @@ export default function PropertyDetailPage() {
         className="flex items-center gap-2 text-sm font-semibold text-gray-500 dark:text-[#7d8590] transition hover:text-gray-900 dark:hover:text-[#e6edf3] cursor-pointer"
       >
         <ArrowLeft className="h-4 w-4" />
-        Back to search
+        {t("property.details.backToSearch")}
       </button>
 
       <ErrorBoundary>

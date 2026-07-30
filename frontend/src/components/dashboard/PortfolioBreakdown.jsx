@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { useTranslation } from "react-i18next";
 import {
   PieChart,
   Pie,
@@ -11,6 +12,7 @@ import {
 import { PieChart as PieIcon, Building2 } from "lucide-react";
 import { getPortfolioInsights } from "@/services/dashboardService";
 import { formatINR } from "@/utils/currency";
+import { translatePropertyType } from "@/utils/enumTranslations";
 
 const COLORS = [
   "#22C55E",
@@ -22,6 +24,7 @@ const COLORS = [
 ];
 
 export default function PortfolioBreakdown() {
+  const { t } = useTranslation();
   const [insights, setInsights] = useState(null);
   const [loading, setLoading] = useState(true);
   const [isDark, setIsDark] = useState(false);
@@ -57,9 +60,12 @@ export default function PortfolioBreakdown() {
     };
   }, []);
 
+  // Translate propertyType names via translatePropertyType helper.
+  // Also keep the raw name for tooltip lookup (in case backend adds unknown types).
   const chartData =
     insights?.distributionByType?.map((d) => ({
-      name: d.propertyType,
+      name: translatePropertyType(t, d.propertyType),
+      rawName: d.propertyType,
       value: d.count,
       totalValue: d.totalValue,
     })) ?? [];
@@ -75,8 +81,12 @@ export default function PortfolioBreakdown() {
             <PieIcon className="h-4 w-4 text-[#16a34a] dark:text-green-400" strokeWidth={2.2} />
           </div>
           <div>
-            <h3 className="text-sm font-bold text-gray-900 dark:text-[#e6edf3]">Portfolio breakdown</h3>
-            <p className="text-xs text-gray-500 dark:text-[#7d8590] mt-0.5">By property type</p>
+            <h3 className="text-sm font-bold text-gray-900 dark:text-[#e6edf3]">
+              {t("breakdown.title")}
+            </h3>
+            <p className="text-xs text-gray-500 dark:text-[#7d8590] mt-0.5">
+              {t("breakdown.subtitle")}
+            </p>
           </div>
         </div>
       </div>
@@ -91,9 +101,11 @@ export default function PortfolioBreakdown() {
             <div className="mb-3 flex h-12 w-12 items-center justify-center rounded-full bg-gray-50 dark:bg-[#1c2128]">
               <Building2 className="h-5 w-5 text-gray-300 dark:text-[#6e7681]" />
             </div>
-            <p className="text-sm font-semibold text-gray-700 dark:text-[#e6edf3]">No data yet</p>
+            <p className="text-sm font-semibold text-gray-700 dark:text-[#e6edf3]">
+              {t("breakdown.empty.title")}
+            </p>
             <p className="mt-1 text-xs text-gray-500 dark:text-[#7d8590]">
-              Add properties to see breakdown
+              {t("breakdown.empty.description")}
             </p>
           </div>
         ) : (
@@ -127,7 +139,7 @@ export default function PortfolioBreakdown() {
             <div className="mt-4 space-y-2">
               {chartData.map((item, i) => (
                 <div
-                  key={item.name}
+                  key={item.rawName || item.name}
                   className="flex items-center justify-between gap-2 text-xs"
                 >
                   <div className="flex items-center gap-2 min-w-0">
@@ -160,6 +172,7 @@ export default function PortfolioBreakdown() {
 }
 
 function CustomTooltip({ active, payload, isDark }) {
+  const { t } = useTranslation();
   if (!active || !payload?.length) return null;
   const item = payload[0].payload;
   return (
@@ -176,13 +189,12 @@ function CustomTooltip({ active, payload, isDark }) {
       </p>
       <p className="mt-1 text-[11px]" style={{ color: isDark ? "#7d8590" : "#6b7280" }}>
         <span className="font-semibold tabular-nums" style={{ color: isDark ? "#e6edf3" : "#374151" }}>
-          {item.value}
-        </span>{" "}
-        {item.value === 1 ? "property" : "properties"}
+          {t("breakdown.tooltip.propertyCount", { count: item.value })}
+        </span>
       </p>
       {item.totalValue > 0 && (
         <p className="text-[11px]" style={{ color: isDark ? "#7d8590" : "#6b7280" }}>
-          Value:{" "}
+          {t("breakdown.tooltip.valueLabel")}:{" "}
           <span className="font-semibold tabular-nums" style={{ color: isDark ? "#e6edf3" : "#374151" }}>
             {formatINR(item.totalValue)}
           </span>

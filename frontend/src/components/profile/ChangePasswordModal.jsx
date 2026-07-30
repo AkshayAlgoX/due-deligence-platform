@@ -2,21 +2,23 @@
 
 import { useState } from "react";
 import { toast } from "sonner";
+import { useTranslation } from "react-i18next";
 import { X, Lock, Eye, EyeOff, Loader2 } from "lucide-react";
 import { changePassword } from "@/services/authService";
 import { getPasswordStrength } from "@/utils/helpers";
 
+// Returns translation KEYS (rendered via t() at usage site).
 function validateField(field, value) {
   const trimmed = String(value ?? "").trim();
   switch (field) {
     case "currentPassword":
-      if (!trimmed) return "Current password is required";
+      if (!trimmed) return "changePassword.errors.currentRequired";
       return "";
     case "newPassword":
-      if (!trimmed) return "New password is required";
-      if (trimmed.length < 8) return "At least 8 characters";
-      if (!/[A-Za-z]/.test(trimmed)) return "Must contain a letter";
-      if (!/\d/.test(trimmed)) return "Must contain a number";
+      if (!trimmed) return "changePassword.errors.newRequired";
+      if (trimmed.length < 8) return "auth.errors.passwordLength";
+      if (!/[A-Za-z]/.test(trimmed)) return "auth.errors.passwordLetter";
+      if (!/\d/.test(trimmed)) return "auth.errors.passwordNumber";
       return "";
     default:
       return "";
@@ -24,6 +26,7 @@ function validateField(field, value) {
 }
 
 export default function ChangePasswordModal({ isOpen, onClose }) {
+  const { t } = useTranslation();
   const [currentPassword, setCurrentPassword] = useState("");
   const [newPassword, setNewPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
@@ -62,8 +65,8 @@ export default function ChangePasswordModal({ isOpen, onClose }) {
     if (!canSubmit) return;
 
     if (newPassword === currentPassword) {
-      toast.error("Same password", {
-        description: "New password must be different from your current password.",
+      toast.error(t("changePassword.toasts.samePassword"), {
+        description: t("changePassword.toasts.samePasswordDesc"),
       });
       return;
     }
@@ -71,14 +74,14 @@ export default function ChangePasswordModal({ isOpen, onClose }) {
     setLoading(true);
     try {
       await changePassword({ currentPassword, newPassword });
-      toast.success("Password changed", {
-        description: "You can sign in with your new password.",
+      toast.success(t("changePassword.toasts.success"), {
+        description: t("changePassword.toasts.successDesc"),
       });
       reset();
       onClose();
     } catch (err) {
-      toast.error("Change failed", {
-        description: err?.message || "Please try again.",
+      toast.error(t("changePassword.toasts.failed"), {
+        description: err?.message || t("common.retry"),
       });
     } finally {
       setLoading(false);
@@ -100,8 +103,12 @@ export default function ChangePasswordModal({ isOpen, onClose }) {
               <Lock className="h-4 w-4 text-[#16a34a] dark:text-green-400" strokeWidth={2.2} />
             </div>
             <div>
-              <h2 className="text-base font-bold text-gray-900 dark:text-[#e6edf3]">Change password</h2>
-              <p className="text-xs text-gray-500 dark:text-[#7d8590]">Update your account password</p>
+              <h2 className="text-base font-bold text-gray-900 dark:text-[#e6edf3]">
+                {t("changePassword.title")}
+              </h2>
+              <p className="text-xs text-gray-500 dark:text-[#7d8590]">
+                {t("changePassword.subtitle")}
+              </p>
             </div>
           </div>
           <button
@@ -109,6 +116,7 @@ export default function ChangePasswordModal({ isOpen, onClose }) {
             onClick={handleClose}
             disabled={loading}
             className="text-gray-400 dark:text-[#7d8590] hover:text-gray-600 dark:hover:text-[#e6edf3] disabled:opacity-50"
+            aria-label={t("common.close")}
           >
             <X className="h-4 w-4" />
           </button>
@@ -117,7 +125,7 @@ export default function ChangePasswordModal({ isOpen, onClose }) {
         <form onSubmit={handleSubmit} className="space-y-4">
           <div>
             <label className="mb-1.5 block text-xs font-semibold text-gray-700 dark:text-[#e6edf3]">
-              Current password
+              {t("changePassword.currentLabel")}
             </label>
             <div className="relative">
               <input
@@ -133,12 +141,13 @@ export default function ChangePasswordModal({ isOpen, onClose }) {
                     ? "border-red-300 dark:border-red-900 focus:border-red-400 focus:ring-red-100 dark:focus:ring-red-900"
                     : "border-gray-200 dark:border-[#30363d] focus:border-[#22C55E] focus:ring-[#22C55E]/20"
                 }`}
-                placeholder="Enter current password"
+                placeholder={t("changePassword.currentPlaceholder")}
               />
               <button
                 type="button"
                 onClick={() => setShowCurrent((s) => !s)}
                 className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 dark:text-[#7d8590] hover:text-gray-600 dark:hover:text-[#e6edf3]"
+                aria-label={showCurrent ? t("auth.login.hidePassword") : t("auth.login.showPassword")}
               >
                 {showCurrent ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
               </button>
@@ -146,14 +155,14 @@ export default function ChangePasswordModal({ isOpen, onClose }) {
             {errors.currentPassword && (
               <p className="mt-1 text-xs text-red-500 dark:text-red-400 flex items-center gap-1">
                 <span className="inline-block w-1 h-1 rounded-full bg-red-500" />
-                {errors.currentPassword}
+                {t(errors.currentPassword)}
               </p>
             )}
           </div>
 
           <div>
             <label className="mb-1.5 block text-xs font-semibold text-gray-700 dark:text-[#e6edf3]">
-              New password
+              {t("changePassword.newLabel")}
             </label>
             <div className="relative">
               <input
@@ -168,12 +177,13 @@ export default function ChangePasswordModal({ isOpen, onClose }) {
                     ? "border-red-300 dark:border-red-900 focus:border-red-400 focus:ring-red-100 dark:focus:ring-red-900"
                     : "border-gray-200 dark:border-[#30363d] focus:border-[#22C55E] focus:ring-[#22C55E]/20"
                 }`}
-                placeholder="At least 8 characters"
+                placeholder={t("changePassword.newPlaceholder")}
               />
               <button
                 type="button"
                 onClick={() => setShowNew((s) => !s)}
                 className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 dark:text-[#7d8590] hover:text-gray-600 dark:hover:text-[#e6edf3]"
+                aria-label={showNew ? t("auth.login.hidePassword") : t("auth.login.showPassword")}
               >
                 {showNew ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
               </button>
@@ -181,7 +191,7 @@ export default function ChangePasswordModal({ isOpen, onClose }) {
             {errors.newPassword && (
               <p className="mt-1 text-xs text-red-500 dark:text-red-400 flex items-center gap-1">
                 <span className="inline-block w-1 h-1 rounded-full bg-red-500" />
-                {errors.newPassword}
+                {t(errors.newPassword)}
               </p>
             )}
 
@@ -192,6 +202,7 @@ export default function ChangePasswordModal({ isOpen, onClose }) {
                     className={`h-full transition-all ${strength.color} ${strength.width}`}
                   />
                 </div>
+                {/* strength.label comes from utils/helpers.js — flagged for future i18n refactor */}
                 <p className="mt-1 text-[11px] font-medium text-gray-500 dark:text-[#7d8590]">
                   {strength.label}
                 </p>
@@ -201,18 +212,18 @@ export default function ChangePasswordModal({ isOpen, onClose }) {
 
           <div>
             <label className="mb-1.5 block text-xs font-semibold text-gray-700 dark:text-[#e6edf3]">
-              Confirm new password
+              {t("changePassword.confirmLabel")}
             </label>
             <input
               type={showNew ? "text" : "password"}
               value={confirmPassword}
               onChange={(e) => setConfirmPassword(e.target.value)}
               className="w-full rounded-lg border border-gray-200 dark:border-[#30363d] bg-white dark:bg-[#0d1117] text-gray-900 dark:text-[#e6edf3] px-3 py-2.5 text-sm focus:border-[#22C55E] focus:outline-none focus:ring-2 focus:ring-[#22C55E]/20 placeholder:text-gray-400 dark:placeholder:text-[#6e7681]"
-              placeholder="Re-enter new password"
+              placeholder={t("changePassword.confirmPlaceholder")}
             />
             {confirmPassword && !passwordsMatch && (
               <p className="mt-1 text-[11px] font-medium text-red-600 dark:text-red-400">
-                Passwords do not match
+                {t("auth.register.errors.passwordsMismatch")}
               </p>
             )}
           </div>
@@ -224,7 +235,7 @@ export default function ChangePasswordModal({ isOpen, onClose }) {
               disabled={loading}
               className="flex-1 rounded-lg border border-gray-200 dark:border-[#30363d] bg-white dark:bg-[#1c2128] px-4 py-2.5 text-sm font-semibold text-gray-700 dark:text-[#e6edf3] transition hover:bg-gray-50 dark:hover:bg-[#30363d] disabled:opacity-50"
             >
-              Cancel
+              {t("common.cancel")}
             </button>
             <button
               type="submit"
@@ -232,7 +243,7 @@ export default function ChangePasswordModal({ isOpen, onClose }) {
               className="flex flex-1 items-center justify-center gap-2 rounded-lg bg-gradient-to-r from-[#22C55E] to-[#16a34a] px-4 py-2.5 text-sm font-semibold text-white shadow-[0_4px_12px_rgba(34,197,94,0.3)] transition hover:opacity-95 disabled:cursor-not-allowed disabled:opacity-50"
             >
               {loading && <Loader2 className="h-4 w-4 animate-spin" />}
-              {loading ? "Saving..." : "Change password"}
+              {loading ? t("changePassword.saving") : t("changePassword.submit")}
             </button>
           </div>
         </form>

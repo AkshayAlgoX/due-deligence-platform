@@ -25,9 +25,6 @@ export const metadata = {
 
 /* ─────────────────────────────────────────────────────────────────────────────
    No-flash theme script — runs synchronously before first paint.
-   Must be a plain string (not JSX) injected via dangerouslySetInnerHTML.
-   Reads localStorage("theme") and applies "dark" class to <html> if needed.
-   This prevents the white flash on dark-mode users' page load/refresh.
 ───────────────────────────────────────────────────────────────────────────── */
 const themeInitScript = `
 try {
@@ -48,11 +45,6 @@ try {
 
 /* ────────────────────────────────────────────────────────────────────────
    No-flash i18n script — runs synchronously before first paint.
-   Reads localStorage("i18n_lang") and sets <html lang> + <html dir>
-   BEFORE React hydrates. This prevents:
-     1. Flash of English before Hindi loads for returning users
-     2. Wrong text-align on first paint for RTL users (Urdu)
-     3. Wrong font loading (system Arial vs. Noto Sans Devanagari)
    ──────────────────────────────────────────────────────────────────────── */
 const i18nInitScript = `
 try {
@@ -69,21 +61,16 @@ try {
 
 export default function RootLayout({ children }) {
   return (
-   <html
-  suppressHydrationWarning
-  className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`}
->
+    <html
+      suppressHydrationWarning
+      className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`}
+    >
       <head>
-  {/* No-flash theme initializer ΓÇö MUST be first script in <head> */}
-  <script dangerouslySetInnerHTML={{ __html: themeInitScript }} />
-  
-  {/* No-flash i18n initializer — sets lang + dir before hydration */}
-  <script dangerouslySetInnerHTML={{ __html: i18nInitScript }} />
-  
-  {/* Preconnect to Google Fonts for faster loading */}
-  <link rel="preconnect" href="https://fonts.googleapis.com" />
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
-</head>
+        <script dangerouslySetInnerHTML={{ __html: themeInitScript }} />
+        <script dangerouslySetInnerHTML={{ __html: i18nInitScript }} />
+        <link rel="preconnect" href="https://fonts.googleapis.com" />
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
+      </head>
       <body className="min-h-full flex flex-col">
         <a
           href="#main-content"
@@ -97,13 +84,21 @@ export default function RootLayout({ children }) {
           showSpinner={false}
           shadow="0 0 10px #22C55E,0 0 5px #22C55E"
         />
-        <Providers>{children}</Providers>
 
         {/*
-          Global toast notifications.
-          Bottom-right placement matches Stripe, Linear, Vercel, Discord.
-          Dark theme feels premium and reads cleanly on both light/dark pages.
+          ✅ ALL client components that need i18n / theme / auth
+             MUST live INSIDE <Providers>.
+             Previously CookieConsentRoot and PageTracker were
+             siblings of <Providers>, so useTranslation() had no
+             i18next instance and rendered raw keys.
         */}
+        <Providers>
+          {children}
+          <PageTracker />
+          <CookieConsentRoot />
+        </Providers>
+
+        {/* Toaster stays OUTSIDE — it renders portals and doesn't use i18n */}
         <Toaster
           position="bottom-right"
           theme="dark"
@@ -123,11 +118,6 @@ export default function RootLayout({ children }) {
             className: "font-medium",
           }}
         />
-        {/* Route change tracking (consent-aware) */}
-        <PageTracker />
-
-        {/* Cookie CMP */}
-        <CookieConsentRoot />
       </body>
     </html>
   );

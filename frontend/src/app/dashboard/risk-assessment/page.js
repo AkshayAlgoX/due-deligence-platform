@@ -1,10 +1,13 @@
 "use client";
 
 import { useEffect } from "react";
+import { useTranslation } from "react-i18next";
 import { AlertTriangle } from "lucide-react";
 import EmptyState from "@/components/ui/EmptyState";
 
 export default function Page() {
+  const { t } = useTranslation();
+
   useEffect(() => {
     document.title = "Risk Assessment | Real Estate Due Diligence";
   }, []);
@@ -14,8 +17,8 @@ export default function Page() {
       <div className="rounded-2xl border border-gray-100 dark:border-[#30363d] bg-white dark:bg-[#161b22] shadow-sm">
         <EmptyState
           icon={AlertTriangle}
-          title="Risk Assessment overview coming soon"
-          description="Portfolio-wide risk analysis and prioritized action items will appear here."
+          title={t("pages.riskAssessment.title")}
+          description={t("pages.riskAssessment.description")}
         />
       </div>
     </div>

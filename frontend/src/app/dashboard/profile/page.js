@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
+import { useTranslation } from "react-i18next";
 import { toast } from "sonner";
 import {
   User as UserIcon,
@@ -28,9 +29,12 @@ import { getCurrentUser, updateProfile } from "@/services/authService";
 import AvatarUploader from "@/components/profile/AvatarUploader";
 
 export default function ProfilePage() {
+  const { t, i18n } = useTranslation();
+
   useEffect(() => {
-    document.title = "Profile | Real Estate Due Diligence";
-  }, []);
+    document.title = t("profile.pageTitle");
+  }, [t]);
+
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
   const [deleteOpen, setDeleteOpen] = useState(false);
@@ -50,15 +54,15 @@ export default function ProfilePage() {
         setFullName(data.fullName || "");
         setPhoneNumber(data.phoneNumber || "");
       } catch (err) {
-        toast.error("Could not load profile", {
-          description: err?.message || "Please refresh the page.",
+        toast.error(t("profile.errors.couldntLoad"), {
+          description: err?.message || t("profile.errors.pleaseRefresh"),
         });
       } finally {
         setLoading(false);
       }
     }
     fetchProfile();
-  }, []);
+  }, [t]);
 
   if (loading) {
     return <ProfileSkeleton />;
@@ -68,39 +72,28 @@ export default function ProfilePage() {
     return (
       <div className="mx-auto max-w-md rounded-xl border border-gray-200 dark:border-[#30363d] bg-white dark:bg-[#161b22] p-6 text-center">
         <p className="text-sm text-gray-500 dark:text-[#7d8590]">
-          Unable to load profile. Please refresh the page.
+          {t("profile.errors.unableToLoad")}
         </p>
       </div>
     );
   }
 
-  const providerLabel =
-    {
-      LOCAL: "Email + password",
-      GOOGLE: "Google",
-      LOCAL_AND_GOOGLE: "Email + Google",
-    }[user.authProvider] || "—";
+  // ── Translated provider / role labels ───────────────────────────────
+  const providerLabel = user.authProvider
+    ? t(`profile.authProvider.${user.authProvider}`, { defaultValue: "—" })
+    : "—";
 
-  const roleLabel =
-    {
-      BUYER: "Buyer",
-      REAL_ESTATE_AGENT: "Real Estate Agent",
-      LEGAL_REVIEWER: "Legal Reviewer",
-      FINANCIAL_INSTITUTION: "Financial Institution",
-      ADMIN: "Administrator",
-    }[user.role] || "—";
+  const roleLabel = user.role
+    ? t(`profile.roles.${user.role}`, { defaultValue: "—" })
+    : "—";
 
-  const roleTagline =
-    {
-      BUYER: "Property Buyer · Due Diligence",
-      REAL_ESTATE_AGENT: "Real Estate Professional · Market Expert",
-      LEGAL_REVIEWER: "Legal Advisor · Compliance Review",
-      FINANCIAL_INSTITUTION: "Financial Institution · Asset Valuation",
-      ADMIN: "System Administrator · Full Access",
-    }[user.role] || "";
+  const roleTagline = user.role
+    ? t(`profile.roleTaglines.${user.role}`, { defaultValue: "" })
+    : "";
 
+  // ── Member since — localized month + year using active locale ──────
   const memberSince = user.createdAt
-    ? new Date(user.createdAt).toLocaleDateString("en-US", {
+    ? new Date(user.createdAt).toLocaleDateString(i18n.language || "en", {
         month: "long",
         year: "numeric",
       })
@@ -144,15 +137,15 @@ export default function ProfilePage() {
       });
       setUser(updated);
       setEditing(false);
-      toast.success("Profile updated", {
-        description: "Your changes have been saved.",
+      toast.success(t("profile.success.profileUpdated"), {
+        description: t("profile.success.changesSaved"),
       });
     } catch (err) {
       const msg =
         err?.response?.data?.message ||
         err?.message ||
-        "Please try again.";
-      toast.error("Update failed", { description: msg });
+        t("property.search.tryAgain");
+      toast.error(t("profile.errors.updateFailed"), { description: msg });
     } finally {
       setSaving(false);
     }
@@ -160,19 +153,18 @@ export default function ProfilePage() {
 
   return (
     <div className="mx-auto w-full max-w-4xl space-y-6">
-      {/* ── Page title ─────────────────────────────────────────────────────── */}
+      {/* ── Page title ─────────────────────────────────────────────── */}
       <div>
         <h1 className="text-[28px] font-extrabold tracking-tight text-gray-900 dark:text-[#e6edf3]">
-          Account Management
+          {t("profile.title")}
         </h1>
         <p className="mt-1 text-sm text-gray-500 dark:text-[#7d8590]">
-          Control your professional identity and application security.
+          {t("profile.subtitle")}
         </p>
       </div>
 
-      {/* ── HERO BANNER CARD ───────────────────────────────────────────────── */}
+      {/* ── HERO BANNER CARD ───────────────────────────────────────── */}
       <div className="relative overflow-hidden rounded-3xl border border-gray-100 dark:border-[#30363d] bg-white dark:bg-[#161b22] shadow-sm">
-        {/* Cover banner — dark slate looks great in both themes */}
         <div className="relative h-40 overflow-hidden bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900">
           <div
             className="absolute inset-0 opacity-[0.08]"
@@ -196,7 +188,6 @@ export default function ProfilePage() {
           <div className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-white/20 to-transparent" />
         </div>
 
-        {/* Body */}
         <div className="px-8 pb-6">
           <div className="flex justify-start -mt-16">
             <AvatarUploader
@@ -210,19 +201,25 @@ export default function ProfilePage() {
             <div className="min-w-0">
               <div className="flex items-center gap-2 flex-wrap">
                 <h2 className="text-2xl font-black text-gray-900 dark:text-[#e6edf3] tracking-tight">
-                  {user.fullName || "User"}
+                  {user.fullName || t("profile.fallbackUser")}
                 </h2>
                 {isVerified && (
                   <div className="flex items-center gap-1 rounded-full bg-green-50 dark:bg-[#0d2818] px-2.5 py-1 ring-1 ring-green-200 dark:ring-green-900">
-                    <BadgeCheck className="h-3.5 w-3.5 text-green-600 dark:text-green-400" strokeWidth={2.5} />
+                    <BadgeCheck
+                      className="h-3.5 w-3.5 text-green-600 dark:text-green-400"
+                      strokeWidth={2.5}
+                    />
                     <span className="text-[10px] font-black text-green-700 dark:text-green-400">
-                      Verified {roleLabel}
+                      {t("profile.verified", { role: roleLabel })}
                     </span>
                   </div>
                 )}
               </div>
               <p className="mt-1.5 flex items-center gap-1.5 text-sm text-gray-500 dark:text-[#7d8590] font-medium">
-                <Briefcase className="h-3.5 w-3.5 text-gray-400 dark:text-[#6e7681]" strokeWidth={2} />
+                <Briefcase
+                  className="h-3.5 w-3.5 text-gray-400 dark:text-[#6e7681]"
+                  strokeWidth={2}
+                />
                 {roleTagline || user.email}
               </p>
             </div>
@@ -235,7 +232,7 @@ export default function ProfilePage() {
                   className="flex items-center gap-2 rounded-xl border border-gray-200 dark:border-[#30363d] bg-white dark:bg-[#1c2128] px-4 py-2.5 text-sm font-bold text-gray-700 dark:text-[#e6edf3] transition hover:border-[#22C55E] hover:text-[#16a34a] dark:hover:text-[#22C55E] cursor-pointer"
                 >
                   <Pencil className="h-3.5 w-3.5" strokeWidth={2.4} />
-                  Edit profile
+                  {t("profile.actions.editProfile")}
                 </button>
               ) : (
                 <div className="flex items-center gap-2">
@@ -246,7 +243,7 @@ export default function ProfilePage() {
                     className="flex items-center gap-1.5 rounded-xl border border-gray-200 dark:border-[#30363d] bg-white dark:bg-[#1c2128] px-4 py-2.5 text-sm font-bold text-gray-700 dark:text-[#e6edf3] transition hover:bg-gray-50 dark:hover:bg-[#161b22] disabled:opacity-50 cursor-pointer"
                   >
                     <X className="h-3.5 w-3.5" strokeWidth={2.4} />
-                    Cancel
+                    {t("profile.actions.cancel")}
                   </button>
                   <button
                     type="button"
@@ -259,7 +256,9 @@ export default function ProfilePage() {
                     ) : (
                       <Check className="h-3.5 w-3.5" strokeWidth={2.4} />
                     )}
-                    {saving ? "Saving..." : "Save changes"}
+                    {saving
+                      ? t("profile.actions.saving")
+                      : t("profile.actions.saveChanges")}
                   </button>
                 </div>
               )}
@@ -268,14 +267,14 @@ export default function ProfilePage() {
         </div>
       </div>
 
-      {/* ── ACCOUNT DETAILS ────────────────────────────────────────────────── */}
+      {/* ── ACCOUNT DETAILS ────────────────────────────────────────── */}
       <section>
         <div className="mb-4">
           <h2 className="text-sm font-bold uppercase tracking-widest text-gray-500 dark:text-[#7d8590]">
-            Account details
+            {t("profile.sections.accountDetails")}
           </h2>
           <p className="mt-1 text-xs text-gray-400 dark:text-[#6e7681]">
-            Primary contact and organizational information.
+            {t("profile.sections.accountDetailsSubtitle")}
           </p>
         </div>
 
@@ -283,72 +282,86 @@ export default function ProfilePage() {
           {editing ? (
             <EditRow
               icon={UserIcon}
-              label="Full name"
+              label={t("profile.fields.fullName")}
               value={fullName}
               onChange={setFullName}
-              placeholder="Your full name"
+              placeholder={t("profile.placeholders.fullName")}
               error={
                 fullName && !nameValid
-                  ? "3–100 characters, letters and spaces only"
+                  ? t("profile.errors.nameValidation")
                   : null
               }
             />
           ) : (
             <InfoRow
               icon={UserIcon}
-              label="Full name"
+              label={t("profile.fields.fullName")}
               value={user.fullName || "—"}
             />
           )}
 
-          <InfoRow icon={Mail} label="Email address" value={user.email} locked />
+          <InfoRow
+            icon={Mail}
+            label={t("profile.fields.email")}
+            value={user.email}
+            locked
+            lockedLabel={t("profile.locked")}
+          />
 
           {editing ? (
             <EditRow
               icon={Phone}
-              label="Phone"
+              label={t("profile.fields.phone")}
               value={phoneNumber}
-              onChange={(v) => setPhoneNumber(v.replace(/\D/g, "").slice(0, 10))}
-              placeholder="10-digit mobile"
+              onChange={(v) => onChangePhone(v, setPhoneNumber)}
+              placeholder={t("profile.placeholders.phone")}
               prefix="+91"
               error={
                 phoneNumber && !phoneValid
-                  ? "10 digits, starting with 6–9"
+                  ? t("profile.errors.phoneValidation")
                   : null
               }
             />
           ) : (
             <InfoRow
               icon={Phone}
-              label="Phone"
+              label={t("profile.fields.phone")}
               value={user.phoneNumber ? `+91 ${user.phoneNumber}` : "—"}
             />
           )}
 
           <InfoRow
             icon={Shield}
-            label="Sign-in method"
+            label={t("profile.fields.signInMethod")}
             value={providerLabel}
             locked
+            lockedLabel={t("profile.locked")}
           />
-          <InfoRow icon={UserIcon} label="Access level" value={roleLabel} locked />
+          <InfoRow
+            icon={UserIcon}
+            label={t("profile.fields.accessLevel")}
+            value={roleLabel}
+            locked
+            lockedLabel={t("profile.locked")}
+          />
           <InfoRow
             icon={Calendar}
-            label="Member since"
+            label={t("profile.fields.memberSince")}
             value={memberSince}
             locked
+            lockedLabel={t("profile.locked")}
           />
         </div>
       </section>
 
-      {/* ── SECURITY & ACCESS ──────────────────────────────────────────────── */}
+      {/* ── SECURITY & ACCESS ──────────────────────────────────────── */}
       <section>
         <div className="mb-4">
           <h2 className="text-sm font-bold uppercase tracking-widest text-gray-500 dark:text-[#7d8590]">
-            Security & access
+            {t("profile.sections.security")}
           </h2>
           <p className="mt-1 text-xs text-gray-400 dark:text-[#6e7681]">
-            Manage your authentication methods and security protocols.
+            {t("profile.sections.securitySubtitle")}
           </p>
         </div>
 
@@ -358,14 +371,19 @@ export default function ProfilePage() {
             <div className="flex items-start justify-between gap-4">
               <div className="flex items-start gap-3">
                 <div className="flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-xl bg-[#edf7f3] dark:bg-[#0d2818] ring-1 ring-green-100 dark:ring-green-900">
-                  <Lock className="h-4 w-4 text-[#16a34a] dark:text-green-400" strokeWidth={2.2} />
+                  <Lock
+                    className="h-4 w-4 text-[#16a34a] dark:text-green-400"
+                    strokeWidth={2.2}
+                  />
                 </div>
                 <div className="min-w-0">
-                  <p className="text-sm font-black text-gray-900 dark:text-[#e6edf3]">Account password</p>
+                  <p className="text-sm font-black text-gray-900 dark:text-[#e6edf3]">
+                    {t("profile.password.title")}
+                  </p>
                   <p className="mt-1 text-xs text-gray-500 dark:text-[#7d8590]">
                     {isGoogleOnly
-                      ? "You sign in with Google. No password is set."
-                      : "Update your password anytime to keep your account secure."}
+                      ? t("profile.password.googleOnly")
+                      : t("profile.password.description")}
                   </p>
                 </div>
               </div>
@@ -375,7 +393,7 @@ export default function ProfilePage() {
                 disabled={isGoogleOnly}
                 className="flex-shrink-0 rounded-xl border border-gray-200 dark:border-[#30363d] bg-white dark:bg-[#1c2128] px-4 py-2 text-xs font-bold text-gray-700 dark:text-[#e6edf3] transition hover:border-[#22C55E] hover:text-[#16a34a] dark:hover:text-[#22C55E] disabled:cursor-not-allowed disabled:opacity-50 cursor-pointer"
               >
-                Change password
+                {t("profile.actions.changePassword")}
               </button>
             </div>
           </div>
@@ -385,15 +403,17 @@ export default function ProfilePage() {
             <div className="flex items-start justify-between gap-4">
               <div className="flex items-start gap-3">
                 <div className="flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-xl bg-orange-50 dark:bg-[#282a10] ring-1 ring-orange-100 dark:ring-orange-900">
-                  <MonitorSmartphone className="h-4 w-4 text-orange-600 dark:text-orange-400" strokeWidth={2.2} />
+                  <MonitorSmartphone
+                    className="h-4 w-4 text-orange-600 dark:text-orange-400"
+                    strokeWidth={2.2}
+                  />
                 </div>
                 <div className="min-w-0">
                   <p className="text-sm font-black text-gray-900 dark:text-[#e6edf3]">
-                    Sign out of all devices
+                    {t("profile.signOutAll.title")}
                   </p>
                   <p className="mt-1 text-xs text-gray-500 dark:text-[#7d8590] leading-relaxed">
-                    End your session everywhere — phones, tablets, and other browsers.
-                    Useful if you shared your device or lost access to one.
+                    {t("profile.signOutAll.description")}
                   </p>
                 </div>
               </div>
@@ -403,21 +423,21 @@ export default function ProfilePage() {
                 className="flex-shrink-0 flex items-center gap-1.5 rounded-xl border border-orange-200 dark:border-orange-900 bg-white dark:bg-[#1c2128] px-4 py-2 text-xs font-bold text-orange-700 dark:text-orange-400 transition hover:border-orange-500 hover:bg-orange-50 dark:hover:bg-[#282a10] cursor-pointer"
               >
                 <ShieldOff className="h-3.5 w-3.5" strokeWidth={2.4} />
-                Sign out everywhere
+                {t("profile.signOutAll.button")}
               </button>
             </div>
           </div>
         </div>
       </section>
 
-      {/* ── DANGER ZONE ────────────────────────────────────────────────────── */}
+      {/* ── DANGER ZONE ────────────────────────────────────────────── */}
       <section>
         <div className="mb-4">
           <h2 className="text-sm font-bold uppercase tracking-widest text-red-600 dark:text-red-400">
-            Danger zone
+            {t("profile.sections.dangerZone")}
           </h2>
           <p className="mt-1 text-xs text-gray-500 dark:text-[#7d8590]">
-            Irreversible actions. Please proceed with care.
+            {t("profile.sections.dangerZoneSubtitle")}
           </p>
         </div>
 
@@ -431,11 +451,10 @@ export default function ProfilePage() {
             </div>
             <div className="flex-1 min-w-0">
               <p className="text-sm font-black text-gray-900 dark:text-[#e6edf3]">
-                Delete this account
+                {t("profile.delete.title")}
               </p>
               <p className="mt-1 text-xs text-gray-600 dark:text-[#7d8590] leading-relaxed">
-                Permanently removes your profile, all properties you've added,
-                and all session data. This cannot be undone.
+                {t("profile.delete.description")}
               </p>
 
               <button
@@ -443,14 +462,14 @@ export default function ProfilePage() {
                 onClick={() => setDeleteOpen(true)}
                 className="mt-4 rounded-xl border border-red-300 dark:border-red-900 bg-white dark:bg-[#1c2128] px-4 py-2 text-sm font-bold text-red-600 dark:text-red-400 shadow-sm transition hover:border-red-600 hover:bg-red-600 hover:text-white dark:hover:bg-red-900 dark:hover:text-white cursor-pointer"
               >
-                Delete account
+                {t("profile.actions.deleteAccount")}
               </button>
             </div>
           </div>
         </div>
       </section>
 
-      {/* Modals — dark treatment in Chunk F */}
+      {/* Modals — will be wrapped in a later batch */}
       <DeleteAccountModal
         isOpen={deleteOpen}
         onClose={() => setDeleteOpen(false)}
@@ -468,9 +487,14 @@ export default function ProfilePage() {
   );
 }
 
-// ── Sub-components ─────────────────────────────────────────────────────────
+// ── Phone digit sanitizer (unchanged behavior) ────────────────────────
+function onChangePhone(v, setter) {
+  setter(v.replace(/\D/g, "").slice(0, 10));
+}
 
-function InfoRow({ icon: Icon, label, value, locked = false }) {
+// ── Sub-components ────────────────────────────────────────────────────
+
+function InfoRow({ icon: Icon, label, value, locked = false, lockedLabel }) {
   return (
     <div className="flex items-center gap-4 px-5 py-4">
       <div className="flex h-9 w-9 flex-shrink-0 items-center justify-center rounded-xl bg-gray-50 dark:bg-[#1c2128] text-gray-500 dark:text-[#7d8590] ring-1 ring-gray-100 dark:ring-[#30363d]">
@@ -486,7 +510,7 @@ function InfoRow({ icon: Icon, label, value, locked = false }) {
       </div>
       {locked && (
         <span className="flex-shrink-0 rounded-md bg-gray-100 dark:bg-[#1c2128] px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wider text-gray-500 dark:text-[#7d8590]">
-          Locked
+          {lockedLabel}
         </span>
       )}
     </div>
@@ -505,7 +529,9 @@ function EditRow({ icon: Icon, label, value, onChange, placeholder, prefix, erro
         </label>
         <div className="mt-1 flex items-center gap-2">
           {prefix && (
-            <span className="text-sm font-bold text-gray-500 dark:text-[#7d8590]">{prefix}</span>
+            <span className="text-sm font-bold text-gray-500 dark:text-[#7d8590]">
+              {prefix}
+            </span>
           )}
           <input
             type="text"
@@ -516,7 +542,9 @@ function EditRow({ icon: Icon, label, value, onChange, placeholder, prefix, erro
           />
         </div>
         {error && (
-          <p className="mt-1 text-[11px] font-semibold text-red-600 dark:text-red-400">{error}</p>
+          <p className="mt-1 text-[11px] font-semibold text-red-600 dark:text-red-400">
+            {error}
+          </p>
         )}
       </div>
     </div>

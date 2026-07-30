@@ -1,6 +1,7 @@
 "use client";
 
 import { AlertTriangle, Info, Inbox } from "lucide-react";
+import { useTranslation } from "react-i18next";
 import DataSourceBadge from "./DataSourceBadge";
 
 export default function SectionCard({
@@ -12,7 +13,10 @@ export default function SectionCard({
   children,
   emptyAction,
   emptyIcon: EmptyIcon,
+  emptyLabel, // NEW: pre-translated noun for empty state e.g. "ownership records"
 }) {
+  const { t } = useTranslation();
+
   const hasData =
     section &&
     ["LIVE", "CACHED", "MOCK"].includes(section.status) &&
@@ -62,26 +66,28 @@ export default function SectionCard({
         {loading ? (
           <LoadingSkeleton />
         ) : isError ? (
-          <ErrorState reason={section.reason} />
+          <ErrorState reason={section.reason} t={t} />
         ) : isNoData ? (
           <EmptyState
             reason={section.reason}
             icon={EmptyIcon || Icon}
-            title={title}
+            emptyLabel={emptyLabel}
             action={emptyAction}
+            t={t}
           />
         ) : hasData ? (
           children
         ) : (
           <EmptyState
-            reason="Waiting for data..."
+            reason={t("property.aggregation.section.waiting")}
             icon={EmptyIcon || Icon}
-            title={title}
+            emptyLabel={emptyLabel}
+            t={t}
           />
         )}
       </div>
 
-      {/* Footer note (only when mock) */}
+      {/* Footer note (only when mock) — backend-supplied reason, not translated */}
       {hasData && section.status === "MOCK" && section.reason && (
         <div className="border-t border-gray-100 dark:border-[#30363d] bg-gray-50/60 dark:bg-[#0d1117] px-6 py-3">
           <div className="flex items-start gap-2">
@@ -109,7 +115,7 @@ function LoadingSkeleton() {
 }
 
 // ── Error state ──────────────────────────────────────────────────
-function ErrorState({ reason }) {
+function ErrorState({ reason, t }) {
   return (
     <div className="flex h-full min-h-[180px] flex-col items-center justify-center text-center">
       <div className="mb-3 flex h-12 w-12 items-center justify-center rounded-full bg-amber-50 dark:bg-[#282a10] ring-1 ring-amber-100 dark:ring-amber-900">
@@ -119,17 +125,20 @@ function ErrorState({ reason }) {
         />
       </div>
       <p className="text-sm font-semibold text-gray-800 dark:text-[#e6edf3]">
-        Section temporarily unavailable
+        {t("property.aggregation.section.errorTitle")}
       </p>
       <p className="mt-1.5 max-w-xs text-xs leading-relaxed text-gray-500 dark:text-[#7d8590]">
-        {reason || "External data source could not be reached. Try again shortly."}
+        {reason || t("property.aggregation.section.errorReason")}
       </p>
     </div>
   );
 }
 
 // ── Empty state ──────────────────────────────────────────────────
-function EmptyState({ reason, icon: Icon, title, action }) {
+function EmptyState({ reason, icon: Icon, emptyLabel, action, t }) {
+  // emptyLabel comes pre-translated from parent; fallback to "data"
+  const label = emptyLabel || t("property.aggregation.section.dataFallback");
+
   return (
     <div className="flex h-full min-h-[180px] flex-col items-center justify-center text-center">
       <div className="mb-3 flex h-12 w-12 items-center justify-center rounded-full bg-gray-100 dark:bg-[#1c2128]">
@@ -140,10 +149,10 @@ function EmptyState({ reason, icon: Icon, title, action }) {
         )}
       </div>
       <p className="text-sm font-semibold text-gray-800 dark:text-[#e6edf3]">
-        No {title?.toLowerCase() || "data"} available
+        {t("property.aggregation.section.emptyTitle", { item: label })}
       </p>
       <p className="mt-1.5 max-w-xs text-xs leading-relaxed text-gray-500 dark:text-[#7d8590]">
-        {reason || "No records exist for this property yet."}
+        {reason || t("property.aggregation.section.emptyReason")}
       </p>
       {action && (
         <button

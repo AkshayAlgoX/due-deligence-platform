@@ -2,6 +2,7 @@
 
 import { useRef, useState, useEffect } from "react";
 import { toast } from "sonner";
+import { useTranslation } from "react-i18next";
 import {
   Camera,
   Loader2,
@@ -22,6 +23,7 @@ export default function AvatarUploader({
   onUpdated,
   size = 112,
 }) {
+  const { t } = useTranslation();
   const fileInputRef = useRef(null);
   const avatarRef = useRef(null);
 
@@ -68,7 +70,7 @@ export default function AvatarUploader({
     try {
       validateImageFile(file);
     } catch (err) {
-      toast.error("Invalid file", { description: err.message });
+      toast.error(t("avatar.toasts.invalidFile"), { description: err.message });
       e.target.value = "";
       return;
     }
@@ -96,12 +98,12 @@ export default function AvatarUploader({
 
       updateStoredUser({ profilePicture: updated.profilePicture });
 
-      toast.success("Profile photo updated");
+      toast.success(t("avatar.toasts.photoUpdated"));
       onUpdated?.(updated);
       handleCancel();
     } catch (err) {
-      toast.error("Upload failed", {
-        description: err?.message || "Please try again.",
+      toast.error(t("avatar.toasts.uploadFailed"), {
+        description: err?.message || t("common.retry"),
       });
     } finally {
       setUploading(false);
@@ -130,11 +132,11 @@ export default function AvatarUploader({
 
       updateStoredUser({ profilePicture: null });
 
-      toast.success("Profile photo removed");
+      toast.success(t("avatar.toasts.photoRemoved"));
       onUpdated?.(updated);
     } catch (err) {
-      toast.error("Failed to remove photo", {
-        description: err?.message || "Please try again.",
+      toast.error(t("avatar.toasts.removeFailed"), {
+        description: err?.message || t("common.retry"),
       });
     } finally {
       setRemoving(false);
@@ -183,7 +185,7 @@ export default function AvatarUploader({
           onClick={openMenu}
           disabled={uploading || removing}
           className="absolute inset-0 flex items-center justify-center rounded-2xl bg-black/0 opacity-0 transition-all duration-200 hover:bg-black/50 hover:opacity-100 group-hover:opacity-100 disabled:cursor-not-allowed cursor-pointer z-20"
-          aria-label="Change profile photo"
+          aria-label={t("avatar.aria.changePhoto")}
         >
           {removing ? (
             <Loader2 className="h-6 w-6 text-white animate-spin" />
@@ -197,7 +199,7 @@ export default function AvatarUploader({
           onClick={openMenu}
           disabled={uploading || removing}
           className="absolute -bottom-1 -right-1 flex h-8 w-8 items-center justify-center rounded-full bg-white dark:bg-[#1c2128] shadow-md ring-2 ring-white dark:ring-[#161b22] transition hover:scale-110 hover:bg-gray-50 dark:hover:bg-[#30363d] disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer z-30"
-          aria-label="Photo options"
+          aria-label={t("avatar.aria.photoOptions")}
         >
           <Camera className="h-4 w-4 text-gray-700 dark:text-[#e6edf3]" strokeWidth={2.4} />
         </button>
@@ -229,7 +231,7 @@ export default function AvatarUploader({
               <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-green-50 dark:bg-[#0d2818]">
                 <Upload className="h-4 w-4 text-[#16a34a] dark:text-green-400" strokeWidth={2.2} />
               </div>
-              {hasPhoto ? "Change photo" : "Upload photo"}
+              {hasPhoto ? t("avatar.menu.change") : t("avatar.menu.upload")}
             </button>
 
             {hasPhoto && (
@@ -241,13 +243,13 @@ export default function AvatarUploader({
                 <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-red-50 dark:bg-[#2d1214]">
                   <Trash2 className="h-4 w-4 text-red-500 dark:text-red-400" strokeWidth={2.2} />
                 </div>
-                Remove photo
+                {t("avatar.menu.remove")}
               </button>
             )}
 
             <div className="mt-1 border-t border-gray-100 dark:border-[#30363d] px-3 pt-2 pb-1">
               <p className="text-[10px] font-semibold text-gray-400 dark:text-[#6e7681]">
-                JPG, PNG, WebP · Max 5 MB
+                {t("avatar.menu.fileHint")}
               </p>
             </div>
           </div>
@@ -260,14 +262,14 @@ export default function AvatarUploader({
           <div className="w-full max-w-sm rounded-3xl bg-white dark:bg-[#161b22] shadow-2xl overflow-hidden animate-in zoom-in-95 duration-300">
             <div className="flex items-center justify-between border-b border-gray-100 dark:border-[#30363d] px-6 py-4">
               <h3 className="text-base font-black text-gray-900 dark:text-[#e6edf3]">
-                Preview & upload
+                {t("avatar.preview.title")}
               </h3>
               <button
                 type="button"
                 onClick={handleCancel}
                 disabled={uploading}
                 className="rounded-full p-1.5 text-gray-400 dark:text-[#7d8590] hover:bg-gray-100 dark:hover:bg-[#1c2128] hover:text-gray-700 dark:hover:text-[#e6edf3] disabled:opacity-50 cursor-pointer"
-                aria-label="Close"
+                aria-label={t("common.close")}
               >
                 <X className="h-4 w-4" />
               </button>
@@ -277,7 +279,7 @@ export default function AvatarUploader({
               <div className="relative">
                 <img
                   src={preview}
-                  alt="Preview"
+                  alt={t("avatar.preview.alt")}
                   className="h-40 w-40 rounded-2xl object-cover ring-4 ring-green-50 dark:ring-[#0d2818] shadow-lg"
                 />
                 {uploading && (
@@ -298,7 +300,7 @@ export default function AvatarUploader({
                 </p>
                 <p className="text-xs text-gray-400 dark:text-[#6e7681] mt-0.5">
                   {selectedFile
-                    ? `${(selectedFile.size / 1024).toFixed(0)} KB`
+                    ? t("avatar.preview.fileSizeKB", { size: (selectedFile.size / 1024).toFixed(0) })
                     : ""}
                 </p>
               </div>
@@ -320,7 +322,7 @@ export default function AvatarUploader({
                 disabled={uploading}
                 className="flex-1 rounded-xl border-2 border-gray-200 dark:border-[#30363d] bg-white dark:bg-[#1c2128] px-4 py-2.5 text-sm font-bold text-gray-700 dark:text-[#e6edf3] transition hover:bg-gray-50 dark:hover:bg-[#30363d] disabled:opacity-50 cursor-pointer"
               >
-                Cancel
+                {t("common.cancel")}
               </button>
               <button
                 type="button"
@@ -331,12 +333,12 @@ export default function AvatarUploader({
                 {uploading ? (
                   <>
                     <Loader2 className="h-4 w-4 animate-spin" />
-                    Uploading...
+                    {t("avatar.preview.uploading")}
                   </>
                 ) : (
                   <>
                     <Check className="h-4 w-4" strokeWidth={2.5} />
-                    Upload photo
+                    {t("avatar.preview.upload")}
                   </>
                 )}
               </button>

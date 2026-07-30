@@ -1,29 +1,40 @@
 "use client";
 
 import { Wind, Trees, Volume2, Factory } from "lucide-react";
+import { useTranslation } from "react-i18next";
 import SectionCard from "./SectionCard";
 import { getAqiInfo } from "@/constants/aqiScale";
 
 export default function EnvironmentalCard({ section }) {
+  const { t } = useTranslation();
   const env = section?.data;
   const aqiInfo = env ? getAqiInfo(env.airQualityIndex) : null;
 
+  const formatTimeAgo = (iso) => {
+    const secs = Math.floor((Date.now() - new Date(iso).getTime()) / 1000);
+    if (secs < 60) return t("common.justNow");
+    if (secs < 3600) return t("common.minutesAgo", { n: Math.floor(secs / 60) });
+    if (secs < 86400) return t("common.hoursAgo", { n: Math.floor(secs / 3600) });
+    return t("common.daysAgo", { n: Math.floor(secs / 86400) });
+  };
+
   return (
     <SectionCard
-      title="Environmental"
-      subtitle="Air quality and surroundings"
+      title={t("property.aggregation.environmental.title")}
+      subtitle={t("property.aggregation.environmental.subtitle")}
       icon={Wind}
       section={section}
+      emptyLabel={t("property.aggregation.environmental.emptyLabel")}
     >
       {env && (
         <div className="space-y-4">
-          {/* Big AQI display — aqiInfo.color has hardcoded light classes, dim in dark */}
+          {/* Big AQI display */}
           {env.airQualityIndex != null && aqiInfo && (
             <div className={`rounded-xl px-4 py-4 ring-1 ${aqiInfo.color} dark:brightness-110 dark:contrast-125`}>
               <div className="flex items-center justify-between">
                 <div>
                   <p className="text-[10px] font-bold uppercase tracking-widest opacity-80">
-                    Air quality index
+                    {t("property.aggregation.environmental.aqi")}
                   </p>
                   <p className="mt-1 flex items-baseline gap-2">
                     <span className="text-3xl font-black tabular-nums">
@@ -40,7 +51,7 @@ export default function EnvironmentalCard({ section }) {
                 {env.dominantPollutant && (
                   <div className="text-right">
                     <p className="text-[10px] font-bold uppercase tracking-widest opacity-70">
-                      Main pollutant
+                      {t("property.aggregation.environmental.mainPollutant")}
                     </p>
                     <p className="mt-1 text-sm font-bold">
                       {formatPollutant(env.dominantPollutant)}
@@ -55,14 +66,14 @@ export default function EnvironmentalCard({ section }) {
           {env.nearestStation && (
             <div className="rounded-lg border border-gray-100 dark:border-[#30363d] bg-gray-50/50 dark:bg-[#1c2128] px-3 py-2.5">
               <p className="text-[10px] font-bold uppercase tracking-widest text-gray-500 dark:text-[#7d8590]">
-                Nearest monitoring station
+                {t("property.aggregation.environmental.nearestStation")}
               </p>
               <p className="mt-0.5 text-sm font-semibold text-gray-800 dark:text-[#e6edf3]">
                 {cleanStationName(env.nearestStation)}
               </p>
               {env.measuredAt && (
                 <p className="mt-0.5 text-[10px] text-gray-500 dark:text-[#7d8590]">
-                  Measured {formatTimeAgo(env.measuredAt)}
+                  {t("property.aggregation.environmental.measured", { ago: formatTimeAgo(env.measuredAt) })}
                 </p>
               )}
             </div>
@@ -74,7 +85,7 @@ export default function EnvironmentalCard({ section }) {
               <SmallStat
                 icon={Trees}
                 iconColor="text-green-600 dark:text-green-400"
-                label="Green cover"
+                label={t("property.aggregation.environmental.greenCover")}
                 value={`${env.greenCoveragePercent}%`}
               />
             )}
@@ -82,7 +93,7 @@ export default function EnvironmentalCard({ section }) {
               <SmallStat
                 icon={Volume2}
                 iconColor="text-blue-600 dark:text-blue-400"
-                label="Noise level"
+                label={t("property.aggregation.environmental.noiseLevel")}
                 value={`${env.noiseLevelDb} dB`}
               />
             )}
@@ -90,7 +101,7 @@ export default function EnvironmentalCard({ section }) {
               <SmallStat
                 icon={Factory}
                 iconColor="text-amber-600 dark:text-amber-400"
-                label="Soil type"
+                label={t("property.aggregation.environmental.soilType")}
                 value={env.soilType.replace(/_/g, " ")}
               />
             )}
@@ -98,8 +109,8 @@ export default function EnvironmentalCard({ section }) {
               <SmallStat
                 icon={Factory}
                 iconColor={env.nearIndustrialZone ? "text-red-500 dark:text-red-400" : "text-gray-500 dark:text-[#7d8590]"}
-                label="Industrial zone"
-                value={env.nearIndustrialZone ? "Nearby" : "Not nearby"}
+                label={t("property.aggregation.environmental.industrialZone")}
+                value={env.nearIndustrialZone ? t("property.aggregation.environmental.nearby") : t("property.aggregation.environmental.notNearby")}
               />
             )}
           </div>
@@ -139,12 +150,4 @@ function formatPollutant(code) {
 function cleanStationName(name) {
   if (!name) return "";
   return name.replace(/\s*\([^)]*\)\s*$/, "").trim();
-}
-
-function formatTimeAgo(iso) {
-  const secs = Math.floor((Date.now() - new Date(iso).getTime()) / 1000);
-  if (secs < 60) return "just now";
-  if (secs < 3600) return `${Math.floor(secs / 60)}m ago`;
-  if (secs < 86400) return `${Math.floor(secs / 3600)}h ago`;
-  return `${Math.floor(secs / 86400)}d ago`;
 }

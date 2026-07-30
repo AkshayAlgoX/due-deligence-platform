@@ -3,6 +3,7 @@
 
 import { useState, useMemo } from "react";
 import Link from "next/link";
+import { useTranslation } from "react-i18next";
 import {
   LifeBuoy,
   Search,
@@ -25,8 +26,9 @@ import { FAQ_ITEMS, FAQ_CATEGORIES } from "@/constants/faq";
 const SUPPORT_EMAIL = "duedeligence8@gmail.com";
 
 // ── Quick action tile ─────────────────────────────────────────────────────────
+// Presentational: receives already-translated strings from parent (Rule #17).
 
-function QuickAction({ icon: Icon, title, description, subject, body }) {
+function QuickAction({ icon: Icon, title, description, subject, body, openEmailLabel }) {
   const mailto = `mailto:${SUPPORT_EMAIL}?subject=${encodeURIComponent(subject)}${
     body ? `&body=${encodeURIComponent(body)}` : ""
   }`;
@@ -48,7 +50,7 @@ function QuickAction({ icon: Icon, title, description, subject, body }) {
       </p>
 
       <div className="mt-4 flex items-center gap-1.5 text-xs font-bold text-[#16a34a] group-hover:gap-2 transition-all">
-        <span>Open email</span>
+        <span>{openEmailLabel}</span>
         <ArrowRight className="h-3.5 w-3.5" strokeWidth={2.5} />
       </div>
     </a>
@@ -56,6 +58,7 @@ function QuickAction({ icon: Icon, title, description, subject, body }) {
 }
 
 // ── FAQ item (accordion) ──────────────────────────────────────────────────────
+// FAQ content itself remains in English until FAQ_ITEMS constants are refactored.
 
 function FAQItem({ item, isOpen, onToggle }) {
   return (
@@ -96,6 +99,7 @@ function FAQItem({ item, isOpen, onToggle }) {
 // ── Main page ─────────────────────────────────────────────────────────────────
 
 export default function SupportPage() {
+  const { t } = useTranslation();
   const [query, setQuery]         = useState("");
   const [activeCat, setActiveCat] = useState("All");
   const [openItems, setOpenItems] = useState(new Set());
@@ -137,13 +141,11 @@ export default function SupportPage() {
         </div>
 
         <h1 className="mt-6 text-[42px] font-black tracking-tight text-gray-900 dark:text-[#e6edf3] leading-[1.1]">
-          How can we help?
+          {t("support.hero.title")}
         </h1>
 
         <p className="mt-3 max-w-2xl text-base text-gray-600 dark:text-[#7d8590] leading-relaxed">
-          Answers to common questions and direct ways to reach us. If you can't
-          find what you need, email us and we'll respond within 48 hours on
-          business days.
+          {t("support.hero.subtitle")}
         </p>
 
         {/* Search bar */}
@@ -156,7 +158,7 @@ export default function SupportPage() {
             type="search"
             value={query}
             onChange={(e) => setQuery(e.target.value)}
-            placeholder="Search articles, questions, features..."
+            placeholder={t("support.hero.searchPlaceholder")}
             className="h-12 w-full rounded-xl border border-gray-200 dark:border-[#30363d] bg-white dark:bg-[#161b22] pl-11 pr-4 text-sm text-gray-900 dark:text-[#e6edf3] shadow-sm transition-all placeholder:text-gray-400 dark:placeholder:text-[#6e7681] focus:border-[#22C55E] focus:outline-none focus:ring-2 focus:ring-[#22C55E]/20"
           />
         </div>
@@ -168,7 +170,7 @@ export default function SupportPage() {
             <span className="relative inline-flex h-2 w-2 rounded-full bg-green-500" />
           </span>
           <span className="text-xs font-bold text-green-700 dark:text-green-400">
-            All systems operational
+            {t("support.hero.statusOperational")}
           </span>
         </div>
       </header>
@@ -180,39 +182,41 @@ export default function SupportPage() {
           <div className="flex items-center gap-3 mb-6">
             <div className="h-1 w-8 rounded-full bg-[#22C55E]" />
             <p className="text-[11px] font-bold uppercase tracking-widest text-[#22C55E]">
-              Get in touch
+              {t("support.contact.eyebrow")}
             </p>
           </div>
 
           <h2 className="text-2xl font-extrabold tracking-tight text-gray-900 dark:text-[#e6edf3]">
-            Contact us directly
+            {t("support.contact.title")}
           </h2>
           <p className="mt-2 text-sm text-gray-500 dark:text-[#7d8590]">
-            Choose the option that best fits — clicking opens your email client
-            with a pre-filled subject line.
+            {t("support.contact.subtitle")}
           </p>
 
           <div className="mt-6 grid grid-cols-1 gap-4 md:grid-cols-3">
             <QuickAction
               icon={MessageCircle}
-              title="General question"
-              description="Product help, account questions, or anything else that's not urgent."
-              subject="Support request — Due Diligence Platform"
-              body="Hi team,\n\nI have a question about:\n\n"
+              title={t("support.contact.general.title")}
+              description={t("support.contact.general.description")}
+              subject={t("support.contact.general.subject")}
+              body={t("support.contact.general.body")}
+              openEmailLabel={t("support.contact.openEmail")}
             />
             <QuickAction
               icon={Bug}
-              title="Report a bug"
-              description="Something not working as expected? Tell us what you saw and what you expected."
-              subject="Bug report — Due Diligence Platform"
-              body="What I did:\n\nWhat I expected:\n\nWhat actually happened:\n\nBrowser & version:\n\n"
+              title={t("support.contact.bug.title")}
+              description={t("support.contact.bug.description")}
+              subject={t("support.contact.bug.subject")}
+              body={t("support.contact.bug.body")}
+              openEmailLabel={t("support.contact.openEmail")}
             />
             <QuickAction
               icon={Lightbulb}
-              title="Request a feature"
-              description="Have an idea that would make the platform better? We read every message."
-              subject="Feature request — Due Diligence Platform"
-              body="I'd like to see:\n\nWhy this would help:\n\n"
+              title={t("support.contact.feature.title")}
+              description={t("support.contact.feature.description")}
+              subject={t("support.contact.feature.subject")}
+              body={t("support.contact.feature.body")}
+              openEmailLabel={t("support.contact.openEmail")}
             />
           </div>
         </section>
@@ -222,16 +226,16 @@ export default function SupportPage() {
           <div className="flex items-center gap-3 mb-6">
             <div className="h-1 w-8 rounded-full bg-[#22C55E]" />
             <p className="text-[11px] font-bold uppercase tracking-widest text-[#22C55E]">
-              Knowledge base
+              {t("support.faq.eyebrow")}
             </p>
           </div>
 
           <div className="flex items-baseline justify-between gap-4 flex-wrap">
             <h2 className="text-2xl font-extrabold tracking-tight text-gray-900 dark:text-[#e6edf3]">
-              Frequently asked questions
+              {t("support.faq.title")}
             </h2>
             <p className="text-xs text-gray-500 dark:text-[#7d8590] font-medium tabular-nums">
-              {filteredFAQ.length} {filteredFAQ.length === 1 ? "article" : "articles"}
+              {t("support.faq.articleCount", { count: filteredFAQ.length })}
             </p>
           </div>
 
@@ -245,7 +249,7 @@ export default function SupportPage() {
                   : "bg-white dark:bg-[#161b22] border border-gray-200 dark:border-[#30363d] text-gray-600 dark:text-[#7d8590] hover:border-gray-300 dark:hover:border-[#484f58] hover:bg-gray-50 dark:hover:bg-[#1c2128]"
               }`}
             >
-              All
+              {t("support.faq.allCategory")}
             </button>
             {FAQ_CATEGORIES.map((cat) => (
               <button
@@ -270,19 +274,21 @@ export default function SupportPage() {
                   <Search className="h-5 w-5 text-gray-300 dark:text-[#484f58]" strokeWidth={2} />
                 </div>
                 <p className="text-sm font-bold text-gray-700 dark:text-[#e6edf3]">
-                  No articles match your search
+                  {t("support.faq.noResults.title")}
                 </p>
                 <p className="mt-1 text-xs text-gray-500 dark:text-[#7d8590] max-w-xs">
-                  Try different keywords or clear the filter to see all articles.
+                  {t("support.faq.noResults.hint")}
                 </p>
                 <a
                   href={`mailto:${SUPPORT_EMAIL}?subject=${encodeURIComponent(
-                    `Support: ${query || "Question not in FAQ"}`
+                    `${t("support.faq.noResults.emailSubjectPrefix")} ${
+                      query || t("support.faq.noResults.emailSubjectFallback")
+                    }`
                   )}`}
                   className="mt-4 flex items-center gap-1.5 rounded-xl bg-[#22C55E] px-4 py-2 text-xs font-bold text-white shadow-sm transition hover:bg-[#16a34a]"
                 >
                   <Mail className="h-3.5 w-3.5" strokeWidth={2.5} />
-                  Email us this question
+                  {t("support.faq.noResults.emailButton")}
                 </a>
               </div>
             ) : (
@@ -311,17 +317,15 @@ export default function SupportPage() {
                 </div>
                 <div>
                   <p className="text-[10px] font-bold uppercase tracking-widest text-gray-400 dark:text-[#6e7681]">
-                    Response time
+                    {t("support.response.eyebrow")}
                   </p>
                   <p className="text-lg font-bold text-gray-900 dark:text-[#e6edf3] tracking-tight">
-                    Within 48 hours
+                    {t("support.response.headline")}
                   </p>
                 </div>
               </div>
               <p className="mt-3 text-sm text-gray-600 dark:text-[#7d8590] leading-relaxed">
-                We respond to emails on business days (Mon–Fri).
-                Complex issues may take longer — we'll always acknowledge
-                receipt first.
+                {t("support.response.description")}
               </p>
             </div>
 
@@ -333,10 +337,10 @@ export default function SupportPage() {
                 </div>
                 <div>
                   <p className="text-[10px] font-bold uppercase tracking-widest text-gray-400 dark:text-[#6e7681]">
-                    Direct email
+                    {t("support.direct.eyebrow")}
                   </p>
                   <p className="text-lg font-bold text-gray-900 dark:text-[#e6edf3] tracking-tight">
-                    Contact team
+                    {t("support.direct.headline")}
                   </p>
                 </div>
               </div>
@@ -357,12 +361,12 @@ export default function SupportPage() {
           <div className="flex items-center gap-3 mb-6">
             <div className="h-1 w-8 rounded-full bg-[#22C55E]" />
             <p className="text-[11px] font-bold uppercase tracking-widest text-[#22C55E]">
-              Related
+              {t("support.related.eyebrow")}
             </p>
           </div>
 
           <h2 className="text-2xl font-extrabold tracking-tight text-gray-900 dark:text-[#e6edf3]">
-            More resources
+            {t("support.related.title")}
           </h2>
 
           <div className="mt-6 grid grid-cols-1 gap-3 sm:grid-cols-2">
@@ -374,10 +378,11 @@ export default function SupportPage() {
                 <Shield className="h-4 w-4" strokeWidth={2.2} />
               </div>
               <div className="min-w-0 flex-1">
-                <p className="text-sm font-bold text-gray-900 dark:text-[#e6edf3]">Security</p>
+                <p className="text-sm font-bold text-gray-900 dark:text-[#e6edf3]">
+                  {t("support.related.security.title")}
+                </p>
                 <p className="mt-1 text-xs text-gray-500 dark:text-[#7d8590] leading-relaxed">
-                  How we protect your data — full disclosure of what's built and
-                  what's planned.
+                  {t("support.related.security.description")}
                 </p>
               </div>
               <ExternalLink className="h-3.5 w-3.5 text-gray-300 dark:text-[#484f58] group-hover:text-[#22C55E] flex-shrink-0 mt-1" />
@@ -393,10 +398,11 @@ export default function SupportPage() {
                 <BookOpen className="h-4 w-4" strokeWidth={2.2} />
               </div>
               <div className="min-w-0 flex-1">
-                <p className="text-sm font-bold text-gray-900 dark:text-[#e6edf3]">Source code</p>
+                <p className="text-sm font-bold text-gray-900 dark:text-[#e6edf3]">
+                  {t("support.related.source.title")}
+                </p>
                 <p className="mt-1 text-xs text-gray-500 dark:text-[#7d8590] leading-relaxed">
-                  Open-source on GitHub. Report issues, read the code, or
-                  contribute.
+                  {t("support.related.source.description")}
                 </p>
               </div>
               <ExternalLink className="h-3.5 w-3.5 text-gray-300 dark:text-[#484f58] group-hover:text-[#22C55E] flex-shrink-0 mt-1" />
@@ -409,9 +415,7 @@ export default function SupportPage() {
           <div className="flex items-start gap-3">
             <CheckCircle2 className="h-4 w-4 text-gray-400 dark:text-[#6e7681] flex-shrink-0 mt-0.5" />
             <p className="text-xs text-gray-400 dark:text-[#6e7681] leading-relaxed">
-              This support page is not a live chat, ticket system, or automated
-              helpdesk. It's a direct line to the team that built the platform.
-              We read every email and reply personally.
+              {t("support.footer.note")}
             </p>
           </div>
         </div>

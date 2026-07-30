@@ -4,6 +4,7 @@ import { useState, useRef, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { toast } from "sonner";
+import { useTranslation } from "react-i18next";
 import {
   ShieldCheck,
   Mail,
@@ -38,6 +39,7 @@ const SUCCESS_REDIRECT_SECONDS = 5;
 
 export default function ForgotPasswordPage() {
   const router = useRouter();
+  const { t } = useTranslation();
   const [step, setStep] = useState(STEPS.EMAIL);
   const [loading, setLoading] = useState(false);
 
@@ -66,14 +68,14 @@ export default function ForgotPasswordPage() {
 
   useEffect(() => {
     if (resendIn <= 0) { localStorage.removeItem(COOLDOWN_KEY); return; }
-    const t = setInterval(() => {
+    const timer = setInterval(() => {
       setResendIn((s) => {
         const next = s - 1;
         if (next <= 0) localStorage.removeItem(COOLDOWN_KEY);
         return next;
       });
     }, 1000);
-    return () => clearInterval(t);
+    return () => clearInterval(timer);
   }, [resendIn]);
 
   useEffect(() => {
@@ -101,22 +103,35 @@ export default function ForgotPasswordPage() {
   const handleSendCode = async (e) => {
     e.preventDefault();
     const trimmed = email.trim();
-    if (!trimmed) { setFieldErrors({ email: "Enter your email" }); emailRef.current?.focus(); return; }
+    if (!trimmed) {
+      setFieldErrors({ email: t("auth.errors.emailRequired") });
+      emailRef.current?.focus();
+      return;
+    }
     if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(trimmed)) {
-      setFieldErrors({ email: "Enter a valid email address" }); emailRef.current?.focus(); return;
+      setFieldErrors({ email: t("auth.errors.emailInvalid") });
+      emailRef.current?.focus();
+      return;
     }
     if (resendIn > 0) {
-      toast.error("Please wait", { description: `You can request a new code in ${resendIn}s.` }); return;
+      toast.error(t("auth.forgotPassword.pleaseWait"), {
+        description: t("auth.forgotPassword.cooldownDesc", { n: resendIn }),
+      });
+      return;
     }
     setFieldErrors({});
     setLoading(true);
     try {
       await forgotPassword(trimmed);
-      toast.success("Code sent", { description: "Check your inbox for the 6-digit code." });
+      toast.success(t("auth.forgotPassword.codeSent"), {
+        description: t("auth.forgotPassword.checkInbox"),
+      });
       startCooldown();
       setStep(STEPS.OTP);
     } catch (err) {
-      toast.error("Could not send code", { description: err?.message || "Please try again." });
+      toast.error(t("auth.forgotPassword.sendFailed"), {
+        description: err?.message || t("auth.register.toasts.tryAgain"),
+      });
     } finally {
       setLoading(false);
     }
@@ -127,12 +142,14 @@ export default function ForgotPasswordPage() {
     setLoading(true);
     try {
       await forgotPassword(email.trim());
-      toast.success("New code sent");
+      toast.success(t("auth.forgotPassword.newCodeSent"));
       startCooldown();
       setOtp(["", "", "", "", "", ""]);
       otpRefs.current[0]?.focus();
     } catch (err) {
-      toast.error("Could not resend", { description: err?.message || "Please try again." });
+      toast.error(t("auth.forgotPassword.resendFailed"), {
+        description: err?.message || t("auth.register.toasts.tryAgain"),
+      });
     } finally {
       setLoading(false);
     }
@@ -141,15 +158,20 @@ export default function ForgotPasswordPage() {
   const handleVerifyOtp = async (e) => {
     e.preventDefault();
     const code = otp.join("");
-    if (code.length !== 6) { setFieldErrors({ otp: "Enter the 6-digit code" }); return; }
+    if (code.length !== 6) {
+      setFieldErrors({ otp: t("auth.forgotPassword.enterSixDigit") });
+      return;
+    }
     setFieldErrors({});
     setLoading(true);
     try {
       await verifyResetOtp({ email, otp: code });
       setStep(STEPS.PASSWORD);
     } catch (err) {
-      setFieldErrors({ otp: err?.message || "Invalid or expired code" });
-      toast.error("Verification failed", { description: err?.message || "Please check the code and try again." });
+      setFieldErrors({ otp: err?.message || t("auth.forgotPassword.invalidCode") });
+      toast.error(t("auth.forgotPassword.verifyFailed"), {
+        description: err?.message || t("auth.forgotPassword.checkCodeAndRetry"),
+      });
     } finally {
       setLoading(false);
     }
@@ -158,12 +180,12 @@ export default function ForgotPasswordPage() {
   const handleResetPassword = async (e) => {
     e.preventDefault();
     const errors = {};
-    if (!newPassword) errors.newPassword = "Enter a new password";
-    else if (newPassword.length < 8) errors.newPassword = "At least 8 characters";
+    if (!newPassword) errors.newPassword = t("auth.forgotPassword.enterNewPassword");
+    else if (newPassword.length < 8) errors.newPassword = t("auth.errors.passwordLength");
     else if (!/(?=.*[a-z])(?=.*[A-Z])(?=.*\d)/.test(newPassword))
-      errors.newPassword = "Include uppercase, lowercase, and a number";
-    if (!confirmPassword) errors.confirmPassword = "Confirm your password";
-    else if (newPassword !== confirmPassword) errors.confirmPassword = "Passwords do not match";
+      errors.newPassword = t("auth.forgotPassword.pwdComplexity");
+    if (!confirmPassword) errors.confirmPassword = t("auth.forgotPassword.confirmYourPassword");
+    else if (newPassword !== confirmPassword) errors.confirmPassword = t("auth.register.errors.passwordsMismatch");
     if (Object.keys(errors).length > 0) { setFieldErrors(errors); return; }
     setFieldErrors({});
     setLoading(true);
@@ -172,7 +194,9 @@ export default function ForgotPasswordPage() {
       localStorage.removeItem(COOLDOWN_KEY);
       setStep(STEPS.SUCCESS);
     } catch (err) {
-      toast.error("Could not reset password", { description: err?.message || "Please try again." });
+      toast.error(t("auth.forgotPassword.resetFailed"), {
+        description: err?.message || t("auth.register.toasts.tryAgain"),
+      });
     } finally {
       setLoading(false);
     }
@@ -209,8 +233,8 @@ export default function ForgotPasswordPage() {
     }
   };
 
-  const onEmailChange        = (e) => { setEmail(e.target.value); if (fieldErrors.email) setFieldErrors({}); };
-  const onNewPasswordChange   = (e) => { setNewPassword(e.target.value);    if (fieldErrors.newPassword)    setFieldErrors((p) => ({ ...p, newPassword: "" })); };
+  const onEmailChange           = (e) => { setEmail(e.target.value); if (fieldErrors.email) setFieldErrors({}); };
+  const onNewPasswordChange     = (e) => { setNewPassword(e.target.value);    if (fieldErrors.newPassword)    setFieldErrors((p) => ({ ...p, newPassword: "" })); };
   const onConfirmPasswordChange = (e) => { setConfirmPassword(e.target.value); if (fieldErrors.confirmPassword) setFieldErrors((p) => ({ ...p, confirmPassword: "" })); };
 
   const maskedEmail = email
@@ -219,7 +243,6 @@ export default function ForgotPasswordPage() {
       )
     : "";
 
-  // Shared input class builder
   const inputCls = (hasError) =>
     `h-11 w-full rounded-xl border bg-white dark:bg-[#0d1117] pl-10 pr-3 text-sm text-gray-900 dark:text-[#e6edf3] placeholder:text-gray-400 dark:placeholder:text-[#6e7681] outline-none transition-colors disabled:bg-gray-50 dark:disabled:bg-[#1c2128] ${
       hasError
@@ -231,7 +254,7 @@ export default function ForgotPasswordPage() {
     <main className="flex min-h-screen items-center justify-center bg-gradient-to-br from-[#edf7f3] via-white to-[#f8fffb] dark:from-[#0d1117] dark:via-[#0d1117] dark:to-[#0d1117] px-4 py-8">
       <div className="w-full max-w-md">
 
-        {/* ── Logo ── */}
+        {/* ── Logo — brand stays English per rule #7 ── */}
         <div className="mb-6 flex items-center justify-center gap-3">
           <div className="flex h-10 w-10 items-center justify-center rounded-full bg-[#22C55E] shadow-md">
             <ShieldCheck className="h-5 w-5 text-white" />
@@ -259,7 +282,6 @@ export default function ForgotPasswordPage() {
           </div>
         )}
 
-        {/* ── Card ── */}
         <div className="rounded-3xl bg-white dark:bg-[#161b22] p-8 shadow-[0_20px_60px_rgba(0,0,0,0.08)] dark:shadow-[0_20px_60px_rgba(0,0,0,0.4)] ring-1 ring-black/5 dark:ring-[#30363d]">
 
           {/* ── STEP 1 — Email ── */}
@@ -270,17 +292,17 @@ export default function ForgotPasswordPage() {
                   <KeyRound className="h-6 w-6 text-[#16a34a]" strokeWidth={2} />
                 </div>
                 <h2 className="mt-4 text-2xl font-black tracking-tight text-gray-900 dark:text-[#e6edf3]">
-                  Reset your password
+                  {t("auth.forgotPassword.step1Title")}
                 </h2>
                 <p className="mt-2 text-sm text-gray-500 dark:text-[#7d8590]">
-                  Enter your email and we'll send a 6-digit code.
+                  {t("auth.forgotPassword.step1Subtitle")}
                 </p>
               </div>
 
               <form onSubmit={handleSendCode} noValidate className="space-y-4">
                 <div className="space-y-1.5">
                   <label htmlFor="fp-email" className="text-xs font-semibold text-gray-700 dark:text-[#e6edf3]">
-                    Email address
+                    {t("auth.forgotPassword.emailLabel")}
                   </label>
                   <div className="relative">
                     <Mail className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-gray-400 dark:text-[#6e7681]" />
@@ -290,7 +312,7 @@ export default function ForgotPasswordPage() {
                       type="email"
                       value={email}
                       onChange={onEmailChange}
-                      placeholder="name@company.com"
+                      placeholder={t("auth.login.emailPlaceholder")}
                       disabled={loading}
                       aria-invalid={!!fieldErrors.email}
                       aria-describedby={fieldErrors.email ? "fp-email-error" : undefined}
@@ -316,22 +338,22 @@ export default function ForgotPasswordPage() {
                   {loading ? (
                     <Loader2 className="h-4 w-4 animate-spin" />
                   ) : resendIn > 0 ? (
-                    <>Wait {resendIn}s before resending</>
+                    <>{t("auth.forgotPassword.waitBefore", { n: resendIn })}</>
                   ) : (
-                    <>Send code <ArrowRight className="h-4 w-4" /></>
+                    <>{t("auth.forgotPassword.sendCode")} <ArrowRight className="h-4 w-4" /></>
                   )}
                 </button>
 
                 {resendIn > 0 && (
                   <div className="space-y-2 text-center">
                     <p className="text-xs text-gray-500 dark:text-[#7d8590]">
-                      A code was already sent. Check your inbox first.
+                      {t("auth.forgotPassword.codeAlreadySent")}
                     </p>
                     <button
                       type="button"
                       onClick={() => {
                         if (!email.trim()) {
-                          setFieldErrors({ email: "Enter the email you used" });
+                          setFieldErrors({ email: t("auth.forgotPassword.enterEmailUsed") });
                           emailRef.current?.focus();
                           return;
                         }
@@ -340,7 +362,7 @@ export default function ForgotPasswordPage() {
                       }}
                       className="text-xs font-semibold text-[#22C55E] transition hover:text-[#16a34a] hover:underline"
                     >
-                      I already have a code
+                      {t("auth.forgotPassword.alreadyHaveCode")}
                     </button>
                   </div>
                 )}
@@ -356,10 +378,10 @@ export default function ForgotPasswordPage() {
                   <Inbox className="h-6 w-6 text-[#16a34a]" strokeWidth={2} />
                 </div>
                 <h2 className="mt-4 text-2xl font-black tracking-tight text-gray-900 dark:text-[#e6edf3]">
-                  Enter the code
+                  {t("auth.forgotPassword.step2Title")}
                 </h2>
                 <p className="mt-2 text-sm text-gray-500 dark:text-[#7d8590]">
-                  Sent to{" "}
+                  {t("auth.forgotPassword.sentTo")}{" "}
                   <span className="font-semibold text-gray-800 dark:text-[#e6edf3]">
                     {maskedEmail}
                   </span>
@@ -380,7 +402,7 @@ export default function ForgotPasswordPage() {
                       onChange={(e) => handleOtpChange(i, e.target.value)}
                       onKeyDown={(e) => handleOtpKeyDown(i, e)}
                       disabled={loading}
-                      aria-label={`Digit ${i + 1}`}
+                      aria-label={t("auth.forgotPassword.digitAria", { n: i + 1 })}
                       className={`h-12 w-11 rounded-xl border-2 bg-white dark:bg-[#0d1117] text-center text-lg font-black text-gray-900 dark:text-[#e6edf3] outline-none transition-colors disabled:bg-gray-50 dark:disabled:bg-[#1c2128] ${
                         fieldErrors.otp
                           ? "border-red-300 dark:border-red-800 focus:border-red-400 focus:ring-2 focus:ring-red-100 dark:focus:ring-red-900/30"
@@ -404,7 +426,7 @@ export default function ForgotPasswordPage() {
                   {loading ? (
                     <Loader2 className="h-4 w-4 animate-spin" />
                   ) : (
-                    <>Verify code <ArrowRight className="h-4 w-4" /></>
+                    <>{t("auth.forgotPassword.verifyCode")} <ArrowRight className="h-4 w-4" /></>
                   )}
                 </button>
 
@@ -414,7 +436,7 @@ export default function ForgotPasswordPage() {
                     onClick={() => { setStep(STEPS.EMAIL); setOtp(["", "", "", "", "", ""]); setFieldErrors({}); }}
                     className="font-semibold text-gray-500 dark:text-[#7d8590] transition hover:text-gray-800 dark:hover:text-[#e6edf3]"
                   >
-                    Change email
+                    {t("auth.forgotPassword.changeEmail")}
                   </button>
                   <button
                     type="button"
@@ -422,7 +444,9 @@ export default function ForgotPasswordPage() {
                     disabled={resendIn > 0 || loading}
                     className="font-semibold text-[#22C55E] transition hover:text-[#16a34a] disabled:cursor-not-allowed disabled:text-gray-400 dark:disabled:text-[#6e7681]"
                   >
-                    {resendIn > 0 ? `Resend in ${resendIn}s` : "Resend code"}
+                    {resendIn > 0
+                      ? t("auth.forgotPassword.resendIn", { n: resendIn })
+                      : t("auth.forgotPassword.resendCode")}
                   </button>
                 </div>
               </form>
@@ -437,10 +461,10 @@ export default function ForgotPasswordPage() {
                   <Lock className="h-6 w-6 text-[#16a34a]" strokeWidth={2} />
                 </div>
                 <h2 className="mt-4 text-2xl font-black tracking-tight text-gray-900 dark:text-[#e6edf3]">
-                  Set a new password
+                  {t("auth.forgotPassword.step3Title")}
                 </h2>
                 <p className="mt-2 text-sm text-gray-500 dark:text-[#7d8590]">
-                  Use at least 8 characters with a mix of cases and a number.
+                  {t("auth.forgotPassword.step3Subtitle")}
                 </p>
               </div>
 
@@ -448,7 +472,7 @@ export default function ForgotPasswordPage() {
                 {/* New password */}
                 <div className="space-y-1.5">
                   <label htmlFor="fp-new" className="text-xs font-semibold text-gray-700 dark:text-[#e6edf3]">
-                    New password
+                    {t("auth.forgotPassword.newPassword")}
                   </label>
                   <div className="relative">
                     <Lock className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-gray-400 dark:text-[#6e7681]" />
@@ -462,7 +486,7 @@ export default function ForgotPasswordPage() {
                       onKeyUp={handlePasswordKey}
                       onFocus={() => setPasswordFocused(true)}
                       onBlur={() => setPasswordFocused(false)}
-                      placeholder="At least 8 characters"
+                      placeholder={t("auth.errors.passwordLength")}
                       disabled={loading}
                       aria-invalid={!!fieldErrors.newPassword}
                       className={`${inputCls(fieldErrors.newPassword)} pr-10`}
@@ -472,7 +496,7 @@ export default function ForgotPasswordPage() {
                       onClick={() => setShowPassword((s) => !s)}
                       className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 dark:text-[#6e7681] hover:text-gray-600 dark:hover:text-[#e6edf3]"
                       tabIndex={-1}
-                      aria-label={showPassword ? "Hide password" : "Show password"}
+                      aria-label={showPassword ? t("auth.login.hidePassword") : t("auth.login.showPassword")}
                     >
                       {showPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
                     </button>
@@ -480,7 +504,7 @@ export default function ForgotPasswordPage() {
                   {capsLockOn && passwordFocused && !fieldErrors.newPassword && (
                     <p className="flex items-center gap-1 pl-1 text-[11px] leading-tight text-amber-600 dark:text-amber-400">
                       <AlertCircle className="h-3 w-3" strokeWidth={2.5} />
-                      Caps Lock is on
+                      {t("auth.forgotPassword.capsLock")}
                     </p>
                   )}
                   {fieldErrors.newPassword && (
@@ -493,7 +517,7 @@ export default function ForgotPasswordPage() {
                 {/* Confirm password */}
                 <div className="space-y-1.5">
                   <label htmlFor="fp-confirm" className="text-xs font-semibold text-gray-700 dark:text-[#e6edf3]">
-                    Confirm password
+                    {t("auth.forgotPassword.confirmPassword")}
                   </label>
                   <div className="relative">
                     <Lock className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-gray-400 dark:text-[#6e7681]" />
@@ -502,7 +526,7 @@ export default function ForgotPasswordPage() {
                       type={showConfirm ? "text" : "password"}
                       value={confirmPassword}
                       onChange={onConfirmPasswordChange}
-                      placeholder="Re-enter password"
+                      placeholder={t("auth.register.placeholders.confirm")}
                       disabled={loading}
                       aria-invalid={!!fieldErrors.confirmPassword}
                       className={`${inputCls(fieldErrors.confirmPassword)} pr-10`}
@@ -512,7 +536,7 @@ export default function ForgotPasswordPage() {
                       onClick={() => setShowConfirm((s) => !s)}
                       className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 dark:text-[#6e7681] hover:text-gray-600 dark:hover:text-[#e6edf3]"
                       tabIndex={-1}
-                      aria-label={showConfirm ? "Hide password" : "Show password"}
+                      aria-label={showConfirm ? t("auth.login.hidePassword") : t("auth.login.showPassword")}
                     >
                       {showConfirm ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
                     </button>
@@ -527,16 +551,16 @@ export default function ForgotPasswordPage() {
                 {/* Requirements checklist */}
                 <div className="space-y-1.5 rounded-xl bg-gray-50 dark:bg-[#1c2128] p-3">
                   <Requirement met={newPassword.length >= 8}>
-                    At least 8 characters
+                    {t("auth.forgotPassword.requirements.length")}
                   </Requirement>
                   <Requirement met={/[a-z]/.test(newPassword) && /[A-Z]/.test(newPassword)}>
-                    Upper and lower case
+                    {t("auth.forgotPassword.requirements.case")}
                   </Requirement>
                   <Requirement met={/\d/.test(newPassword)}>
-                    Contains a number
+                    {t("auth.forgotPassword.requirements.number")}
                   </Requirement>
                   <Requirement met={newPassword.length > 0 && newPassword === confirmPassword}>
-                    Passwords match
+                    {t("auth.forgotPassword.requirements.match")}
                   </Requirement>
                 </div>
 
@@ -548,7 +572,7 @@ export default function ForgotPasswordPage() {
                   {loading ? (
                     <Loader2 className="h-4 w-4 animate-spin" />
                   ) : (
-                    <>Reset password <ArrowRight className="h-4 w-4" /></>
+                    <>{t("auth.forgotPassword.resetPassword")} <ArrowRight className="h-4 w-4" /></>
                   )}
                 </button>
               </form>
@@ -565,21 +589,21 @@ export default function ForgotPasswordPage() {
                 </div>
               </div>
               <h2 className="mt-6 text-2xl font-black tracking-tight text-gray-900 dark:text-[#e6edf3]">
-                Password updated
+                {t("auth.forgotPassword.step4Title")}
               </h2>
               <p className="mt-2 text-sm text-gray-500 dark:text-[#7d8590]">
-                Sign in with your new password to continue.
+                {t("auth.forgotPassword.step4Subtitle")}
               </p>
               <button
                 type="button"
                 onClick={() => router.push("/login")}
                 className="mt-6 flex h-11 w-full items-center justify-center gap-2 rounded-xl bg-[#22C55E] text-sm font-bold text-white shadow-[0_10px_30px_rgba(34,197,94,0.35)] transition hover:scale-[1.01] hover:bg-[#16a34a]"
               >
-                Back to sign in
+                {t("auth.forgotPassword.backToSignIn")}
                 <ArrowRight className="h-4 w-4" />
               </button>
               <p className="mt-4 text-xs text-gray-400 dark:text-[#6e7681]">
-                Redirecting in {redirectIn}s…
+                {t("auth.forgotPassword.redirectingIn", { n: redirectIn })}
               </p>
             </div>
           )}
@@ -593,20 +617,20 @@ export default function ForgotPasswordPage() {
               className="inline-flex items-center gap-1.5 text-sm font-semibold text-gray-500 dark:text-[#7d8590] transition hover:text-[#22C55E]"
             >
               <ArrowLeft className="h-3.5 w-3.5" />
-              Back to sign in
+              {t("auth.forgotPassword.backToSignIn")}
             </Link>
           </div>
         )}
 
-        {/* ── Security footer ── */}
+        {/* ── Security footer — reuses auth.login keys ── */}
         <div className="mt-4 text-center">
           <p className="text-xs text-gray-500 dark:text-[#6e7681]">
-            Secure by design ·{" "}
+            {t("auth.login.secureBy")} ·{" "}
             <Link
               href="/security"
               className="underline transition hover:text-[#22C55E]"
             >
-              Learn how
+              {t("auth.login.learnHow")}
             </Link>
           </p>
         </div>

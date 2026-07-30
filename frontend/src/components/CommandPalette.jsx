@@ -2,6 +2,7 @@
 
 import { useEffect, useState, useRef, useMemo, useCallback } from "react";
 import { useRouter } from "next/navigation";
+import { useTranslation } from "react-i18next";
 import {
   Search,
   X,
@@ -32,25 +33,9 @@ import {
   clearRecentSearches,
 } from "@/hooks/useCommandPalette";
 
-const PAGES = [
-  { id: "page-dashboard",      label: "Dashboard",           description: "Portfolio overview & KPIs",       icon: Home,        path: "/dashboard" },
-  { id: "page-search",         label: "Property Search",     description: "Find & verify properties",         icon: FileSearch,  path: "/dashboard/property-search" },
-  { id: "page-diligence",      label: "Due Diligence",       description: "Deep verification workflow",       icon: Building2,   path: "/dashboard/due-diligence" },
-  { id: "page-risk",           label: "Risk Assessment",     description: "Risk scores & red flags",          icon: ShieldAlert, path: "/dashboard/risk-assessment" },
-  { id: "page-compare",        label: "Property Comparison", description: "Side-by-side analysis",            icon: GitCompare,  path: "/dashboard/property-comparison" },
-  { id: "page-reports",        label: "Reports",             description: "Generated PDF reports",            icon: FileText,    path: "/dashboard/reports" },
-  { id: "page-notifications",  label: "Notifications",       description: "Alerts & activity feed",           icon: Bell,        path: "/dashboard/notifications" },
-  { id: "page-audit",          label: "Audit Logs",          description: "Every action, timestamped",        icon: ScrollText,  path: "/dashboard/audit-logs" },
-  { id: "page-profile",        label: "My Profile",          description: "Account & preferences",            icon: UserCircle,  path: "/dashboard/profile" },
-];
-
-const ACTIONS = [
-  { id: "action-add-property", label: "Add New Property", description: "Register a new listing", icon: Plus,   kind: "add-property" },
-  { id: "action-logout",       label: "Log Out",          description: "End your session",        icon: LogOut, kind: "logout", danger: true },
-];
-
 export default function CommandPalette({ open, onClose, onAction }) {
   const router = useRouter();
+  const { t } = useTranslation();
   const inputRef = useRef(null);
   const listRef = useRef(null);
   const debounceRef = useRef(null);
@@ -60,6 +45,30 @@ export default function CommandPalette({ open, onClose, onAction }) {
   const [searchingProperties, setSearchingProperties] = useState(false);
   const [highlightIdx, setHighlightIdx] = useState(0);
   const [recent, setRecent] = useState([]);
+
+  // ── Static lists moved inside component so labels can be translated ──
+  const PAGES = useMemo(
+    () => [
+      { id: "page-dashboard",     label: t("commandPalette.pages.dashboard.label"),      description: t("commandPalette.pages.dashboard.description"),      icon: Home,        path: "/dashboard" },
+      { id: "page-search",        label: t("commandPalette.pages.search.label"),         description: t("commandPalette.pages.search.description"),         icon: FileSearch,  path: "/dashboard/property-search" },
+      { id: "page-diligence",     label: t("commandPalette.pages.diligence.label"),      description: t("commandPalette.pages.diligence.description"),      icon: Building2,   path: "/dashboard/due-diligence" },
+      { id: "page-risk",          label: t("commandPalette.pages.risk.label"),           description: t("commandPalette.pages.risk.description"),           icon: ShieldAlert, path: "/dashboard/risk-assessment" },
+      { id: "page-compare",       label: t("commandPalette.pages.compare.label"),        description: t("commandPalette.pages.compare.description"),        icon: GitCompare,  path: "/dashboard/property-comparison" },
+      { id: "page-reports",       label: t("commandPalette.pages.reports.label"),        description: t("commandPalette.pages.reports.description"),        icon: FileText,    path: "/dashboard/reports" },
+      { id: "page-notifications", label: t("commandPalette.pages.notifications.label"),  description: t("commandPalette.pages.notifications.description"),  icon: Bell,        path: "/dashboard/notifications" },
+      { id: "page-audit",         label: t("commandPalette.pages.audit.label"),          description: t("commandPalette.pages.audit.description"),          icon: ScrollText,  path: "/dashboard/audit-logs" },
+      { id: "page-profile",       label: t("commandPalette.pages.profile.label"),        description: t("commandPalette.pages.profile.description"),        icon: UserCircle,  path: "/dashboard/profile" },
+    ],
+    [t]
+  );
+
+  const ACTIONS = useMemo(
+    () => [
+      { id: "action-add-property", label: t("commandPalette.actions.addProperty.label"), description: t("commandPalette.actions.addProperty.description"), icon: Plus,   kind: "add-property" },
+      { id: "action-logout",       label: t("commandPalette.actions.logout.label"),      description: t("commandPalette.actions.logout.description"),      icon: LogOut, kind: "logout", danger: true },
+    ],
+    [t]
+  );
 
   useEffect(() => {
     if (open) {
@@ -112,7 +121,7 @@ export default function CommandPalette({ open, onClose, onAction }) {
     return PAGES.filter(
       (p) => p.label.toLowerCase().includes(q) || p.description.toLowerCase().includes(q)
     );
-  }, [query]);
+  }, [query, PAGES]);
 
   const filteredActions = useMemo(() => {
     if (!query.trim()) return ACTIONS;
@@ -120,7 +129,7 @@ export default function CommandPalette({ open, onClose, onAction }) {
     return ACTIONS.filter(
       (a) => a.label.toLowerCase().includes(q) || a.description.toLowerCase().includes(q)
     );
-  }, [query]);
+  }, [query, ACTIONS]);
 
   const flatItems = useMemo(() => {
     const items = [];
@@ -233,19 +242,19 @@ export default function CommandPalette({ open, onClose, onAction }) {
             value={query}
             onChange={(e) => setQuery(e.target.value)}
             onKeyDown={handleKeyDown}
-            placeholder="Search pages, properties, or actions..."
-            aria-label="Command palette search"
+            placeholder={t("commandPalette.searchPlaceholder")}
+            aria-label={t("commandPalette.ariaLabel")}
             className="flex-1 bg-transparent text-base font-medium text-gray-900 dark:text-[#e6edf3] outline-none placeholder:text-gray-400 dark:placeholder:text-[#6e7681] placeholder:font-normal"
           />
 
           <kbd className="hidden sm:inline-flex items-center rounded-md border border-gray-200 dark:border-[#30363d] bg-gray-50 dark:bg-[#0d1117] px-2 py-0.5 text-[10px] font-mono font-semibold text-gray-500 dark:text-[#7d8590]">
-            esc
+            {t("commandPalette.kbd.esc")}
           </kbd>
 
           <button
             onClick={onClose}
             className="flex h-7 w-7 items-center justify-center rounded-md text-gray-400 dark:text-[#6e7681] transition hover:bg-gray-100 dark:hover:bg-[#1c2128] hover:text-gray-600 dark:hover:text-[#e6edf3] sm:hidden"
-            aria-label="Close"
+            aria-label={t("common.close")}
           >
             <X className="h-4 w-4" />
           </button>
@@ -261,10 +270,10 @@ export default function CommandPalette({ open, onClose, onAction }) {
                 <Sparkles className="h-5 w-5 text-gray-300 dark:text-[#30363d]" />
               </div>
               <p className="text-sm font-bold text-gray-700 dark:text-[#e6edf3]">
-                No matches for &ldquo;{query}&rdquo;
+                {t("commandPalette.empty.title", { query })}
               </p>
               <p className="mt-1 text-xs text-gray-400 dark:text-[#6e7681]">
-                Try searching for a page name, property address, or action
+                {t("commandPalette.empty.hint")}
               </p>
             </div>
           )}
@@ -272,14 +281,14 @@ export default function CommandPalette({ open, onClose, onAction }) {
           {/* ── RECENT ── */}
           {showRecent && (
             <Section
-              title="Recent"
+              title={t("commandPalette.sections.recent")}
               rightSlot={
                 <button
                   onClick={handleClearRecent}
                   className="flex items-center gap-1 text-[10px] font-semibold text-gray-400 dark:text-[#6e7681] hover:text-gray-600 dark:hover:text-[#e6edf3] transition"
                 >
                   <Trash2 className="h-3 w-3" />
-                  Clear
+                  {t("commandPalette.clear")}
                 </button>
               }
             >
@@ -295,7 +304,7 @@ export default function CommandPalette({ open, onClose, onAction }) {
                     icon={<Clock className="h-4 w-4" />}
                     iconClass="bg-gray-100 dark:bg-[#1c2128] text-gray-500 dark:text-[#7d8590]"
                     label={q}
-                    description="Recent search"
+                    description={t("commandPalette.recentSearchLabel")}
                   />
                 );
               })}
@@ -304,7 +313,7 @@ export default function CommandPalette({ open, onClose, onAction }) {
 
           {/* ── PAGES ── */}
           {filteredPages.length > 0 && (
-            <Section title="Pages" badge={filteredPages.length}>
+            <Section title={t("commandPalette.sections.pages")} badge={filteredPages.length}>
               {filteredPages.map((p, i) => {
                 const idx = pagesStart + i;
                 const Icon = p.icon;
@@ -327,7 +336,11 @@ export default function CommandPalette({ open, onClose, onAction }) {
 
           {/* ── PROPERTIES ── */}
           {propertyResults.length > 0 && (
-            <Section title="Properties" badge={propertyResults.length} subtitle="Live from database">
+            <Section
+              title={t("commandPalette.sections.properties")}
+              badge={propertyResults.length}
+              subtitle={t("commandPalette.sections.propertiesSubtitle")}
+            >
               {propertyResults.map((prop, i) => {
                 const idx = propsStart + i;
                 return (
@@ -339,9 +352,10 @@ export default function CommandPalette({ open, onClose, onAction }) {
                     onClick={() => handleSelect({ type: "property", id: `prop-${prop.id}`, property: prop })}
                     icon={<Building2 className="h-4 w-4" strokeWidth={2.2} />}
                     iconClass="bg-green-50 dark:bg-[#0d2818] text-green-600 dark:text-green-400"
-                    label={prop.address || "Untitled property"}
+                    label={prop.address || t("property.card.unknownAddress")}
                     description={
-                      [prop.city, prop.state, prop.zipCode].filter(Boolean).join(", ") || "Location unknown"
+                      [prop.city, prop.state, prop.zipCode].filter(Boolean).join(", ") ||
+                      t("property.search.locationUnknown")
                     }
                     rightSlot={
                       prop.marketValue > 0 && (
@@ -360,13 +374,13 @@ export default function CommandPalette({ open, onClose, onAction }) {
           {searchingProperties && propertyResults.length === 0 && query.trim() && (
             <div className="px-4 py-3 flex items-center gap-2 text-xs text-gray-400 dark:text-[#6e7681]">
               <Loader2 className="h-3 w-3 animate-spin" />
-              Searching properties...
+              {t("commandPalette.searchingProperties")}
             </div>
           )}
 
           {/* ── ACTIONS ── */}
           {filteredActions.length > 0 && (
-            <Section title="Actions">
+            <Section title={t("commandPalette.sections.actions")}>
               {filteredActions.map((a, i) => {
                 const idx = actionsStart + i;
                 const Icon = a.icon;
@@ -398,15 +412,15 @@ export default function CommandPalette({ open, onClose, onAction }) {
           <div className="flex items-center gap-3 text-[10px] text-gray-500 dark:text-[#6e7681]">
             <span className="flex items-center gap-1.5">
               <kbd className="px-1.5 py-0.5 rounded border border-gray-200 dark:border-[#30363d] bg-white dark:bg-[#161b22] font-mono text-[9px] dark:text-[#7d8590]">↑↓</kbd>
-              Navigate
+              {t("commandPalette.kbd.navigate")}
             </span>
             <span className="flex items-center gap-1.5">
               <kbd className="px-1.5 py-0.5 rounded border border-gray-200 dark:border-[#30363d] bg-white dark:bg-[#161b22] font-mono text-[9px] dark:text-[#7d8590]">↵</kbd>
-              Select
+              {t("commandPalette.kbd.select")}
             </span>
             <span className="hidden sm:flex items-center gap-1.5">
-              <kbd className="px-1.5 py-0.5 rounded border border-gray-200 dark:border-[#30363d] bg-white dark:bg-[#161b22] font-mono text-[9px] dark:text-[#7d8590]">esc</kbd>
-              Close
+              <kbd className="px-1.5 py-0.5 rounded border border-gray-200 dark:border-[#30363d] bg-white dark:bg-[#161b22] font-mono text-[9px] dark:text-[#7d8590]">{t("commandPalette.kbd.esc")}</kbd>
+              {t("commandPalette.kbd.close")}
             </span>
           </div>
         </div>

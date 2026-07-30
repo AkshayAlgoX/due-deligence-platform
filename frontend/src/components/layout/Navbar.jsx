@@ -2,6 +2,7 @@
 
 import { useState, useEffect, useRef } from "react";
 import { useRouter } from "next/navigation";
+import { useTranslation } from "react-i18next";
 import {
   Bell,
   Search,
@@ -22,6 +23,7 @@ import LanguageTrigger from "@/components/language/LanguageTrigger";
 
 export default function Navbar({ toggleSidebar }) {
   const router = useRouter();
+  const { t } = useTranslation();
   const { logout } = useAuth();
   const { open: paletteOpen, setOpen: setPaletteOpen } = useCommandPalette();
 
@@ -69,14 +71,14 @@ export default function Navbar({ toggleSidebar }) {
   };
 
   const email = user?.email || "";
-  const fullName = user?.fullName || email.split("@")[0] || "User";
+  const fullName = user?.fullName || email.split("@")[0] || t("property.logout.fallbackUser");
   const role = user?.role
     ? user.role
         .toLowerCase()
         .split("_")
         .map((w) => w.charAt(0).toUpperCase() + w.slice(1))
         .join(" ")
-    : "Signed In";
+    : t("navbar.signedIn");
 
   const initials = (fullName || "U")
     .split(" ")
@@ -94,7 +96,7 @@ export default function Navbar({ toggleSidebar }) {
             <button
               onClick={toggleSidebar}
               className="text-gray-400 hover:text-gray-700 dark:text-[#7d8590] dark:hover:text-[#e6edf3] transition"
-              aria-label="Toggle sidebar"
+              aria-label={t("navbar.toggleSidebar")}
             >
               <Menu size={24} />
             </button>
@@ -113,7 +115,7 @@ export default function Navbar({ toggleSidebar }) {
           <button
             type="button"
             onClick={() => setPaletteOpen(true)}
-            aria-label="Open command palette"
+            aria-label={t("navbar.openCommandPalette")}
             className="
               group
               flex items-center gap-3
@@ -135,7 +137,7 @@ export default function Navbar({ toggleSidebar }) {
           >
             <Search className="h-4 w-4 text-gray-400 dark:text-[#7d8590] group-hover:text-[#22C55E] transition-colors flex-shrink-0" />
             <span className="flex-1 text-gray-400 dark:text-[#7d8590] group-hover:text-gray-600 dark:group-hover:text-[#e6edf3] transition-colors truncate">
-              Search pages, properties, actions...
+              {t("commandPalette.searchPlaceholder")}
             </span>
             <kbd className="
               flex-shrink-0
@@ -162,8 +164,8 @@ export default function Navbar({ toggleSidebar }) {
             type="button"
             onClick={() => router.push("/dashboard/notifications")}
             className="relative cursor-pointer group flex h-9 w-9 items-center justify-center rounded-lg transition hover:bg-gray-50 dark:hover:bg-[#1c2128]"
-            aria-label="Notifications"
-            title="Notifications"
+            aria-label={t("nav.notifications")}
+            title={t("nav.notifications")}
           >
             <Bell
               className="text-gray-600 dark:text-[#7d8590] group-hover:text-[#22C55E] transition"
@@ -185,7 +187,7 @@ export default function Navbar({ toggleSidebar }) {
               type="button"
               onClick={() => setMenuOpen((prev) => !prev)}
               className="flex items-center gap-3 rounded-xl px-2 py-1 transition hover:bg-gray-50 dark:hover:bg-[#1c2128]"
-              aria-label="User menu"
+              aria-label={t("navbar.userMenu")}
               aria-expanded={menuOpen}
             >
               <div className="text-right">
@@ -266,7 +268,7 @@ export default function Navbar({ toggleSidebar }) {
                     className="flex w-full items-center gap-3 rounded-xl px-3 py-2.5 text-sm text-gray-700 dark:text-[#e6edf3] transition hover:bg-gray-50 dark:hover:bg-[#1c2128]"
                   >
                     <User size={16} className="text-gray-400 dark:text-[#7d8590]" />
-                    My Profile
+                    {t("navbar.myProfile")}
                   </button>
 
                   <button
@@ -275,7 +277,7 @@ export default function Navbar({ toggleSidebar }) {
                     className="flex w-full items-center gap-3 rounded-xl px-3 py-2.5 text-sm font-semibold text-red-600 dark:text-red-400 transition hover:bg-red-50 dark:hover:bg-[#2d1214]"
                   >
                     <LogOut size={16} />
-                    Log Out
+                    {t("navbar.logOut")}
                   </button>
                 </div>
               </div>

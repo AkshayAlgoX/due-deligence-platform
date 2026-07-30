@@ -1,6 +1,7 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useState, useMemo } from "react";
+import { useTranslation } from "react-i18next";
 import {
   LineChart,
   Line,
@@ -12,10 +13,18 @@ import {
   ResponsiveContainer,
 } from "recharts";
 import { TrendingUp } from "lucide-react";
+import i18n from "@/i18n";
 
 // ── Generate 6 months of mock trend data ─────────────────────────────────────
-function generateMockData(properties) {
-  const months = ["Feb", "Mar", "Apr", "May", "Jun", "Jul"];
+// Month labels are computed at render time so they use the current locale.
+function generateMockData(properties, lang) {
+  const now = new Date();
+  // Build last 6 months: [-5, -4, -3, -2, -1, 0] months from now
+  const months = Array.from({ length: 6 }, (_, i) => {
+    const d = new Date(now.getFullYear(), now.getMonth() - (5 - i), 1);
+    return d.toLocaleDateString(lang || "en-IN", { month: "short" });
+  });
+
   return months.map((month, i) => {
     const point = { month };
     properties.forEach((p, idx) => {
@@ -29,12 +38,12 @@ function generateMockData(properties) {
 }
 
 const LINE_COLORS = ["#22C55E", "#3B82F6", "#A855F7"];
-const LABELS = ["Property A", "Property B", "Property C"];
 
 function formatYAxis(value) {
+  // Cr / L are region-specific units, kept as-is across languages.
   if (value >= 10000000) return `₹${(value / 10000000).toFixed(1)}Cr`;
   if (value >= 100000) return `₹${(value / 100000).toFixed(0)}L`;
-  return `₹${value.toLocaleString("en-IN")}`;
+  return `₹${value.toLocaleString(i18n.language || "en-IN")}`;
 }
 
 // ── Custom tooltip — uses isDark prop for inline styles ───────────────────────
@@ -109,6 +118,7 @@ function CustomTooltip({ active, payload, label, isDark }) {
 }
 
 export default function MarketValueChart({ properties = [] }) {
+  const { t, i18n: i18nInst } = useTranslation();
   const [isDark, setIsDark] = useState(false);
 
   // MutationObserver — same pattern as PortfolioTrendChart
@@ -125,9 +135,25 @@ export default function MarketValueChart({ properties = [] }) {
   }, []);
 
   const validProperties = properties.filter(Boolean);
-  if (validProperties.length < 2) return null;
 
-  const data = generateMockData(validProperties);
+  // Labels — "Property A", "Property B", "Property C" — computed via t()
+  // Letters A/B/C stay Latin (universal legend indexing convention)
+  const LABELS = useMemo(
+    () => [
+      t("marketChart.propertyLabel", { letter: "A" }),
+      t("marketChart.propertyLabel", { letter: "B" }),
+      t("marketChart.propertyLabel", { letter: "C" }),
+    ],
+    [t]
+  );
+
+  // Re-generate mock data when language changes so month names update
+  const data = useMemo(
+    () => generateMockData(validProperties, i18nInst.language),
+    [validProperties, i18nInst.language]
+  );
+
+  if (validProperties.length < 2) return null;
 
   // Dark-aware recharts colors
   const gridStroke = isDark ? "#30363d" : "#f1f5f9";
@@ -143,17 +169,17 @@ export default function MarketValueChart({ properties = [] }) {
           </div>
           <div>
             <h3 className="text-sm font-black text-gray-900 dark:text-[#e6edf3]">
-              Market value trend
+              {t("marketChart.title")}
             </h3>
             <p className="text-[11px] text-gray-400 dark:text-[#6e7681] font-medium">
-              6-month estimated trend · indicative only
+              {t("marketChart.subtitle")}
             </p>
           </div>
         </div>
 
         {/* Mock data disclaimer pill */}
         <span className="rounded-full bg-amber-50 dark:bg-[#282a10] px-2.5 py-1 text-[10px] font-bold text-amber-600 dark:text-amber-400 ring-1 ring-amber-100 dark:ring-amber-900/50">
-          Estimated data
+          {t("marketChart.estimatedBadge")}
         </span>
       </div>
 

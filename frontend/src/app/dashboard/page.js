@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { useSearchParams } from "next/navigation";
+import { useTranslation } from "react-i18next";
 import { toast } from "sonner";
 import { motion } from "framer-motion";
 import {
@@ -34,6 +35,7 @@ import RecommendationsPanel from "@/components/dashboard/RecommendationsPanel";
 import PortfolioMap from "@/components/dashboard/PortfolioMap";
 
 export default function DashboardPage() {
+  const { t } = useTranslation();
   const searchParams = useSearchParams();
 
   const [stats, setStats] = useState(null);
@@ -44,20 +46,24 @@ export default function DashboardPage() {
   const [modalOpen, setModalOpen] = useState(false);
   const [refreshKey, setRefreshKey] = useState(0);
 
+  // ── Unauthorized redirect toast ──────────────────────────────────
   useEffect(() => {
     if (searchParams.get("error") === "unauthorized") {
-      toast.error("You don't have permission to access that page.");
+      toast.error(t("dashboard.errors.unauthorized"));
       window.history.replaceState({}, "", "/dashboard");
     }
-  }, [searchParams]);
+  }, [searchParams, t]);
 
+  // ── Page title ───────────────────────────────────────────────────
   useEffect(() => {
-    document.title = "Dashboard | Real Estate Due Diligence";
-  }, []);
+    document.title = t("dashboard.pageTitle");
+  }, [t]);
 
+  // ── Initial data load ────────────────────────────────────────────
   useEffect(() => {
     loadUser();
     loadAll();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const loadUser = async () => {
@@ -81,10 +87,10 @@ export default function DashboardPage() {
       setStats(statsData);
       setTrends(trendsData);
 
-      if (silent) toast.success("Dashboard updated", { duration: 1500 });
+      if (silent) toast.success(t("dashboard.refreshed"), { duration: 1500 });
     } catch (err) {
-      toast.error("Couldn't load dashboard", {
-        description: "Please refresh the page or try again.",
+      toast.error(t("dashboard.errors.couldntLoad"), {
+        description: t("dashboard.errors.pleaseRefresh"),
       });
     } finally {
       setLoading(false);
@@ -111,7 +117,9 @@ export default function DashboardPage() {
   const firstName =
     user?.fullName?.split(" ")[0] ?? user?.email?.split("@")[0] ?? "";
   const isAdmin = user?.role === "ADMIN";
-  const subtitle = isAdmin ? "Platform overview" : "Your portfolio at a glance";
+  const subtitle = isAdmin
+    ? t("dashboard.platformOverview")
+    : t("dashboard.subtitle");
 
   const isEmpty = stats && stats.totalProperties === 0;
 
@@ -121,14 +129,16 @@ export default function DashboardPage() {
       <div className="flex flex-wrap items-end justify-between gap-4">
         <div>
           <h1 className="text-[32px] font-extrabold tracking-tight text-gray-900 dark:text-[#e6edf3]">
-            {getGreeting()}
+            {getGreeting(t)}
             {firstName ? (
               <span className="text-[#22C55E]">, {firstName}</span>
             ) : (
               ""
             )}
           </h1>
-          <p className="mt-1 text-sm text-gray-500 dark:text-[#7d8590]">{subtitle}</p>
+          <p className="mt-1 text-sm text-gray-500 dark:text-[#7d8590]">
+            {subtitle}
+          </p>
         </div>
 
         <div className="flex gap-3">
@@ -136,7 +146,7 @@ export default function DashboardPage() {
             onClick={handleRefresh}
             disabled={refreshing}
             className="group flex h-11 w-11 items-center justify-center rounded-xl border border-gray-200 dark:border-[#30363d] bg-white dark:bg-[#161b22] transition-all hover:border-[#22C55E] hover:shadow-[0_4px_12px_rgba(34,197,94,0.2)] disabled:opacity-50"
-            aria-label="Refresh"
+            aria-label={t("common.refresh")}
           >
             <RefreshCw
               size={16}
@@ -153,7 +163,7 @@ export default function DashboardPage() {
             >
               <span className="absolute inset-0 -translate-x-full bg-gradient-to-r from-transparent via-white/25 to-transparent transition-transform duration-1000 group-hover:translate-x-full" />
               <Plus size={18} className="relative z-10" strokeWidth={2.5} />
-              <span className="relative z-10">Add property</span>
+              <span className="relative z-10">{t("property.addProperty")}</span>
             </button>
           )}
         </div>
@@ -162,21 +172,31 @@ export default function DashboardPage() {
       {/* ── Hero Strip ─────────────────────────────────────────────── */}
       {!isEmpty && (
         <ErrorBoundary>
-          <HeroStrip stats={stats} loading={loading} key={`hero-${refreshKey}`} />
+          <HeroStrip
+            stats={stats}
+            loading={loading}
+            key={`hero-${refreshKey}`}
+          />
         </ErrorBoundary>
       )}
 
       {/* ── Portfolio trend chart ──────────────────────────────────── */}
       {!isEmpty && (
         <ErrorBoundary>
-          <PortfolioTrendChart key={`trend-${refreshKey}`} refreshKey={refreshKey} />
+          <PortfolioTrendChart
+            key={`trend-${refreshKey}`}
+            refreshKey={refreshKey}
+          />
         </ErrorBoundary>
       )}
 
       {/* ── Recommendations ────────────────────────────────────────── */}
       {!isEmpty && (
         <ErrorBoundary>
-          <RecommendationsPanel key={`rec-${refreshKey}`} refreshKey={refreshKey} />
+          <RecommendationsPanel
+            key={`rec-${refreshKey}`}
+            refreshKey={refreshKey}
+          />
         </ErrorBoundary>
       )}
 
@@ -196,7 +216,7 @@ export default function DashboardPage() {
         </div>
       ) : !stats ? (
         <div className="rounded-xl border border-gray-200 dark:border-[#30363d] bg-gray-50 dark:bg-[#161b22] p-8 text-center text-sm text-gray-500 dark:text-[#7d8590]">
-          Unable to load statistics. Please refresh the page.
+          {t("dashboard.errors.unableToLoadStats")}
         </div>
       ) : (
         <motion.div
@@ -205,8 +225,9 @@ export default function DashboardPage() {
           initial="initial"
           animate="animate"
         >
+          {/* Total properties */}
           <StatsCard
-            title="Total properties"
+            title={t("dashboard.stats.totalProperties")}
             value={
               stats.totalProperties > 0
                 ? stats.totalProperties.toLocaleString()
@@ -214,8 +235,8 @@ export default function DashboardPage() {
             }
             subtitle={
               stats.totalProperties === 0
-                ? "No properties added"
-                : formatTrend(trends?.propertiesThisWeek, "this week")
+                ? t("dashboard.stats.noPropertiesAdded")
+                : formatTrend(t, trends?.propertiesThisWeek)
             }
             icon={<Building2 size={20} strokeWidth={2.5} />}
             trendValue={formatDelta(trends?.propertiesGrowthPct)}
@@ -223,8 +244,9 @@ export default function DashboardPage() {
             href="/dashboard/property-search"
           />
 
+          {/* Verified */}
           <StatsCard
-            title="Verified"
+            title={t("dashboard.stats.verified")}
             value={
               stats.verifiedProperties > 0
                 ? stats.verifiedProperties.toLocaleString()
@@ -232,10 +254,12 @@ export default function DashboardPage() {
             }
             subtitle={
               stats.totalProperties > 0
-                ? `${Math.round(
-                    (stats.verifiedProperties / stats.totalProperties) * 100
-                  )}% of total`
-                : "Nothing to verify yet"
+                ? t("dashboard.stats.ofTotal", {
+                    pct: Math.round(
+                      (stats.verifiedProperties / stats.totalProperties) * 100
+                    ),
+                  })
+                : t("dashboard.stats.nothingToVerify")
             }
             icon={<ShieldCheck size={20} strokeWidth={2.5} />}
             trendValue={formatDelta(trends?.verifiedGrowthPct)}
@@ -243,8 +267,9 @@ export default function DashboardPage() {
             href="/dashboard/property-search?filter=verified"
           />
 
+          {/* Pending */}
           <StatsCard
-            title="Pending"
+            title={t("dashboard.stats.pending")}
             value={
               stats.pendingProperties > 0
                 ? stats.pendingProperties.toLocaleString()
@@ -252,8 +277,8 @@ export default function DashboardPage() {
             }
             subtitle={
               stats.pendingProperties > 0
-                ? "Awaiting verification"
-                : "All caught up"
+                ? t("dashboard.stats.awaitingVerification")
+                : t("dashboard.stats.allCaughtUp")
             }
             icon={<Clock size={20} strokeWidth={2.5} />}
             trendValue={null}
@@ -264,14 +289,15 @@ export default function DashboardPage() {
             }
           />
 
+          {/* Platform users */}
           <StatsCard
-            title="Platform users"
+            title={t("dashboard.stats.platformUsers")}
             value={
               stats.totalUsers > 0 ? stats.totalUsers.toLocaleString() : "—"
             }
             subtitle={
               stats.activeUsers > 0
-                ? `${stats.activeUsers} active in 30 days`
+                ? t("dashboard.stats.activeIn30Days", { n: stats.activeUsers })
                 : undefined
             }
             icon={<Users size={20} strokeWidth={2.5} />}
@@ -305,7 +331,9 @@ export default function DashboardPage() {
       )}
 
       {/* ── Empty state ────────────────────────────────────────────── */}
-      {!loading && isEmpty && <EmptyState onAddClick={() => setModalOpen(true)} />}
+      {!loading && isEmpty && (
+        <EmptyState onAddClick={() => setModalOpen(true)} />
+      )}
 
       <AddPropertyModal
         isOpen={modalOpen}
@@ -316,20 +344,24 @@ export default function DashboardPage() {
   );
 }
 
-// ─── Empty state ─────────────────────────────────────────────────────
+// ─── Empty state (uses hook via prop) ────────────────────────────────
 function EmptyState({ onAddClick }) {
+  const { t } = useTranslation();
   return (
     <div className="rounded-2xl border border-gray-100 dark:border-[#30363d] bg-white dark:bg-[#161b22] p-10 shadow-sm">
       <div className="mx-auto flex max-w-md flex-col items-center text-center">
         <div className="flex h-16 w-16 items-center justify-center rounded-2xl bg-[#edf7f3] dark:bg-[#0d2818]">
-          <Building2 className="h-7 w-7 text-[#16a34a] dark:text-green-400" strokeWidth={2} />
+          <Building2
+            className="h-7 w-7 text-[#16a34a] dark:text-green-400"
+            strokeWidth={2}
+          />
         </div>
 
         <h2 className="mt-5 text-lg font-bold text-gray-900 dark:text-[#e6edf3]">
-          No properties yet
+          {t("dashboard.empty.title")}
         </h2>
         <p className="mt-2 text-sm text-gray-500 dark:text-[#7d8590] leading-relaxed">
-          Add your first property to see verification results and portfolio insights.
+          {t("dashboard.empty.description")}
         </p>
 
         <button
@@ -338,7 +370,7 @@ function EmptyState({ onAddClick }) {
           className="mt-6 flex items-center gap-2 rounded-lg bg-gradient-to-r from-[#22C55E] to-[#16a34a] px-4 py-2.5 text-sm font-semibold text-white shadow-[0_4px_12px_rgba(34,197,94,0.3)] transition-all duration-150 hover:opacity-95 active:scale-95"
         >
           <Plus size={16} strokeWidth={2.5} />
-          Add your first property
+          {t("property.addFirstProperty")}
         </button>
       </div>
     </div>
@@ -346,11 +378,11 @@ function EmptyState({ onAddClick }) {
 }
 
 // ─── Helpers ─────────────────────────────────────────────────────────
-function getGreeting() {
+function getGreeting(t) {
   const hour = new Date().getHours();
-  if (hour < 12) return "Good morning";
-  if (hour < 17) return "Good afternoon";
-  return "Good evening";
+  if (hour < 12) return t("dashboard.greetings.morning");
+  if (hour < 17) return t("dashboard.greetings.afternoon");
+  return t("dashboard.greetings.evening");
 }
 
 function formatDelta(pct) {
@@ -359,7 +391,7 @@ function formatDelta(pct) {
   return `${sign}${pct}%`;
 }
 
-function formatTrend(count, suffix) {
+function formatTrend(t, count) {
   if (count == null || count === 0) return undefined;
-  return `+${count} ${suffix}`;
+  return t("dashboard.stats.plusThisWeek", { count });
 }

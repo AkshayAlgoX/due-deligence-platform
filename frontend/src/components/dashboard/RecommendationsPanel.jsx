@@ -2,6 +2,7 @@
 
 import { useEffect, useState, useCallback } from "react";
 import { useRouter } from "next/navigation";
+import { useTranslation } from "react-i18next";
 import {
   ListChecks,
   ChevronDown,
@@ -15,31 +16,33 @@ const DISMISS_KEY = "dd_dismissed_recommendations";
 const MAX_VISIBLE = 5;
 
 // ── Severity → visual mapping ─────────────────────────────────
-function getSeverityConfig(severity) {
+// Returns visual props only; label is looked up via t() at render time
+// so we don't call t() outside a component.
+function getSeverityVisuals(severity) {
   switch (severity) {
     case "HIGH":
       return {
         dot: "bg-red-500",
-        label: "Urgent",
+        labelKey: "recommendations.severity.urgent",
         labelColor: "text-red-600 dark:text-red-400",
       };
     case "MEDIUM":
       return {
         dot: "bg-amber-500",
-        label: "Action",
+        labelKey: "recommendations.severity.action",
         labelColor: "text-amber-700 dark:text-amber-400",
       };
     case "POSITIVE":
       return {
         dot: "bg-[#22C55E]",
-        label: "On track",
+        labelKey: "recommendations.severity.onTrack",
         labelColor: "text-[#16a34a] dark:text-green-400",
       };
     case "LOW":
     default:
       return {
         dot: "bg-gray-300 dark:bg-[#6e7681]",
-        label: "Tip",
+        labelKey: "recommendations.severity.tip",
         labelColor: "text-gray-500 dark:text-[#7d8590]",
       };
   }
@@ -78,7 +81,8 @@ function RecommendationsSkeleton() {
 // ── Single row ───────────────────────────────────────────────
 function RecommendationRow({ rec, onDismiss }) {
   const router = useRouter();
-  const cfg = getSeverityConfig(rec.severity);
+  const { t } = useTranslation();
+  const cfg = getSeverityVisuals(rec.severity);
 
   return (
     <div className="group relative flex items-start gap-3 px-6 py-4 transition-colors hover:bg-gray-50/60 dark:hover:bg-[#1c2128]">
@@ -88,11 +92,16 @@ function RecommendationRow({ rec, onDismiss }) {
 
       <div className="min-w-0 flex-1">
         <div className="flex items-center gap-2">
+          {/*
+            rec.title / rec.description / rec.actionLabel come from backend
+            as English text. Flagged for future backend refactor to send
+            translation keys instead.
+          */}
           <p className="text-sm font-semibold text-gray-900 dark:text-[#e6edf3]">{rec.title}</p>
           <span
             className={`text-[10px] font-bold uppercase tracking-wide ${cfg.labelColor}`}
           >
-            {cfg.label}
+            {t(cfg.labelKey)}
           </span>
         </div>
         <p className="mt-1 text-xs leading-relaxed text-gray-500 dark:text-[#7d8590]">
@@ -114,7 +123,7 @@ function RecommendationRow({ rec, onDismiss }) {
         <button
           onClick={() => onDismiss(rec.type)}
           className="flex-shrink-0 rounded-md p-1 text-gray-300 dark:text-[#6e7681] opacity-0 transition-all hover:bg-white dark:hover:bg-[#0d1117] hover:text-gray-500 dark:hover:text-[#e6edf3] group-hover:opacity-100"
-          aria-label="Dismiss"
+          aria-label={t("recommendations.dismiss")}
         >
           <X size={13} strokeWidth={2.5} />
         </button>
@@ -125,6 +134,7 @@ function RecommendationRow({ rec, onDismiss }) {
 
 // ── Main ─────────────────────────────────────────────────────
 export default function RecommendationsPanel({ refreshKey }) {
+  const { t } = useTranslation();
   const [items, setItems]         = useState([]);
   const [loading, setLoading]     = useState(true);
   const [dismissed, setDismissed] = useState([]);
@@ -181,17 +191,17 @@ export default function RecommendationsPanel({ refreshKey }) {
           </div>
           <div>
             <h3 className="text-sm font-bold text-gray-900 dark:text-[#e6edf3]">
-              Recommendations
+              {t("recommendations.title")}
             </h3>
             <p className="mt-0.5 text-xs text-gray-500 dark:text-[#7d8590]">
-              {visible.length} action{visible.length !== 1 ? "s" : ""} to improve your portfolio
+              {t("recommendations.actionsCount", { count: visible.length })}
             </p>
           </div>
         </div>
 
         {urgentCount > 0 && (
           <span className="rounded-full bg-red-50 dark:bg-[#2d1214] px-2.5 py-1 text-xs font-bold text-red-600 dark:text-red-400">
-            {urgentCount} urgent
+            {t("recommendations.urgentCount", { count: urgentCount })}
           </span>
         )}
       </div>
@@ -214,12 +224,12 @@ export default function RecommendationsPanel({ refreshKey }) {
           {expanded ? (
             <>
               <ChevronUp size={13} strokeWidth={2.5} />
-              Show less
+              {t("recommendations.showLess")}
             </>
           ) : (
             <>
               <ChevronDown size={13} strokeWidth={2.5} />
-              Show {visible.length - MAX_VISIBLE} more
+              {t("recommendations.showMore", { count: visible.length - MAX_VISIBLE })}
             </>
           )}
         </button>

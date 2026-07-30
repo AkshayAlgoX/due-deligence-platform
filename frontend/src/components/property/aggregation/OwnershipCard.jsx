@@ -1,25 +1,41 @@
 "use client";
 
 import { User, Calendar, Hash, FileText, Home, Users } from "lucide-react";
+import { useTranslation } from "react-i18next";
 import SectionCard from "./SectionCard";
 import { formatINRFull } from "@/utils/currency";
 
 export default function OwnershipCard({ section }) {
+  const { t, i18n } = useTranslation();
   const data = section?.data;
+
+  const formatDate = (iso) => {
+    if (!iso) return null;
+    try {
+      return new Date(iso).toLocaleDateString(i18n.language, {
+        day: "numeric",
+        month: "short",
+        year: "numeric",
+      });
+    } catch {
+      return iso;
+    }
+  };
 
   return (
     <SectionCard
-      title="Ownership"
-      subtitle="Current owner and registration details"
+      title={t("property.aggregation.ownership.title")}
+      subtitle={t("property.aggregation.ownership.subtitle")}
       icon={User}
       section={section}
+      emptyLabel={t("property.aggregation.ownership.emptyLabel")}
     >
       {data && (
         <div className="space-y-5">
           {/* Primary owner block */}
           <div className="rounded-xl bg-[#edf7f3] dark:bg-[#0d2818] px-4 py-3">
             <p className="text-[10px] font-bold uppercase tracking-widest text-[#16a34a] dark:text-green-400">
-              Current owner
+              {t("property.aggregation.ownership.currentOwner")}
             </p>
             <p className="mt-1 text-lg font-black text-gray-900 dark:text-[#e6edf3]">
               {data.currentOwner || "—"}
@@ -28,7 +44,7 @@ export default function OwnershipCard({ section }) {
               <div className="mt-2 flex items-center gap-1.5 text-xs text-gray-600 dark:text-[#e6edf3]">
                 <Users className="h-3 w-3" />
                 <span className="font-semibold">
-                  Co-owners: {data.coOwners.join(", ")}
+                  {t("property.aggregation.ownership.coOwners")} {data.coOwners.join(", ")}
                 </span>
               </div>
             )}
@@ -42,7 +58,7 @@ export default function OwnershipCard({ section }) {
                   <Home className="h-4 w-4 text-gray-500 dark:text-[#7d8590]" strokeWidth={2} />
                 </div>
                 <p className="text-[11px] font-semibold uppercase tracking-wider text-gray-500 dark:text-[#7d8590]">
-                  Ownership type
+                  {t("property.aggregation.ownership.ownershipType")}
                 </p>
               </div>
               <span className="rounded-md bg-gray-100 dark:bg-[#1c2128] px-2.5 py-1 text-[11px] font-bold uppercase tracking-wider text-gray-700 dark:text-[#e6edf3]">
@@ -55,18 +71,18 @@ export default function OwnershipCard({ section }) {
           <div className="space-y-4 border-t border-gray-100 dark:border-[#30363d] pt-4">
             <DetailRow
               icon={Hash}
-              label="Registration No."
+              label={t("property.aggregation.ownership.registrationNo")}
               value={data.registrationNumber}
               mono
             />
             <DetailRow
               icon={Calendar}
-              label="Registered On"
+              label={t("property.aggregation.ownership.registeredOn")}
               value={formatDate(data.registeredOn)}
             />
             <DetailRow
               icon={FileText}
-              label="Sub-Registrar Office"
+              label={t("property.aggregation.ownership.subRegistrar")}
               value={data.subRegistrarOffice}
             />
           </div>
@@ -75,11 +91,11 @@ export default function OwnershipCard({ section }) {
           {(data.registeredValue || data.stampDutyPaid) && (
             <div className="grid grid-cols-2 gap-3 border-t border-gray-100 dark:border-[#30363d] pt-4">
               <FinancialCell
-                label="Registered Value"
+                label={t("property.aggregation.ownership.registeredValue")}
                 value={data.registeredValue}
               />
               <FinancialCell
-                label="Stamp Duty Paid"
+                label={t("property.aggregation.ownership.stampDuty")}
                 value={data.stampDutyPaid}
               />
             </div>
@@ -123,17 +139,4 @@ function FinancialCell({ label, value }) {
       </p>
     </div>
   );
-}
-
-function formatDate(iso) {
-  if (!iso) return null;
-  try {
-    return new Date(iso).toLocaleDateString("en-IN", {
-      day: "numeric",
-      month: "short",
-      year: "numeric",
-    });
-  } catch {
-    return iso;
-  }
 }

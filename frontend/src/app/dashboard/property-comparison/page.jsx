@@ -3,6 +3,7 @@
 
 import { useEffect, useState, useCallback, Suspense } from "react";
 import { useSearchParams, useRouter } from "next/navigation";
+import { useTranslation } from "react-i18next";
 import {
   ArrowLeft,
   GitCompare,
@@ -28,6 +29,7 @@ import { getPropertyById, getPropertyRisk } from "@/services/propertyService";
 import { getAggregatedProperty } from "@/services/aggregationService";
 import { formatINR } from "@/utils/currency";
 import { useSavedComparisons } from "@/hooks/useSavedComparisons";
+import { translatePropertyType } from "@/utils/enumTranslations";
 
 import SaveComparisonModal from "@/components/property/SaveComparisonModal";
 import SavedComparisonsSheet from "@/components/property/SavedComparisonsSheet";
@@ -46,9 +48,10 @@ function fmt(val) {
   return `${val}`;
 }
 
-function fmtArea(val) {
+// Now accepts t() so "sqft" translates
+function fmtArea(val, t) {
   if (val == null) return "—";
-  return `${val.toLocaleString()} sqft`;
+  return `${val.toLocaleString()} ${t("property.details.sqft")}`;
 }
 
 function fmtRaw(val) {
@@ -133,7 +136,14 @@ const RISK_COLOR = {
   HIGH:   "text-red-700 dark:text-red-400 bg-red-50 dark:bg-[#2d1214]",
 };
 
-function RiskCell({ risk }) {
+// Maps backend risk label → translation key inside property.comparison.risk
+const RISK_LABEL_KEY = {
+  LOW:    "low",
+  MEDIUM: "medium",
+  HIGH:   "high",
+};
+
+function RiskCell({ risk, t }) {
   if (!risk) {
     return (
       <td className="px-4 py-3 text-center text-sm text-gray-400 dark:text-[#6e7681] border-r border-gray-100 dark:border-[#30363d] last:border-r-0">
@@ -142,13 +152,17 @@ function RiskCell({ risk }) {
     );
   }
   const Icon = RISK_ICON[risk.riskLabel] ?? Shield;
-  const color = RISK_COLOR[risk.riskLabel] ?? "text-gray-700 dark:text-[#e6edf3] bg-gray-50 dark:bg-[#1c2128]";
+  const color =
+    RISK_COLOR[risk.riskLabel] ??
+    "text-gray-700 dark:text-[#e6edf3] bg-gray-50 dark:bg-[#1c2128]";
   const delta =
     risk.riskLabel === "HIGH"
       ? "worst"
       : risk.riskLabel === "LOW"
-        ? "best"
-        : "neutral";
+      ? "best"
+      : "neutral";
+
+  const riskKey = RISK_LABEL_KEY[risk.riskLabel] ?? "medium";
 
   return (
     <td
@@ -156,8 +170,8 @@ function RiskCell({ risk }) {
         delta === "best"
           ? "bg-green-50 dark:bg-[#0d2818]"
           : delta === "worst"
-            ? "bg-red-50 dark:bg-[#2d1214]"
-            : ""
+          ? "bg-red-50 dark:bg-[#2d1214]"
+          : ""
       }`}
     >
       <div className="flex flex-col items-center gap-1">
@@ -165,11 +179,7 @@ function RiskCell({ risk }) {
           className={`inline-flex items-center gap-1 rounded-full px-2.5 py-1 text-xs font-bold ${color}`}
         >
           <Icon className="h-3.5 w-3.5" strokeWidth={2.5} />
-          {risk.riskLabel === "LOW"
-            ? "Low risk"
-            : risk.riskLabel === "MEDIUM"
-              ? "Medium risk"
-              : "High risk"}
+          {t(`property.comparison.risk.${riskKey}`)}
         </span>
         <span className="text-[11px] text-gray-500 dark:text-[#7d8590] tabular-nums font-semibold">
           {risk.overallScore}/100
@@ -190,17 +200,19 @@ const STATUS_COLORS = {
   ERROR:       "bg-red-100 dark:bg-[#2d1214] text-red-600 dark:text-red-400",
   NO_DATA:     "bg-gray-100 dark:bg-[#1c2128] text-gray-500 dark:text-[#7d8590]",
 };
-const STATUS_LABELS = {
-  LIVE:        "Live",
-  CACHED:      "Cached",
-  MOCK:        "Sample",
-  UNAVAILABLE: "Unavailable",
-  TIMEOUT:     "Timed out",
-  ERROR:       "Error",
-  NO_DATA:     "No data",
+
+// Backend status enum → translation key inside property.comparison.status
+const STATUS_KEY = {
+  LIVE:        "live",
+  CACHED:      "cached",
+  MOCK:        "sample",
+  UNAVAILABLE: "unavailable",
+  TIMEOUT:     "timedOut",
+  ERROR:       "error",
+  NO_DATA:     "noData",
 };
 
-function StatusCell({ section }) {
+function StatusCell({ section, t }) {
   const status = section?.status;
   if (!status)
     return (
@@ -208,14 +220,21 @@ function StatusCell({ section }) {
         —
       </td>
     );
+
+  const key = STATUS_KEY[status];
+  const label = key
+    ? t(`property.comparison.status.${key}`)
+    : status; // fallback to raw enum if unknown
+
   return (
     <td className="px-4 py-3 text-center border-r border-gray-100 dark:border-[#30363d] last:border-r-0">
       <span
         className={`inline-flex rounded-full px-2.5 py-1 text-[11px] font-bold ${
-          STATUS_COLORS[status] ?? "bg-gray-100 dark:bg-[#1c2128] text-gray-500 dark:text-[#7d8590]"
+          STATUS_COLORS[status] ??
+          "bg-gray-100 dark:bg-[#1c2128] text-gray-500 dark:text-[#7d8590]"
         }`}
       >
-        {STATUS_LABELS[status] ?? status}
+        {label}
       </span>
     </td>
   );
@@ -275,7 +294,7 @@ function PlainRow({ label, values }) {
 
 // ── Property header column (table thead) ──────────────────────────────────────
 
-function PropertyHeader({ property, index }) {
+function PropertyHeader({ property, index, t }) {
   if (!property) {
     return (
       <th className="px-4 py-4 text-center border-r border-gray-200 dark:border-[#30363d] last:border-r-0">
@@ -306,22 +325,28 @@ function PropertyHeader({ property, index }) {
         </div>
         {property.verified ? (
           <div className="flex items-center gap-1 rounded-full bg-green-50 dark:bg-[#0d2818] px-2.5 py-1 ring-1 ring-green-200 dark:ring-green-900/50">
-            <BadgeCheck className="h-3 w-3 text-green-600 dark:text-green-400" strokeWidth={2.5} />
+            <BadgeCheck
+              className="h-3 w-3 text-green-600 dark:text-green-400"
+              strokeWidth={2.5}
+            />
             <span className="text-[10px] font-bold text-green-700 dark:text-green-400">
-              Verified
+              {t("property.card.verified")}
             </span>
           </div>
         ) : (
           <div className="flex items-center gap-1 rounded-full bg-amber-50 dark:bg-[#282a10] px-2.5 py-1 ring-1 ring-amber-200 dark:ring-amber-900/50">
-            <AlertTriangle className="h-3 w-3 text-amber-600 dark:text-amber-400" strokeWidth={2.5} />
+            <AlertTriangle
+              className="h-3 w-3 text-amber-600 dark:text-amber-400"
+              strokeWidth={2.5}
+            />
             <span className="text-[10px] font-bold text-amber-700 dark:text-amber-400">
-              Pending
+              {t("property.card.pending")}
             </span>
           </div>
         )}
         {property.propertyType && (
           <span className="text-[10px] font-black uppercase tracking-widest text-[#22C55E]">
-            {property.propertyType}
+            {translatePropertyType(t, property.propertyType)}
           </span>
         )}
       </div>
@@ -373,6 +398,7 @@ function CompareSkeleton({ count }) {
 // ── Main comparison inner ─────────────────────────────────────────────────────
 
 function PropertyComparisonInner() {
+  const { t } = useTranslation();
   const searchParams = useSearchParams();
   const router = useRouter();
 
@@ -395,7 +421,10 @@ function PropertyComparisonInner() {
   const { save, isSaving } = useSavedComparisons({ autoFetch: false });
 
   const loadAll = useCallback(async () => {
-    if (ids.length < 1) { setLoading(false); return; }
+    if (ids.length < 1) {
+      setLoading(false);
+      return;
+    }
     try {
       setLoading(true);
       setError(null);
@@ -409,23 +438,30 @@ function PropertyComparisonInner() {
           return {
             property:   prop.status === "fulfilled" ? prop.value : null,
             aggregated: agg.status  === "fulfilled" ? agg.value  : null,
-            risk:       risk.status === "fulfilled" ? risk.value  : null,
+            risk:       risk.status === "fulfilled" ? risk.value : null,
           };
         })
       );
-      const loaded = results.filter((r) => r.status === "fulfilled").map((r) => r.value);
+      const loaded = results
+        .filter((r) => r.status === "fulfilled")
+        .map((r) => r.value);
       setProperties(loaded.map((r) => r.property));
       setAggregated(loaded.map((r) => r.aggregated));
       setRisks(loaded.map((r) => r.risk));
     } catch (err) {
-      setError(err?.message ?? "Failed to load comparison data");
-      toast.error("Could not load comparison", { description: "Please go back and try again." });
+      setError(err?.message ?? t("property.comparison.loadFailed"));
+      toast.error(t("property.comparison.couldNotLoad"), {
+        description: t("property.comparison.pleaseGoBack"),
+      });
     } finally {
       setLoading(false);
     }
-  }, [idsParam]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [idsParam, t]);
 
-  useEffect(() => { loadAll(); }, [loadAll]);
+  useEffect(() => {
+    loadAll();
+  }, [loadAll]);
 
   // ── Empty / error state ────────────────────────────────────────────────────
   if (!loading && (ids.length < 2 || error)) {
@@ -435,18 +471,17 @@ function PropertyComparisonInner() {
           <SearchX className="h-7 w-7 text-gray-300 dark:text-[#484f58]" />
         </div>
         <p className="text-lg font-bold text-gray-800 dark:text-[#e6edf3]">
-          {error ?? "Select at least 2 properties to compare"}
+          {error ?? t("property.comparison.selectAtLeast2")}
         </p>
         <p className="mt-1.5 text-sm text-gray-500 dark:text-[#7d8590] max-w-xs">
-          Go to property search, select 2–3 properties using the compare
-          checkbox on each card, then click "Compare".
+          {t("property.comparison.selectHelper")}
         </p>
         <Link
           href="/dashboard/property-search"
           className="mt-6 flex items-center gap-2 rounded-xl bg-[#22C55E] px-5 py-2.5 text-sm font-bold text-white shadow-[0_8px_20px_rgba(34,197,94,0.3)] transition hover:bg-[#16a34a]"
         >
           <ArrowLeft className="h-4 w-4" />
-          Go to property search
+          {t("property.comparison.goToSearch")}
         </Link>
       </div>
     );
@@ -466,6 +501,12 @@ function PropertyComparisonInner() {
     .filter(Boolean)
     .join(" vs ");
 
+  // Property unit label with pluralization
+  const unitLabel =
+    colCount === 1
+      ? t("property.comparison.propertyUnit")
+      : t("property.comparison.propertiesUnit");
+
   return (
     <div className="w-full max-w-[1400px] mx-auto space-y-6">
       <Breadcrumbs />
@@ -477,39 +518,44 @@ function PropertyComparisonInner() {
             <Link
               href="/dashboard/property-search"
               className="flex h-10 w-10 items-center justify-center rounded-xl border border-gray-200 dark:border-[#30363d] bg-white dark:bg-[#0d1117] text-gray-500 dark:text-[#7d8590] transition hover:border-[#22C55E] hover:text-[#16a34a]"
-              aria-label="Back to property search"
+              aria-label={t("property.comparison.backToSearch")}
             >
               <ArrowLeft className="h-4.5 w-4.5" strokeWidth={2.2} />
             </Link>
             <div>
               <div className="flex items-center gap-2">
                 <div className="flex h-8 w-8 items-center justify-center rounded-xl bg-green-50 dark:bg-[#0d2818] ring-1 ring-green-200 dark:ring-green-900/50">
-                  <GitCompare className="h-4 w-4 text-[#16a34a]" strokeWidth={2} />
+                  <GitCompare
+                    className="h-4 w-4 text-[#16a34a]"
+                    strokeWidth={2}
+                  />
                 </div>
                 <h1 className="text-2xl font-extrabold text-gray-900 dark:text-[#e6edf3] tracking-tight">
-                  Property comparison
+                  {t("property.comparison.title")}
                 </h1>
               </div>
               <p className="mt-1 text-sm text-gray-500 dark:text-[#7d8590]">
-                Side-by-side analysis of {colCount}{" "}
-                {colCount === 1 ? "property" : "properties"} · real data only
+                {t("property.comparison.subtitle", {
+                  n: colCount,
+                  unit: unitLabel,
+                })}
               </p>
             </div>
           </div>
 
           {/* Action buttons */}
           <div className="flex items-center gap-2 flex-wrap">
-            {/* My Saved button */}
+            {/* My Saved */}
             <button
               type="button"
               onClick={() => setSheetOpen(true)}
               className="flex items-center gap-2 rounded-xl border border-gray-200 dark:border-[#30363d] bg-white dark:bg-[#0d1117] px-4 py-2.5 text-sm font-bold text-gray-600 dark:text-[#7d8590] transition hover:border-[#22C55E] hover:text-[#16a34a] dark:hover:border-[#22C55E] dark:hover:text-[#22C55E] cursor-pointer"
             >
               <BookmarkCheck className="h-4 w-4" strokeWidth={2} />
-              My saved
+              {t("property.comparison.mySaved")}
             </button>
 
-            {/* Save Comparison button — green gradient, unchanged */}
+            {/* Save Comparison */}
             {!loading && properties.filter(Boolean).length >= 2 && (
               <button
                 type="button"
@@ -522,7 +568,7 @@ function PropertyComparisonInner() {
                 ) : (
                   <Bookmark className="h-4 w-4" strokeWidth={2.5} />
                 )}
-                Save comparison
+                {t("property.comparison.saveComparison")}
               </button>
             )}
 
@@ -569,7 +615,7 @@ function PropertyComparisonInner() {
                 <tr className="border-b-2 border-gray-200 dark:border-[#30363d]">
                   <th className="px-4 py-4 text-left bg-gray-50 dark:bg-[#1c2128] border-r border-gray-200 dark:border-[#30363d]">
                     <span className="text-[10px] font-black uppercase tracking-widest text-gray-400 dark:text-[#6e7681]">
-                      Metric
+                      {t("property.comparison.metricHeader")}
                     </span>
                   </th>
                   {P.map((prop, i) => (
@@ -577,6 +623,7 @@ function PropertyComparisonInner() {
                       key={prop?.id ?? ids[i] ?? `header-slot-${i}`}
                       property={prop}
                       index={i}
+                      t={t}
                     />
                   ))}
                 </tr>
@@ -584,100 +631,143 @@ function PropertyComparisonInner() {
 
               <tbody>
                 {/* ── FINANCIAL ── */}
-                <SectionHeader label="Financial" colCount={colCount} />
+                <SectionHeader
+                  label={t("property.comparison.sections.financial")}
+                  colCount={colCount}
+                />
                 <MetricRow
-                  label="Market value"
+                  label={t("property.comparison.metrics.marketValue")}
                   values={P.map((p) => p?.marketValue)}
-                  displayValues={P.map((p) => p?.marketValue ? formatINR(p.marketValue) : null)}
+                  displayValues={P.map((p) =>
+                    p?.marketValue ? formatINR(p.marketValue) : null
+                  )}
                   direction="higher-better"
                 />
                 <MetricRow
-                  label="Area"
+                  label={t("property.comparison.metrics.area")}
                   values={P.map((p) => p?.area)}
-                  displayValues={P.map((p) => p?.area ? fmtArea(p.area) : null)}
+                  displayValues={P.map((p) => (p?.area ? fmtArea(p.area, t) : null))}
                   direction="higher-better"
                 />
                 <MetricRow
-                  label="Price / sqft"
+                  label={t("property.comparison.metrics.pricePerSqft")}
                   values={pricePerSqft}
                   displayValues={P.map((p, i) =>
-                    pricePerSqft[i] ? `₹${pricePerSqft[i].toLocaleString("en-IN")}` : null
+                    pricePerSqft[i]
+                      ? `₹${pricePerSqft[i].toLocaleString("en-IN")}`
+                      : null
                   )}
                   direction="lower-better"
                 />
                 <MetricRow
-                  label="Lot size"
+                  label={t("property.comparison.metrics.lotSize")}
                   values={P.map((p) => p?.lotSize)}
-                  displayValues={P.map((p) => p?.lotSize ? fmtArea(p.lotSize) : null)}
+                  displayValues={P.map((p) =>
+                    p?.lotSize ? fmtArea(p.lotSize, t) : null
+                  )}
                   direction="higher-better"
                 />
                 <MetricRow
-                  label="Year built"
+                  label={t("property.comparison.metrics.yearBuilt")}
                   values={P.map((p) => p?.yearBuilt)}
                   displayValues={P.map((p) => fmt(p?.yearBuilt))}
                   direction="higher-better"
                 />
 
                 {/* ── PROPERTY DETAILS ── */}
-                <SectionHeader label="Property details" colCount={colCount} />
-                <PlainRow label="Type"       values={P.map((p) => p?.propertyType)} />
+                <SectionHeader
+                  label={t("property.comparison.sections.propertyDetails")}
+                  colCount={colCount}
+                />
+                <PlainRow
+                  label={t("property.comparison.metrics.type")}
+                  values={P.map((p) =>
+                    p?.propertyType ? translatePropertyType(t, p.propertyType) : null
+                  )}
+                />
                 <MetricRow
-                  label="Bedrooms"
+                  label={t("property.comparison.metrics.bedrooms")}
                   values={P.map((p) => p?.bedrooms)}
                   displayValues={P.map((p) => fmt(p?.bedrooms))}
                   direction="higher-better"
                 />
                 <MetricRow
-                  label="Bathrooms"
+                  label={t("property.comparison.metrics.bathrooms")}
                   values={P.map((p) => p?.bathrooms)}
                   displayValues={P.map((p) => fmt(p?.bathrooms))}
                   direction="higher-better"
                 />
-                <PlainRow label="Stories"        values={P.map((p) => fmt(p?.stories))} />
-                <PlainRow label="Condition"       values={P.map((p) => p?.condition ?? null)} />
-                <PlainRow label="Structure type"  values={P.map((p) => p?.structureType ?? null)} />
-                <PlainRow label="Zoning"          values={P.map((p) => p?.zoning ?? null)} />
+                <PlainRow
+                  label={t("property.comparison.metrics.stories")}
+                  values={P.map((p) => fmt(p?.stories))}
+                />
+                <PlainRow
+                  label={t("property.comparison.metrics.condition")}
+                  values={P.map((p) => p?.condition ?? null)}
+                />
+                <PlainRow
+                  label={t("property.comparison.metrics.structureType")}
+                  values={P.map((p) => p?.structureType ?? null)}
+                />
+                <PlainRow
+                  label={t("property.comparison.metrics.zoning")}
+                  values={P.map((p) => p?.zoning ?? null)}
+                />
 
                 {/* ── RISK ASSESSMENT ── */}
-                <SectionHeader label="Risk assessment" colCount={colCount} />
+                <SectionHeader
+                  label={t("property.comparison.sections.riskAssessment")}
+                  colCount={colCount}
+                />
                 <tr className="border-b border-gray-100 dark:border-[#30363d]">
                   <td className="px-4 py-3 text-xs font-semibold text-gray-500 dark:text-[#7d8590] border-r border-gray-200 dark:border-[#30363d] bg-gray-50/30 dark:bg-[#161b22]">
-                    Overall risk
+                    {t("property.comparison.metrics.overallRisk")}
                   </td>
                   {R.map((risk, i) => (
-                    <RiskCell key={i} risk={risk} />
+                    <RiskCell key={i} risk={risk} t={t} />
                   ))}
                 </tr>
                 <MetricRow
-                  label="Financial risk"
+                  label={t("property.comparison.metrics.financialRisk")}
                   values={R.map((r) => r?.financialScore)}
-                  displayValues={R.map((r) => r ? `${r.financialScore}/100` : null)}
+                  displayValues={R.map((r) =>
+                    r ? `${r.financialScore}/100` : null
+                  )}
                   direction="lower-better"
                 />
                 <MetricRow
-                  label="Legal risk"
+                  label={t("property.comparison.metrics.legalRisk")}
                   values={R.map((r) => r?.legalScore)}
-                  displayValues={R.map((r) => r ? `${r.legalScore}/100` : null)}
+                  displayValues={R.map((r) =>
+                    r ? `${r.legalScore}/100` : null
+                  )}
                   direction="lower-better"
                 />
                 <MetricRow
-                  label="Environmental risk"
+                  label={t("property.comparison.metrics.environmentalRisk")}
                   values={R.map((r) => r?.environmentalScore)}
-                  displayValues={R.map((r) => r ? `${r.environmentalScore}/100` : null)}
+                  displayValues={R.map((r) =>
+                    r ? `${r.environmentalScore}/100` : null
+                  )}
                   direction="lower-better"
                 />
                 <MetricRow
-                  label="Structural risk"
+                  label={t("property.comparison.metrics.structuralRisk")}
                   values={R.map((r) => r?.structuralScore)}
-                  displayValues={R.map((r) => r ? `${r.structuralScore}/100` : null)}
+                  displayValues={R.map((r) =>
+                    r ? `${r.structuralScore}/100` : null
+                  )}
                   direction="lower-better"
                 />
 
                 {/* ── DATA QUALITY ── */}
-                <SectionHeader label="Data quality" colCount={colCount} />
+                <SectionHeader
+                  label={t("property.comparison.sections.dataQuality")}
+                  colCount={colCount}
+                />
                 <tr className="border-b border-gray-100 dark:border-[#30363d]">
                   <td className="px-4 py-3 text-xs font-semibold text-gray-500 dark:text-[#7d8590] border-r border-gray-200 dark:border-[#30363d] bg-gray-50/30 dark:bg-[#161b22]">
-                    Verification
+                    {t("property.comparison.metrics.verification")}
                   </td>
                   {P.map((p, i) => (
                     <td
@@ -686,13 +776,19 @@ function PropertyComparisonInner() {
                     >
                       {p?.verified ? (
                         <span className="inline-flex items-center gap-1 rounded-full bg-green-50 dark:bg-[#0d2818] px-2.5 py-1 text-xs font-bold text-green-700 dark:text-green-400 ring-1 ring-green-200 dark:ring-green-900/50">
-                          <BadgeCheck className="h-3.5 w-3.5" strokeWidth={2.5} />
-                          Verified
+                          <BadgeCheck
+                            className="h-3.5 w-3.5"
+                            strokeWidth={2.5}
+                          />
+                          {t("property.card.verified")}
                         </span>
                       ) : (
                         <span className="inline-flex items-center gap-1 rounded-full bg-amber-50 dark:bg-[#282a10] px-2.5 py-1 text-xs font-bold text-amber-700 dark:text-amber-400 ring-1 ring-amber-200 dark:ring-amber-900/50">
-                          <AlertTriangle className="h-3.5 w-3.5" strokeWidth={2.5} />
-                          Pending
+                          <AlertTriangle
+                            className="h-3.5 w-3.5"
+                            strokeWidth={2.5}
+                          />
+                          {t("property.card.pending")}
                         </span>
                       )}
                     </td>
@@ -700,32 +796,49 @@ function PropertyComparisonInner() {
                 </tr>
 
                 {/* ── INTEGRATION SOURCES ── */}
-                <SectionHeader label="Integration data sources" colCount={colCount} />
+                <SectionHeader
+                  label={t("property.comparison.sections.integrationSources")}
+                  colCount={colCount}
+                />
                 {[
-                  ["Ownership",    (a) => a?.ownership],
-                  ["Tax history",  (a) => a?.taxHistory],
-                  ["Zoning",       (a) => a?.zoning],
-                  ["Flood zone",   (a) => a?.floodZone],
-                  ["Permits",      (a) => a?.permits],
-                  ["Environmental",(a) => a?.environmental],
-                ].map(([label, getter]) => (
-                  <tr
-                    key={label}
-                    className="border-b border-gray-100 dark:border-[#30363d] hover:bg-gray-50/50 dark:hover:bg-[#1c2128]/50 transition-colors"
-                  >
-                    <td className="px-4 py-3 text-xs font-semibold text-gray-500 dark:text-[#7d8590] border-r border-gray-200 dark:border-[#30363d] bg-gray-50/30 dark:bg-[#161b22]">
-                      {label}
-                    </td>
-                    {A.map((agg, i) => (
-                      <StatusCell key={i} section={getter(agg)} />
-                    ))}
-                  </tr>
-                ))}
+                  ["ownership",     (a) => a?.ownership],
+                  ["taxHistory",    (a) => a?.taxHistory],
+                  ["zoning",        (a) => a?.zoning],
+                  ["floodZone",     (a) => a?.floodZone],
+                  ["permits",       (a) => a?.permits],
+                  ["nearIndustrial",(a) => a?.environmental], // reuses environmental row group visually
+                ]
+                  .filter(([key]) => key !== "nearIndustrial") // exclude — handled separately below
+                  .map(([metricKey, getter]) => (
+                    <tr
+                      key={metricKey}
+                      className="border-b border-gray-100 dark:border-[#30363d] hover:bg-gray-50/50 dark:hover:bg-[#1c2128]/50 transition-colors"
+                    >
+                      <td className="px-4 py-3 text-xs font-semibold text-gray-500 dark:text-[#7d8590] border-r border-gray-200 dark:border-[#30363d] bg-gray-50/30 dark:bg-[#161b22]">
+                        {t(`property.comparison.metrics.${metricKey}`)}
+                      </td>
+                      {A.map((agg, i) => (
+                        <StatusCell key={i} section={getter(agg)} t={t} />
+                      ))}
+                    </tr>
+                  ))}
+                {/* Environmental integration status */}
+                <tr className="border-b border-gray-100 dark:border-[#30363d] hover:bg-gray-50/50 dark:hover:bg-[#1c2128]/50 transition-colors">
+                  <td className="px-4 py-3 text-xs font-semibold text-gray-500 dark:text-[#7d8590] border-r border-gray-200 dark:border-[#30363d] bg-gray-50/30 dark:bg-[#161b22]">
+                    {t("property.comparison.sections.environmental")}
+                  </td>
+                  {A.map((agg, i) => (
+                    <StatusCell key={i} section={agg?.environmental} t={t} />
+                  ))}
+                </tr>
 
-                {/* ── ENVIRONMENTAL ── */}
-                <SectionHeader label="Environmental" colCount={colCount} />
+                {/* ── ENVIRONMENTAL METRICS ── */}
+                <SectionHeader
+                  label={t("property.comparison.sections.environmental")}
+                  colCount={colCount}
+                />
                 <MetricRow
-                  label="AQI"
+                  label={t("property.comparison.metrics.aqi")}
                   values={A.map((a) => a?.environmental?.data?.airQualityIndex)}
                   displayValues={A.map((a) => {
                     const aqi = a?.environmental?.data?.airQualityIndex;
@@ -736,16 +849,18 @@ function PropertyComparisonInner() {
                   direction="lower-better"
                 />
                 <PlainRow
-                  label="Flood risk"
+                  label={t("property.comparison.metrics.floodRisk")}
                   values={A.map((a) => a?.floodZone?.data?.riskLevel ?? null)}
                 />
                 <PlainRow
-                  label="Flood zone"
-                  values={A.map((a) => a?.floodZone?.data?.zoneClassification ?? null)}
+                  label={t("property.comparison.metrics.floodZone")}
+                  values={A.map(
+                    (a) => a?.floodZone?.data?.zoneClassification ?? null
+                  )}
                 />
                 <tr className="border-b border-gray-100 dark:border-[#30363d] hover:bg-gray-50/50 dark:hover:bg-[#1c2128]/50 transition-colors">
                   <td className="px-4 py-3 text-xs font-semibold text-gray-500 dark:text-[#7d8590] border-r border-gray-200 dark:border-[#30363d] bg-gray-50/30 dark:bg-[#161b22]">
-                    Near industrial zone
+                    {t("property.comparison.metrics.nearIndustrial")}
                   </td>
                   {A.map((a, i) => {
                     const val = a?.environmental?.data?.nearIndustrialZone;
@@ -754,10 +869,16 @@ function PropertyComparisonInner() {
                         key={i}
                         className="px-4 py-3 text-sm font-bold text-center border-r border-gray-100 dark:border-[#30363d] last:border-r-0"
                       >
-                        {val == null ? "—" : val ? (
-                          <span className="text-red-600 dark:text-red-400">Yes</span>
+                        {val == null ? (
+                          "—"
+                        ) : val ? (
+                          <span className="text-red-600 dark:text-red-400">
+                            {t("common.yes")}
+                          </span>
                         ) : (
-                          <span className="text-green-700 dark:text-green-400">No</span>
+                          <span className="text-green-700 dark:text-green-400">
+                            {t("common.no")}
+                          </span>
                         )}
                       </td>
                     );
@@ -770,28 +891,37 @@ function PropertyComparisonInner() {
           {/* ── Table legend ── */}
           <div className="flex items-center gap-6 border-t border-gray-100 dark:border-[#30363d] bg-gray-50/50 dark:bg-[#1c2128] px-6 py-3 flex-wrap">
             <p className="text-[10px] font-black uppercase tracking-widest text-gray-400 dark:text-[#6e7681]">
-              Legend
+              {t("property.comparison.legend.title")}
             </p>
             <div className="flex items-center gap-1.5">
-              <TrendingUp className="h-3.5 w-3.5 text-green-600 dark:text-green-400" strokeWidth={2.5} />
+              <TrendingUp
+                className="h-3.5 w-3.5 text-green-600 dark:text-green-400"
+                strokeWidth={2.5}
+              />
               <span className="text-[11px] font-semibold text-gray-600 dark:text-[#7d8590]">
-                Best value
+                {t("property.comparison.legend.best")}
               </span>
             </div>
             <div className="flex items-center gap-1.5">
-              <TrendingDown className="h-3.5 w-3.5 text-red-500 dark:text-red-400" strokeWidth={2.5} />
+              <TrendingDown
+                className="h-3.5 w-3.5 text-red-500 dark:text-red-400"
+                strokeWidth={2.5}
+              />
               <span className="text-[11px] font-semibold text-gray-600 dark:text-[#7d8590]">
-                Worst value
+                {t("property.comparison.legend.worst")}
               </span>
             </div>
             <div className="flex items-center gap-1.5">
-              <Minus className="h-3 w-3 text-gray-300 dark:text-[#484f58]" strokeWidth={2} />
+              <Minus
+                className="h-3 w-3 text-gray-300 dark:text-[#484f58]"
+                strokeWidth={2}
+              />
               <span className="text-[11px] font-semibold text-gray-600 dark:text-[#7d8590]">
-                Middle
+                {t("property.comparison.legend.middle")}
               </span>
             </div>
             <span className="text-[11px] text-gray-400 dark:text-[#6e7681]">
-              Comparisons are relative — no external benchmarks used
+              {t("property.comparison.legend.note")}
             </span>
           </div>
         </div>
@@ -822,9 +952,11 @@ function PropertyComparisonInner() {
 }
 
 export default function PropertyComparisonPage() {
+  const { t } = useTranslation();
+
   useEffect(() => {
-    document.title = "Property Comparison | Real Estate Due Diligence";
-  }, []);
+    document.title = t("property.comparison.pageTitle");
+  }, [t]);
 
   return (
     <Suspense

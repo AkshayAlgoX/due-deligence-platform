@@ -1,39 +1,43 @@
 "use client";
 
 import Link from "next/link";
+import { useTranslation } from "react-i18next";
 
 import RegisterForm from "@/components/forms/RegisterForm";
 import GuestGuard from "@/components/GuestGuard";
 import { ShieldCheck, ListChecks, KeyRound, Users } from "lucide-react";
 
-const TRUST_ITEMS = [
-  {
-    icon: ListChecks,
-    title: "Verification-first listings",
-    description:
-      "Every property runs through a seven-point data-quality engine before it's marked verified.",
-  },
-  {
-    icon: KeyRound,
-    title: "Secure by default",
-    description:
-      "JWT sessions, BCrypt password hashing, and role-based access on every endpoint.",
-  },
-  {
-    icon: Users,
-    title: "Built for real teams",
-    description:
-      "Five distinct roles — buyer, agent, legal reviewer, financial institution, and admin.",
-  },
-  {
-    icon: ShieldCheck,
-    title: "Consent-first analytics",
-    description:
-      "Nothing loads until you opt in. Cookie preferences are honored strictly.",
-  },
-];
+// TRUST_ITEMS moved inside component — needs t() in scope
+// Icons are kept here for import clarity
+const TRUST_ICONS = [ListChecks, KeyRound, Users, ShieldCheck];
 
 function RegisterPageInner() {
+  const { t } = useTranslation();
+
+  // Built inside component so t() is available
+  const TRUST_ITEMS = [
+    {
+      icon: TRUST_ICONS[0],
+      title: t("auth.register.features.verificationFirst"),
+      description: t("auth.register.features.verificationFirstDesc"),
+    },
+    {
+      icon: TRUST_ICONS[1],
+      title: t("auth.register.features.secure"),
+      description: t("auth.register.features.secureDesc"),
+    },
+    {
+      icon: TRUST_ICONS[2],
+      title: t("auth.register.features.teams"),
+      description: t("auth.register.features.teamsDesc"),
+    },
+    {
+      icon: TRUST_ICONS[3],
+      title: t("auth.register.features.consent"),
+      description: t("auth.register.features.consentDesc"),
+    },
+  ];
+
   return (
     <main className="min-h-screen flex bg-[#edf7f3] dark:bg-[#0d1117]">
 
@@ -55,15 +59,15 @@ function RegisterPageInner() {
           <div className="w-full max-w-[480px]">
             <RegisterForm />
 
-            {/* Security footer */}
+            {/* Security footer — reuses auth.login keys */}
             <div className="mt-4 border-t border-gray-200 dark:border-[#30363d] pt-3 text-center">
               <p className="text-[10px] text-gray-500 dark:text-[#6e7681]">
-                Secure by design ·{" "}
+                {t("auth.login.secureBy")} ·{" "}
                 <Link
                   href="/security"
                   className="underline hover:text-[#22C55E] transition"
                 >
-                  Learn how
+                  {t("auth.login.learnHow")}
                 </Link>
               </p>
             </div>
@@ -71,7 +75,7 @@ function RegisterPageInner() {
         </div>
       </section>
 
-      {/* ── Right — hero panel (photo + glass card), unchanged ── */}
+      {/* ── Right — hero panel ── */}
       <section className="
         hidden lg:flex flex-1
         relative overflow-hidden
@@ -91,16 +95,18 @@ function RegisterPageInner() {
           aria-hidden="true"
         />
 
+        {/* Platform online badge */}
         <div className="absolute top-6 right-6 z-20">
           <div className="flex items-center gap-2 rounded-full border border-white/30 bg-white/10 px-5 py-2 text-xs font-semibold text-white backdrop-blur-md">
             <span className="relative flex h-2 w-2">
               <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-green-400 opacity-75" />
               <span className="relative inline-flex h-2 w-2 rounded-full bg-green-400" />
             </span>
-            Platform online
+            {t("auth.register.platformOnline")}
           </div>
         </div>
 
+        {/* Glass card */}
         <div className="relative z-10 m-8 xl:m-12 w-full max-w-sm">
           <div className="
             rounded-3xl
@@ -110,10 +116,10 @@ function RegisterPageInner() {
             shadow-[0_30px_80px_rgba(0,0,0,0.3)]
           ">
             <p className="text-[11px] font-bold tracking-widest uppercase text-green-400 mb-3">
-              Why this platform
+              {t("auth.register.whyPlatform")}
             </p>
             <h2 className="text-white font-black text-[22px] leading-tight tracking-tight mb-6">
-              Honest tooling for property due diligence
+              {t("auth.register.headline")}
             </h2>
             <ul className="space-y-4">
               {TRUST_ITEMS.map((item) => {

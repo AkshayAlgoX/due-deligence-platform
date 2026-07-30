@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { X, ShieldCheck, BarChart3 } from "lucide-react";
+import { useTranslation } from "react-i18next";
 
 function Switch({ checked, onChange, disabled }) {
   return (
@@ -40,6 +41,7 @@ export default function CookiePreferencesModal({
   onRejectAll,
   initialAnalytics = false,
 }) {
+  const { t } = useTranslation();
   const [analytics, setAnalytics] = useState(initialAnalytics);
 
   useEffect(() => {
@@ -82,16 +84,16 @@ export default function CookiePreferencesModal({
               id="cookie-prefs-title"
               className="text-lg font-bold text-gray-900 dark:text-[#e6edf3] tracking-tight"
             >
-              Cookie preferences
+              {t("cookies.prefs.title")}
             </h2>
             <p className="text-xs text-gray-500 dark:text-[#7d8590] mt-0.5">
-              You control what data we collect.
+              {t("cookies.prefs.subtitle")}
             </p>
           </div>
           <button
             onClick={onClose}
             className="flex h-8 w-8 items-center justify-center rounded-lg text-gray-400 dark:text-[#6e7681] hover:bg-gray-100 dark:hover:bg-[#1c2128] hover:text-gray-700 dark:hover:text-[#e6edf3] transition"
-            aria-label="Close"
+            aria-label={t("common.close")}
           >
             <X className="h-4 w-4" />
           </button>
@@ -100,14 +102,14 @@ export default function CookiePreferencesModal({
         {/* Body */}
         <div className="p-6 space-y-3">
           <PreferenceRow
-            title="Essential"
-            description="Required for authentication, session management, and security. Cannot be disabled."
+            title={t("cookies.prefs.essential.title")}
+            description={t("cookies.prefs.essential.description")}
             icon={<ShieldCheck className="h-4 w-4 text-gray-700 dark:text-[#7d8590]" strokeWidth={2.2} />}
             right={<Switch checked={true} disabled onChange={() => {}} />}
           />
           <PreferenceRow
-            title="Analytics"
-            description="Google Analytics 4 — anonymized page views and events. Helps us understand which features get used. Off by default."
+            title={t("cookies.prefs.analytics.title")}
+            description={t("cookies.prefs.analytics.description")}
             icon={<BarChart3 className="h-4 w-4 text-gray-700 dark:text-[#7d8590]" strokeWidth={2.2} />}
             right={<Switch checked={analytics} onChange={setAnalytics} />}
           />
@@ -120,7 +122,7 @@ export default function CookiePreferencesModal({
             onClick={onRejectAll}
             className="text-sm font-semibold text-gray-600 dark:text-[#7d8590] hover:text-gray-900 dark:hover:text-[#e6edf3] transition px-2 py-1"
           >
-            Reject all
+            {t("cookies.prefs.rejectAll")}
           </button>
 
           <div className="flex gap-2">
@@ -129,14 +131,14 @@ export default function CookiePreferencesModal({
               onClick={onAcceptAll}
               className="rounded-lg border border-gray-200 dark:border-[#30363d] bg-white dark:bg-[#0d1117] px-4 py-2 text-sm font-semibold text-gray-700 dark:text-[#e6edf3] hover:bg-gray-50 dark:hover:bg-[#1c2128] transition"
             >
-              Accept all
+              {t("cookies.prefs.acceptAll")}
             </button>
             <button
               type="button"
               onClick={() => onSave({ analytics })}
               className="rounded-lg bg-gray-900 dark:bg-[#e6edf3] px-4 py-2 text-sm font-bold text-white dark:text-[#0d1117] hover:bg-gray-800 dark:hover:bg-white transition"
             >
-              Save choices
+              {t("cookies.prefs.saveChoices")}
             </button>
           </div>
         </div>

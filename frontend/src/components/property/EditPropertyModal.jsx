@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect, useRef, useMemo } from "react";
+import { useTranslation } from "react-i18next";
 import { toast } from "sonner";
 import { motion } from "framer-motion";
 import {
@@ -28,36 +29,38 @@ import ImageUploader from "./ImageUploader";
 import SearchableSelect from "@/components/ui/SearchableSelect";
 import { INDIAN_STATES, INDIAN_CITIES } from "@/constants/indianLocations";
 
-const PROPERTY_TYPES = [
-  { value: "Residential", label: "Residential", icon: Home,      color: "text-blue-600 bg-blue-50 dark:bg-[#0c1f33] dark:text-blue-400",       desc: "Home, apartment, villa" },
-  { value: "Commercial",  label: "Commercial",  icon: Building,  color: "text-purple-600 bg-purple-50 dark:bg-[#1a1033] dark:text-purple-400",  desc: "Office, retail, hotel" },
-  { value: "Industrial",  label: "Industrial",  icon: Factory,   color: "text-orange-600 bg-orange-50 dark:bg-[#2a1500] dark:text-orange-400",  desc: "Warehouse, factory" },
-  { value: "Land",        label: "Land",        icon: Trees,     color: "text-green-600 bg-green-50 dark:bg-[#0d2818] dark:text-green-400",     desc: "Plot, agricultural" },
-  { value: "Mixed-Use",   label: "Mixed-Use",   icon: Warehouse, color: "text-indigo-600 bg-indigo-50 dark:bg-[#0f1733] dark:text-indigo-400", desc: "Residential + commercial" },
+// Property type keys — labels/descs come from i18n
+const PROPERTY_TYPE_KEYS = [
+  { value: "Residential", tKey: "residential", icon: Home,      color: "text-blue-600 bg-blue-50 dark:bg-[#0c1f33] dark:text-blue-400" },
+  { value: "Commercial",  tKey: "commercial",  icon: Building,  color: "text-purple-600 bg-purple-50 dark:bg-[#1a1033] dark:text-purple-400" },
+  { value: "Industrial",  tKey: "industrial",  icon: Factory,   color: "text-orange-600 bg-orange-50 dark:bg-[#2a1500] dark:text-orange-400" },
+  { value: "Land",        tKey: "land",        icon: Trees,     color: "text-green-600 bg-green-50 dark:bg-[#0d2818] dark:text-green-400" },
+  { value: "Mixed-Use",   tKey: "mixedUse",    icon: Warehouse, color: "text-indigo-600 bg-indigo-50 dark:bg-[#0f1733] dark:text-indigo-400" },
 ];
 
 const VERIFICATION_FIELDS = [
   "address", "city", "state", "zipCode", "propertyType", "area", "marketValue",
 ];
 
-function validateField(field, value) {
+// t-aware validator (reuses addModal error keys)
+function validateField(field, value, t) {
   const trimmed = String(value ?? "").trim();
   switch (field) {
     case "address":
-      if (!trimmed) return "Address is required";
-      if (trimmed.length <= 5) return "Address should be at least 6 characters";
+      if (!trimmed) return t("property.addModal.errors.addressRequired");
+      if (trimmed.length <= 5) return t("property.addModal.errors.addressLength");
       return "";
     case "city":
-      if (!trimmed) return "City is required";
+      if (!trimmed) return t("property.addModal.errors.cityRequired");
       return "";
     case "zipCode":
-      if (trimmed && !/^\d{6}$/.test(trimmed)) return "PIN must be exactly 6 digits";
+      if (trimmed && !/^\d{6}$/.test(trimmed)) return t("property.addModal.errors.pinInvalid");
       return "";
     case "area":
-      if (trimmed && parseFloat(trimmed) <= 0) return "Area must be greater than 0";
+      if (trimmed && parseFloat(trimmed) <= 0) return t("property.addModal.errors.areaInvalid");
       return "";
     case "marketValue":
-      if (trimmed && parseFloat(trimmed) <= 0) return "Value must be greater than 0";
+      if (trimmed && parseFloat(trimmed) <= 0) return t("property.addModal.errors.valueInvalid");
       return "";
     default:
       return "";
@@ -65,6 +68,8 @@ function validateField(field, value) {
 }
 
 export default function EditPropertyModal({ isOpen, onClose, property, onSuccess }) {
+  const { t } = useTranslation();
+
   const [form, setForm] = useState({
     address: "", city: "", state: "", zipCode: "",
     propertyType: "", area: "", marketValue: "",
@@ -75,6 +80,17 @@ export default function EditPropertyModal({ isOpen, onClose, property, onSuccess
   const [typeDropdownOpen, setTypeDropdownOpen] = useState(false);
   const [isDark, setIsDark] = useState(false);
   const typeDropdownRef = useRef(null);
+
+  // Translated property types
+  const PROPERTY_TYPES = useMemo(
+    () =>
+      PROPERTY_TYPE_KEYS.map((p) => ({
+        ...p,
+        label: t(`property.addModal.types.${p.tKey}Label`),
+        desc:  t(`property.addModal.types.${p.tKey}Desc`),
+      })),
+    [t]
+  );
 
   // Dark mode detection (for SVG ring)
   useEffect(() => {
@@ -146,6 +162,7 @@ export default function EditPropertyModal({ isOpen, onClose, property, onSuccess
   }, [form]);
 
   const willBeVerified = verificationStatus.passed === verificationStatus.total;
+  const remaining = verificationStatus.total - verificationStatus.passed;
 
   // ✅ Early return AFTER all hooks
   if (!isOpen || !property) return null;
@@ -153,7 +170,7 @@ export default function EditPropertyModal({ isOpen, onClose, property, onSuccess
   const handleChange = (field) => (e) => {
     const value = e.target.value;
     setForm((prev) => ({ ...prev, [field]: value }));
-    const fieldError = validateField(field, value);
+    const fieldError = validateField(field, value, t);
     setErrors((prev) => ({ ...prev, [field]: fieldError }));
   };
 
@@ -174,16 +191,20 @@ export default function EditPropertyModal({ isOpen, onClose, property, onSuccess
   const validate = () => {
     const e = {};
     if (!form.address.trim()) {
-      e.address = "Address is required";
+      e.address = t("property.addModal.errors.addressRequired");
     } else if (form.address.trim().length <= 5) {
-      e.address = "Address should be at least 6 characters";
+      e.address = t("property.addModal.errors.addressLength");
     }
-    if (!form.city.trim()) e.city = "City is required";
+    if (!form.city.trim()) e.city = t("property.addModal.errors.cityRequired");
     if (form.zipCode.trim() && !/^\d{6}$/.test(form.zipCode.trim())) {
-      e.zipCode = "PIN must be exactly 6 digits";
+      e.zipCode = t("property.addModal.errors.pinInvalid");
     }
-    if (form.area && parseFloat(form.area) <= 0) e.area = "Area must be greater than 0";
-    if (form.marketValue && parseFloat(form.marketValue) <= 0) e.marketValue = "Value must be greater than 0";
+    if (form.area && parseFloat(form.area) <= 0) {
+      e.area = t("property.addModal.errors.areaInvalid");
+    }
+    if (form.marketValue && parseFloat(form.marketValue) <= 0) {
+      e.marketValue = t("property.addModal.errors.valueInvalid");
+    }
     return e;
   };
 
@@ -192,8 +213,8 @@ export default function EditPropertyModal({ isOpen, onClose, property, onSuccess
     const errs = validate();
     if (Object.keys(errs).length > 0) {
       setErrors(errs);
-      toast.error("Form has errors", {
-        description: "Please review the highlighted fields below.",
+      toast.error(t("property.addModal.errors.formHasErrors"), {
+        description: t("property.addModal.errors.reviewFields"),
       });
       return;
     }
@@ -216,26 +237,30 @@ export default function EditPropertyModal({ isOpen, onClose, property, onSuccess
       const updated = await updateProperty(property.id, payload);
 
       if (updated.verified) {
-        toast.success("Property verified", { description: "All 7 data quality checks passed." });
+        toast.success(t("property.editModal.toasts.verified"), {
+          description: t("property.addModal.toasts.addedVerifiedDesc"),
+        });
       } else {
         const stillMissing = updated.missingFields || [];
-        toast.success("Changes saved", {
-          description: `${stillMissing.length} field${stillMissing.length === 1 ? "" : "s"} still needed for verification.`,
+        toast.success(t("property.editModal.toasts.changesSaved"), {
+          description: t("property.editModal.toasts.stillNeeded", {
+            count: stillMissing.length,
+          }),
         });
       }
 
       onSuccess?.(updated);
       onClose();
     } catch (err) {
-      toast.error("Couldn't save changes", {
-        description: err.message || "Please try again in a moment.",
+      toast.error(t("property.editModal.toasts.saveFailed"), {
+        description: err.message || t("property.addModal.errors.tryAgainMoment"),
       });
     } finally {
       setSaving(false);
     }
   };
 
-  const selectedType = PROPERTY_TYPES.find((t) => t.value === form.propertyType);
+  const selectedType = PROPERTY_TYPES.find((tp) => tp.value === form.propertyType);
   const ringTrackStroke = isDark ? "#30363d" : "#e5e7eb";
 
   return (
@@ -251,12 +276,13 @@ export default function EditPropertyModal({ isOpen, onClose, property, onSuccess
         animate="animate"
         className="w-full max-w-2xl overflow-hidden rounded-3xl bg-white dark:bg-[#161b22] shadow-[0_30px_80px_rgba(0,0,0,0.3)] dark:shadow-[0_30px_80px_rgba(0,0,0,0.6)] max-h-[92vh] flex flex-col"
       >
-        {/* ── Header (green — unchanged) ── */}
+        {/* ── Header ── */}
         <div className="relative bg-gradient-to-br from-[#22C55E] via-[#22C55E] to-[#16a34a] px-6 py-5 flex-shrink-0">
           <div
             className="absolute inset-0 opacity-10"
             style={{
-              backgroundImage: "linear-gradient(rgba(255,255,255,0.3) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.3) 1px, transparent 1px)",
+              backgroundImage:
+                "linear-gradient(rgba(255,255,255,0.3) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.3) 1px, transparent 1px)",
               backgroundSize: "20px 20px",
             }}
           />
@@ -265,15 +291,19 @@ export default function EditPropertyModal({ isOpen, onClose, property, onSuccess
               <Edit3 className="h-5 w-5 text-white" strokeWidth={2.5} />
             </div>
             <div className="min-w-0">
-              <h2 className="text-xl font-black text-white tracking-tight truncate">Edit property</h2>
-              <p className="text-xs text-white/80 mt-0.5 truncate">{property.address}</p>
+              <h2 className="text-xl font-black text-white tracking-tight truncate">
+                {t("property.editModal.title")}
+              </h2>
+              <p className="text-xs text-white/80 mt-0.5 truncate">
+                {property.address}
+              </p>
             </div>
           </div>
           <button
             type="button"
             onClick={onClose}
             className="absolute right-4 top-4 flex h-9 w-9 items-center justify-center rounded-xl bg-white/20 text-white transition hover:bg-white/30 backdrop-blur-sm"
-            aria-label="Close"
+            aria-label={t("property.addModal.closeAria")}
           >
             <X className="h-4 w-4" strokeWidth={2.5} />
           </button>
@@ -288,20 +318,27 @@ export default function EditPropertyModal({ isOpen, onClose, property, onSuccess
             <div className="flex-1 min-w-0">
               <p className="text-xs font-bold text-gray-800 dark:text-[#e6edf3]">
                 {willBeVerified
-                  ? "All data quality checks passed"
-                  : `${verificationStatus.total - verificationStatus.passed} field${verificationStatus.total - verificationStatus.passed === 1 ? "" : "s"} away from full verification`}
+                  ? t("property.editModal.banner.allPassed")
+                  : t("property.editModal.banner.awayFromVerification", {
+                      count: remaining,
+                    })}
               </p>
               <p className="text-[11px] text-gray-500 dark:text-[#7d8590] mt-0.5">
-                Complete all fields to mark this property as verified.
+                {t("property.editModal.banner.hint")}
               </p>
             </div>
             <div className="flex-shrink-0 flex items-center gap-2.5 pl-3 border-l border-gray-200 dark:border-[#30363d]">
               <div className="text-right">
-                <p className="text-[9px] font-bold uppercase tracking-widest text-gray-500 dark:text-[#7d8590] leading-tight">Verification</p>
+                <p className="text-[9px] font-bold uppercase tracking-widest text-gray-500 dark:text-[#7d8590] leading-tight">
+                  {t("property.addModal.verification")}
+                </p>
                 <p className={`text-sm font-black tabular-nums leading-tight ${
                   willBeVerified ? "text-[#16a34a]" : "text-gray-700 dark:text-[#e6edf3]"
                 }`}>
-                  {verificationStatus.passed}<span className="text-gray-400 dark:text-[#6e7681] font-bold">/{verificationStatus.total}</span>
+                  {verificationStatus.passed}
+                  <span className="text-gray-400 dark:text-[#6e7681] font-bold">
+                    /{verificationStatus.total}
+                  </span>
                 </p>
               </div>
               <div className="relative h-9 w-9 flex-shrink-0">
@@ -332,25 +369,40 @@ export default function EditPropertyModal({ isOpen, onClose, property, onSuccess
         <form onSubmit={handleSubmit} className="flex-1 overflow-y-auto px-6 py-5 space-y-5">
 
           {/* Location */}
-          <FormSection title="Location" subtitle="Where is this property?">
-            <Field label="Street address" icon={Home} required error={errors.address}>
+          <FormSection
+            title={t("property.addModal.sections.location")}
+            subtitle={t("property.addModal.sections.locationSub")}
+          >
+            <Field
+              label={t("property.addModal.fields.streetAddress")}
+              icon={Home}
+              required
+              error={errors.address}
+              optionalLabel={t("property.addModal.optional")}
+            >
               <input
                 type="text"
                 value={form.address}
                 onChange={handleChange("address")}
-                placeholder="742 Evergreen Terrace"
+                placeholder={t("property.editModal.placeholders.address")}
                 disabled={saving}
                 className={inputCls(errors.address)}
               />
             </Field>
 
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-              <Field label="City" icon={Building2} required error={errors.city}>
+              <Field
+                label={t("property.addModal.fields.city")}
+                icon={Building2}
+                required
+                error={errors.city}
+                optionalLabel={t("property.addModal.optional")}
+              >
                 <SearchableSelect
                   value={form.city}
                   onChange={handleSelectChange("city")}
                   options={INDIAN_CITIES}
-                  placeholder="Select or type city"
+                  placeholder={t("property.addModal.placeholders.city")}
                   disabled={saving}
                   error={Boolean(errors.city)}
                   allowCustom
@@ -358,23 +410,34 @@ export default function EditPropertyModal({ isOpen, onClose, property, onSuccess
                 />
               </Field>
 
-              <Field label="State" icon={MapPin} optional>
+              <Field
+                label={t("property.addModal.fields.state")}
+                icon={MapPin}
+                optional
+                optionalLabel={t("property.addModal.optional")}
+              >
                 <SearchableSelect
                   value={form.state}
                   onChange={handleSelectChange("state")}
                   options={INDIAN_STATES}
-                  placeholder="Select state"
+                  placeholder={t("property.addModal.placeholders.state")}
                   disabled={saving}
                   icon={MapPin}
                 />
               </Field>
 
-              <Field label="PIN code" icon={Hash} optional error={errors.zipCode}>
+              <Field
+                label={t("property.addModal.fields.pinCode")}
+                icon={Hash}
+                optional
+                error={errors.zipCode}
+                optionalLabel={t("property.addModal.optional")}
+              >
                 <input
                   type="text"
                   value={form.zipCode}
                   onChange={handleChange("zipCode")}
-                  placeholder="560001"
+                  placeholder={t("property.addModal.placeholders.pinCode")}
                   maxLength={6}
                   inputMode="numeric"
                   disabled={saving}
@@ -385,12 +448,15 @@ export default function EditPropertyModal({ isOpen, onClose, property, onSuccess
           </FormSection>
 
           {/* Property details */}
-          <FormSection title="Property details" subtitle="Help us classify and value it">
+          <FormSection
+            title={t("property.addModal.sections.propertyDetails")}
+            subtitle={t("property.addModal.sections.propertyDetailsSub")}
+          >
             <div ref={typeDropdownRef}>
               <label className="mb-1.5 block text-xs font-semibold text-gray-700 dark:text-[#e6edf3]">
-                Property type
+                {t("property.addModal.fields.propertyType")}
                 <span className="ml-1.5 rounded-md bg-gray-100 dark:bg-[#1c2128] px-1.5 py-0.5 text-[9px] font-bold uppercase tracking-wider text-gray-500 dark:text-[#7d8590]">
-                  Optional
+                  {t("property.addModal.optional")}
                 </span>
               </label>
 
@@ -417,8 +483,12 @@ export default function EditPropertyModal({ isOpen, onClose, property, onSuccess
                           <selectedType.icon className="h-4 w-4" strokeWidth={2.2} />
                         </div>
                         <div className="min-w-0">
-                          <p className="font-bold text-gray-900 dark:text-[#e6edf3] truncate leading-tight">{selectedType.label}</p>
-                          <p className="text-[11px] text-gray-500 dark:text-[#7d8590] truncate">{selectedType.desc}</p>
+                          <p className="font-bold text-gray-900 dark:text-[#e6edf3] truncate leading-tight">
+                            {selectedType.label}
+                          </p>
+                          <p className="text-[11px] text-gray-500 dark:text-[#7d8590] truncate">
+                            {selectedType.desc}
+                          </p>
                         </div>
                       </>
                     ) : (
@@ -426,7 +496,9 @@ export default function EditPropertyModal({ isOpen, onClose, property, onSuccess
                         <div className="flex h-8 w-8 flex-shrink-0 items-center justify-center rounded-lg bg-gray-100 dark:bg-[#1c2128]">
                           <Building className="h-4 w-4 text-gray-400 dark:text-[#6e7681]" />
                         </div>
-                        <span className="text-gray-400 dark:text-[#6e7681]">Choose a property type</span>
+                        <span className="text-gray-400 dark:text-[#6e7681]">
+                          {t("property.addModal.placeholders.propertyType")}
+                        </span>
                       </>
                     )}
                   </div>
@@ -468,12 +540,19 @@ export default function EditPropertyModal({ isOpen, onClose, property, onSuccess
             </div>
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              <Field label="Area" icon={Maximize} optional error={errors.area} hint="Square feet">
+              <Field
+                label={t("property.addModal.fields.area")}
+                icon={Maximize}
+                optional
+                error={errors.area}
+                hint={t("property.addModal.hints.sqft")}
+                optionalLabel={t("property.addModal.optional")}
+              >
                 <input
                   type="number"
                   value={form.area}
                   onChange={handleChange("area")}
-                  placeholder="1800"
+                  placeholder={t("property.addModal.placeholders.area")}
                   min="0"
                   step="1"
                   disabled={saving}
@@ -481,12 +560,19 @@ export default function EditPropertyModal({ isOpen, onClose, property, onSuccess
                 />
               </Field>
 
-              <Field label="Market value" icon={IndianRupee} optional error={errors.marketValue} hint="Indian Rupees">
+              <Field
+                label={t("property.addModal.fields.marketValue")}
+                icon={IndianRupee}
+                optional
+                error={errors.marketValue}
+                hint={t("property.addModal.hints.inr")}
+                optionalLabel={t("property.addModal.optional")}
+              >
                 <input
                   type="number"
                   value={form.marketValue}
                   onChange={handleChange("marketValue")}
-                  placeholder="15000000"
+                  placeholder={t("property.addModal.placeholders.marketValue")}
                   min="0"
                   step="1"
                   disabled={saving}
@@ -497,13 +583,16 @@ export default function EditPropertyModal({ isOpen, onClose, property, onSuccess
           </FormSection>
 
           {/* Photo */}
-          <FormSection title="Photo" subtitle="Update or add a property photo">
+          <FormSection
+            title={t("property.addModal.sections.photo")}
+            subtitle={t("property.editModal.sections.photoSub")}
+          >
             <div>
               <label className="mb-2 flex items-center gap-1.5 text-xs font-semibold text-gray-700 dark:text-[#e6edf3]">
                 <Camera className="h-3.5 w-3.5 text-gray-500 dark:text-[#7d8590]" />
-                Property photo
+                {t("property.addModal.fields.propertyPhoto")}
                 <span className="ml-1 rounded-md bg-gray-100 dark:bg-[#1c2128] px-1.5 py-0.5 text-[9px] font-bold uppercase tracking-wider text-gray-500 dark:text-[#7d8590]">
-                  Optional
+                  {t("property.addModal.optional")}
                 </span>
               </label>
               <ImageUploader value={form.imageUrl} onChange={handleImageChange} disabled={saving} />
@@ -511,50 +600,69 @@ export default function EditPropertyModal({ isOpen, onClose, property, onSuccess
           </FormSection>
 
           {/* Extra details */}
-          <FormSection title="Extra details" subtitle="Optional — helps with reports and comparisons">
+          <FormSection
+            title={t("property.addModal.sections.extraDetails")}
+            subtitle={t("property.addModal.sections.extraDetailsSub")}
+          >
             <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-              <Field label="Year built" optional>
+              <Field
+                label={t("property.addModal.fields.yearBuilt")}
+                optional
+                optionalLabel={t("property.addModal.optional")}
+              >
                 <input
                   type="number"
                   value={form.yearBuilt}
                   onChange={handleChange("yearBuilt")}
-                  placeholder="2015"
+                  placeholder={t("property.addModal.placeholders.yearBuilt")}
                   min="1800"
                   max={new Date().getFullYear()}
                   disabled={saving}
                   className={inputClsNoIcon()}
                 />
               </Field>
-              <Field label="Bedrooms" optional>
+              <Field
+                label={t("property.addModal.fields.bedrooms")}
+                optional
+                optionalLabel={t("property.addModal.optional")}
+              >
                 <input
                   type="number"
                   value={form.bedrooms}
                   onChange={handleChange("bedrooms")}
-                  placeholder="3"
+                  placeholder={t("property.addModal.placeholders.bedrooms")}
                   min="0"
                   max="20"
                   disabled={saving}
                   className={inputClsNoIcon()}
                 />
               </Field>
-              <Field label="Bathrooms" optional>
+              <Field
+                label={t("property.addModal.fields.bathrooms")}
+                optional
+                optionalLabel={t("property.addModal.optional")}
+              >
                 <input
                   type="number"
                   value={form.bathrooms}
                   onChange={handleChange("bathrooms")}
-                  placeholder="2"
+                  placeholder={t("property.addModal.placeholders.bathrooms")}
                   min="0"
                   max="20"
                   disabled={saving}
                   className={inputClsNoIcon()}
                 />
               </Field>
-              <Field label="Stories" optional>
+              <Field
+                label={t("property.addModal.fields.stories")}
+                optional
+                optionalLabel={t("property.addModal.optional")}
+              >
                 <input
                   type="number"
                   value={form.stories}
                   onChange={handleChange("stories")}
-                  placeholder="2"
+                  placeholder={t("property.addModal.placeholders.stories")}
                   min="1"
                   max="200"
                   disabled={saving}
@@ -574,15 +682,21 @@ export default function EditPropertyModal({ isOpen, onClose, property, onSuccess
                   <div className="flex h-6 w-6 items-center justify-center rounded-full bg-green-100 dark:bg-[#0d2818]">
                     <Check className="h-3.5 w-3.5 text-[#16a34a]" strokeWidth={3} />
                   </div>
-                  <span className="font-semibold text-[#16a34a]">Saving will mark this verified</span>
+                  <span className="font-semibold text-[#16a34a]">
+                    {t("property.editModal.footer.willMarkVerified")}
+                  </span>
                 </>
               ) : (
                 <>
                   <div className="flex h-6 w-6 items-center justify-center rounded-full bg-amber-100 dark:bg-[#282a10]">
-                    <span className="text-[10px] font-black text-amber-700 dark:text-amber-400">{verificationStatus.percent}%</span>
+                    <span className="text-[10px] font-black text-amber-700 dark:text-amber-400">
+                      {verificationStatus.percent}%
+                    </span>
                   </div>
                   <span>
-                    {verificationStatus.total - verificationStatus.passed} field{verificationStatus.total - verificationStatus.passed === 1 ? "" : "s"} to full verification
+                    {t("property.editModal.footer.fieldsToVerification", {
+                      count: remaining,
+                    })}
                   </span>
                 </>
               )}
@@ -594,7 +708,7 @@ export default function EditPropertyModal({ isOpen, onClose, property, onSuccess
                 disabled={saving}
                 className="rounded-xl border border-gray-200 dark:border-[#30363d] bg-white dark:bg-[#0d1117] px-5 py-2.5 text-sm font-semibold text-gray-700 dark:text-[#e6edf3] transition hover:bg-gray-100 dark:hover:bg-[#1c2128] disabled:opacity-50"
               >
-                Cancel
+                {t("property.addModal.footer.cancel")}
               </button>
               <button
                 type="submit"
@@ -606,12 +720,16 @@ export default function EditPropertyModal({ isOpen, onClose, property, onSuccess
                 {saving ? (
                   <>
                     <Loader2 className="h-4 w-4 animate-spin relative z-10" />
-                    <span className="relative z-10">Saving</span>
+                    <span className="relative z-10">
+                      {t("property.addModal.footer.saving")}
+                    </span>
                   </>
                 ) : (
                   <>
                     <Save className="h-4 w-4 relative z-10" strokeWidth={2.5} />
-                    <span className="relative z-10">Save changes</span>
+                    <span className="relative z-10">
+                      {t("property.editModal.footer.saveChanges")}
+                    </span>
                   </>
                 )}
               </button>
@@ -628,8 +746,12 @@ function FormSection({ title, subtitle, children }) {
   return (
     <div className="space-y-3">
       <div>
-        <h3 className="text-sm font-black text-gray-900 dark:text-[#e6edf3] tracking-tight">{title}</h3>
-        <p className="text-[11px] text-gray-500 dark:text-[#7d8590] mt-0.5">{subtitle}</p>
+        <h3 className="text-sm font-black text-gray-900 dark:text-[#e6edf3] tracking-tight">
+          {title}
+        </h3>
+        <p className="text-[11px] text-gray-500 dark:text-[#7d8590] mt-0.5">
+          {subtitle}
+        </p>
       </div>
       <div className="space-y-4">{children}</div>
     </div>
@@ -637,7 +759,8 @@ function FormSection({ title, subtitle, children }) {
 }
 
 // ─── Field ────────────────────────────────────────────────────────────────────
-function Field({ label, icon: Icon, required, optional, error, hint, children }) {
+// optionalLabel prop passed from parent (already translated)
+function Field({ label, icon: Icon, required, optional, error, hint, children, optionalLabel = "Optional" }) {
   return (
     <div>
       <div className="mb-1.5 flex items-center justify-between">
@@ -646,11 +769,13 @@ function Field({ label, icon: Icon, required, optional, error, hint, children })
           {required && <span className="text-red-500">*</span>}
           {optional && (
             <span className="rounded-md bg-gray-100 dark:bg-[#1c2128] px-1.5 py-0.5 text-[9px] font-bold uppercase tracking-wider text-gray-500 dark:text-[#7d8590]">
-              Optional
+              {optionalLabel}
             </span>
           )}
         </label>
-        {hint && !error && <span className="text-[10px] text-gray-400 dark:text-[#6e7681]">{hint}</span>}
+        {hint && !error && (
+          <span className="text-[10px] text-gray-400 dark:text-[#6e7681]">{hint}</span>
+        )}
       </div>
       <div className="relative">
         {Icon && (
@@ -668,7 +793,7 @@ function Field({ label, icon: Icon, required, optional, error, hint, children })
   );
 }
 
-// ─── Input styles ─────────────────────────────────────────────────────────────
+// ─── Input styles (unchanged) ────────────────────────────────────────────────
 const inputCls = (hasError) =>
   `h-11 w-full rounded-xl border bg-white dark:bg-[#0d1117] pl-10 pr-3 text-sm text-gray-800 dark:text-[#e6edf3] placeholder:text-gray-400 dark:placeholder:text-[#6e7681] outline-none transition disabled:bg-gray-50 dark:disabled:bg-[#1c2128] ${
     hasError

@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { useTranslation } from "react-i18next";
 import {
   Wallet,
   ShieldCheck,
@@ -101,6 +102,8 @@ export default function HeroStrip({ stats, loading: statsLoading }) {
 }
 
 function PortfolioValueCell({ insights, loading, totalProperties }) {
+  const { t } = useTranslation();
+
   return (
     <div className="group relative flex flex-col p-6 transition-colors hover:bg-gray-50/60 dark:hover:bg-[#1c2128]">
       <div className="flex items-start justify-between">
@@ -110,14 +113,14 @@ function PortfolioValueCell({ insights, loading, totalProperties }) {
         {insights?.totalCitiesCovered > 0 && (
           <span className="inline-flex items-center gap-1 rounded-full bg-gray-50 dark:bg-[#1c2128] px-2 py-0.5 text-[10px] font-semibold text-gray-500 dark:text-[#7d8590] ring-1 ring-gray-200 dark:ring-[#30363d]">
             <MapPin className="h-2.5 w-2.5" strokeWidth={2.5} />
-            {insights.totalCitiesCovered} {insights.totalCitiesCovered === 1 ? "city" : "cities"}
+            {t("hero.portfolio.citiesCount", { count: insights.totalCitiesCovered })}
           </span>
         )}
       </div>
 
       <div className="mt-4">
         <p className="text-xs font-semibold uppercase tracking-wider text-gray-500 dark:text-[#7d8590]">
-          Portfolio value
+          {t("hero.portfolio.label")}
         </p>
         {loading ? (
           <div className="mt-2 h-8 w-40 animate-pulse rounded bg-gray-100 dark:bg-[#1c2128]" />
@@ -129,11 +132,9 @@ function PortfolioValueCell({ insights, loading, totalProperties }) {
           </p>
         )}
         <p className="mt-1 text-xs text-gray-500 dark:text-[#7d8590]">
-          across{" "}
-          <span className="font-semibold text-gray-700 dark:text-[#e6edf3] tabular-nums">
-            {totalProperties}
-          </span>{" "}
-          {totalProperties === 1 ? "property" : "properties"}
+          <span className="tabular-nums font-semibold text-gray-700 dark:text-[#e6edf3]">
+            {t("hero.portfolio.acrossProperties", { count: totalProperties })}
+          </span>
         </p>
       </div>
 
@@ -141,7 +142,7 @@ function PortfolioValueCell({ insights, loading, totalProperties }) {
         <div className="mt-4 rounded-lg border border-gray-100 dark:border-[#30363d] bg-gray-50/60 dark:bg-[#1c2128] p-2.5">
           <div className="flex items-center gap-1.5 text-[10px] font-bold uppercase tracking-wider text-gray-500 dark:text-[#7d8590]">
             <TrendingUp className="h-2.5 w-2.5" strokeWidth={2.5} />
-            Top asset
+            {t("hero.portfolio.topAsset")}
           </div>
           <p className="mt-1 text-xs font-bold text-gray-900 dark:text-[#e6edf3] truncate">
             {insights.highestValueProperty.address}
@@ -156,6 +157,7 @@ function PortfolioValueCell({ insights, loading, totalProperties }) {
 }
 
 function VerificationCell({ verified, total, pct, loading }) {
+  const { t } = useTranslation();
   const RING_CIRCUMFERENCE = 2 * Math.PI * 32;
 
   return (
@@ -166,7 +168,7 @@ function VerificationCell({ verified, total, pct, loading }) {
         </div>
         {pct === 100 && total > 0 && (
           <span className="inline-flex items-center gap-1 rounded-full bg-green-50 dark:bg-[#0d2818] px-2 py-0.5 text-[10px] font-bold uppercase tracking-wider text-[#16a34a] dark:text-green-400 ring-1 ring-green-100 dark:ring-green-900">
-            All verified
+            {t("hero.verification.allVerified")}
           </span>
         )}
       </div>
@@ -209,7 +211,7 @@ function VerificationCell({ verified, total, pct, loading }) {
 
         <div className="min-w-0">
           <p className="text-xs font-semibold uppercase tracking-wider text-gray-500 dark:text-[#7d8590]">
-            Verification
+            {t("hero.verification.label")}
           </p>
           {loading ? (
             <div className="mt-2 h-5 w-20 animate-pulse rounded bg-gray-100 dark:bg-[#1c2128]" />
@@ -222,10 +224,10 @@ function VerificationCell({ verified, total, pct, loading }) {
           )}
           <p className="mt-0.5 text-xs text-gray-500 dark:text-[#7d8590]">
             {total === 0
-              ? "No properties yet"
+              ? t("hero.verification.noPropertiesYet")
               : verified === total
-              ? "Portfolio complete"
-              : `${total - verified} pending`}
+              ? t("hero.verification.portfolioComplete")
+              : t("hero.verification.pendingCount", { count: total - verified })}
           </p>
         </div>
       </div>
@@ -234,6 +236,7 @@ function VerificationCell({ verified, total, pct, loading }) {
 }
 
 function LiveAqiCell({ aqi, city, loading }) {
+  const { t } = useTranslation();
   const aqiInfo = aqi?.value != null ? getAqiInfo(aqi.value) : null;
 
   return (
@@ -248,20 +251,22 @@ function LiveAqiCell({ aqi, city, loading }) {
               <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-[#22C55E] opacity-60" />
               <span className="relative inline-flex h-1.5 w-1.5 rounded-full bg-[#22C55E]" />
             </span>
-            Live
+            {t("hero.aqi.live")}
           </span>
         )}
       </div>
 
       <div className="mt-4">
         <p className="text-xs font-semibold uppercase tracking-wider text-gray-500 dark:text-[#7d8590]">
-          Air quality
+          {t("hero.aqi.label")}
         </p>
 
         {loading ? (
           <div className="mt-2 flex items-center gap-2">
             <Loader2 className="h-4 w-4 animate-spin text-gray-400 dark:text-[#7d8590]" />
-            <span className="text-xs text-gray-400 dark:text-[#7d8590]">Fetching live data...</span>
+            <span className="text-xs text-gray-400 dark:text-[#7d8590]">
+              {t("hero.aqi.fetchingLive")}
+            </span>
           </div>
         ) : aqi?.value != null ? (
           <div className="mt-1 flex items-baseline gap-2">
@@ -272,6 +277,7 @@ function LiveAqiCell({ aqi, city, loading }) {
               {aqi.value}
             </p>
             <span className="text-xs font-bold text-gray-700 dark:text-[#e6edf3]">
+              {/* aqiInfo.label + aqi.category flagged as deferred (aqiScale.js constants) */}
               {aqiInfo?.label ?? aqi.category ?? ""}
             </span>
           </div>
@@ -287,7 +293,7 @@ function LiveAqiCell({ aqi, city, loading }) {
           </p>
         ) : (
           <p className="mt-1 text-xs text-gray-500 dark:text-[#7d8590]">
-            Add a property to see live air quality
+            {t("hero.aqi.addPropertyToSee")}
           </p>
         )}
       </div>

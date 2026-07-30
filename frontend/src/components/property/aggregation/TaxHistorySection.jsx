@@ -1,29 +1,32 @@
 "use client";
 
 import { Receipt } from "lucide-react";
+import { useTranslation } from "react-i18next";
 import SectionCard from "./SectionCard";
 import { formatINRFull } from "@/utils/currency";
 
 export default function TaxHistorySection({ section }) {
+  const { t } = useTranslation();
   const records = section?.data;
 
   return (
     <SectionCard
-      title="Property tax history"
-      subtitle="Assessment and payment records"
+      title={t("property.aggregation.tax.title")}
+      subtitle={t("property.aggregation.tax.subtitle")}
       icon={Receipt}
       section={section}
+      emptyLabel={t("property.aggregation.tax.emptyLabel")}
     >
       {records?.length > 0 ? (
         <div className="overflow-hidden rounded-xl border border-gray-100 dark:border-[#30363d]">
           <table className="w-full text-sm">
             <thead className="bg-gray-50 dark:bg-[#1c2128]">
               <tr>
-                <Th>Year</Th>
-                <Th>Assessed value</Th>
-                <Th>Tax due</Th>
-                <Th>Status</Th>
-                <Th>Receipt</Th>
+                <Th>{t("property.aggregation.tax.year")}</Th>
+                <Th>{t("property.aggregation.tax.assessedValue")}</Th>
+                <Th>{t("property.aggregation.tax.taxDue")}</Th>
+                <Th>{t("property.aggregation.tax.status")}</Th>
+                <Th>{t("property.aggregation.tax.receipt")}</Th>
               </tr>
             </thead>
             <tbody className="divide-y divide-gray-100 dark:divide-[#30363d]">
@@ -48,7 +51,7 @@ export default function TaxHistorySection({ section }) {
                     </span>
                   </Td>
                   <Td>
-                    <StatusBadge status={r.status} />
+                    <StatusBadge status={r.status} t={t} />
                   </Td>
                   <Td>
                     {r.receiptNumber ? (
@@ -66,7 +69,7 @@ export default function TaxHistorySection({ section }) {
         </div>
       ) : records?.length === 0 ? (
         <p className="text-sm text-gray-500 dark:text-[#7d8590] text-center py-4">
-          No tax records available for this property.
+          {t("property.aggregation.tax.noRecords")}
         </p>
       ) : null}
     </SectionCard>
@@ -85,16 +88,21 @@ function Td({ children }) {
   return <td className="px-4 py-3 text-sm text-gray-800 dark:text-[#e6edf3]">{children}</td>;
 }
 
-function StatusBadge({ status }) {
+function StatusBadge({ status, t }) {
   const map = {
     PAID:    "text-green-700 dark:text-green-400 bg-green-50 dark:bg-[#0d2818] ring-green-200 dark:ring-green-900",
     PENDING: "text-amber-700 dark:text-amber-400 bg-amber-50 dark:bg-[#282a10] ring-amber-200 dark:ring-amber-900",
     OVERDUE: "text-red-700 dark:text-red-400 bg-red-50 dark:bg-[#2d1214] ring-red-200 dark:ring-red-900",
   };
   const cls = map[status] || "text-gray-700 dark:text-[#e6edf3] bg-gray-50 dark:bg-[#1c2128] ring-gray-200 dark:ring-[#30363d]";
+  // Translate the badge label. If key missing, i18next returns the key itself,
+  // so we build the key and fall back gracefully.
+  const label = status
+    ? t(`property.aggregation.enums.taxStatus.${status}`, { defaultValue: status })
+    : "—";
   return (
     <span className={`inline-flex rounded-md px-2 py-0.5 text-[10px] font-bold uppercase tracking-wider ring-1 ${cls}`}>
-      {status}
+      {label}
     </span>
   );
 }

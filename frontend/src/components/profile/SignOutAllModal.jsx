@@ -3,6 +3,7 @@
 import { useEffect, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
+import { useTranslation } from "react-i18next";
 import {
   ShieldOff,
   X,
@@ -14,6 +15,7 @@ import { logoutAllDevices } from "@/services/authService";
 import { removeToken } from "@/utils/helpers";
 
 export default function SignOutAllModal({ isOpen, onClose }) {
+  const { t } = useTranslation();
   const modalRef = useRef(null);
   const cancelBtnRef = useRef(null);
   const router = useRouter();
@@ -48,8 +50,8 @@ export default function SignOutAllModal({ isOpen, onClose }) {
     try {
       await logoutAllDevices();
 
-      toast.success("Signed out everywhere", {
-        description: "All your active sessions have been ended.",
+      toast.success(t("signOutAll.toasts.signedOutTitle"), {
+        description: t("signOutAll.toasts.signedOutDesc"),
       });
 
       setTimeout(() => {
@@ -57,8 +59,8 @@ export default function SignOutAllModal({ isOpen, onClose }) {
         router.push("/login");
       }, 800);
     } catch (err) {
-      toast.error("Could not sign out", {
-        description: err?.message || "Please try again.",
+      toast.error(t("signOutAll.toasts.failedTitle"), {
+        description: err?.message || t("common.retry"),
       });
       setProcessing(false);
     }
@@ -84,12 +86,12 @@ export default function SignOutAllModal({ isOpen, onClose }) {
           onClick={onClose}
           disabled={processing}
           className="absolute right-4 top-4 z-10 rounded-full bg-white/80 dark:bg-[#161b22]/80 p-1.5 text-gray-500 dark:text-[#e6edf3] shadow-sm ring-1 ring-black/5 dark:ring-[#30363d] backdrop-blur-sm transition hover:bg-white dark:hover:bg-[#1c2128] hover:text-gray-700 dark:hover:text-white disabled:opacity-50"
-          aria-label="Close"
+          aria-label={t("common.close")}
         >
           <X className="h-4 w-4" />
         </button>
 
-        {/* ── Header: Red gradient (dimmed in dark) ── */}
+        {/* ── Header ── */}
         <div className="relative overflow-hidden bg-gradient-to-br from-red-50 via-rose-50 to-red-50 dark:from-[#2d1214] dark:via-[#3a0a0a] dark:to-[#2d1214] px-6 pt-10 pb-8">
           <div
             className="absolute inset-0 opacity-[0.4]"
@@ -99,7 +101,6 @@ export default function SignOutAllModal({ isOpen, onClose }) {
             }}
           />
 
-          {/* Icon with pulse */}
           <div className="relative mx-auto flex h-20 w-20 items-center justify-center">
             <span className="absolute h-full w-full animate-ping rounded-3xl bg-red-400/30" />
             <span className="absolute h-full w-full rounded-3xl bg-gradient-to-br from-red-100 to-rose-200 dark:from-red-900/50 dark:to-rose-900/50" />
@@ -112,11 +113,10 @@ export default function SignOutAllModal({ isOpen, onClose }) {
             id="signout-all-title"
             className="mt-5 text-center text-[22px] font-black tracking-tight text-gray-900 dark:text-[#e6edf3]"
           >
-            Sign out of all devices?
+            {t("signOutAll.title")}
           </h2>
           <p className="mx-auto mt-2 max-w-sm text-center text-[13px] leading-relaxed text-gray-600 dark:text-[#e6edf3]/80">
-            This will end your session on <span className="font-bold">every device</span>{" "}
-            currently signed in with this account.
+            {t("signOutAll.subtitle")}
           </p>
         </div>
 
@@ -129,10 +129,10 @@ export default function SignOutAllModal({ isOpen, onClose }) {
               </div>
               <div className="min-w-0 flex-1">
                 <p className="text-sm font-bold text-gray-900 dark:text-[#e6edf3]">
-                  All active sessions will end
+                  {t("signOutAll.impact.endSessions.title")}
                 </p>
                 <p className="text-[12px] text-gray-500 dark:text-[#7d8590] mt-0.5">
-                  Phones, tablets, other browsers — everywhere you're signed in
+                  {t("signOutAll.impact.endSessions.description")}
                 </p>
               </div>
             </div>
@@ -143,10 +143,10 @@ export default function SignOutAllModal({ isOpen, onClose }) {
               </div>
               <div className="min-w-0 flex-1">
                 <p className="text-sm font-bold text-gray-900 dark:text-[#e6edf3]">
-                  You'll be logged out here too
+                  {t("signOutAll.impact.logoutHere.title")}
                 </p>
                 <p className="text-[12px] text-gray-500 dark:text-[#7d8590] mt-0.5">
-                  You'll need to sign in again to continue
+                  {t("signOutAll.impact.logoutHere.description")}
                 </p>
               </div>
             </div>
@@ -154,8 +154,8 @@ export default function SignOutAllModal({ isOpen, onClose }) {
 
           <div className="mt-4 rounded-xl bg-amber-50/60 dark:bg-[#282a10]/60 ring-1 ring-amber-100 dark:ring-amber-900 px-3 py-2.5">
             <p className="text-[11px] text-amber-800 dark:text-amber-300 leading-relaxed">
-              <span className="font-black">Use this if:</span> your account may be
-              compromised, you shared your device, or you forgot to log out somewhere.
+              <span className="font-black">{t("signOutAll.useIfPrefix")}</span>{" "}
+              {t("signOutAll.useIfBody")}
             </p>
           </div>
         </div>
@@ -169,7 +169,7 @@ export default function SignOutAllModal({ isOpen, onClose }) {
             disabled={processing}
             className="flex-1 rounded-xl border-2 border-gray-200 dark:border-[#30363d] bg-white dark:bg-[#1c2128] px-5 py-3 text-sm font-bold text-gray-700 dark:text-[#e6edf3] transition hover:border-gray-300 dark:hover:border-[#484f58] hover:bg-gray-50 dark:hover:bg-[#30363d] focus:outline-none focus:ring-4 focus:ring-gray-100 dark:focus:ring-[#30363d] disabled:cursor-not-allowed disabled:opacity-50"
           >
-            Cancel
+            {t("common.cancel")}
           </button>
 
           <button
@@ -183,12 +183,12 @@ export default function SignOutAllModal({ isOpen, onClose }) {
             {processing ? (
               <>
                 <Loader2 className="relative z-10 h-4 w-4 animate-spin" />
-                <span className="relative z-10">Signing out everywhere…</span>
+                <span className="relative z-10">{t("signOutAll.processing")}</span>
               </>
             ) : (
               <>
                 <ShieldOff size={16} className="relative z-10" strokeWidth={2.5} />
-                <span className="relative z-10">Yes, sign out everywhere</span>
+                <span className="relative z-10">{t("signOutAll.confirmButton")}</span>
               </>
             )}
           </button>
@@ -197,11 +197,11 @@ export default function SignOutAllModal({ isOpen, onClose }) {
         {/* Footer hint */}
         <div className="border-t border-gray-100 dark:border-[#30363d] bg-gray-50/50 dark:bg-[#0d1117] px-6 py-2.5">
           <p className="text-center text-[10px] font-medium text-gray-400 dark:text-[#6e7681]">
-            Tip: Press{" "}
+            {t("signOutAll.tipEsc")}{" "}
             <kbd className="rounded border border-gray-200 dark:border-[#30363d] bg-white dark:bg-[#1c2128] px-1.5 py-0.5 font-mono text-[9px] font-bold text-gray-600 dark:text-[#e6edf3] shadow-sm">
               Esc
             </kbd>{" "}
-            to cancel
+            {t("signOutAll.tipEscSuffix")}
           </p>
         </div>
       </div>

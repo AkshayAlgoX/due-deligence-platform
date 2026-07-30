@@ -4,6 +4,7 @@ import { useState, useRef, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { toast } from "sonner";
+import { useTranslation } from "react-i18next";
 
 import { loginUser } from "@/services/authService";
 import GuestGuard from "@/components/GuestGuard";
@@ -28,24 +29,9 @@ import {
   AlertCircle,
 } from "lucide-react";
 
-function validateField(field, value) {
-  const trimmed = String(value ?? "").trim();
-  switch (field) {
-    case "email":
-      if (!trimmed) return "Email is required";
-      if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(trimmed)) return "Enter a valid email";
-      return "";
-    case "password":
-      if (!trimmed) return "Password is required";
-      if (trimmed.length < 8) return "At least 8 characters";
-      return "";
-    default:
-      return "";
-  }
-}
-
 function LoginPageInner() {
   const router = useRouter();
+  const { t } = useTranslation();
 
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -59,15 +45,34 @@ function LoginPageInner() {
   const emailRef = useRef(null);
   const passwordRef = useRef(null);
 
+  // ── inline field validator (uses t()) ──────────────────────────────────────
+  const validateField = (field, value) => {
+    const trimmed = String(value ?? "").trim();
+    switch (field) {
+      case "email":
+        if (!trimmed) return t("auth.errors.emailRequired");
+        if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(trimmed))
+          return t("auth.errors.emailInvalid");
+        return "";
+      case "password":
+        if (!trimmed) return t("auth.errors.passwordRequired");
+        if (trimmed.length < 8) return t("auth.errors.passwordLength");
+        return "";
+      default:
+        return "";
+    }
+  };
+
+  // ── submit validator ───────────────────────────────────────────────────────
   const validate = () => {
     const errors = {};
     const trimmedEmail = email.trim();
     if (!trimmedEmail) {
-      errors.email = "Enter your email";
+      errors.email = t("auth.errors.emailRequired");
     } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(trimmedEmail)) {
-      errors.email = "Enter a valid email address";
+      errors.email = t("auth.errors.emailInvalid");
     }
-    if (!password) errors.password = "Enter your password";
+    if (!password) errors.password = t("auth.errors.passwordRequired");
     return errors;
   };
 
@@ -100,16 +105,20 @@ function LoginPageInner() {
         loginUser({ email: email.trim().toLowerCase(), password, rememberMe }),
         minDuration,
       ]);
-      toast.success("Welcome back", { description: "Redirecting to your dashboard." });
+      toast.success(t("auth.login.title"), {
+        description: t("auth.login.redirectingToDashboard"),
+      });
       router.push("/dashboard");
     } catch (err) {
       await minDuration;
       if (err.errors && typeof err.errors === "object") {
         setFieldErrors(err.errors);
-        toast.error("Please check your details", { description: "Some fields need attention." });
+        toast.error(t("auth.errors.fieldErrors"), {
+          description: t("auth.errors.someFieldsNeedAttention"),
+        });
       } else {
-        toast.error("Sign in failed", {
-          description: err.message || "Please check your credentials and try again.",
+        toast.error(t("auth.errors.signInFailed"), {
+          description: err.message || t("auth.errors.checkCredentials"),
         });
       }
     } finally {
@@ -119,15 +128,23 @@ function LoginPageInner() {
 
   const handleEmailChange = (e) => {
     setEmail(e.target.value);
-    setFieldErrors((prev) => ({ ...prev, email: validateField("email", e.target.value) }));
+    setFieldErrors((prev) => ({
+      ...prev,
+      email: validateField("email", e.target.value),
+    }));
   };
 
   const handlePasswordChange = (e) => {
     setPassword(e.target.value);
-    setFieldErrors((prev) => ({ ...prev, password: validateField("password", e.target.value) }));
+    setFieldErrors((prev) => ({
+      ...prev,
+      password: validateField("password", e.target.value),
+    }));
   };
 
-  const handleForgotPassword = () => { router.push("/forgot-password"); };
+  const handleForgotPassword = () => {
+    router.push("/forgot-password");
+  };
 
   const handleContactSupport = () => {
     window.open("/support", "_blank", "noopener,noreferrer");
@@ -137,9 +154,10 @@ function LoginPageInner() {
     `h-10 rounded-xl pl-10 text-sm focus-visible:ring-2 transition-colors
      bg-white dark:bg-[#0d1117] text-gray-900 dark:text-[#e6edf3]
      placeholder:text-gray-400 dark:placeholder:text-[#6e7681]
-     ${hasError
-       ? "border-red-300 dark:border-red-800 focus-visible:ring-red-400"
-       : "border-gray-200 dark:border-[#30363d] focus-visible:ring-green-500 dark:focus-visible:ring-green-700"
+     ${
+       hasError
+         ? "border-red-300 dark:border-red-800 focus-visible:ring-red-400"
+         : "border-gray-200 dark:border-[#30363d] focus-visible:ring-green-500 dark:focus-visible:ring-green-700"
      }`;
 
   return (
@@ -150,7 +168,7 @@ function LoginPageInner() {
         <section className="flex w-full flex-col items-center bg-[#f8fffb] dark:bg-[#0d1117] px-8 py-6 lg:w-[40%]">
           <div className="flex w-full max-w-[420px] flex-col">
 
-            {/* Logo */}
+            {/* Logo — brand name stays English per rule #7 */}
             <div className="flex items-center gap-3">
               <div className="flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-full bg-[#22C55E] shadow-md">
                 <ShieldCheck className="h-5 w-5 text-white" />
@@ -163,10 +181,10 @@ function LoginPageInner() {
             {/* Welcome */}
             <div className="mt-5">
               <h2 className="text-[36px] font-black leading-[40px] tracking-tight text-[#111827] dark:text-[#e6edf3]">
-                Welcome back
+                {t("auth.login.title")}
               </h2>
               <p className="mt-2 text-sm leading-5 text-gray-500 dark:text-[#7d8590]">
-                Sign in to manage your property portfolio risks.
+                {t("auth.login.subtitle")}
               </p>
             </div>
 
@@ -178,8 +196,11 @@ function LoginPageInner() {
             >
               {/* Email */}
               <div className="space-y-1.5">
-                <label className="text-xs font-semibold text-gray-700 dark:text-[#e6edf3]" htmlFor="email">
-                  Professional Email
+                <label
+                  className="text-xs font-semibold text-gray-700 dark:text-[#e6edf3]"
+                  htmlFor="email"
+                >
+                  {t("auth.login.emailLabel")}
                 </label>
                 <div className="relative">
                   <Mail className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-gray-400 dark:text-[#6e7681]" />
@@ -189,14 +210,20 @@ function LoginPageInner() {
                     type="email"
                     value={email}
                     onChange={handleEmailChange}
-                    placeholder="name@company.com"
+                    placeholder={t("auth.login.emailPlaceholder")}
                     aria-invalid={!!fieldErrors.email}
-                    aria-describedby={fieldErrors.email ? "email-error" : undefined}
+                    aria-describedby={
+                      fieldErrors.email ? "email-error" : undefined
+                    }
                     className={getInputClasses(!!fieldErrors.email)}
                   />
                 </div>
                 {fieldErrors.email && (
-                  <p id="email-error" role="alert" className="text-[11px] text-red-500 dark:text-red-400 leading-tight pl-1">
+                  <p
+                    id="email-error"
+                    role="alert"
+                    className="text-[11px] text-red-500 dark:text-red-400 leading-tight pl-1"
+                  >
                     {fieldErrors.email}
                   </p>
                 )}
@@ -205,15 +232,18 @@ function LoginPageInner() {
               {/* Password */}
               <div className="mt-4 space-y-1.5">
                 <div className="flex justify-between">
-                  <label className="text-xs font-semibold text-gray-700 dark:text-[#e6edf3]" htmlFor="password">
-                    Password
+                  <label
+                    className="text-xs font-semibold text-gray-700 dark:text-[#e6edf3]"
+                    htmlFor="password"
+                  >
+                    {t("auth.login.passwordLabel")}
                   </label>
                   <button
                     type="button"
                     onClick={handleForgotPassword}
                     className="text-xs font-semibold text-green-500 hover:underline"
                   >
-                    Forgot password?
+                    {t("auth.login.forgotPassword")}
                   </button>
                 </div>
                 <div className="relative">
@@ -244,21 +274,36 @@ function LoginPageInner() {
                     onClick={() => setShowPassword(!showPassword)}
                     className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 dark:text-[#6e7681] hover:text-gray-600 dark:hover:text-[#e6edf3]"
                     tabIndex={-1}
-                    aria-label={showPassword ? "Hide password" : "Show password"}
+                    aria-label={
+                      showPassword
+                        ? t("auth.login.hidePassword")
+                        : t("auth.login.showPassword")
+                    }
                   >
-                    {showPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
+                    {showPassword ? (
+                      <EyeOff className="h-4 w-4" />
+                    ) : (
+                      <Eye className="h-4 w-4" />
+                    )}
                   </button>
                 </div>
 
                 {capsLockOn && passwordFocused && !fieldErrors.password && (
-                  <p id="caps-lock-warning" className="flex items-center gap-1 text-[11px] text-amber-600 dark:text-amber-400 leading-tight pl-1">
+                  <p
+                    id="caps-lock-warning"
+                    className="flex items-center gap-1 text-[11px] text-amber-600 dark:text-amber-400 leading-tight pl-1"
+                  >
                     <AlertCircle className="h-3 w-3" strokeWidth={2.5} />
-                    Caps Lock is on
+                    {t("auth.forgotPassword.capsLock")}
                   </p>
                 )}
 
                 {fieldErrors.password && (
-                  <p id="password-error" role="alert" className="text-[11px] text-red-500 dark:text-red-400 leading-tight pl-1">
+                  <p
+                    id="password-error"
+                    role="alert"
+                    className="text-[11px] text-red-500 dark:text-red-400 leading-tight pl-1"
+                  >
                     {fieldErrors.password}
                   </p>
                 )}
@@ -271,12 +316,15 @@ function LoginPageInner() {
                   checked={rememberMe}
                   onCheckedChange={(checked) => setRememberMe(!!checked)}
                 />
-                <label htmlFor="rememberMe" className="cursor-pointer text-xs text-gray-600 dark:text-[#7d8590]">
-                  Keep me signed in on this browser
+                <label
+                  htmlFor="rememberMe"
+                  className="cursor-pointer text-xs text-gray-600 dark:text-[#7d8590]"
+                >
+                  {t("auth.login.rememberMe")}
                 </label>
               </div>
 
-              {/* Submit — green gradient, unchanged */}
+              {/* Submit */}
               <Button
                 type="submit"
                 disabled={loading}
@@ -286,7 +334,7 @@ function LoginPageInner() {
                   <Loader2 className="h-4 w-4 animate-spin" />
                 ) : (
                   <>
-                    Sign in
+                    {t("auth.login.signIn")}
                     <ArrowRight className="ml-2 h-4 w-4" />
                   </>
                 )}
@@ -295,7 +343,9 @@ function LoginPageInner() {
               {/* Divider */}
               <div className="my-4 flex items-center">
                 <div className="h-px flex-1 bg-gray-200 dark:bg-[#30363d]" />
-                <span className="mx-3 text-[10px] text-gray-500 dark:text-[#6e7681]">OR CONTINUE WITH</span>
+                <span className="mx-3 text-[10px] text-gray-500 dark:text-[#6e7681]">
+                  {t("auth.login.orContinueWith")}
+                </span>
                 <div className="h-px flex-1 bg-gray-200 dark:bg-[#30363d]" />
               </div>
 
@@ -309,35 +359,37 @@ function LoginPageInner() {
                   className="h-10 w-full rounded-xl border-gray-200 dark:border-[#30363d] bg-white dark:bg-[#0d1117] text-gray-700 dark:text-[#7d8590] text-xs transition hover:bg-gray-50 dark:hover:bg-[#1c2128]"
                 >
                   <Headphones className="mr-1.5 h-3.5 w-3.5" />
-                  Contact support
+                  {t("auth.login.contactSupport")}
                 </Button>
               </div>
             </form>
 
             {/* Register link */}
             <div className="mt-3 text-center text-xs text-gray-600 dark:text-[#7d8590]">
-              New to the platform?
+              {t("auth.login.newToPlatform")}
               <button
                 type="button"
                 onClick={() => router.push("/register")}
                 className="ml-1 font-semibold text-green-500 hover:underline"
               >
-                Create a free account
+                {t("auth.login.createAccount")}
               </button>
             </div>
 
             {/* Feature bullets */}
             <div className="mt-4 space-y-1.5">
               {[
-                "Comprehensive property analysis",
-                "Secure due diligence auditing",
-                "Automated risk assessment",
+                t("auth.login.features.analysis"),
+                t("auth.login.features.auditing"),
+                t("auth.login.features.risk"),
               ].map((text) => (
                 <div key={text} className="flex items-center gap-3">
                   <div className="flex h-6 w-6 items-center justify-center rounded-full bg-green-100 dark:bg-[#0d2818]">
                     <CheckCircle className="h-3.5 w-3.5 text-green-600 dark:text-green-400" />
                   </div>
-                  <span className="text-xs text-gray-700 dark:text-[#7d8590]">{text}</span>
+                  <span className="text-xs text-gray-700 dark:text-[#7d8590]">
+                    {text}
+                  </span>
                 </div>
               ))}
             </div>
@@ -345,20 +397,23 @@ function LoginPageInner() {
             {/* Security footer */}
             <div className="mt-4 border-t border-gray-200 dark:border-[#30363d] pt-3 text-center">
               <p className="text-[10px] text-gray-500 dark:text-[#6e7681]">
-                Secure by design ·{" "}
-                <Link href="/security" className="underline hover:text-[#22C55E] transition">
-                  Learn how
+                {t("auth.login.secureBy")} ·{" "}
+                <Link
+                  href="/security"
+                  className="underline hover:text-[#22C55E] transition"
+                >
+                  {t("auth.login.learnHow")}
                 </Link>
               </p>
             </div>
           </div>
         </section>
 
-        {/* ── Right Section — photo panel, unchanged (dark photo overlay) ── */}
+        {/* ── Right Section ── */}
         <section className="relative hidden overflow-hidden rounded-l-3xl lg:block lg:w-[60%]">
           <img
             src="https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?w=1600&q=80"
-            alt="Modern glass skyscraper"
+            alt={t("auth.login.imgAlt")}
             className="absolute inset-0 h-full w-full object-cover"
           />
           <div className="absolute inset-0 bg-gradient-to-br from-sky-900/70 via-sky-700/50 to-blue-500/40" />
@@ -368,14 +423,15 @@ function LoginPageInner() {
               <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-green-400 opacity-75" />
               <span className="relative inline-flex h-2 w-2 rounded-full bg-green-400" />
             </span>
-            Platform online
+            {t("auth.login.platformOnline")}
           </div>
 
           <div className="absolute bottom-8 left-8 w-[420px] rounded-3xl border border-white/20 bg-white/10 p-8 text-white shadow-2xl backdrop-blur-2xl">
-            <h2 className="text-2xl font-bold tracking-tight">Built for trust</h2>
+            <h2 className="text-2xl font-bold tracking-tight">
+              {t("auth.login.builtForTrust")}
+            </h2>
             <p className="mt-3 text-sm leading-relaxed text-white/85">
-              A verification-first platform for property intelligence — every listing
-              passes seven data-quality checks before it goes live.
+              {t("auth.login.platformDesc")}
             </p>
             <div className="mt-6 space-y-3">
               <div className="flex items-center gap-3">
@@ -383,8 +439,12 @@ function LoginPageInner() {
                   <ShieldCheck className="h-4 w-4 text-white" />
                 </div>
                 <div>
-                  <p className="text-xs font-semibold">Verified listings only</p>
-                  <p className="text-[11px] text-white/70">Seven-point data-quality engine</p>
+                  <p className="text-xs font-semibold">
+                    {t("auth.login.verifiedListings")}
+                  </p>
+                  <p className="text-[11px] text-white/70">
+                    {t("auth.login.verifiedListingsDesc")}
+                  </p>
                 </div>
               </div>
               <div className="flex items-center gap-3">
@@ -392,8 +452,12 @@ function LoginPageInner() {
                   <KeyRound className="h-4 w-4 text-white" />
                 </div>
                 <div>
-                  <p className="text-xs font-semibold">Secure by default</p>
-                  <p className="text-[11px] text-white/70">JWT sessions, hashed passwords</p>
+                  <p className="text-xs font-semibold">
+                    {t("auth.login.secureByDefault")}
+                  </p>
+                  <p className="text-[11px] text-white/70">
+                    {t("auth.login.secureByDefaultDesc")}
+                  </p>
                 </div>
               </div>
               <div className="flex items-center gap-3">
@@ -401,8 +465,12 @@ function LoginPageInner() {
                   <UserCheck className="h-4 w-4 text-white" />
                 </div>
                 <div>
-                  <p className="text-xs font-semibold">Role-based access</p>
-                  <p className="text-[11px] text-white/70">Buyer, agent, reviewer, admin</p>
+                  <p className="text-xs font-semibold">
+                    {t("auth.login.roleBasedAccess")}
+                  </p>
+                  <p className="text-[11px] text-white/70">
+                    {t("auth.login.roleBasedAccessDesc")}
+                  </p>
                 </div>
               </div>
             </div>

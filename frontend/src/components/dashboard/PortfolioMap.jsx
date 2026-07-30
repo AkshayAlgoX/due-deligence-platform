@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 import Link from "next/link";
 import { toast } from "sonner";
+import { useTranslation } from "react-i18next";
 import {
   MapPin,
   Loader2,
@@ -13,13 +14,15 @@ import {
 import { getGeoProperties, getAllProperties } from "@/services/propertyService";
 import { getCurrentUser } from "@/services/authService";
 import api from "@/services/api";
+import i18n from "@/i18n";
 import "leaflet/dist/leaflet.css";
 
 function formatINR(value) {
+  // Cr / L are region-specific units, kept as-is across languages.
   if (value == null) return "—";
   if (value >= 1_00_00_000) return `₹${(value / 1_00_00_000).toFixed(2)} Cr`;
   if (value >= 1_00_000)    return `₹${(value / 1_00_000).toFixed(1)} L`;
-  return `₹${value.toLocaleString("en-IN")}`;
+  return `₹${value.toLocaleString(i18n.language || "en-IN")}`;
 }
 
 const INDIA_CENTER = [20.5937, 78.9629];
@@ -37,6 +40,7 @@ const TILE_DARK = {
 };
 
 export default function PortfolioMap({ refreshKey }) {
+  const { t } = useTranslation();
   const [properties, setProperties]     = useState([]);
   const [totalCount, setTotalCount]     = useState(0);
   const [loading, setLoading]           = useState(true);
@@ -118,18 +122,18 @@ export default function PortfolioMap({ refreshKey }) {
       const { data } = await api.post("/api/properties/admin/backfill-coordinates");
       const n = data?.geocodedCount ?? 0;
       if (n > 0) {
-        toast.success(`${n} propert${n === 1 ? "y" : "ies"} geocoded`, {
-          description: "Reloading map...",
+        toast.success(t("map.toasts.geocodedCount", { count: n }), {
+          description: t("map.toasts.reloadingMap"),
         });
         await load();
       } else {
-        toast.info("No new locations found", {
-          description: "Remaining addresses may be too vague to geocode.",
+        toast.info(t("map.toasts.noNewLocations"), {
+          description: t("map.toasts.tooVague"),
         });
       }
     } catch (err) {
-      toast.error("Geocoding failed", {
-        description: err?.message || "Please try again later.",
+      toast.error(t("map.toasts.geocodingFailed"), {
+        description: err?.message || t("map.toasts.tryAgainLater"),
       });
     } finally {
       setRetrying(false);
@@ -157,24 +161,26 @@ export default function PortfolioMap({ refreshKey }) {
           </div>
           <div>
             <h3 className="text-sm font-bold text-gray-900 dark:text-[#e6edf3]">
-              Portfolio geography
+              {t("map.title")}
             </h3>
             <p className="mt-0.5 text-xs text-gray-500 dark:text-[#7d8590]">
               {loading ? (
-                "Loading map..."
+                t("map.status.loading")
               ) : totalCount === 0 ? (
-                "No properties yet"
+                t("map.status.noPropertiesYet")
               ) : (
                 <>
                   <span className="font-semibold text-gray-700 dark:text-[#e6edf3]">
-                    {properties.length}
-                  </span>{" "}
-                  of {totalCount} mapped
+                    {t("map.status.mappedOfTotal", {
+                      mapped: properties.length,
+                      total: totalCount,
+                    })}
+                  </span>
                   {hasMissing && (
                     <>
                       {" · "}
                       <span className="text-amber-600 dark:text-amber-400 font-medium">
-                        {missingCount} pending
+                        {t("map.status.pendingCount", { count: missingCount })}
                       </span>
                     </>
                   )}
@@ -196,22 +202,22 @@ export default function PortfolioMap({ refreshKey }) {
                 strokeWidth={2.5}
                 className={retrying ? "animate-spin" : ""}
               />
-              {retrying ? "Geocoding..." : "Retry geocoding"}
+              {retrying ? t("map.geocoding") : t("map.retryGeocoding")}
             </button>
           )}
 
           {!loading && properties.length > 0 && (
             <>
               <span className="hidden md:inline text-[11px] text-gray-400 dark:text-[#6e7681]">
-                Use +/− to zoom
+                {t("map.zoomHint")}
               </span>
               <span className="flex items-center gap-1.5">
                 <span className="h-2.5 w-2.5 rounded-full bg-[#22C55E]" />
-                Verified
+                {t("property.card.verified")}
               </span>
               <span className="flex items-center gap-1.5">
                 <span className="h-2.5 w-2.5 rounded-full bg-amber-500" />
-                Pending
+                {t("property.card.pending")}
               </span>
             </>
           )}
@@ -225,7 +231,7 @@ export default function PortfolioMap({ refreshKey }) {
           </div>
         ) : error ? (
           <div className="flex h-full items-center justify-center text-sm text-gray-400 dark:text-[#7d8590]">
-            Couldn't load map data.
+            {t("map.error.couldntLoad")}
           </div>
         ) : properties.length === 0 ? (
           <div className="flex h-full flex-col items-center justify-center gap-3 px-6 text-center">
@@ -235,13 +241,13 @@ export default function PortfolioMap({ refreshKey }) {
             <div>
               <p className="text-sm font-semibold text-gray-800 dark:text-[#e6edf3]">
                 {totalCount === 0
-                  ? "No mapped properties yet"
-                  : "No coordinates captured yet"}
+                  ? t("map.empty.noMappedTitle")
+                  : t("map.empty.noCoordsTitle")}
               </p>
               <p className="mt-1 text-xs text-gray-400 dark:text-[#7d8590] leading-relaxed">
                 {totalCount === 0
-                  ? "Add properties using the address suggestions to see them on the map."
-                  : "Properties exist but need geocoding. Admins can trigger it above."}
+                  ? t("map.empty.noMappedDesc")
+                  : t("map.empty.noCoordsDesc")}
               </p>
             </div>
           </div>
@@ -298,14 +304,16 @@ export default function PortfolioMap({ refreshKey }) {
                             : "bg-amber-100 text-amber-700"
                         }`}
                       >
-                        {p.verified ? "Verified" : "Pending"}
+                        {p.verified
+                          ? t("property.card.verified")
+                          : t("property.card.pending")}
                       </span>
                     </div>
                     <Link
                       href={`/dashboard/property-search?q=${encodeURIComponent(p.address)}`}
                       className="mt-1 flex items-center gap-1 text-xs font-bold text-[#16a34a] hover:gap-1.5 transition-all"
                     >
-                      View details
+                      {t("map.viewDetails")}
                       <ArrowRight size={11} strokeWidth={2.5} />
                     </Link>
                   </div>

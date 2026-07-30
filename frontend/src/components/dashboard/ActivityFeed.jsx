@@ -2,6 +2,7 @@
 
 import { useEffect, useState, useMemo } from "react";
 import Link from "next/link";
+import { useTranslation } from "react-i18next";
 import {
   Activity,
   Plus,
@@ -12,15 +13,67 @@ import {
   ArrowRight,
 } from "lucide-react";
 import { getRecentActivity } from "@/services/dashboardService";
+import i18n from "@/i18n";
 
-const FILTERS = [
-  { key: "ALL",      label: "All"      },
-  { key: "ADDED",    label: "Added"    },
-  { key: "VERIFIED", label: "Verified" },
-  { key: "UPDATED",  label: "Updated"  },
-];
+// ── Time-ago helper — uses common.* keys already in translation files ─────
+function timeAgo(date, t) {
+  if (!date) return "";
+  const seconds = Math.floor((Date.now() - new Date(date).getTime()) / 1000);
+  if (seconds < 5) return t("common.justNow");
+  if (seconds < 60) return t("common.secondsAgo", { n: seconds });
+  const mins = Math.floor(seconds / 60);
+  if (mins < 60) return t("common.minutesAgo", { n: mins });
+  const hrs = Math.floor(mins / 60);
+  if (hrs < 24) return t("common.hoursAgo", { n: hrs });
+  const days = Math.floor(hrs / 24);
+  if (days < 7) return t("common.daysAgo", { n: days });
+  // Older than a week — show absolute date in current locale
+  return new Date(date).toLocaleDateString(i18n.language || "en-IN");
+}
+
+// ── Activity meta (visual props + translation KEY) ────────────────────────
+function getActivityMeta(type) {
+  switch (type) {
+    case "PROPERTY_ADDED":
+      return {
+        icon: Plus,
+        labelKey: "activity.types.propertyAdded",
+        dotBg: "bg-green-100 dark:bg-[#0d2818]",
+        iconColor: "text-[#16a34a] dark:text-green-400",
+      };
+    case "PROPERTY_VERIFIED":
+      return {
+        icon: ShieldCheck,
+        labelKey: "activity.types.propertyVerified",
+        dotBg: "bg-green-100 dark:bg-[#0d2818]",
+        iconColor: "text-[#16a34a] dark:text-green-400",
+      };
+    case "PROPERTY_UPDATED":
+    default:
+      return {
+        icon: Edit3,
+        labelKey: "activity.types.propertyUpdated",
+        dotBg: "bg-gray-100 dark:bg-[#1c2128]",
+        iconColor: "text-gray-600 dark:text-[#7d8590]",
+      };
+  }
+}
 
 export default function ActivityFeed() {
+  const { t } = useTranslation();
+
+  // FILTERS moved inside component so labels can be translated.
+  // Keys stay stable (ALL/ADDED/VERIFIED/UPDATED) for state logic.
+  const FILTERS = useMemo(
+    () => [
+      { key: "ALL",      label: t("activity.filters.all")      },
+      { key: "ADDED",    label: t("activity.filters.added")    },
+      { key: "VERIFIED", label: t("activity.filters.verified") },
+      { key: "UPDATED",  label: t("activity.filters.updated")  },
+    ],
+    [t]
+  );
+
   const [items, setItems]     = useState([]);
   const [loading, setLoading] = useState(true);
   const [filter, setFilter]   = useState("ALL");
@@ -44,8 +97,8 @@ export default function ActivityFeed() {
   }, []);
 
   useEffect(() => {
-    const t = setInterval(() => forceTick((n) => n + 1), 30000);
-    return () => clearInterval(t);
+    const tick = setInterval(() => forceTick((n) => n + 1), 30000);
+    return () => clearInterval(tick);
   }, []);
 
   const visible = useMemo(() => {
@@ -68,6 +121,9 @@ export default function ActivityFeed() {
     return c;
   }, [items]);
 
+  // For "No X activity" empty state — lowercase-ish filter label for message
+  const currentFilterLabel = FILTERS.find((f) => f.key === filter)?.label ?? "";
+
   return (
     <div className="rounded-2xl border border-gray-100 dark:border-[#30363d] bg-white dark:bg-[#161b22] shadow-sm">
       <div className="flex items-center justify-between border-b border-gray-100 dark:border-[#30363d] p-6">
@@ -76,9 +132,11 @@ export default function ActivityFeed() {
             <Activity className="h-4 w-4 text-[#16a34a] dark:text-green-400" strokeWidth={2.2} />
           </div>
           <div>
-            <h3 className="text-sm font-bold text-gray-900 dark:text-[#e6edf3]">Recent activity</h3>
+            <h3 className="text-sm font-bold text-gray-900 dark:text-[#e6edf3]">
+              {t("activity.title")}
+            </h3>
             <p className="mt-0.5 text-xs text-gray-500 dark:text-[#7d8590]">
-              Latest actions across the platform
+              {t("activity.subtitle")}
             </p>
           </div>
         </div>
@@ -88,7 +146,7 @@ export default function ActivityFeed() {
             <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-[#22C55E] opacity-60" />
             <span className="relative inline-flex h-1.5 w-1.5 rounded-full bg-[#22C55E]" />
           </span>
-          Live
+          {t("activity.live")}
         </div>
       </div>
 
@@ -134,22 +192,22 @@ export default function ActivityFeed() {
               <Building2 className="h-5 w-5 text-gray-300 dark:text-[#6e7681]" />
             </div>
             <p className="text-sm font-semibold text-gray-700 dark:text-[#e6edf3]">
-              No activity yet
+              {t("activity.empty.noActivity")}
             </p>
             <p className="mt-1 text-xs text-gray-500 dark:text-[#7d8590]">
-              Add properties to see activity here
+              {t("activity.empty.addProperties")}
             </p>
           </div>
         ) : visible.length === 0 ? (
           <div className="flex flex-col items-center justify-center py-10 text-center">
             <p className="text-sm font-semibold text-gray-700 dark:text-[#e6edf3]">
-              No {filter.toLowerCase()} activity in recent events
+              {t("activity.empty.noFiltered", { filter: currentFilterLabel })}
             </p>
             <button
               onClick={() => setFilter("ALL")}
               className="mt-2 text-xs font-bold text-[#16a34a] dark:text-green-400 hover:underline"
             >
-              Show all
+              {t("activity.showAll")}
             </button>
           </div>
         ) : (
@@ -164,7 +222,7 @@ export default function ActivityFeed() {
               href="/dashboard/property-search"
               className="mt-5 flex items-center justify-center gap-1 text-xs font-bold text-[#16a34a] dark:text-green-400 transition-all hover:gap-2"
             >
-              View all properties
+              {t("activity.viewAllProperties")}
               <ArrowRight size={11} strokeWidth={2.5} />
             </Link>
           </>
@@ -175,6 +233,7 @@ export default function ActivityFeed() {
 }
 
 function ActivityRow({ item }) {
+  const { t } = useTranslation();
   const meta = getActivityMeta(item.type);
   const Icon = meta.icon;
 
@@ -189,7 +248,7 @@ function ActivityRow({ item }) {
       <div className="flex items-start justify-between gap-3">
         <div className="min-w-0 flex-1">
           <p className="text-sm text-gray-700 dark:text-[#e6edf3]">
-            <span className="font-bold text-gray-900 dark:text-[#e6edf3]">{meta.label}</span>
+            <span className="font-bold text-gray-900 dark:text-[#e6edf3]">{t(meta.labelKey)}</span>
             {item.propertyAddress && (
               <>
                 :{" "}
@@ -208,59 +267,15 @@ function ActivityRow({ item }) {
             {item.actorName && (
               <>
                 {item.propertyCity && " · "}
-                by{" "}
-                <span className="font-semibold text-gray-600 dark:text-[#e6edf3]">
-                  {item.actorName}
-                </span>
+                {t("activity.byActor", { name: item.actorName })}
               </>
             )}
           </p>
         </div>
         <span className="flex-shrink-0 text-[11px] font-medium text-gray-400 dark:text-[#6e7681] tabular-nums">
-          {timeAgo(item.timestamp)}
+          {timeAgo(item.timestamp, t)}
         </span>
       </div>
     </li>
   );
-}
-
-function getActivityMeta(type) {
-  switch (type) {
-    case "PROPERTY_ADDED":
-      return {
-        icon: Plus,
-        label: "Property added",
-        dotBg: "bg-green-100 dark:bg-[#0d2818]",
-        iconColor: "text-[#16a34a] dark:text-green-400",
-      };
-    case "PROPERTY_VERIFIED":
-      return {
-        icon: ShieldCheck,
-        label: "Property verified",
-        dotBg: "bg-green-100 dark:bg-[#0d2818]",
-        iconColor: "text-[#16a34a] dark:text-green-400",
-      };
-    case "PROPERTY_UPDATED":
-    default:
-      return {
-        icon: Edit3,
-        label: "Property updated",
-        dotBg: "bg-gray-100 dark:bg-[#1c2128]",
-        iconColor: "text-gray-600 dark:text-[#7d8590]",
-      };
-  }
-}
-
-function timeAgo(date) {
-  if (!date) return "";
-  const seconds = Math.floor((Date.now() - new Date(date).getTime()) / 1000);
-  if (seconds < 5) return "just now";
-  if (seconds < 60) return `${seconds}s ago`;
-  const mins = Math.floor(seconds / 60);
-  if (mins < 60) return `${mins}m ago`;
-  const hrs = Math.floor(mins / 60);
-  if (hrs < 24) return `${hrs}h ago`;
-  const days = Math.floor(hrs / 24);
-  if (days < 7) return `${days}d ago`;
-  return new Date(date).toLocaleDateString();
 }

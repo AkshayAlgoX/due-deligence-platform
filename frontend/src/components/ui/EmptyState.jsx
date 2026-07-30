@@ -1,15 +1,24 @@
 "use client";
 
 import { Inbox } from "lucide-react";
+import { useTranslation } from "react-i18next";
 
 export default function EmptyState({
   icon: Icon = Inbox,
-  title = "Nothing here yet",
-  description = "Get started by adding your first item.",
+  title,
+  description,
   action = null,
   size = "default",
 }) {
+  const { t } = useTranslation();
   const isCompact = size === "compact";
+
+  // Fall back to i18n defaults when caller doesn't pass explicit strings.
+  // Callers that already provide translated strings (e.g. via t() in page)
+  // continue to work unchanged.
+  const resolvedTitle = title ?? t("emptyState.defaultTitle");
+  const resolvedDescription =
+    description === undefined ? t("emptyState.defaultDescription") : description;
 
   return (
     <div
@@ -33,16 +42,16 @@ export default function EmptyState({
           isCompact ? "text-sm" : "text-lg"
         }`}
       >
-        {title}
+        {resolvedTitle}
       </p>
 
-      {description && (
+      {resolvedDescription && (
         <p
           className={`mt-1.5 text-gray-500 dark:text-[#7d8590] max-w-sm ${
             isCompact ? "text-xs" : "text-sm"
           }`}
         >
-          {description}
+          {resolvedDescription}
         </p>
       )}
 
