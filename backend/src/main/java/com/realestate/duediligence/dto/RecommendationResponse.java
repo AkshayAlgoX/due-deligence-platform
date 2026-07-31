@@ -1,47 +1,54 @@
 package com.realestate.duediligence.dto;
 
-import lombok.AllArgsConstructor;
+import java.util.Map;
+
 import lombok.Builder;
 import lombok.Data;
-import lombok.NoArgsConstructor;
 
 /**
  * One actionable recommendation derived from real property data.
- * No ML — pure rule-based scanning of DB state.
  *
- * severity: HIGH | MEDIUM | LOW | POSITIVE
- * type: unique string key so frontend can deduplicate / dismiss by type
+ * title, description, and actionLabel are now i18n KEYS.
+ * The frontend calls t(titleKey, titleParams) to render the translated string.
+ * titleParams / descriptionParams carry the interpolation variables.
  */
 @Data
 @Builder
-@NoArgsConstructor
-@AllArgsConstructor
 public class RecommendationResponse {
 
-    /** Unique key — used for localStorage dismiss tracking. */
+    /**
+     * Stable machine identifier for this recommendation type.
+     * e.g. "INCOMPLETE_DATA", "MISSING_PHOTO", "PENDING_VERIFICATION"
+     * Used by frontend for dismiss logic (stored in localStorage).
+     */
     private String type;
 
-    /** HIGH | MEDIUM | LOW | POSITIVE */
+    /** HIGH | MEDIUM | POSITIVE | LOW */
     private String severity;
 
-    /** Short headline — sentence case, no corporate speak. */
-    private String title;
+    /** i18n key for the title, e.g. "recommendations.items.incompleteData.title" */
+    private String titleKey;
 
-    /** One sentence explaining what to do and why. */
-    private String description;
+    /** Interpolation params for titleKey, e.g. { "fieldCount": 3, "address": "..." } */
+    private Map<String, Object> titleParams;
+
+    /** i18n key for the description */
+    private String descriptionKey;
+
+    /** Interpolation params for descriptionKey */
+    private Map<String, Object> descriptionParams;
+
+    /** i18n key for the action button label */
+    private String actionLabelKey;
 
     /**
      * Optional — property this recommendation relates to.
-     * Null for portfolio-level recommendations.
+     * Used by frontend to deep-link to the specific property.
      */
     private Long propertyId;
 
     /**
-     * Frontend route to navigate to when user clicks the action button.
      * e.g. "/dashboard/property-search" or null if no direct action.
      */
     private String actionUrl;
-
-    /** Button label — verb. e.g. "View property", "Add details". */
-    private String actionLabel;
 }

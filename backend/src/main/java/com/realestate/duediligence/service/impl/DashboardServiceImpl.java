@@ -4,6 +4,7 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 import org.springframework.security.core.Authentication;
@@ -14,6 +15,7 @@ import com.realestate.duediligence.dto.ActivityItemResponse;
 import com.realestate.duediligence.dto.DashboardStatsResponse;
 import com.realestate.duediligence.dto.DashboardTrendsResponse;
 import com.realestate.duediligence.dto.PortfolioInsightsResponse;
+import com.realestate.duediligence.dto.RecommendationResponse;
 import com.realestate.duediligence.entity.Property;
 import com.realestate.duediligence.entity.User;
 import com.realestate.duediligence.repository.PropertyRepository;
@@ -21,8 +23,6 @@ import com.realestate.duediligence.repository.UserRepository;
 import com.realestate.duediligence.service.DashboardService;
 
 import lombok.RequiredArgsConstructor;
-import com.realestate.duediligence.dto.RecommendationResponse;
-import java.util.Map;
 
 @Service
 @RequiredArgsConstructor
@@ -35,7 +35,7 @@ public class DashboardServiceImpl implements DashboardService {
     // getStats — existing (unchanged behavior + activeUsers added)
     // ────────────────────────────────────────────────────────────────
 
-        @Override
+    @Override
     public DashboardStatsResponse getStats() {
         User currentUser = resolveCurrentUser();
         boolean admin = isAdmin();
@@ -75,10 +75,10 @@ public class DashboardServiceImpl implements DashboardService {
     }
 
     // ────────────────────────────────────────────────────────────────
-    // getPortfolioInsights — NEW
+    // getPortfolioInsights
     // ────────────────────────────────────────────────────────────────
 
-        @Override
+    @Override
     public PortfolioInsightsResponse getPortfolioInsights() {
         User currentUser = resolveCurrentUser();
         boolean admin = isAdmin();
@@ -151,7 +151,7 @@ public class DashboardServiceImpl implements DashboardService {
     }
 
     // ────────────────────────────────────────────────────────────────
-    // getRecentActivity — NEW
+    // getRecentActivity
     // ────────────────────────────────────────────────────────────────
 
     @Override
@@ -209,10 +209,10 @@ public class DashboardServiceImpl implements DashboardService {
     }
 
     // ────────────────────────────────────────────────────────────────
-    // getTrends — NEW
+    // getTrends
     // ────────────────────────────────────────────────────────────────
 
-        @Override
+    @Override
     public DashboardTrendsResponse getTrends() {
         User currentUser = resolveCurrentUser();
         boolean admin = isAdmin();
@@ -253,7 +253,160 @@ public class DashboardServiceImpl implements DashboardService {
     }
 
     // ────────────────────────────────────────────────────────────────
-    // Helper: growth percent (capped)
+    // getRecommendations — 6 rules, all real data — i18n keys only
+    // ────────────────────────────────────────────────────────────────
+
+    @Override
+    public List<RecommendationResponse> getRecommendations() {
+
+        User currentUser = resolveCurrentUser();
+
+        List<Property> all = (isAdmin() || currentUser == null)
+                ? propertyRepository.findAll()
+                : propertyRepository.findByCreatedById(currentUser.getId());
+
+        List<RecommendationResponse> recs = new ArrayList<>();
+
+        // ── Rule 1: Incomplete data ──────────────────────────────────────────
+        Property mostIncomplete = null;
+        int maxMissing = 0;
+        for (Property p : all) {
+            int missing = countMissingFields(p);
+            if (missing > maxMissing) {
+                maxMissing = missing;
+                mostIncomplete = p;
+            }
+        }
+
+        if (mostIncomplete != null && maxMissing > 0) {
+            recs.add(RecommendationResponse.builder()
+                    .type("INCOMPLETE_DATA")
+                    .severity("HIGH")
+                    .titleKey("recommendations.items.incompleteData.title")
+                    .titleParams(Map.of(
+                            "fieldCount", maxMissing,
+                            "address", mostIncomplete.getAddress() != null ? mostIncomplete.getAddress() : ""
+                    ))
+                    .descriptionKey("recommendations.items.incompleteData.description")
+                    .descriptionParams(Map.of())
+                    .actionLabelKey("recommendations.items.incompleteData.actionLabel")
+                    .propertyId(mostIncomplete.getId())
+                    .actionUrl("/dashboard/property-search")
+                    .build());
+        }
+
+        // ── Rule 2: Missing photo ────────────────────────────────────────────
+        long noPhotoCount = all.stream()
+                .filter(p -> p.getImageUrl() == null || p.getImageUrl().isBlank())
+                .count();
+
+        if (noPhotoCount > 0) {
+            Property noPhotoProperty = all.stream()
+                    .filter(p -> p.getImageUrl() == null || p.getImageUrl().isBlank())
+                    .findFirst()
+                    .orElse(null);
+
+            recs.add(RecommendationResponse.builder()
+                    .type("MISSING_PHOTO")
+                    .severity("MEDIUM")
+                    .titleKey("recommendations.items.missingPhoto.title")
+                    .titleParams(Map.of("count", noPhotoCount))
+                    .descriptionKey("recommendations.items.missingPhoto.description")
+                    .descriptionParams(Map.of())
+                    .actionLabelKey("recommendations.items.missingPhoto.actionLabel")
+                    .propertyId(noPhotoProperty != null ? noPhotoProperty.getId() : null)
+                    .actionUrl("/dashboard/property-search")
+                    .build());
+        }
+
+        // ── Rule 3: Missing area ─────────────────────────────────────────────
+        long noAreaCount = all.stream()
+                .filter(p -> p.getArea() == null || p.getArea() <= 0)
+                .count();
+
+        if (noAreaCount > 0) {
+            Property noAreaProperty = all.stream()
+                    .filter(p -> p.getArea() == null || p.getArea() <= 0)
+                    .findFirst()
+                    .orElse(null);
+
+            recs.add(RecommendationResponse.builder()
+                    .type("MISSING_AREA")
+                    .severity("MEDIUM")
+                    .titleKey("recommendations.items.missingArea.title")
+                    .titleParams(Map.of("count", noAreaCount))
+                    .descriptionKey("recommendations.items.missingArea.description")
+                    .descriptionParams(Map.of())
+                    .actionLabelKey("recommendations.items.missingArea.actionLabel")
+                    .propertyId(noAreaProperty != null ? noAreaProperty.getId() : null)
+                    .actionUrl("/dashboard/property-search")
+                    .build());
+        }
+
+        // ── Rule 4: Diverse portfolio ────────────────────────────────────────
+        long cityCount = all.stream()
+                .map(Property::getCity)
+                .filter(c -> c != null && !c.isBlank())
+                .distinct()
+                .count();
+
+        if (cityCount >= 3) {
+            recs.add(RecommendationResponse.builder()
+                    .type("DIVERSE_PORTFOLIO")
+                    .severity("LOW")
+                    .titleKey("recommendations.items.diversePortfolio.title")
+                    .titleParams(Map.of("count", cityCount))
+                    .descriptionKey("recommendations.items.diversePortfolio.description")
+                    .descriptionParams(Map.of())
+                    .actionLabelKey(null)
+                    .propertyId(null)
+                    .actionUrl(null)
+                    .build());
+        }
+
+        // ── Rule 5: All verified ─────────────────────────────────────────────
+        boolean allVerified = !all.isEmpty()
+                && all.stream().allMatch(p -> Boolean.TRUE.equals(p.getVerified()));
+
+        if (allVerified) {
+            recs.add(RecommendationResponse.builder()
+                    .type("ALL_VERIFIED")
+                    .severity("POSITIVE")
+                    .titleKey("recommendations.items.allVerified.title")
+                    .titleParams(Map.of())
+                    .descriptionKey("recommendations.items.allVerified.description")
+                    .descriptionParams(Map.of())
+                    .actionLabelKey(null)
+                    .propertyId(null)
+                    .actionUrl(null)
+                    .build());
+        }
+
+        // ── Rule 6: Pending verification ────────────────────────────────────
+        long pendingCount = all.stream()
+                .filter(p -> !Boolean.TRUE.equals(p.getVerified()))
+                .count();
+
+        if (pendingCount > 0) {
+            recs.add(RecommendationResponse.builder()
+                    .type("PENDING_VERIFICATION")
+                    .severity("MEDIUM")
+                    .titleKey("recommendations.items.pendingVerification.title")
+                    .titleParams(Map.of("count", pendingCount))
+                    .descriptionKey("recommendations.items.pendingVerification.description")
+                    .descriptionParams(Map.of())
+                    .actionLabelKey("recommendations.items.pendingVerification.actionLabel")
+                    .propertyId(null)
+                    .actionUrl("/dashboard/property-search")
+                    .build());
+        }
+
+        recs.sort(Comparator.comparingInt(r -> severityOrder(r.getSeverity())));
+        return recs;
+    }
+
+    // ────────────────────────────────────────────────────────────────
+    // Private helpers
     // ────────────────────────────────────────────────────────────────
 
     /**
@@ -274,176 +427,30 @@ public class DashboardServiceImpl implements DashboardService {
         if (rounded < -999) return -999;
         return rounded;
     }
-    // ────────────────────────────────────────────────────────────────
-// getRecommendations — 6 rules, all real data
-// ────────────────────────────────────────────────────────────────
 
-@Override
-public List<RecommendationResponse> getRecommendations() {
-    List<RecommendationResponse> results = new ArrayList<>();
-    User currentUser = resolveCurrentUser();
-    List<Property> all = (isAdmin() || currentUser == null)
-            ? propertyRepository.findAll()
-            : propertyRepository.findByCreatedById(currentUser.getId());
-
-    if (all.isEmpty()) return results;
-
-    long totalCount      = all.size();
-    long verifiedCount   = all.stream().filter(p -> Boolean.TRUE.equals(p.getVerified())).count();
-    long pendingCount    = totalCount - verifiedCount;
-
-    // ── Rule 1: Properties missing critical fields ────────────────
-    // Find the property with the most missing fields
-    Property mostIncomplete = null;
-    int maxMissing = 0;
-    for (Property p : all) {
-        int missing = countMissingFields(p);
-        if (missing > maxMissing) {
-            maxMissing = missing;
-            mostIncomplete = p;
-        }
-    }
-    if (mostIncomplete != null && maxMissing > 0) {
-        results.add(RecommendationResponse.builder()
-                .type("MISSING_FIELDS")
-                .severity("MEDIUM")
-                .title("Incomplete property data")
-                .description(maxMissing + " field" + (maxMissing > 1 ? "s" : "") +
-                        " missing on " + mostIncomplete.getAddress() +
-                        " — complete them to unlock verification.")
-                .propertyId(mostIncomplete.getId())
-                .actionUrl("/dashboard/property-search")
-                .actionLabel("View property")
-                .build());
+    private int severityOrder(String severity) {
+        return switch (severity) {
+            case "HIGH"     -> 0;
+            case "MEDIUM"   -> 1;
+            case "POSITIVE" -> 2;
+            default         -> 3;
+        };
     }
 
-    // ── Rule 2: Properties with no photo ─────────────────────────
-    long noPhoto = all.stream()
-            .filter(p -> p.getImageUrl() == null || p.getImageUrl().isBlank())
-            .count();
-    if (noPhoto > 0) {
-        // Point to the first property without a photo
-        Property noPhotoProperty = all.stream()
-                .filter(p -> p.getImageUrl() == null || p.getImageUrl().isBlank())
-                .findFirst().orElse(null);
-        results.add(RecommendationResponse.builder()
-                .type("NO_PHOTO")
-                .severity("LOW")
-                .title(noPhoto + " propert" + (noPhoto > 1 ? "ies have" : "y has") + " no photo")
-                .description("Adding a photo helps identify properties quickly and improves listing quality.")
-                .propertyId(noPhotoProperty != null ? noPhotoProperty.getId() : null)
-                .actionUrl("/dashboard/property-search")
-                .actionLabel("Add photo")
-                .build());
+    private int countMissingFields(Property p) {
+        int missing = 0;
+        if (p.getAddress() == null || p.getAddress().trim().length() <= 5) missing++;
+        if (isBlankField(p.getCity()))          missing++;
+        if (isBlankField(p.getState()))         missing++;
+        if (isBlankField(p.getZipCode()))       missing++;
+        if (isBlankField(p.getPropertyType()))  missing++;
+        if (p.getMarketValue() == null || p.getMarketValue() <= 0) missing++;
+        if (p.getArea() == null || p.getArea() <= 0) missing++;
+        return missing;
     }
 
-    // ── Rule 3: Market value set but area missing (can't calc ₹/sqft) ──
-    long noArea = all.stream()
-            .filter(p -> p.getArea() == null && p.getMarketValue() != null)
-            .count();
-    if (noArea > 0) {
-        Property noAreaProperty = all.stream()
-                .filter(p -> p.getArea() == null && p.getMarketValue() != null)
-                .findFirst().orElse(null);
-        results.add(RecommendationResponse.builder()
-                .type("NO_AREA")
-                .severity("LOW")
-                .title("Area missing on " + noArea + " propert" + (noArea > 1 ? "ies" : "y"))
-                .description("Add area to calculate price per sqft — useful for comparing properties.")
-                .propertyId(noAreaProperty != null ? noAreaProperty.getId() : null)
-                .actionUrl("/dashboard/property-search")
-                .actionLabel("Add area")
-                .build());
-    }
-
-    // ── Rule 4: Portfolio concentration > 70% in one city ────────
-    Map<String, Long> cityCount = all.stream()
-            .filter(p -> p.getCity() != null)
-            .collect(java.util.stream.Collectors.groupingBy(
-                    Property::getCity,
-                    java.util.stream.Collectors.counting()));
-
-    cityCount.forEach((city, count) -> {
-        double pct = (double) count / totalCount * 100;
-        if (pct >= 70 && totalCount >= 3) {
-            results.add(RecommendationResponse.builder()
-                    .type("CONCENTRATION_" + city.toUpperCase().replace(" ", "_"))
-                    .severity("MEDIUM")
-                    .title("High concentration in " + city)
-                    .description(Math.round(pct) + "% of your portfolio is in " +
-                            city + ". Consider diversifying to reduce location risk.")
-                    .propertyId(null)
-                    .actionUrl("/dashboard/property-search")
-                    .actionLabel("View portfolio")
-                    .build());
-        }
-    });
-
-    // ── Rule 5: All properties verified — positive signal ─────────
-    if (pendingCount == 0 && totalCount > 0) {
-        results.add(RecommendationResponse.builder()
-                .type("ALL_VERIFIED")
-                .severity("POSITIVE")
-                .title("All properties verified")
-                .description("Every property in your portfolio has passed all " +
-                        "verification checks. Your data is complete.")
-                .propertyId(null)
-                .actionUrl(null)
-                .actionLabel(null)
-                .build());
-    } else if (pendingCount > 0 && pendingCount <= 3) {
-        // ── Rule 6: A few properties still pending — nudge ───────
-        results.add(RecommendationResponse.builder()
-                .type("PENDING_VERIFICATION")
-                .severity("MEDIUM")
-                .title(pendingCount + " propert" + (pendingCount > 1 ? "ies" : "y") + " awaiting verification")
-                .description("Complete the missing fields on pending properties to pass all verification checks.")
-                .propertyId(null)
-                .actionUrl("/dashboard/property-search")
-                .actionLabel("View pending")
-                .build());
-    }
-
-    // Sort: HIGH → MEDIUM → LOW → POSITIVE
-    results.sort((a, b) -> severityOrder(a.getSeverity()) - severityOrder(b.getSeverity()));
-
-    return results;
-}
-
-private int severityOrder(String severity) {
-    return switch (severity) {
-        case "HIGH"     -> 0;
-        case "MEDIUM"   -> 1;
-        case "LOW"      -> 2;
-        case "POSITIVE" -> 3;
-        default         -> 4;
-    };
-}
-
-private int countMissingFields(Property p) {
-    int missing = 0;
-    if (p.getAddress()      == null || p.getAddress().isBlank())      missing++;
-    if (p.getCity()         == null || p.getCity().isBlank())         missing++;
-    if (p.getState()        == null || p.getState().isBlank())        missing++;
-    if (p.getZipCode()      == null || p.getZipCode().isBlank())      missing++;
-    if (p.getPropertyType() == null || p.getPropertyType().isBlank()) missing++;
-    if (p.getArea()         == null)                                   missing++;
-    if (p.getMarketValue()  == null)                                   missing++;
-    if (p.getYearBuilt()    == null)                                   missing++;
-    if (p.getBedrooms()     == null)                                   missing++;
-    if (p.getBathrooms()    == null)                                   missing++;
-    return missing;
-}
-
-    /** Resolve current user from JWT. Returns null if unauthenticated. */
-    private User resolveCurrentUser() {
-        try {
-            Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-            if (auth == null || !auth.isAuthenticated()) return null;
-            return userRepository.findByEmail(auth.getName()).orElse(null);
-        } catch (Exception e) {
-            return null;
-        }
+    private boolean isBlankField(String s) {
+        return s == null || s.isBlank();
     }
 
     /** True if current user has ADMIN role. */
@@ -451,5 +458,14 @@ private int countMissingFields(Property p) {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         return auth != null && auth.getAuthorities().stream()
                 .anyMatch(a -> a.getAuthority().equals("ROLE_ADMIN"));
+    }
+
+    /** Resolves the currently authenticated user, or null if none. */
+    private User resolveCurrentUser() {
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        if (auth == null || !auth.isAuthenticated()) return null;
+        String email = auth.getName();
+        if (email == null || email.isBlank()) return null;
+        return userRepository.findByEmail(email).orElse(null);
     }
 }

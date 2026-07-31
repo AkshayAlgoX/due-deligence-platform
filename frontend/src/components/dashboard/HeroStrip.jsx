@@ -277,8 +277,7 @@ function LiveAqiCell({ aqi, city, loading }) {
               {aqi.value}
             </p>
             <span className="text-xs font-bold text-gray-700 dark:text-[#e6edf3]">
-              {/* aqiInfo.label + aqi.category flagged as deferred (aqiScale.js constants) */}
-              {aqiInfo?.label ?? aqi.category ?? ""}
+              {aqiInfo?.labelKey ? t(aqiInfo.labelKey) : (aqi.category ?? "")}
             </span>
           </div>
         ) : (

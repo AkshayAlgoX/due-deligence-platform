@@ -196,18 +196,17 @@ export default function ChangePasswordModal({ isOpen, onClose }) {
             )}
 
             {newPassword && (
-              <div className="mt-2">
-                <div className="h-1 w-full overflow-hidden rounded-full bg-gray-100 dark:bg-[#1c2128]">
-                  <div
-                    className={`h-full transition-all ${strength.color} ${strength.width}`}
-                  />
-                </div>
-                {/* strength.label comes from utils/helpers.js — flagged for future i18n refactor */}
-                <p className="mt-1 text-[11px] font-medium text-gray-500 dark:text-[#7d8590]">
-                  {strength.label}
-                </p>
-              </div>
-            )}
+  <div className="mt-2">
+    <div className="h-1 w-full overflow-hidden rounded-full bg-gray-100 dark:bg-[#1c2128]">
+      <div
+        className={`h-full transition-all ${strength.color} ${strength.width}`}
+      />
+    </div>
+    <p className="mt-1 text-[11px] font-medium text-gray-500 dark:text-[#7d8590]">
+      {strength.labelKey ? t(strength.labelKey) : ""}
+    </p>
+  </div>
+)}
           </div>
 
           <div>

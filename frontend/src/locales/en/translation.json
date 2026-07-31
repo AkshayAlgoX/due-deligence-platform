@@ -1,4 +1,10 @@
 {
+  "passwordStrength": {
+  "weak": "Weak",
+  "fair": "Fair",
+  "good": "Good",
+  "strong": "Strong"
+},
   "cookies": {
   "banner": {
     "ariaLabel": "Cookie consent",
@@ -22,6 +28,142 @@
     "rejectAll": "Reject all",
     "acceptAll": "Accept all",
     "saveChoices": "Save choices"
+  }
+},
+"recommendations": {
+  "title": "Recommendations",
+  "actionsCount_one": "{{count}} action to improve your portfolio",
+  "actionsCount_other": "{{count}} actions to improve your portfolio",
+  "urgentCount_one": "{{count}} urgent",
+  "urgentCount_other": "{{count}} urgent",
+  "dismiss": "Dismiss",
+  "showLess": "Show less",
+  "showMore_one": "Show {{count}} more",
+  "showMore_other": "Show {{count}} more",
+  "severity": {
+    "urgent": "Urgent",
+    "action": "Action",
+    "onTrack": "On track",
+    "tip": "Tip"
+  },
+  "items": {
+  "incompleteData": {
+    "title": "{{fieldCount}} fields missing on {{address}}",
+    "description": "Complete the missing fields to improve your verification score and risk accuracy.",
+    "actionLabel": "View property"
+  },
+  "missingPhoto": {
+    "title": "{{count}} properties have no photo",
+    "description": "Adding a photo helps identify properties in search results and PDF reports.",
+    "actionLabel": "Add photo"
+  },
+  "missingArea": {
+    "title": "{{count}} properties are missing area data",
+    "description": "Area (sqft) is required for accurate risk scoring and price-per-sqft calculations.",
+    "actionLabel": "Add details"
+  },
+  "diversePortfolio": {
+    "title": "Portfolio spans {{count}} cities",
+    "description": "You have properties across multiple cities. Consider reviewing location-specific risk factors.",
+    "actionLabel": "View all"
+  },
+  "allVerified": {
+    "title": "All properties verified",
+    "description": "Every property in your portfolio has passed all verification checks. Your data is complete.",
+    "actionLabel": "View portfolio"
+  },
+  "pendingVerification": {
+    "title": "{{count}} properties awaiting verification",
+    "description": "Complete the missing fields on pending properties to mark them verified.",
+    "actionLabel": "View pending"
+  }
+}
+},
+"faq": {
+  "categories": {
+    "GETTING_STARTED":  "Getting started",
+    "VERIFICATION":     "Verification",
+    "RISK_SCORING":     "Risk scoring",
+    "DATA_SOURCES":     "Data sources",
+    "REPORTS_PDF":      "Reports & PDF",
+    "ACCOUNT":          "Account",
+    "PRIVACY_SECURITY": "Privacy & security"
+  },
+  "items": {
+    "item1": {
+      "question": "How do I add my first property?",
+      "answer": "After signing in, click 'Add property' in the top-right of the dashboard, or use the button in the property search page. Fill in the address — we'll auto-suggest matches from OpenStreetMap. Only address and city are required; everything else can be added later."
+    },
+    "item2": {
+      "question": "What information do I need to add a property?",
+      "answer": "Required: address and city. Recommended: property type, market value, area (sqft), year built, and bedrooms/bathrooms. The more fields you fill in, the higher your verification score and the more accurate your risk assessment."
+    },
+    "item3": {
+      "question": "Why is my property marked as 'Pending' or 'Incomplete'?",
+      "answer": "We run 7 data quality checks on every property (address, city, state, ZIP, market value, area, property type). Missing any of these keeps the status as pending. Click 'Complete to verify' on any pending card to fill in the missing fields."
+    },
+    "item4": {
+      "question": "How does verification work?",
+      "answer": "Verification is automatic and based purely on data completeness — not manual review. When you fill in all 7 required fields, the property is marked verified. If you edit a verified property and remove a field, it goes back to pending."
+    },
+    "item5": {
+      "question": "How is the risk score calculated?",
+      "answer": "The risk score is a weighted average of four categories: Financial (30%), Legal (30%), Environmental (25%), and Structural (15%). Each category has documented rules — for example, unverified status adds legal risk, high AQI adds environmental risk, condition 'Poor' adds structural risk. Score ranges: 0–33 Low, 34–66 Medium, 67–100 High."
+    },
+    "item6": {
+      "question": "Why does my property show 'data incomplete' on the risk card?",
+      "answer": "Some data sources (like ownership, tax history, permits) currently return sample data because reliable public APIs for these domains are not yet available for India at scale. The risk engine flags this so you know the score would be more precise with real data."
+    },
+    "item7": {
+      "question": "Where does the air quality data come from?",
+      "answer": "AQI values come from the WAQI (World Air Quality Index) API, which aggregates real-time readings from CPCB monitoring stations across India. If your property is in a city without a nearby station, this section will be marked as 'No data'."
+    },
+    "item8": {
+      "question": "Is the ownership and tax data real?",
+      "answer": "No — we're upfront about this. The ownership, tax history, zoning, flood zone, and permits sections currently return sample data. Reliable public APIs for these domains don't yet exist in India at scale. Every card that shows sample data is clearly labelled 'Sample data' or 'Mock' in the interface."
+    },
+    "item9": {
+      "question": "How do I download a property report?",
+      "answer": "Open any property in property search, then click 'Download report' in the top-right of the property hero card. The PDF includes the property overview, risk assessment, all 6 data sections, and a data completeness summary. Generation takes 2–4 seconds."
+    },
+    "item10": {
+      "question": "Can I compare multiple properties in one report?",
+      "answer": "Yes. On the property search page, hover over any card and click the compare checkbox that appears. Select 2–3 properties, then click 'Compare' in the bottom bar. On the comparison page, click 'Download comparison' to get a landscape PDF with all properties side by side."
+    },
+    "item11": {
+      "question": "How do I delete my account?",
+      "answer": "Go to your profile page and scroll to the danger zone at the bottom. Deleting your account is immediate and permanent — all your properties and history are removed from our database via cascade delete. There is no recovery period."
+    },
+    "item12": {
+      "question": "I forgot my password. What do I do?",
+      "answer": "Click 'Forgot password' on the login page. Enter your registered email and we'll send a 6-digit OTP. Verify the OTP, then set a new password. OTPs are single-use and expire quickly. If you signed up with Google, use 'Continue with Google' instead — there is no password to reset."
+    },
+    "item13": {
+      "question": "Is my data shared with third parties?",
+      "answer": "We call a small number of external services for specific purposes: WAQI for air quality (city name only), Nominatim for geocoding (address string only), and Google OAuth for sign-in verification. Full details are on our /security page. No personal or property data is sold to anyone."
+    },
+    "item14": {
+      "question": "How are my passwords stored?",
+      "answer": "Passwords are hashed with BCrypt (strength factor 10) before being stored. We never see your plain-text password and cannot recover it — only reset it via OTP. If you sign in exclusively with Google, no password is stored at all."
+    }
+  }
+},
+"aqiScale": {
+  "labels": {
+    "good": "Good",
+    "satisfactory": "Satisfactory",
+    "moderate": "Moderate",
+    "poor": "Poor",
+    "veryPoor": "Very Poor",
+    "severe": "Severe"
+  },
+  "descriptions": {
+    "good": "Minimal impact",
+    "satisfactory": "Minor breathing discomfort to sensitive people",
+    "moderate": "Breathing discomfort to sensitive groups",
+    "poor": "Breathing discomfort on prolonged exposure",
+    "veryPoor": "Respiratory illness on prolonged exposure",
+    "severe": "Serious health impact on everyone"
   }
 },
   "nav": {
@@ -604,7 +746,27 @@
     "PENDING": "Pending",
     "EXPIRED": "Expired",
     "REJECTED": "Rejected"
-  }
+  },
+  "buildingType": {
+  "CONCRETE": "Concrete",
+  "STEEL": "Steel",
+  "WOOD": "Wood",
+  "BRICK": "Brick"
+},
+"condition": {
+  "EXCELLENT": "Excellent",
+  "GOOD": "Good",
+  "FAIR": "Fair",
+  "POOR": "Poor"
+},
+"soilType": {
+  "BLACK_COTTON": "Black Cotton",
+  "RED_SOIL": "Red Soil",
+  "ALLUVIAL": "Alluvial",
+  "LATERITE": "Laterite",
+  "SANDY": "Sandy",
+  "CLAYEY": "Clayey"
+}
 },
       "completeness": {
   "title": "Data completeness",

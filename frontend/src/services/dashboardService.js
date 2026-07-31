@@ -118,17 +118,29 @@ export const getPortfolioHistory = async (days = 30) => {
  * Fetch rule-based recommendations from real portfolio data.
  * Returns array of { type, severity, title, description, propertyId, actionUrl, actionLabel }
  */
+/**
+ * Fetch rule-based recommendations from real portfolio data.
+ * Returns array of {
+ *   type, severity,
+ *   titleKey, titleParams,
+ *   descriptionKey, descriptionParams,
+ *   actionLabelKey,
+ *   propertyId, actionUrl
+ * }
+ */
 export const getDashboardRecommendations = async () => {
   const { data } = await api.get(API_ROUTES.DASHBOARD_RECOMMENDATIONS);
 
   return (data ?? []).map((r) => ({
-    type: r.type ?? "",
-    severity: r.severity ?? "LOW",
-    title: r.title ?? "",
-    description: r.description ?? "",
-    propertyId: r.propertyId ?? null,
-    actionUrl: r.actionUrl ?? null,
-    actionLabel: r.actionLabel ?? null,
+    type:               r.type              ?? "",
+    severity:           r.severity          ?? "LOW",
+    titleKey:           r.titleKey          ?? "",
+    titleParams:        r.titleParams       ?? {},
+    descriptionKey:     r.descriptionKey    ?? "",
+    descriptionParams:  r.descriptionParams ?? {},
+    actionLabelKey:     r.actionLabelKey    ?? null,
+    propertyId:         r.propertyId        ?? null,
+    actionUrl:          r.actionUrl         ?? null,
   }));
 };
 

@@ -1,4 +1,10 @@
 {
+  "passwordStrength": {
+  "weak": "નબળો",
+  "fair": "ઠીક",
+  "good": "સારો",
+  "strong": "મજબૂત"
+},
   "cookies": {
     "banner": {
       "ariaLabel": "કૂકી સંમતિ",
@@ -24,6 +30,93 @@
       "saveChoices": "પસંદગીઓ સાચવો"
     }
   },
+  "faq": {
+  "categories": {
+    "GETTING_STARTED":  "શરૂઆત કરવી",
+    "VERIFICATION":     "ચકાસણી",
+    "RISK_SCORING":     "જોખમ સ્કોરિંગ",
+    "DATA_SOURCES":     "ડેટા સ્રોતો",
+    "REPORTS_PDF":      "અહેવાલો અને PDF",
+    "ACCOUNT":          "ખાતું",
+    "PRIVACY_SECURITY": "ગોપનીયता અને સુરક્ષા"
+  },
+  "items": {
+    "item1": {
+      "question": "મારી પહેલી મિલકત કેવી રીતે ઉમેરવી?",
+      "answer": "સાઇન ઇન કર્યા બાદ, ડૅશબૉર્ડના ઉપર-જમણે 'મિલકત ઉમેરો' ક્લિક કરો અથવા મિલકત શોધ પૃષ્ઠ પર બટન વાપરો. સરનામું ભરો — OpenStreetMap માંથી મેળ સૂચવીશું. ફક્ત સરનામું અને શહેર જ જરૂરી છે; બાકી બધું પછી ઉમેરી શકાય."
+    },
+    "item2": {
+      "question": "મિલકત ઉમેરવા કઈ માહિતી જોઈએ?",
+      "answer": "જરૂરી: સરનામું અને શહેર. ભલામણ: મિલકત પ્રકાર, બજાર મૂલ્ય, ક્ષેત્ર (sqft), બાંધકામ વર્ષ અને શયનખંડ/સ્નાનઘર. જેટલા વધારે ક્ષેત્ર ભરો, ચકાસણી સ્કોર ઊંચો અને જોખમ મૂલ્યાંકન ચોક્કસ."
+    },
+    "item3": {
+      "question": "મારી મિલકત 'બાકી' અથવા 'અધૂરી' કેમ બતાવે છે?",
+      "answer": "અમે દરેક મિલકત પર 7 ડેટા ગુણવત્તા ચકાસણી ચલાવીએ છીએ (સરનામું, શહેર, રાજ્ય, ZIP, બજાર મૂલ્ય, ક્ષેત્ર, મિલકત પ્રકાર). કોઈ પણ ખૂટે તો સ્થિતિ બાકી રહે. ગૂm ક્ષેત્ર ભરવા 'ચKaSavA pUrnO karo' ક્લિક કરો."
+    },
+    "item4": {
+      "question": "ચकासणী કેvI rIte kAm kare che?",
+      "answer": "ChecKaSaNI svayAmchaLit che ane pUrIrIte DeTa pUrNataAdhArit che — mAnhyal samIkshA nahIM. sarve 7 jarUrI kShetrO bharyA bAd milkat checKAyI jAy che. jo checKAyeLI milkatamAM ferfAr karIne kSetra haTAvo to ferI bAkI thAy che."
+    },
+    "item5": {
+      "question": "joKhma skOr kEvI rIte gaNAtAr thAy?",
+      "answer": "joKhma skOr chAr shreNInO bhArit sarasharI che: vittIya (30%), kAnUnI (30%), paryAvaraNIya (25%) ane saMrachAnAtmak (15%). skOr shrENI: 0–33 OchO, 34–66 madhyam, 67–100 uchO."
+    },
+    "item6": {
+      "question": "joKhma kArd par 'DeTa adhUrO' kem dikhAy che?",
+      "answer": "keTalAk DeTa srotO (mAlikI, kar itihAs, paramAnagI) haL nUmunA DeTa pAcho Ape che kAraN bhAratamAM moTA pAye A DomennO vishvAsapAtra pablik API hun upalabdha nahIM. joKhma injan A ne flagg kare che."
+    },
+    "item7": {
+      "question": "havAI guNavattA DeTa kyAMthi Ave che?",
+      "answer": "AQI mUlyO WAQI (varld er kvAlITI inDeks) API mAMthi Ave che, je bhArat bharmAM CPCB nigarAnI kendrOthi riyal-TaIm rIDig ekaTrA kare che. nakShe par koI kendr vagar shehermAM milkat hoy to 'DeTa nahIM' dikhAvashE."
+    },
+    "item8": {
+      "question": "mAlikI ane kar DeTa vAstvik che?",
+      "answer": "nahIM — AmAM amE spashTa chIe. mAlikI, kar itihAs, jOning, pUr jhOn ane paramAnagInA vibhAgO haL nUmunA DeTa pAcho Ape che. nUmunA DeTa dikhAvtI dareK kArd spashTarIte 'nUmunA DeTa' yA 'Mock' lAbel chhE."
+    },
+    "item9": {
+      "question": "milkat ahevAl kEvI rIte DAunlOD karavO?",
+      "answer": "milkat shOdhemAM koI paN milkat kholO, pachI milkat hIrO kArDnA upar-jamaNe 'ahevAl DAunlOD karO' klik karO. PDF mAM milkatnO avlOkan, joKhma mUlyAnkan, 6 DeTa vibhAgO ane DeTa pUrNatAnO sAr sAmeLa che. taiArImAM 2–4 sekand lAge."
+    },
+    "item10": {
+      "question": "ek ahevAlmAM aneka milkatOnI saraKhAmaNI karI shaKAy?",
+      "answer": "hA. milkat ShOdha pashThe koI paN kArD par hOvar karO ane compare chekbOks klik karO. 2–3 milkatO pasand karO, pachI nIche 'saraKhAmaNI karO' klik karO. saraKhAmaNI pashThe 'saraKhAmaNI DAunlOD karO' klik karO."
+    },
+    "item11": {
+      "question": "mArO khAtO kEvI rIte haTAvavO?",
+      "answer": "tomArA prOfAIl pashThe jAO ane nIche joKhmanA kSetra sudhI skrOl karO. KhAtO haTAvavO tatkal ane kaymI che — cascade delete dvArA tamArI badI milkatO ane itihAs haTAvAy che. koI punaHprApti avadhi nahIM."
+    },
+    "item12": {
+      "question": "pAsavarD bhUlI gayO. shu karavO?",
+      "answer": "lOgin pashThe 'pAsavarD bhUlI gayA' klik karO. nOndAyelO ImEl ApO, 6 aMkanO OTP mOkalIshum. OTP chekAvo ane navo pAsavarD seT karO. Google sAthe sAIn ap karyO hoy to 'Google sAthe jArI rAKho' vAparO."
+    },
+    "item13": {
+      "question": "mArO DeTa tritIya pakShOne ApAvAmAM Ave che?",
+      "answer": "amE vishiShT heTu mATe ThODA bAhya sevAo kOl karIe chIe: havAI guNavattA mATe WAQI (fakt shahernuM nAm), jiOkODing mATe Nominatim (fakt sarAnAmAnI striM), sAIn-in checKASaN mATe Google OAuth. koI paN vyaktigat yA milkat DeTa vechatO nahIM."
+    },
+    "item14": {
+      "question": "mArA pAsavarD kEvI rIte sAchaVAy che?",
+      "answer": "pAsavarD sachaVAyA pehLA BCrypt (strength factor 10) sAthe hesh thAy che. plain-text pAsavarD amE kyArey jotuM nathI ane punaHprApti karI shakAtuM nathI — fakt OTP dvArA rIseT karI shaKAy. fakt Google vAparO to koI pAsavarD sachaVAtuM nathI."
+    }
+  }
+},
+  "aqiScale": {
+  "labels": {
+    "good": "સારું",
+    "satisfactory": "સંતોષજનક",
+    "moderate": "મધ્યમ",
+    "poor": "ખરાબ",
+    "veryPoor": "ઘણું ખરાબ",
+    "severe": "ગંભીર"
+  },
+  "descriptions": {
+    "good": "ન્યૂનતમ અસર",
+    "satisfactory": "સંવેદનશીલ લોકોને સ્વાસ લેવામાં સ્હેજ અગવડ",
+    "moderate": "સંવેदनशील જૂથોને સ્વાસ લેवामां अगवड",
+    "poor": "લાંबા સંparkamangane સ્વास लेवामां तकलीफ",
+    "veryPoor": "લાーンga સmpratनमा श्वसन रोग",
+    "severe": "बधाँ पर ગंभीर स्वास्थ्य असर"
+  }
+},
   "nav": {
     "dashboard": "ડૅશબૉર્ડ",
     "propertySearch": "મિલકત શોધ",
@@ -337,6 +430,38 @@
     }
   },
   "recommendations": {
+    "items": {
+  "incompleteData": {
+    "title": "{{address}} પર {{fieldCount}} ફીલ્ડ ખૂટે છે",
+    "description": "verification score અને risk assessment સુધારવા ખૂટતાં ફીલ્ડ ભરો.",
+    "actionLabel": "મિલકત જુઓ"
+  },
+  "missingPhoto": {
+    "title": "{{count}} મિલકતોમાં ફોટો નથી",
+    "description": "ફોટો ઉમેરવાથી search results અને PDF reports માં મિલકત ઓળખવી સહેલી બને છે.",
+    "actionLabel": "ફોટો ઉમેરો"
+  },
+  "missingArea": {
+    "title": "{{count}} મિલકતોમાં area ડેટા નથી",
+    "description": "ચોક્કસ risk scoring અને price-per-sqft ગણતરી માટે area (sqft) જરૂરી છે.",
+    "actionLabel": "વિગતો ઉમેરો"
+  },
+  "diversePortfolio": {
+    "title": "પોર્ટફોલિઓ {{count}} શહેરોમાં ફેલાયેલો છે",
+    "description": "તમારી મિલકતો ઘણા શહેરોમાં છે. સ્થળ-વિશિષ્ટ risk factors ની સમીક્ષા કરો.",
+    "actionLabel": "બધા જુઓ"
+  },
+  "allVerified": {
+    "title": "બધી મિલકતો ચકાસાઈ ગઈ",
+    "description": "તમારા પોર્ટફોલિઓની દરેક મિલકત બધી verification checks પાસ કરી ચૂકી છે. ડેટા સંપૂર્ણ છે.",
+    "actionLabel": "પોર્ટફોલિઓ જુઓ"
+  },
+  "pendingVerification": {
+    "title": "{{count}} મિલકતો ચકાસણીની રાહ જોઈ રહી છે",
+    "description": "pending મિલકતો પર ખૂટતાં ફીલ્ડ ભરો અને verified તરીકે ચિહ્નિત કરો.",
+    "actionLabel": "pending જુઓ"
+  }
+},
     "title": "भलामणो",
     "actionsCount_one": "तमारो पोर्टफोलियो सुधारवा {{count}} क्रिया",
     "actionsCount_other": "तमारो पोर्टफोलियो सुधारवा {{count}} क्रियाओ",
@@ -604,7 +729,27 @@
           "PENDING": "बाकी",
           "EXPIRED": "मुदत पूरी",
           "REJECTED": "नकार्यो"
-        }
+        },
+        "buildingType": {
+  "CONCRETE": "કોંક્રિટ",
+  "STEEL": "સ્ટીલ",
+  "WOOD": "લાકડું",
+  "BRICK": "ઈંટ"
+},
+"condition": {
+  "EXCELLENT": "ઉત્કૃષ્ટ",
+  "GOOD": "સારું",
+  "FAIR": "ઠીક",
+  "POOR": "ખરાબ"
+},
+"soilType": {
+  "BLACK_COTTON": "કાળી માટી",
+  "RED_SOIL": "લાલ માટી",
+  "ALLUVIAL": "કાંપ માટી",
+  "LATERITE": "લેટેરાઇટ",
+  "SANDY": "રેતાળ",
+  "CLAYEY": "ચીકણી માટી"
+}
       },
       "completeness": {
         "title": "डेटा पूर्णता",

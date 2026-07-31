@@ -41,7 +41,10 @@ export default function CookiePreferencesModal({
   onRejectAll,
   initialAnalytics = false,
 }) {
-  const { t } = useTranslation();
+  // useSuspense:false → doesn't crash if i18n isn't ready yet
+  // ready flag → we hold render until i18n is loaded
+  const { t, ready } = useTranslation(undefined, { useSuspense: false });
+
   const [analytics, setAnalytics] = useState(initialAnalytics);
 
   useEffect(() => {
@@ -59,6 +62,9 @@ export default function CookiePreferencesModal({
     };
   }, [open, onClose]);
 
+  // Bail out early if i18n hasn't initialised yet or modal is closed.
+  // These early returns come AFTER all hooks — preserves hook order.
+  if (!ready) return null;
   if (!open) return null;
 
   return (

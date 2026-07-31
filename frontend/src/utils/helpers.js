@@ -76,8 +76,14 @@ export const isAuthenticated = () => !!getToken();
  * @param {string} password
  * @returns {{ label: string, color: string, width: string }}
  */
+/**
+ * Returns a password strength descriptor.
+ * label is now a translation KEY — call t(strength.labelKey) in components.
+ * @param {string} password
+ * @returns {{ labelKey: string, color: string, width: string }}
+ */
 export const getPasswordStrength = (password) => {
-  if (!password) return { label: "", color: "bg-gray-200", width: "w-0" };
+  if (!password) return { labelKey: "", color: "bg-gray-200", width: "w-0" };
 
   let score = 0;
   if (password.length >= 8) score++;
@@ -85,10 +91,10 @@ export const getPasswordStrength = (password) => {
   if (/[0-9]/.test(password)) score++;
   if (/[^A-Za-z0-9]/.test(password)) score++;
 
-  if (score <= 1) return { label: "Weak", color: "bg-red-500", width: "w-1/4" };
-  if (score === 2) return { label: "Fair", color: "bg-yellow-400", width: "w-2/4" };
-  if (score === 3) return { label: "Good", color: "bg-blue-500", width: "w-3/4" };
-  return { label: "Strong", color: "bg-green-500", width: "w-full" };
+  if (score <= 1) return { labelKey: "passwordStrength.weak",   color: "bg-red-500",    width: "w-1/4" };
+  if (score === 2) return { labelKey: "passwordStrength.fair",   color: "bg-yellow-400", width: "w-2/4" };
+  if (score === 3) return { labelKey: "passwordStrength.good",   color: "bg-blue-500",   width: "w-3/4" };
+  return              { labelKey: "passwordStrength.strong", color: "bg-green-500",  width: "w-full" };
 };
 
 /**

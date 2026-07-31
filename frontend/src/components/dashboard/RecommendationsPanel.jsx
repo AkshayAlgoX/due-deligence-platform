@@ -78,7 +78,6 @@ function RecommendationsSkeleton() {
   );
 }
 
-// ── Single row ───────────────────────────────────────────────
 function RecommendationRow({ rec, onDismiss }) {
   const router = useRouter();
   const { t } = useTranslation();
@@ -92,12 +91,9 @@ function RecommendationRow({ rec, onDismiss }) {
 
       <div className="min-w-0 flex-1">
         <div className="flex items-center gap-2">
-          {/*
-            rec.title / rec.description / rec.actionLabel come from backend
-            as English text. Flagged for future backend refactor to send
-            translation keys instead.
-          */}
-          <p className="text-sm font-semibold text-gray-900 dark:text-[#e6edf3]">{rec.title}</p>
+          <p className="text-sm font-semibold text-gray-900 dark:text-[#e6edf3]">
+            {rec.titleKey ? t(rec.titleKey, rec.titleParams ?? {}) : ""}
+          </p>
           <span
             className={`text-[10px] font-bold uppercase tracking-wide ${cfg.labelColor}`}
           >
@@ -105,15 +101,15 @@ function RecommendationRow({ rec, onDismiss }) {
           </span>
         </div>
         <p className="mt-1 text-xs leading-relaxed text-gray-500 dark:text-[#7d8590]">
-          {rec.description}
+          {rec.descriptionKey ? t(rec.descriptionKey, rec.descriptionParams ?? {}) : ""}
         </p>
 
-        {rec.actionUrl && rec.actionLabel && (
+        {rec.actionUrl && rec.actionLabelKey && (
           <button
             onClick={() => router.push(rec.actionUrl)}
             className="mt-2 flex items-center gap-1 text-xs font-semibold text-[#16a34a] dark:text-green-400 transition-all hover:gap-1.5"
           >
-            {rec.actionLabel}
+            {t(rec.actionLabelKey)}
             <ArrowRight size={11} strokeWidth={2.5} />
           </button>
         )}

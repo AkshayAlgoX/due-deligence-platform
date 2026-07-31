@@ -1,6 +1,7 @@
 "use client";
 
 import { useTranslation } from "react-i18next";
+import { translateEnum } from "@/utils/enumTranslations";
 import {
   Building2,
   Home,
@@ -21,12 +22,12 @@ export default function BuildingInformationCard({ property, onEdit }) {
     property.structureType && {
       icon: Building2,
       label: t("property.comparison.metrics.structureType"),
-      value: property.structureType,
+      value: translateEnum(t, property.structureType),
     },
     property.condition && {
       icon: CheckCircle2,
       label: t("property.comparison.metrics.condition"),
-      value: property.condition,
+      value: translateEnum(t, property.condition),
     },
     property.stories != null && {
       icon: Layers,

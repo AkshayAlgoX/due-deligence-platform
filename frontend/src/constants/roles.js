@@ -17,26 +17,26 @@ import {
  */
 export const ROLES = [
   {
-    label: "Buyer",
     value: "BUYER",
+    labelKey: "profile.roles.BUYER",
     description: "Search properties, run due diligence, and save reports.",
     icon: Home,
   },
   {
-    label: "Real Estate Agent",
     value: "REAL_ESTATE_AGENT",
+    labelKey: "profile.roles.REAL_ESTATE_AGENT",
     description: "List properties, manage clients, and share verified reports.",
     icon: Building2,
   },
   {
-    label: "Legal Reviewer",
     value: "LEGAL_REVIEWER",
+    labelKey: "profile.roles.LEGAL_REVIEWER",
     description: "Review title documents, flag disputes, and add legal notes.",
     icon: Scale,
   },
   {
-    label: "Financial Institution",
     value: "FINANCIAL_INSTITUTION",
+    labelKey: "profile.roles.FINANCIAL_INSTITUTION",
     description: "Assess loan risk, verify valuations, and export data.",
     icon: Landmark,
   },
@@ -52,8 +52,8 @@ export const ROLES = [
 export const ALL_ROLES = [
   ...ROLES,
   {
-    label: "Administrator",
     value: "ADMIN",
+    labelKey: "profile.roles.ADMIN",
     description: "Full platform access. Manage users, roles, and audits.",
     icon: ShieldCheck,
   },

@@ -97,32 +97,32 @@ function Field({ label, htmlFor, error, required, children, t }) {
   );
 }
 
-// ── Password strength bar ─────────────────────────────────────────────────────
-function StrengthBar({ strength }) {
-  if (!strength) return null;
+function StrengthBar({ strength, t }) {
+  if (!strength || !strength.labelKey) return null;
+
   const colors = {
-    Weak:   "bg-red-500",
-    Fair:   "bg-yellow-400",
-    Good:   "bg-blue-500",
-    Strong: "bg-green-500",
+    "passwordStrength.weak":   "bg-red-500",
+    "passwordStrength.fair":   "bg-yellow-400",
+    "passwordStrength.good":   "bg-blue-500",
+    "passwordStrength.strong": "bg-green-500",
   };
   const widths = {
-    Weak:   "w-1/4",
-    Fair:   "w-2/4",
-    Good:   "w-3/4",
-    Strong: "w-full",
+    "passwordStrength.weak":   "w-1/4",
+    "passwordStrength.fair":   "w-2/4",
+    "passwordStrength.good":   "w-3/4",
+    "passwordStrength.strong": "w-full",
   };
+
   return (
     <div className="mt-1">
       <div className="h-0.5 w-full rounded-full bg-gray-100 dark:bg-[#30363d] overflow-hidden">
         <div
-          className={`h-full rounded-full transition-all duration-300 ${colors[strength.label]} ${widths[strength.label]}`}
+          className={`h-full rounded-full transition-all duration-300 ${colors[strength.labelKey]} ${widths[strength.labelKey]}`}
         />
       </div>
     </div>
   );
 }
-
 // ── Main Component ────────────────────────────────────────────────────────────
 export default function RegisterForm() {
   const { loading, register } = useAuth();
@@ -362,7 +362,7 @@ export default function RegisterForm() {
                   {showPassword ? <EyeOffIcon /> : <EyeIcon />}
                 </button>
               </div>
-              {form.password && <StrengthBar strength={passwordStrength} />}
+             {form.password && <StrengthBar strength={passwordStrength} t={t} />}
               {capsLockOn && passwordFocused && !fieldErrors.password && (
                 <p className="flex items-center gap-1 text-[10px] text-amber-600 dark:text-amber-400 leading-tight mt-1">
                   <AlertCircle className="h-3 w-3" strokeWidth={2.5} />
@@ -478,11 +478,11 @@ export default function RegisterForm() {
                     aria-invalid={!!fieldErrors.role}
                   >
                     <div className="flex w-full items-center justify-between gap-2">
-                      <span className="truncate text-left">
-                        {form.role
-                          ? ROLES.find((r) => r.value === form.role)?.label
-                          : t("auth.register.placeholders.role")}
-                      </span>
+                     <span className="truncate text-left">
+  {form.role
+    ? t(ROLES.find((r) => r.value === form.role)?.labelKey)
+    : t("auth.register.placeholders.role")}
+</span>
                       <svg
                         xmlns="http://www.w3.org/2000/svg"
                         className="h-4 w-4 flex-shrink-0 text-gray-400 dark:text-[#6e7681]"
@@ -507,37 +507,37 @@ export default function RegisterForm() {
                     sideOffset={6}
                   >
                     {ROLES.map((role) => {
-                      const RoleIcon = role.icon;
-                      return (
-                        <SelectItem
-                          key={role.value}
-                          value={role.value}
-                          className="relative flex w-full cursor-pointer select-none items-center rounded-lg py-3 pl-3 pr-9 text-sm outline-none
-                            text-gray-900 dark:text-[#e6edf3]
-                            focus:bg-green-50 dark:focus:bg-[#0d2818]
-                            focus:text-green-700 dark:focus:text-green-400
-                            data-[state=checked]:bg-green-50 dark:data-[state=checked]:bg-[#0d2818]
-                            data-[state=checked]:text-green-700 dark:data-[state=checked]:text-green-400
-                            data-[disabled]:pointer-events-none data-[disabled]:opacity-50"
-                        >
-                          <div className="flex items-start gap-3">
-                            <div className="flex-shrink-0 mt-0.5 w-8 h-8 rounded-lg bg-gray-100 dark:bg-[#0d1117] flex items-center justify-center">
-                              <RoleIcon className="h-4 w-4 text-gray-600 dark:text-[#7d8590]" strokeWidth={2} />
-                            </div>
-                            <div className="flex flex-col gap-0.5 min-w-0">
-                              <span className="text-sm font-semibold leading-tight">
-                                {role.label}
-                              </span>
-                              {role.description && (
-                                <span className="text-[11px] text-gray-500 dark:text-[#7d8590] font-normal leading-snug">
-                                  {role.description}
-                                </span>
-                              )}
-                            </div>
-                          </div>
-                        </SelectItem>
-                      );
-                    })}
+  const RoleIcon = role.icon;
+  return (
+    <SelectItem
+      key={role.value}
+      value={role.value}
+      className="relative flex w-full cursor-pointer select-none items-center rounded-lg py-3 pl-3 pr-9 text-sm outline-none
+        text-gray-900 dark:text-[#e6edf3]
+        focus:bg-green-50 dark:focus:bg-[#0d2818]
+        focus:text-green-700 dark:focus:text-green-400
+        data-[state=checked]:bg-green-50 dark:data-[state=checked]:bg-[#0d2818]
+        data-[state=checked]:text-green-700 dark:data-[state=checked]:text-green-400
+        data-[disabled]:pointer-events-none data-[disabled]:opacity-50"
+    >
+      <div className="flex items-start gap-3">
+        <div className="flex-shrink-0 mt-0.5 w-8 h-8 rounded-lg bg-gray-100 dark:bg-[#0d1117] flex items-center justify-center">
+          <RoleIcon className="h-4 w-4 text-gray-600 dark:text-[#7d8590]" strokeWidth={2} />
+        </div>
+        <div className="flex flex-col gap-0.5 min-w-0">
+          <span className="text-sm font-semibold leading-tight">
+            {t(role.labelKey)}
+          </span>
+          {role.description && (
+            <span className="text-[11px] text-gray-500 dark:text-[#7d8590] font-normal leading-snug">
+              {role.description}
+            </span>
+          )}
+        </div>
+      </div>
+    </SelectItem>
+  );
+})}
                   </SelectContent>
                 </Select>
               </div>

@@ -29,12 +29,14 @@ import { getPropertyById, getPropertyRisk } from "@/services/propertyService";
 import { getAggregatedProperty } from "@/services/aggregationService";
 import { formatINR } from "@/utils/currency";
 import { useSavedComparisons } from "@/hooks/useSavedComparisons";
-import { translatePropertyType } from "@/utils/enumTranslations";
+import { translatePropertyType, translateEnum } from "@/utils/enumTranslations";
 
 import SaveComparisonModal from "@/components/property/SaveComparisonModal";
 import SavedComparisonsSheet from "@/components/property/SavedComparisonsSheet";
 import PropertyHeroCard from "@/components/property/PropertyHeroCard";
 import MarketValueChart from "@/components/property/MarketValueChart";
+import { getAqiInfo } from "@/constants/aqiScale";
+
 
 const DownloadComparisonPDFButton = dynamic(
   () => import("@/components/property/pdf/DownloadComparisonPDFButton"),
@@ -702,13 +704,17 @@ function PropertyComparisonInner() {
                   values={P.map((p) => fmt(p?.stories))}
                 />
                 <PlainRow
-                  label={t("property.comparison.metrics.condition")}
-                  values={P.map((p) => p?.condition ?? null)}
-                />
-                <PlainRow
-                  label={t("property.comparison.metrics.structureType")}
-                  values={P.map((p) => p?.structureType ?? null)}
-                />
+  label={t("property.comparison.metrics.condition")}
+  values={P.map((p) =>
+    p?.condition ? translateEnum(t, p.condition) : null
+  )}
+/>
+<PlainRow
+  label={t("property.comparison.metrics.structureType")}
+  values={P.map((p) =>
+    p?.structureType ? translateEnum(t, p.structureType) : null
+  )}
+/>
                 <PlainRow
                   label={t("property.comparison.metrics.zoning")}
                   values={P.map((p) => p?.zoning ?? null)}
@@ -838,16 +844,17 @@ function PropertyComparisonInner() {
                   colCount={colCount}
                 />
                 <MetricRow
-                  label={t("property.comparison.metrics.aqi")}
-                  values={A.map((a) => a?.environmental?.data?.airQualityIndex)}
-                  displayValues={A.map((a) => {
-                    const aqi = a?.environmental?.data?.airQualityIndex;
-                    const cat = a?.environmental?.data?.aqiCategory;
-                    if (aqi == null) return null;
-                    return cat ? `${aqi} · ${cat}` : String(aqi);
-                  })}
-                  direction="lower-better"
-                />
+  label={t("property.comparison.metrics.aqi")}
+  values={A.map((a) => a?.environmental?.data?.airQualityIndex)}
+  displayValues={A.map((a) => {
+    const aqi = a?.environmental?.data?.airQualityIndex;
+    if (aqi == null) return null;
+    const info = getAqiInfo(aqi);
+    const label = info?.labelKey ? t(info.labelKey) : (a?.environmental?.data?.aqiCategory ?? "");
+    return `${aqi} · ${label}`;
+  })}
+  direction="lower-better"
+/>
                 <PlainRow
                   label={t("property.comparison.metrics.floodRisk")}
                   values={A.map((a) => a?.floodZone?.data?.riskLevel ?? null)}

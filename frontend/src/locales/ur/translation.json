@@ -1,4 +1,10 @@
 {
+  "passwordStrength": {
+  "weak": "کمزور",
+  "fair": "ٹھیک",
+  "good": "اچھا",
+  "strong": "مضبوط"
+},
   "cookies": {
     "banner": {
       "ariaLabel": "کوکی رضامندی",
@@ -24,6 +30,93 @@
       "saveChoices": "انتخاب محفوظ کریں"
     }
   },
+  "faq": {
+  "categories": {
+    "GETTING_STARTED": "شروع کرنا",
+    "VERIFICATION": "تصدیق",
+    "RISK_SCORING": "خطرے کی اسکورنگ",
+    "DATA_SOURCES": "ڈیٹا ذرائع",
+    "REPORTS_PDF": "رپورٹس اور PDF",
+    "ACCOUNT": "اکاؤنٹ",
+    "PRIVACY_SECURITY": "رازداری اور سیکیورٹی"
+  },
+  "items": {
+    "item1": {
+      "question": "میں اپنی پہلی جائیداد کیسے شامل کروں؟",
+      "answer": "Sign in کرنے کے بعد، dashboard کے اوپر دائیں جانب موجود \"Add property\" پر کلک کریں، یا property search page پر موجود button استعمال کریں۔ پتہ درج کریں — ہم OpenStreetMap سے ملتے جلتے پتے خودکار طور پر تجویز کریں گے۔ صرف address اور city ضروری ہیں؛ باقی معلومات بعد میں بھی شامل کی جا سکتی ہیں۔"
+    },
+    "item2": {
+      "question": "جائیداد شامل کرنے کے لیے مجھے کون سی معلومات درکار ہیں؟",
+      "answer": "ضروری: address اور city۔ تجویز کردہ: property type، market value، area (sqft)، year built، اور bedrooms/bathrooms۔ جتنے زیادہ fields آپ پُر کریں گے، اتنا ہی verification score بہتر ہوگا اور risk assessment زیادہ درست ہوگا۔"
+    },
+    "item3": {
+      "question": "میری جائیداد \"Pending\" یا \"Incomplete\" کیوں ظاہر ہو رہی ہے؟",
+      "answer": "ہم ہر جائیداد پر 7 data quality checks چلاتے ہیں (address، city، state، ZIP، market value، area، property type)۔ ان میں سے کوئی بھی چیز موجود نہ ہو تو status pending رہتا ہے۔ Missing fields بھرنے کے لیے کسی بھی pending card پر \"Complete to verify\" پر کلک کریں۔"
+    },
+    "item4": {
+      "question": "تصدیق کیسے کام کرتی ہے؟",
+      "answer": "تصدیق خودکار ہے اور مکمل طور پر data completeness پر مبنی ہے — manual review پر نہیں۔ جب آپ تمام 7 ضروری fields مکمل کر دیتے ہیں، تو جائیداد verified ہو جاتی ہے۔ اگر verified جائیداد میں سے کوئی field ہٹا دیں، تو وہ دوبارہ pending ہو جاتی ہے۔"
+    },
+    "item5": {
+      "question": "Risk score کیسے نکالا جاتا ہے؟",
+      "answer": "Risk score چار زمروں کے weighted average پر مبنی ہے: Financial (30%)، Legal (30%)، Environmental (25%)، اور Structural (15%)۔ مثال کے طور پر، unverified status legal risk بڑھاتا ہے، high AQI environmental risk بڑھاتا ہے، اور condition \"Poor\" structural risk بڑھاتی ہے۔ Score ranges: 0–33 Low, 34–66 Medium, 67–100 High۔ مکمل اصول source code میں درج ہیں۔"
+    },
+    "item6": {
+      "question": "Risk card پر \"data incomplete\" کیوں دکھائی دیتا ہے؟",
+      "answer": "کچھ data sources جیسے ownership، tax history، اور permits فی الحال sample data واپس کرتے ہیں، کیونکہ بھارت میں ان شعبوں کے لیے قابلِ اعتماد public APIs ابھی بڑے پیمانے پر دستیاب نہیں ہیں۔ Risk engine یہ اشارہ اس لیے دیتا ہے تاکہ آپ کو معلوم ہو کہ real data کے ساتھ score زیادہ درست ہوگا۔"
+    },
+    "item7": {
+      "question": "Air quality data کہاں سے آتا ہے؟",
+      "answer": "AQI values WAQI (World Air Quality Index) API سے آتی ہیں، جو بھارت بھر کے CPCB monitoring stations سے real-time readings جمع کرتی ہے۔ اگر آپ کی property ایسے شہر میں ہے جہاں قریب کوئی station موجود نہیں، تو یہ حصہ \"No data\" کے طور پر ظاہر ہوگا۔"
+    },
+    "item8": {
+      "question": "کیا ownership اور tax data حقیقی ہے؟",
+      "answer": "نہیں — ہم اس بارے میں واضح ہیں۔ Ownership، tax history، zoning، flood zone، اور permits والے حصے فی الحال sample data دکھاتے ہیں۔ بھارت میں ان شعبوں کے لیے قابلِ اعتماد public APIs ابھی بڑے پیمانے پر موجود نہیں ہیں۔ Sample data دکھانے والے ہر card کو interface میں واضح طور پر نشان زد کیا جاتا ہے۔"
+    },
+    "item9": {
+      "question": "میں property report کیسے download کروں؟",
+      "answer": "Property search میں کسی بھی property کو کھولیں، پھر property hero card کے اوپر دائیں طرف \"Download report\" پر کلک کریں۔ PDF میں property overview، risk assessment، تمام 6 data sections، اور data completeness summary شامل ہوتی ہے۔ عام طور پر اسے بننے میں 2–4 سیکنڈ لگتے ہیں۔"
+    },
+    "item10": {
+      "question": "کیا میں ایک ہی report میں کئی properties کا موازنہ کر سکتا ہوں؟",
+      "answer": "جی ہاں۔ Property search page پر کسی بھی card پر hover کریں اور ظاہر ہونے والے compare checkbox پر کلک کریں۔ 2–3 properties منتخب کریں، پھر نیچے موجود bar میں \"Compare\" پر کلک کریں۔ Comparison page پر \"Download comparison\" پر کلک کرنے سے تمام properties کے ساتھ side-by-side landscape PDF حاصل ہوگا۔"
+    },
+    "item11": {
+      "question": "میں اپنا account کیسے delete کروں؟",
+      "answer": "اپنے profile page پر جائیں اور نیچے موجود danger zone تک scroll کریں۔ Account deletion فوری اور مستقل ہے — آپ کی تمام properties اور history ہماری database سے cascade delete کے ذریعے ہٹا دی جاتی ہیں۔ کوئی recovery period نہیں ہے۔"
+    },
+    "item12": {
+      "question": "میں اپنا password بھول گیا ہوں۔ مجھے کیا کرنا چاہیے؟",
+      "answer": "Login page پر \"Forgot password\" پر کلک کریں۔ اپنی registered email درج کریں اور ہم آپ کو 6-digit OTP بھیجیں گے۔ OTP verify کریں، پھر نیا password مقرر کریں۔ OTP ایک ہی بار استعمال ہوتے ہیں اور جلد expire ہو جاتے ہیں۔ اگر آپ نے Google کے ذریعے sign up کیا ہے تو \"Continue with Google\" استعمال کریں — reset کرنے کے لیے کوئی password موجود نہیں ہوتا۔"
+    },
+    "item13": {
+      "question": "کیا میرا data third parties کے ساتھ شیئر کیا جاتا ہے؟",
+      "answer": "ہم چند محدود external services کو خاص مقاصد کے لیے استعمال کرتے ہیں: air quality کے لیے WAQI (صرف city name)، geocoding کے لیے Nominatim (صرف address string)، اور sign-in verification کے لیے Google OAuth۔ مکمل تفصیلات /security page پر موجود ہیں۔ کسی بھی personal یا property data کو کسی کو فروخت نہیں کیا جاتا۔"
+    },
+    "item14": {
+      "question": "میرے passwords کیسے محفوظ کیے جاتے ہیں؟",
+      "answer": "Passwords کو محفوظ کرنے سے پہلے BCrypt (strength factor 10) کے ذریعے hash کیا جاتا ہے۔ ہم آپ کا plain-text password کبھی نہیں دیکھتے اور اسے recover بھی نہیں کر سکتے — صرف OTP کے ذریعے reset کیا جا سکتا ہے۔ اگر آپ صرف Google کے ساتھ sign in کرتے ہیں، تو کوئی password محفوظ ہی نہیں کیا جاتا۔"
+    }
+  }
+},
+  "aqiScale": {
+  "labels": {
+    "good": "اچھا",
+    "satisfactory": "اطمینان بخش",
+    "moderate": "معتدل",
+    "poor": "خراب",
+    "veryPoor": "بہت خراب",
+    "severe": "شدید"
+  },
+  "descriptions": {
+    "good": "کم سے کم اثر",
+    "satisfactory": "حساس لوگوں کو سانس لینے میں ہلکی تکلیف",
+    "moderate": "حساس گروہوں کو سانس لینے میں تکلیف",
+    "poor": "طویل نمائش پر سانس لینے میں تکلیف",
+    "veryPoor": "طویل نمائش پر سانس کی بیماری",
+    "severe": "سب پر سنگین صحت کا اثر"
+  }
+},
   "nav": {
     "dashboard": "ڈیش بورڈ",
     "propertySearch": "جائیداد کی تلاش",
@@ -337,6 +430,38 @@
     }
   },
   "recommendations": {
+    "items": {
+  "incompleteData": {
+    "title": "{{address}} پر {{fieldCount}} خانے غائب ہیں",
+    "description": "verification score اور risk assessment بہتر بنانے کے لیے غائب خانے پُر کریں۔",
+    "actionLabel": "جائیداد دیکھیں"
+  },
+  "missingPhoto": {
+    "title": "{{count}} جائیدادوں میں تصویر نہیں",
+    "description": "تصویر شامل کرنے سے search results اور PDF رپورٹس میں جائیداد پہچاننا آسان ہو جاتا ہے۔",
+    "actionLabel": "تصویر شامل کریں"
+  },
+  "missingArea": {
+    "title": "{{count}} جائیدادوں میں area ڈیٹا نہیں",
+    "description": "درست risk scoring اور price-per-sqft کے لیے area (sqft) ضروری ہے۔",
+    "actionLabel": "تفصیل شامل کریں"
+  },
+  "diversePortfolio": {
+    "title": "پورٹ فولیو {{count}} شہروں میں پھیلا ہوا ہے",
+    "description": "آپ کی جائیدادیں کئی شہروں میں ہیں۔ مقام کے مطابق risk عوامل کا جائزہ لیں۔",
+    "actionLabel": "سب دیکھیں"
+  },
+  "allVerified": {
+    "title": "تمام جائیدادیں تصدیق شدہ",
+    "description": "آپ کے پورٹ فولیو کی ہر جائیداد نے تمام verification checks پاس کر لیں۔ ڈیٹا مکمل ہے۔",
+    "actionLabel": "پورٹ فولیو دیکھیں"
+  },
+  "pendingVerification": {
+    "title": "{{count}} جائیدادیں تصدیق کی منتظر ہیں",
+    "description": "pending جائیدادوں پر غائب خانے پُر کریں اور انہیں verified کریں۔",
+    "actionLabel": "pending دیکھیں"
+  }
+},
     "title": "سفارشات",
     "actionsCount_one": "آپ کے پورٹ فولیو کو بہتر بنانے کے لیے {{count}} قدم",
     "actionsCount_other": "آپ کے پورٹ فولیو کو بہتر بنانے کے لیے {{count}} اقدامات",
@@ -604,7 +729,27 @@
           "PENDING": "زیرِ التواء",
           "EXPIRED": "میعاد ختم",
           "REJECTED": "مسترد شدہ"
-        }
+        },
+        "buildingType": {
+  "CONCRETE": "کنکریٹ",
+  "STEEL": "اسٹیل",
+  "WOOD": "لکڑی",
+  "BRICK": "اینٹ"
+},
+"condition": {
+  "EXCELLENT": "بہترین",
+  "GOOD": "اچھا",
+  "FAIR": "ٹھیک",
+  "POOR": "خراب"
+},
+"soilType": {
+  "BLACK_COTTON": "کالی مٹی",
+  "RED_SOIL": "سرخ مٹی",
+  "ALLUVIAL": "جلوڑ مٹی",
+  "LATERITE": "لیٹرائٹ",
+  "SANDY": "ریتلی",
+  "CLAYEY": "چکنی مٹی"
+}
       },
       "completeness": {
         "title": "ڈیٹا کی تکمیل",
