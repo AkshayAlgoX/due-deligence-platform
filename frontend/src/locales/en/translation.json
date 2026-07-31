@@ -478,23 +478,6 @@
     "tryAgainLater": "Please try again later."
   }
 },
-"recommendations": {
-  "title": "Recommendations",
-  "actionsCount_one": "{{count}} action to improve your portfolio",
-  "actionsCount_other": "{{count}} actions to improve your portfolio",
-  "urgentCount_one": "{{count}} urgent",
-  "urgentCount_other": "{{count}} urgent",
-  "dismiss": "Dismiss",
-  "showLess": "Show less",
-  "showMore_one": "Show {{count}} more",
-  "showMore_other": "Show {{count}} more",
-  "severity": {
-    "urgent": "Urgent",
-    "action": "Action",
-    "onTrack": "On track",
-    "tip": "Tip"
-  }
-},
 "activity": {
   "title": "Recent activity",
   "subtitle": "Latest actions across the platform",
