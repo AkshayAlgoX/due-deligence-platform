@@ -1,10 +1,1433 @@
 {
-  "nav": { "dashboard": "ਡੈਸ਼ਬੋਰਡ", "propertySearch": "ਜਾਇਦਾਦ ਖੋਜ", "dueDiligence": "ਉਚਿਤ ਮਿਹਨਤ", "riskAssessment": "ਜੋਖਮ ਮੁਲਾਂਕਣ", "propertyComparison": "ਜਾਇਦਾਦ ਤੁਲਨਾ", "savedComparisons": "ਸੁਰੱਖਿਅਤ ਤੁਲਨਾਵਾਂ", "reports": "ਰਿਪੋਰਟਾਂ", "notifications": "ਸੂਚਨਾਵਾਂ", "auditLogs": "ਆਡਿਟ ਲੌਗ", "profile": "ਪ੍ਰੋਫਾਈਲ", "support": "ਸਹਾਇਤਾ", "sections": { "main": "ਮੁੱਖ", "analysis": "ਵਿਸ਼ਲੇਸ਼ਣ", "insights": "ਸੂਝ", "account": "ਖਾਤਾ" }, "sessionActive": "ਸੈਸ਼ਨ ਸਰਗਰਮ", "version": "v1.0" },
-  "auth": { "login": { "title": "ਵਾਪਸ ਜੀ ਆਇਆਂ ਨੂੰ", "subtitle": "ਆਪਣੇ ਜਾਇਦਾਦ ਪੋਰਟਫੋਲੀਓ ਜੋਖਮਾਂ ਦਾ ਪ੍ਰਬੰਧਨ ਕਰਨ ਲਈ ਸਾਈਨ ਇਨ ਕਰੋ।", "emailLabel": "ਪੇਸ਼ੇਵਰ ਈਮੇਲ", "emailPlaceholder": "name@company.com", "passwordLabel": "ਪਾਸਵਰਡ", "forgotPassword": "ਪਾਸਵਰਡ ਭੁੱਲ ਗਏ?", "rememberMe": "ਇਸ ਬ੍ਰਾਊਜ਼ਰ ਵਿੱਚ ਸਾਈਨ ਇਨ ਰੱਖੋ", "signIn": "ਸਾਈਨ ਇਨ", "newToPlatform": "ਪਲੇਟਫਾਰਮ 'ਤੇ ਨਵੇਂ ਹੋ?", "createAccount": "ਮੁਫ਼ਤ ਖਾਤਾ ਬਣਾਓ" } },
-  "dashboard": { "greetings": { "morning": "ਸ਼ੁਭ ਸਵੇਰ", "afternoon": "ਨਮਸਕਾਰ", "evening": "ਸ਼ੁਭ ਸ਼ਾਮ" }, "subtitle": "ਇੱਕ ਨਜ਼ਰ ਵਿੱਚ ਤੁਹਾਡਾ ਪੋਰਟਫੋਲੀਓ", "stats": { "totalProperties": "ਕੁੱਲ ਜਾਇਦਾਦਾਂ", "verified": "ਤਸਦੀਕਸ਼ੁਦਾ", "pending": "ਬਕਾਇਆ", "platformUsers": "ਪਲੇਟਫਾਰਮ ਉਪਭੋਗਤਾ" }, "empty": { "title": "ਅਜੇ ਕੋਈ ਜਾਇਦਾਦ ਨਹੀਂ", "addFirst": "ਆਪਣੀ ਪਹਿਲੀ ਜਾਇਦਾਦ ਜੋੜੋ" } },
-  "property": { "addProperty": "ਜਾਇਦਾਦ ਜੋੜੋ", "search": { "title": "ਜਾਇਦਾਦ ਖੋਜ", "noPropertiesFound": "ਕੋਈ ਜਾਇਦਾਦ ਨਹੀਂ ਮਿਲੀ" }, "card": { "verified": "ਤਸਦੀਕਸ਼ੁਦਾ", "pending": "ਬਕਾਇਆ", "marketValue": "ਬਾਜ਼ਾਰ ਮੁੱਲ" }, "details": { "backToSearch": "ਖੋਜ 'ਤੇ ਵਾਪਸ", "editProperty": "ਜਾਇਦਾਦ ਸੰਪਾਦਿਤ ਕਰੋ" } },
-  "profile": { "title": "ਖਾਤਾ ਪ੍ਰਬੰਧਨ", "subtitle": "ਆਪਣੀ ਪੇਸ਼ੇਵਰ ਪਛਾਣ ਅਤੇ ਐਪਲੀਕੇਸ਼ਨ ਸੁਰੱਖਿਆ ਕੰਟਰੋਲ ਕਰੋ।", "fields": { "fullName": "ਪੂਰਾ ਨਾਮ", "email": "ਈਮੇਲ ਪਤਾ", "phone": "ਫ਼ੋਨ" }, "actions": { "editProfile": "ਪ੍ਰੋਫਾਈਲ ਸੰਪਾਦਿਤ ਕਰੋ", "cancel": "ਰੱਦ ਕਰੋ", "saveChanges": "ਬਦਲਾਅ ਸੁਰੱਖਿਅਤ ਕਰੋ", "deleteAccount": "ਖਾਤਾ ਮਿਟਾਓ" }, "roles": { "BUYER": "ਖਰੀਦਦਾਰ", "REAL_ESTATE_AGENT": "ਰਿਅਲ ਅਸਟੇਟ ਏਜੰਟ", "ADMIN": "ਪ੍ਰਬੰਧਕ" }, "locked": "ਲੌਕ ਕੀਤਾ" },
-  "settings": { "title": "ਸੈਟਿੰਗਾਂ", "language": { "sectionTitle": "ਭਾਸ਼ਾ", "sectionSubtitle": "ਇੰਟਰਫੇਸ ਲਈ ਆਪਣੀ ਪਸੰਦੀਦਾ ਭਾਸ਼ਾ ਚੁਣੋ।", "label": "ਇੰਟਰਫੇਸ ਭਾਸ਼ਾ", "selectPlaceholder": "ਭਾਸ਼ਾ ਚੁਣੋ", "saved": "ਭਾਸ਼ਾ ਅਪਡੇਟ ਕੀਤੀ", "savedDescription": "ਇੰਟਰਫੇਸ ਭਾਸ਼ਾ {{language}} ਵਿੱਚ ਬਦਲੀ ਗਈ ਹੈ।" } },
-  "common": { "loading": "ਲੋਡ ਹੋ ਰਿਹਾ ਹੈ...", "error": "ਕੁਝ ਗਲਤ ਹੋਇਆ", "save": "ਸੁਰੱਖਿਅਤ ਕਰੋ", "cancel": "ਰੱਦ", "back": "ਪਿੱਛੇ", "noData": "ਕੋਈ ਡੇਟਾ ਉਪਲਬਧ ਨਹੀਂ", "justNow": "ਹੁਣੇ" },
-  "pages": { "dueDiligence": { "title": "ਡਿਊ ਡਿਲੀਜੈਂਸ ਡੈਸ਼ਬੋਰਡ ਜਲਦ ਆ ਰਿਹਾ ਹੈ", "description": "ਤੁਹਾਡੀਆਂ ਸਾਰੀਆਂ ਜਾਇਦਾਦਾਂ ਦੀ ਸਥਿਤੀ ਇੱਥੇ ਦਿਖਾਈ ਦੇਵੇਗੀ।" }, "reports": { "title": "ਰਿਪੋਰਟਾਂ ਜਲਦ ਆ ਰਹੀਆਂ ਹਨ", "description": "ਪੋਰਟਫੋਲੀਓ ਰਿਪੋਰਟਾਂ ਅਤੇ ਜੋਖਮ ਸਾਰਾਂਸ਼ ਬਣਾਓ।" }, "notifications": { "title": "ਤੁਸੀਂ ਸਭ ਕੁਝ ਪੜ੍ਹ ਲਿਆ ਹੈ", "description": "ਕੋਈ ਨਵੀਂ ਸੂਚਨਾ ਨਹੀਂ।" }, "auditLogs": { "title": "ਅਜੇ ਕੋਈ ਆਡਿਟ ਐਂਟਰੀ ਨਹੀਂ", "description": "ਸਿਸਟਮ ਕਾਰਵਾਈਆਂ ਅਤੇ ਉਪਭੋਗਤਾ ਗਤੀਵਿਧੀ ਇੱਥੇ ਟ੍ਰੈਕ ਕੀਤੀ ਜਾਵੇਗੀ।" }, "riskAssessment": { "title": "ਜੋਖਮ ਮੁਲਾਂਕਣ ਝਲਕ ਜਲਦ ਆ ਰਹੀ ਹੈ", "description": "ਪੋਰਟਫੋਲੀਓ-ਵਿਆਪੀ ਜੋਖਮ ਵਿਸ਼ਲੇਸ਼ਣ ਇੱਥੇ ਦਿਖਾਈ ਦੇਵੇਗਾ।" } }
+  "cookies": {
+    "banner": {
+      "ariaLabel": "ਕੁਕੀ ਸਹਿਮਤੀ",
+      "title": "ਇਸ ਸਾਈਟ 'ਤੇ ਕੁਕੀਜ਼",
+      "description": "ਤੁਹਾਨੂੰ ਸਾਈਨ ਇਨ ਰੱਖਣ ਲਈ ਅਸੀਂ ਜ਼ਰੂਰੀ ਕੁਕੀਜ਼ ਵਰਤਦੇ ਹਾਂ। ਵਿਸ਼ਲੇਸ਼ਣ ਸਾਨੂੰ ਬਿਹਤਰ ਬਣਾਉਣ ਵਿੱਚ ਮਦਦ ਕਰਦਾ ਹੈ — ਚੋਣ ਤੁਹਾਡੀ ਹੈ।",
+      "rejectNonEssential": "ਗੈਰ-ਜ਼ਰੂਰੀ ਰੱਦ ਕਰੋ",
+      "customize": "ਕਸਟਮਾਈਜ਼ ਕਰੋ",
+      "acceptAll": "ਸਭ ਸਵੀਕਾਰ ਕਰੋ"
+    },
+    "prefs": {
+      "title": "ਕੁਕੀ ਤਰਜੀਹਾਂ",
+      "subtitle": "ਅਸੀਂ ਕਿਹੜਾ ਡੇਟਾ ਇਕੱਠਾ ਕਰਦੇ ਹਾਂ ਇਹ ਤੁਸੀਂ ਨਿਯੰਤਰਿਤ ਕਰਦੇ ਹੋ।",
+      "essential": {
+        "title": "ਜ਼ਰੂਰੀ",
+        "description": "ਪ੍ਰਮਾਣਿਕਤਾ, ਸੈਸ਼ਨ ਪ੍ਰਬੰਧਨ ਅਤੇ ਸੁਰੱਖਿਆ ਲਈ ਲੋੜੀਂਦਾ। ਅਯੋਗ ਨਹੀਂ ਕੀਤਾ ਜਾ ਸਕਦਾ।"
+      },
+      "analytics": {
+        "title": "ਵਿਸ਼ਲੇਸ਼ਣ",
+        "description": "Google Analytics 4 — ਅਗਿਆਤ ਪੇਜ਼ ਦ੍ਰਿਸ਼ ਅਤੇ ਇਵੈਂਟ। ਕਿਹੜੀਆਂ ਵਿਸ਼ੇਸ਼ਤਾਵਾਂ ਵਰਤੀਆਂ ਜਾਂਦੀਆਂ ਹਨ ਇਹ ਸਮਝਣ ਵਿੱਚ ਮਦਦ ਕਰਦਾ ਹੈ। ਡਿਫੌਲਟ ਤੌਰ 'ਤੇ ਬੰਦ।"
+      },
+      "rejectAll": "ਸਭ ਰੱਦ ਕਰੋ",
+      "acceptAll": "ਸਭ ਸਵੀਕਾਰ ਕਰੋ",
+      "saveChoices": "ਚੋਣਾਂ ਸੁਰੱਖਿਅਤ ਕਰੋ"
+    }
+  },
+  "nav": {
+    "dashboard": "ਡੈਸ਼ਬੋਰਡ",
+    "propertySearch": "ਜਾਇਦਾਦ ਖੋਜ",
+    "dueDiligence": "ਡਿਊ ਡਿਲੀਜੈਂਸ",
+    "riskAssessment": "ਜੋਖਮ ਮੁਲਾਂਕਣ",
+    "propertyComparison": "ਜਾਇਦਾਦ ਤੁਲਨਾ",
+    "savedComparisons": "ਸੁਰੱਖਿਅਤ ਤੁਲਨਾਵਾਂ",
+    "reports": "ਰਿਪੋਰਟਾਂ",
+    "notifications": "ਸੂਚਨਾਵਾਂ",
+    "auditLogs": "ਆਡਿਟ ਲੌਗ",
+    "profile": "ਪ੍ਰੋਫਾਈਲ",
+    "settings": "ਸੈਟਿੰਗਜ਼",
+    "support": "ਸਹਾਇਤਾ",
+    "sections": {
+      "main": "ਮੁੱਖ",
+      "analysis": "ਵਿਸ਼ਲੇਸ਼ਣ",
+      "insights": "ਸੂਝਾਂ",
+      "account": "ਖਾਤਾ"
+    },
+    "sessionActive": "ਸੈਸ਼ਨ ਸਰਗਰਮ",
+    "version": "v1.0"
+  },
+  "auth": {
+    "login": {
+      "title": "ਵਾਪਸ ਜੀ ਆਇਆਂ",
+      "subtitle": "ਆਪਣੇ ਜਾਇਦਾਦ ਪੋਰਟਫੋਲੀਓ ਜੋਖਮਾਂ ਦਾ ਪ੍ਰਬੰਧ ਕਰਨ ਲਈ ਸਾਈਨ ਇਨ ਕਰੋ।",
+      "emailLabel": "ਪੇਸ਼ੇਵਰ ਈਮੇਲ",
+      "emailPlaceholder": "name@company.com",
+      "passwordLabel": "ਪਾਸਵਰਡ",
+      "forgotPassword": "ਪਾਸਵਰਡ ਭੁੱਲ ਗਏ?",
+      "rememberMe": "ਇਸ ਬ੍ਰਾਊਜ਼ਰ 'ਤੇ ਮੈਨੂੰ ਸਾਈਨ ਇਨ ਰੱਖੋ",
+      "signIn": "ਸਾਈਨ ਇਨ ਕਰੋ",
+      "contactSupport": "ਸਹਾਇਤਾ ਨਾਲ ਸੰਪਰਕ ਕਰੋ",
+      "orContinueWith": "ਜਾਂ ਜਾਰੀ ਰੱਖੋ",
+      "newToPlatform": "ਪਲੇਟਫਾਰਮ 'ਤੇ ਨਵੇਂ ਹੋ?",
+      "createAccount": "ਮੁਫ਼ਤ ਖਾਤਾ ਬਣਾਓ",
+      "hidePassword": "ਪਾਸਵਰਡ ਲੁਕਾਓ",
+      "showPassword": "ਪਾਸਵਰਡ ਦਿਖਾਓ",
+      "redirectingToDashboard": "ਤੁਹਾਡੇ ਡੈਸ਼ਬੋਰਡ 'ਤੇ ਮੋੜਿਆ ਜਾ ਰਿਹਾ ਹੈ।",
+      "platformDesc": "ਜਾਇਦਾਦ ਖੁਫੀਆ ਜਾਣਕਾਰੀ ਲਈ ਤਸਦੀਕ-ਪਹਿਲਾ ਪਲੇਟਫਾਰਮ — ਹਰ ਲਿਸਟਿੰਗ ਲਾਈਵ ਹੋਣ ਤੋਂ ਪਹਿਲਾਂ ਸੱਤ ਡੇਟਾ-ਗੁਣਵੱਤਾ ਜਾਂਚਾਂ ਵਿੱਚੋਂ ਲੰਘਦੀ ਹੈ।",
+      "verifiedListingsDesc": "ਸੱਤ-ਬਿੰਦੂ ਡੇਟਾ-ਗੁਣਵੱਤਾ ਇੰਜਣ",
+      "secureByDefaultDesc": "JWT ਸੈਸ਼ਨ, ਹੈਸ਼ ਕੀਤੇ ਪਾਸਵਰਡ",
+      "roleBasedAccessDesc": "ਖਰੀਦਦਾਰ, ਏਜੰਟ, ਸਮੀਖਿਅਕ, ਪ੍ਰਸ਼ਾਸਕ",
+      "imgAlt": "ਆਧੁਨਿਕ ਸ਼ੀਸ਼ੇ ਦੀ ਅਸਮਾਨ ਛੂੰਹਦੀ ਇਮਾਰਤ",
+      "continueWithGoogle": "Google ਨਾਲ ਜਾਰੀ ਰੱਖੋ",
+      "signingIn": "ਸਾਈਨ ਇਨ ਹੋ ਰਿਹਾ ਹੈ…",
+      "almostThere": "ਲਗਭਗ ਹੋ ਗਿਆ",
+      "finishProfile": "ਆਓ ਤੁਹਾਡੀ ਪ੍ਰੋਫਾਈਲ ਸੈਟਅੱਪ ਪੂਰੀ ਕਰੀਏ।",
+      "unexpectedResponse": "ਸਰਵਰ ਤੋਂ ਅਚਾਨਕ ਜਵਾਬ। ਕਿਰਪਾ ਕਰਕੇ ਦੁਬਾਰਾ ਕੋਸ਼ਿਸ਼ ਕਰੋ।",
+      "googleFailed": "Google ਸਾਈਨ-ਇਨ ਅਸਫਲ ਰਿਹਾ",
+      "features": {
+        "analysis": "ਵਿਆਪਕ ਜਾਇਦਾਦ ਵਿਸ਼ਲੇਸ਼ਣ",
+        "auditing": "ਸੁਰੱਖਿਅਤ ਡਿਊ ਡਿਲੀਜੈਂਸ ਆਡਿਟਿੰਗ",
+        "risk": "ਸਵੈਚਾਲਿਤ ਜੋਖਮ ਮੁਲਾਂਕਣ"
+      },
+      "secureBy": "ਡਿਜ਼ਾਈਨ ਦੁਆਰਾ ਸੁਰੱਖਿਅਤ",
+      "learnHow": "ਕਿਵੇਂ ਜਾਣੋ",
+      "platformOnline": "ਪਲੇਟਫਾਰਮ ਔਨਲਾਈਨ",
+      "builtForTrust": "ਭਰੋਸੇ ਲਈ ਬਣਾਇਆ",
+      "verifiedListings": "ਕੇਵਲ ਤਸਦੀਕਸ਼ੁਦਾ ਲਿਸਟਿੰਗਜ਼",
+      "secureByDefault": "ਡਿਫੌਲਟ ਤੌਰ 'ਤੇ ਸੁਰੱਖਿਅਤ",
+      "roleBasedAccess": "ਭੂਮਿਕਾ-ਆਧਾਰਿਤ ਪਹੁੰਚ"
+    },
+    "register": {
+      "title": "ਆਪਣਾ ਖਾਤਾ ਬਣਾਓ",
+      "subtitle": "ਸੁਰੱਖਿਅਤ ਡਿਊ ਡਿਲੀਜੈਂਸ ਸ਼ੁਰੂ ਕਰਨ ਲਈ ਪਲੇਟਫਾਰਮ ਨਾਲ ਜੁੜੋ।",
+      "createAccount": "ਖਾਤਾ ਬਣਾਓ",
+      "pleaseWait": "ਕਿਰਪਾ ਕਰਕੇ ਉਡੀਕ ਕਰੋ…",
+      "welcomeCheck": "ਜੀ ਆਇਆਂ ✓",
+      "alreadyHaveAccount": "ਪਹਿਲਾਂ ਤੋਂ ਖਾਤਾ ਹੈ?",
+      "signIn": "ਸਾਈਨ ਇਨ ਕਰੋ",
+      "secureByDesign": "ਡਿਜ਼ਾਈਨ ਦੁਆਰਾ ਸੁਰੱਖਿਅਤ",
+      "securityTagline": "JWT ਪ੍ਰਮਾਣਿਕਤਾ · BCrypt ਹੈਸ਼ਿੰਗ · ਭੂਮਿਕਾ-ਆਧਾਰਿਤ ਪਹੁੰਚ ਨਿਯੰਤਰਣ",
+      "fields": {
+        "fullName": "ਪੂਰਾ ਨਾਮ",
+        "email": "ਈਮੇਲ",
+        "confirm": "ਪੁਸ਼ਟੀ ਕਰੋ",
+        "phoneNumber": "ਫ਼ੋਨ ਨੰਬਰ",
+        "role": "ਭੂਮਿਕਾ"
+      },
+      "placeholders": {
+        "fullName": "John Smith",
+        "password": "ਘੱਟੋ-ਘੱਟ 8 ਅੱਖਰ",
+        "confirm": "ਦੁਬਾਰਾ ਦਾਖਲ ਕਰੋ",
+        "phone": "9876543210",
+        "role": "ਭੂਮਿਕਾ ਚੁਣੋ"
+      },
+      "errors": {
+        "fullNameRequired": "ਪੂਰਾ ਨਾਮ ਲਾਜ਼ਮੀ ਹੈ।",
+        "fullNameShort": "ਪੂਰਾ ਨਾਮ ਘੱਟੋ-ਘੱਟ 3 ਅੱਖਰਾਂ ਦਾ ਹੋਣਾ ਚਾਹੀਦਾ ਹੈ।",
+        "fullNameLong": "ਪੂਰਾ ਨਾਮ 100 ਅੱਖਰਾਂ ਤੋਂ ਵੱਧ ਨਹੀਂ ਹੋਣਾ ਚਾਹੀਦਾ।",
+        "emailRequired": "ਪੇਸ਼ੇਵਰ ਈਮੇਲ ਲਾਜ਼ਮੀ ਹੈ।",
+        "emailInvalid": "ਕਿਰਪਾ ਕਰਕੇ ਇੱਕ ਜਾਇਜ਼ ਈਮੇਲ ਪਤਾ ਦਾਖਲ ਕਰੋ।",
+        "passwordLong": "ਪਾਸਵਰਡ 20 ਅੱਖਰਾਂ ਤੋਂ ਵੱਧ ਨਹੀਂ ਹੋਣਾ ਚਾਹੀਦਾ।",
+        "confirmRequired": "ਕਿਰਪਾ ਕਰਕੇ ਆਪਣੇ ਪਾਸਵਰਡ ਦੀ ਪੁਸ਼ਟੀ ਕਰੋ।",
+        "passwordsMismatch": "ਪਾਸਵਰਡ ਮੇਲ ਨਹੀਂ ਖਾਂਦੇ।",
+        "phoneRequired": "ਫ਼ੋਨ ਨੰਬਰ ਲਾਜ਼ਮੀ ਹੈ।",
+        "phoneInvalid": "ਇੱਕ ਜਾਇਜ਼ 10-ਅੰਕੀ ਭਾਰਤੀ ਮੋਬਾਈਲ ਨੰਬਰ ਦਾਖਲ ਕਰੋ (6–9 ਨਾਲ ਸ਼ੁਰੂ ਹੋਵੇ)।",
+        "roleRequired": "ਕਿਰਪਾ ਕਰਕੇ ਇੱਕ ਭੂਮਿਕਾ ਚੁਣੋ।",
+        "emailExists": "ਇਸ ਈਮੇਲ ਨਾਲ ਖਾਤਾ ਪਹਿਲਾਂ ਤੋਂ ਮੌਜੂਦ ਹੈ।"
+      },
+      "toasts": {
+        "welcome": "ਜੀ ਆਇਆਂ",
+        "welcomeDesc": "ਤੁਹਾਡਾ ਖਾਤਾ ਤਿਆਰ ਹੈ। ਮੋੜਿਆ ਜਾ ਰਿਹਾ ਹੈ…",
+        "emailRegistered": "ਈਮੇਲ ਪਹਿਲਾਂ ਤੋਂ ਰਜਿਸਟਰਡ ਹੈ",
+        "emailRegisteredDesc": "ਇਸ ਦੀ ਬਜਾਏ ਸਾਈਨ ਇਨ ਕਰਨ ਦੀ ਕੋਸ਼ਿਸ਼ ਕਰੋ, ਜਾਂ ਵੱਖਰੀ ਈਮੇਲ ਵਰਤੋ।",
+        "failed": "ਰਜਿਸਟ੍ਰੇਸ਼ਨ ਅਸਫਲ ਰਹੀ",
+        "tryAgain": "ਕਿਰਪਾ ਕਰਕੇ ਦੁਬਾਰਾ ਕੋਸ਼ਿਸ਼ ਕਰੋ।"
+      },
+      "whyPlatform": "ਇਹ ਪਲੇਟਫਾਰਮ ਕਿਉਂ",
+      "headline": "ਜਾਇਦਾਦ ਡਿਊ ਡਿਲੀਜੈਂਸ ਲਈ ਇਮਾਨਦਾਰ ਟੂਲਿੰਗ",
+      "features": {
+        "verificationFirst": "ਤਸਦੀਕ-ਪਹਿਲਾ ਲਿਸਟਿੰਗਜ਼",
+        "verificationFirstDesc": "ਹਰ ਜਾਇਦਾਦ ਤਸਦੀਕਸ਼ੁਦਾ ਚਿੰਨ੍ਹਿਤ ਹੋਣ ਤੋਂ ਪਹਿਲਾਂ ਸੱਤ-ਬਿੰਦੂ ਡੇਟਾ-ਗੁਣਵੱਤਾ ਇੰਜਣ ਵਿੱਚੋਂ ਲੰਘਦੀ ਹੈ।",
+        "secure": "ਡਿਫੌਲਟ ਤੌਰ 'ਤੇ ਸੁਰੱਖਿਅਤ",
+        "secureDesc": "JWT ਸੈਸ਼ਨ, BCrypt ਪਾਸਵਰਡ ਹੈਸ਼ਿੰਗ, ਅਤੇ ਹਰ ਐਂਡਪੌਇੰਟ 'ਤੇ ਭੂਮਿਕਾ-ਆਧਾਰਿਤ ਪਹੁੰਚ।",
+        "teams": "ਅਸਲੀ ਟੀਮਾਂ ਲਈ ਬਣਾਇਆ",
+        "teamsDesc": "ਪੰਜ ਵੱਖਰੀਆਂ ਭੂਮਿਕਾਵਾਂ — ਖਰੀਦਦਾਰ, ਏਜੰਟ, ਕਾਨੂੰਨੀ ਸਮੀਖਿਅਕ, ਵਿੱਤੀ ਸੰਸਥਾ, ਅਤੇ ਪ੍ਰਸ਼ਾਸਕ।",
+        "consent": "ਸਹਿਮਤੀ-ਪਹਿਲਾ ਵਿਸ਼ਲੇਸ਼ਣ",
+        "consentDesc": "ਜਦੋਂ ਤੱਕ ਤੁਸੀਂ ਔਪਟ ਇਨ ਨਹੀਂ ਕਰਦੇ ਕੁਝ ਵੀ ਲੋਡ ਨਹੀਂ ਹੁੰਦਾ। ਕੁਕੀ ਤਰਜੀਹਾਂ ਸਖ਼ਤੀ ਨਾਲ ਮੰਨੀਆਂ ਜਾਂਦੀਆਂ ਹਨ।"
+      },
+      "platformOnline": "ਪਲੇਟਫਾਰਮ ਔਨਲਾਈਨ",
+      "secureBy": "ਡਿਜ਼ਾਈਨ ਦੁਆਰਾ ਸੁਰੱਖਿਅਤ",
+      "learnHow": "ਕਿਵੇਂ ਜਾਣੋ"
+    },
+    "forgotPassword": {
+      "step1Title": "ਆਪਣਾ ਪਾਸਵਰਡ ਰੀਸੈਟ ਕਰੋ",
+      "step1Subtitle": "ਆਪਣੀ ਈਮੇਲ ਦਾਖਲ ਕਰੋ ਅਤੇ ਅਸੀਂ 6-ਅੰਕੀ ਕੋਡ ਭੇਜਾਂਗੇ।",
+      "emailLabel": "ਈਮੇਲ ਪਤਾ",
+      "sendCode": "ਕੋਡ ਭੇਜੋ",
+      "alreadyHaveCode": "ਮੇਰੇ ਕੋਲ ਪਹਿਲਾਂ ਤੋਂ ਕੋਡ ਹੈ",
+      "step2Title": "ਕੋਡ ਦਾਖਲ ਕਰੋ",
+      "step2Subtitle": "ਨੂੰ ਭੇਜਿਆ",
+      "verifyCode": "ਕੋਡ ਤਸਦੀਕ ਕਰੋ",
+      "changeEmail": "ਈਮੇਲ ਬਦਲੋ",
+      "resendCode": "ਕੋਡ ਦੁਬਾਰਾ ਭੇਜੋ",
+      "resendIn": "{{n}}s ਵਿੱਚ ਦੁਬਾਰਾ ਭੇਜੋ",
+      "waitBefore": "ਦੁਬਾਰਾ ਭੇਜਣ ਤੋਂ ਪਹਿਲਾਂ {{n}}s ਉਡੀਕ ਕਰੋ",
+      "step3Title": "ਨਵਾਂ ਪਾਸਵਰਡ ਸੈੱਟ ਕਰੋ",
+      "step3Subtitle": "ਵੱਡੇ ਅਤੇ ਛੋਟੇ ਅੱਖਰਾਂ ਅਤੇ ਇੱਕ ਅੰਕ ਦੇ ਮਿਸ਼ਰਣ ਨਾਲ ਘੱਟੋ-ਘੱਟ 8 ਅੱਖਰ ਵਰਤੋ।",
+      "newPassword": "ਨਵਾਂ ਪਾਸਵਰਡ",
+      "confirmPassword": "ਪਾਸਵਰਡ ਦੀ ਪੁਸ਼ਟੀ ਕਰੋ",
+      "resetPassword": "ਪਾਸਵਰਡ ਰੀਸੈਟ ਕਰੋ",
+      "requirements": {
+        "length": "ਘੱਟੋ-ਘੱਟ 8 ਅੱਖਰ",
+        "case": "ਵੱਡੇ ਅਤੇ ਛੋਟੇ ਅੱਖਰ",
+        "number": "ਇੱਕ ਅੰਕ ਸ਼ਾਮਲ ਹੈ",
+        "match": "ਪਾਸਵਰਡ ਮੇਲ ਖਾਂਦੇ ਹਨ"
+      },
+      "step4Title": "ਪਾਸਵਰਡ ਅੱਪਡੇਟ ਹੋ ਗਿਆ",
+      "step4Subtitle": "ਜਾਰੀ ਰੱਖਣ ਲਈ ਆਪਣੇ ਨਵੇਂ ਪਾਸਵਰਡ ਨਾਲ ਸਾਈਨ ਇਨ ਕਰੋ।",
+      "backToSignIn": "ਸਾਈਨ ਇਨ 'ਤੇ ਵਾਪਸ ਜਾਓ",
+      "redirectingIn": "{{n}}s ਵਿੱਚ ਮੋੜਿਆ ਜਾ ਰਿਹਾ ਹੈ…",
+      "capsLock": "Caps Lock ਚਾਲੂ ਹੈ",
+      "pleaseWait": "ਕਿਰਪਾ ਕਰਕੇ ਉਡੀਕ ਕਰੋ",
+      "cooldownDesc": "ਤੁਸੀਂ {{n}}s ਵਿੱਚ ਨਵਾਂ ਕੋਡ ਮੰਗ ਸਕਦੇ ਹੋ।",
+      "codeSent": "ਕੋਡ ਭੇਜਿਆ",
+      "checkInbox": "6-ਅੰਕੀ ਕੋਡ ਲਈ ਆਪਣਾ ਇਨਬਾਕਸ ਦੇਖੋ।",
+      "sendFailed": "ਕੋਡ ਭੇਜਿਆ ਨਹੀਂ ਜਾ ਸਕਿਆ",
+      "newCodeSent": "ਨਵਾਂ ਕੋਡ ਭੇਜਿਆ",
+      "resendFailed": "ਦੁਬਾਰਾ ਭੇਜਿਆ ਨਹੀਂ ਜਾ ਸਕਿਆ",
+      "enterSixDigit": "6-ਅੰਕੀ ਕੋਡ ਦਾਖਲ ਕਰੋ",
+      "invalidCode": "ਅਵੈਧ ਜਾਂ ਮਿਆਦ ਲੰਘਿਆ ਕੋਡ",
+      "verifyFailed": "ਤਸਦੀਕ ਅਸਫਲ ਰਹੀ",
+      "checkCodeAndRetry": "ਕਿਰਪਾ ਕਰਕੇ ਕੋਡ ਜਾਂਚੋ ਅਤੇ ਦੁਬਾਰਾ ਕੋਸ਼ਿਸ਼ ਕਰੋ।",
+      "enterNewPassword": "ਨਵਾਂ ਪਾਸਵਰਡ ਦਾਖਲ ਕਰੋ",
+      "pwdComplexity": "ਵੱਡਾ ਅੱਖਰ, ਛੋਟਾ ਅੱਖਰ ਅਤੇ ਇੱਕ ਅੰਕ ਸ਼ਾਮਲ ਕਰੋ",
+      "confirmYourPassword": "ਆਪਣੇ ਪਾਸਵਰਡ ਦੀ ਪੁਸ਼ਟੀ ਕਰੋ",
+      "resetFailed": "ਪਾਸਵਰਡ ਰੀਸੈਟ ਨਹੀਂ ਕੀਤਾ ਜਾ ਸਕਿਆ",
+      "codeAlreadySent": "ਕੋਡ ਪਹਿਲਾਂ ਤੋਂ ਭੇਜਿਆ ਜਾ ਚੁੱਕਾ ਹੈ। ਪਹਿਲਾਂ ਆਪਣਾ ਇਨਬਾਕਸ ਦੇਖੋ।",
+      "enterEmailUsed": "ਉਹ ਈਮੇਲ ਦਾਖਲ ਕਰੋ ਜੋ ਤੁਸੀਂ ਵਰਤੀ ਸੀ",
+      "sentTo": "ਨੂੰ ਭੇਜਿਆ",
+      "digitAria": "ਅੰਕ {{n}}"
+    },
+    "errors": {
+      "emailRequired": "ਆਪਣੀ ਈਮੇਲ ਦਾਖਲ ਕਰੋ",
+      "emailInvalid": "ਇੱਕ ਜਾਇਜ਼ ਈਮੇਲ ਪਤਾ ਦਾਖਲ ਕਰੋ",
+      "passwordRequired": "ਆਪਣਾ ਪਾਸਵਰਡ ਦਾਖਲ ਕਰੋ",
+      "passwordLength": "ਘੱਟੋ-ਘੱਟ 8 ਅੱਖਰ",
+      "fieldErrors": "ਕਿਰਪਾ ਕਰਕੇ ਆਪਣੇ ਵੇਰਵੇ ਜਾਂਚੋ",
+      "someFieldsNeedAttention": "ਕੁਝ ਖੇਤਰਾਂ 'ਤੇ ਧਿਆਨ ਦੇਣ ਦੀ ਲੋੜ ਹੈ।",
+      "signInFailed": "ਸਾਈਨ ਇਨ ਅਸਫਲ ਰਿਹਾ",
+      "checkCredentials": "ਕਿਰਪਾ ਕਰਕੇ ਆਪਣੇ ਪ੍ਰਮਾਣ-ਪੱਤਰ ਜਾਂਚੋ ਅਤੇ ਦੁਬਾਰਾ ਕੋਸ਼ਿਸ਼ ਕਰੋ।",
+      "passwordLetter": "ਇੱਕ ਅੱਖਰ ਸ਼ਾਮਲ ਹੋਣਾ ਚਾਹੀਦਾ ਹੈ",
+      "passwordNumber": "ਇੱਕ ਅੰਕ ਸ਼ਾਮਲ ਹੋਣਾ ਚਾਹੀਦਾ ਹੈ"
+    }
+  },
+  "dashboard": {
+    "greetings": {
+      "morning": "ਸ਼ੁਭ ਸਵੇਰ",
+      "afternoon": "ਸ਼ੁਭ ਦੁਪਹਿਰ",
+      "evening": "ਸ਼ੁਭ ਸ਼ਾਮ"
+    },
+    "subtitle": "ਇੱਕ ਨਜ਼ਰ ਵਿੱਚ ਤੁਹਾਡਾ ਪੋਰਟਫੋਲੀਓ",
+    "platformOverview": "ਪਲੇਟਫਾਰਮ ਸੰਖੇਪ",
+    "pageTitle": "ਡੈਸ਼ਬੋਰਡ | Real Estate Due Diligence Agent",
+    "refreshed": "ਡੈਸ਼ਬੋਰਡ ਅੱਪਡੇਟ ਹੋਇਆ",
+    "stats": {
+      "totalProperties": "ਕੁੱਲ ਜਾਇਦਾਦਾਂ",
+      "verified": "ਤਸਦੀਕਸ਼ੁਦਾ",
+      "pending": "ਲੰਬਿਤ",
+      "platformUsers": "ਪਲੇਟਫਾਰਮ ਉਪਯੋਗਕਰਤਾ",
+      "plusThisWeek": "+{{count}} ਇਸ ਹਫ਼ਤੇ",
+      "ofTotal": "ਕੁੱਲ ਦਾ {{pct}}%",
+      "awaitingVerification": "ਤਸਦੀਕ ਦੀ ਉਡੀਕ",
+      "allCaughtUp": "ਸਭ ਠੀਕ ਹੈ",
+      "activeIn30Days": "30 ਦਿਨਾਂ ਵਿੱਚ {{n}} ਸਰਗਰਮ",
+      "noPropertiesAdded": "ਕੋਈ ਜਾਇਦਾਦ ਨਹੀਂ ਜੋੜੀ ਗਈ",
+      "nothingToVerify": "ਹੁਣੇ ਤਸਦੀਕ ਕਰਨ ਲਈ ਕੁਝ ਨਹੀਂ"
+    },
+    "empty": {
+      "title": "ਹੁਣੇ ਕੋਈ ਜਾਇਦਾਦ ਨਹੀਂ",
+      "description": "ਤਸਦੀਕ ਨਤੀਜੇ ਅਤੇ ਪੋਰਟਫੋਲੀਓ ਸੂਝਾਂ ਦੇਖਣ ਲਈ ਆਪਣੀ ਪਹਿਲੀ ਜਾਇਦਾਦ ਜੋੜੋ।",
+      "addFirst": "ਆਪਣੀ ਪਹਿਲੀ ਜਾਇਦਾਦ ਜੋੜੋ"
+    },
+    "refresh": "ਤਾਜ਼ਾ ਕਰੋ",
+    "errors": {
+      "unauthorized": "ਤੁਹਾਡੇ ਕੋਲ ਉਸ ਪੇਜ਼ ਤੱਕ ਪਹੁੰਚਣ ਦੀ ਇਜਾਜ਼ਤ ਨਹੀਂ ਹੈ।",
+      "couldntLoad": "ਡੈਸ਼ਬੋਰਡ ਲੋਡ ਨਹੀਂ ਹੋਇਆ",
+      "pleaseRefresh": "ਕਿਰਪਾ ਕਰਕੇ ਪੇਜ਼ ਤਾਜ਼ਾ ਕਰੋ ਜਾਂ ਦੁਬਾਰਾ ਕੋਸ਼ਿਸ਼ ਕਰੋ।",
+      "unableToLoadStats": "ਅੰਕੜੇ ਲੋਡ ਕਰਨ ਵਿੱਚ ਅਸਮਰੱਥ। ਕਿਰਪਾ ਕਰਕੇ ਪੇਜ਼ ਤਾਜ਼ਾ ਕਰੋ।"
+    }
+  },
+  "hero": {
+    "portfolio": {
+      "label": "ਪੋਰਟਫੋਲੀਓ ਮੁੱਲ",
+      "citiesCount_one": "{{count}} ਸ਼ਹਿਰ",
+      "citiesCount_other": "{{count}} ਸ਼ਹਿਰ",
+      "acrossProperties_one": "{{count}} ਜਾਇਦਾਦ ਵਿੱਚ",
+      "acrossProperties_other": "{{count}} ਜਾਇਦਾਦਾਂ ਵਿੱਚ",
+      "topAsset": "ਸਿਖਰਲੀ ਸੰਪਤੀ"
+    },
+    "verification": {
+      "label": "ਤਸਦੀਕ",
+      "allVerified": "ਸਭ ਤਸਦੀਕਸ਼ੁਦਾ",
+      "noPropertiesYet": "ਹੁਣੇ ਕੋਈ ਜਾਇਦਾਦ ਨਹੀਂ",
+      "portfolioComplete": "ਪੋਰਟਫੋਲੀਓ ਮੁਕੰਮਲ",
+      "pendingCount_one": "{{count}} ਲੰਬਿਤ",
+      "pendingCount_other": "{{count}} ਲੰਬਿਤ"
+    },
+    "aqi": {
+      "label": "ਹਵਾ ਗੁਣਵੱਤਾ",
+      "live": "ਲਾਈਵ",
+      "fetchingLive": "ਲਾਈਵ ਡੇਟਾ ਪ੍ਰਾਪਤ ਕੀਤਾ ਜਾ ਰਿਹਾ ਹੈ...",
+      "addPropertyToSee": "ਲਾਈਵ ਹਵਾ ਗੁਣਵੱਤਾ ਦੇਖਣ ਲਈ ਜਾਇਦਾਦ ਜੋੜੋ"
+    }
+  },
+  "trend": {
+    "title": "ਸਮੇਂ ਦੇ ਨਾਲ ਪੋਰਟਫੋਲੀਓ ਮੁੱਲ",
+    "dataPointsInWindow_one": "ਚੁਣੀ ਵਿੰਡੋ ਵਿੱਚ {{count}} ਡੇਟਾ ਬਿੰਦੂ",
+    "dataPointsInWindow_other": "ਚੁਣੀ ਵਿੰਡੋ ਵਿੱਚ {{count}} ਡੇਟਾ ਬਿੰਦੂ",
+    "deltaVsAgo": "{{days}}d ਪਹਿਲਾਂ ਦੀ ਤੁਲਨਾ ਵਿੱਚ {{sign}}{{pct}}%",
+    "noChange": "ਕੋਈ ਬਦਲਾਅ ਨਹੀਂ",
+    "empty": {
+      "title": "ਟ੍ਰੈਕਿੰਗ ਅੱਜ ਤੋਂ ਸ਼ੁਰੂ ਹੁੰਦੀ ਹੈ",
+      "description": "ਆਪਣਾ ਪੋਰਟਫੋਲੀਓ ਮੁੱਲ ਰੁਝਾਨ ਦੇਖਣ ਲਈ ਕੱਲ੍ਹ ਵਾਪਸ ਆਓ।"
+    },
+    "error": {
+      "couldntLoad": "ਰੁਝਾਨ ਡੇਟਾ ਲੋਡ ਨਹੀਂ ਹੋ ਸਕਿਆ।"
+    },
+    "tooltip": {
+      "propertiesCount_one": "{{count}} ਜਾਇਦਾਦ",
+      "propertiesCount_other": "{{count}} ਜਾਇਦਾਦਾਂ",
+      "verifiedCount_one": "{{count}} ਤਸਦੀਕਸ਼ੁਦਾ",
+      "verifiedCount_other": "{{count}} ਤਸਦੀਕਸ਼ੁਦਾ"
+    }
+  },
+  "breakdown": {
+    "title": "ਪੋਰਟਫੋਲੀਓ ਵੰਡ",
+    "subtitle": "ਜਾਇਦਾਦ ਕਿਸਮ ਅਨੁਸਾਰ",
+    "empty": {
+      "title": "ਹੁਣੇ ਕੋਈ ਡੇਟਾ ਨਹੀਂ",
+      "description": "ਵੰਡ ਦੇਖਣ ਲਈ ਜਾਇਦਾਦਾਂ ਜੋੜੋ"
+    },
+    "tooltip": {
+      "propertyCount_one": "{{count}} ਜਾਇਦਾਦ",
+      "propertyCount_other": "{{count}} ਜਾਇਦਾਦਾਂ",
+      "valueLabel": "ਮੁੱਲ"
+    }
+  },
+  "map": {
+    "title": "ਪੋਰਟਫੋਲੀਓ ਭੂਗੋਲ",
+    "status": {
+      "loading": "ਨਕਸ਼ਾ ਲੋਡ ਹੋ ਰਿਹਾ ਹੈ...",
+      "noPropertiesYet": "ਹੁਣੇ ਕੋਈ ਜਾਇਦਾਦ ਨਹੀਂ",
+      "mappedOfTotal": "{{total}} ਵਿੱਚੋਂ {{mapped}} ਮੈਪ ਕੀਤੀਆਂ",
+      "pendingCount_one": "{{count}} ਲੰਬਿਤ",
+      "pendingCount_other": "{{count}} ਲੰਬਿਤ"
+    },
+    "zoomHint": "ਜ਼ੂਮ ਲਈ +/− ਵਰਤੋ",
+    "retryGeocoding": "ਜਿਓਕੋਡਿੰਗ ਦੁਬਾਰਾ ਕੋਸ਼ਿਸ਼ ਕਰੋ",
+    "geocoding": "ਜਿਓਕੋਡਿੰਗ...",
+    "viewDetails": "ਵੇਰਵੇ ਦੇਖੋ",
+    "empty": {
+      "noMappedTitle": "ਹੁਣੇ ਕੋਈ ਮੈਪ ਕੀਤੀ ਜਾਇਦਾਦ ਨਹੀਂ",
+      "noMappedDesc": "ਉਹਨਾਂ ਨੂੰ ਨਕਸ਼ੇ 'ਤੇ ਦੇਖਣ ਲਈ ਪਤੇ ਸੁਝਾਵਾਂ ਦੀ ਵਰਤੋਂ ਕਰਕੇ ਜਾਇਦਾਦਾਂ ਜੋੜੋ।",
+      "noCoordsTitle": "ਹੁਣੇ ਕੋਈ ਕੋਆਰਡੀਨੇਟ ਕੈਪਚਰ ਨਹੀਂ",
+      "noCoordsDesc": "ਜਾਇਦਾਦਾਂ ਮੌਜੂਦ ਹਨ ਪਰ ਜਿਓਕੋਡਿੰਗ ਦੀ ਲੋੜ ਹੈ। ਪ੍ਰਸ਼ਾਸਕ ਉੱਪਰ ਟ੍ਰਿਗਰ ਕਰ ਸਕਦੇ ਹਨ।"
+    },
+    "error": {
+      "couldntLoad": "ਨਕਸ਼ਾ ਡੇਟਾ ਲੋਡ ਨਹੀਂ ਹੋ ਸਕਿਆ।"
+    },
+    "toasts": {
+      "geocodedCount_one": "{{count}} ਜਾਇਦਾਦ ਜਿਓਕੋਡ ਹੋਈ",
+      "geocodedCount_other": "{{count}} ਜਾਇਦਾਦਾਂ ਜਿਓਕੋਡ ਹੋਈਆਂ",
+      "reloadingMap": "ਨਕਸ਼ਾ ਮੁੜ-ਲੋਡ ਹੋ ਰਿਹਾ ਹੈ...",
+      "noNewLocations": "ਕੋਈ ਨਵੀਂ ਥਾਂ ਨਹੀਂ ਮਿਲੀ",
+      "tooVague": "ਬਾਕੀ ਪਤੇ ਜਿਓਕੋਡ ਕਰਨ ਲਈ ਬਹੁਤ ਅਸਪਸ਼ਟ ਹੋ ਸਕਦੇ ਹਨ।",
+      "geocodingFailed": "ਜਿਓਕੋਡਿੰਗ ਅਸਫਲ ਰਹੀ",
+      "tryAgainLater": "ਕਿਰਪਾ ਕਰਕੇ ਬਾਅਦ ਵਿੱਚ ਦੁਬਾਰਾ ਕੋਸ਼ਿਸ਼ ਕਰੋ।"
+    }
+  },
+  "recommendations": {
+    "title": "ਸਿਫਾਰਿਸ਼ਾਂ",
+    "actionsCount_one": "ਤੁਹਾਡਾ ਪੋਰਟਫੋਲੀਓ ਸੁਧਾਰਨ ਲਈ {{count}} ਕਦਮ",
+    "actionsCount_other": "ਤੁਹਾਡਾ ਪੋਰਟਫੋਲੀਓ ਸੁਧਾਰਨ ਲਈ {{count}} ਕਦਮ",
+    "urgentCount_one": "{{count}} ਅਰਜੈਂਟ",
+    "urgentCount_other": "{{count}} ਅਰਜੈਂਟ",
+    "dismiss": "ਖਾਰਜ ਕਰੋ",
+    "showLess": "ਘੱਟ ਦਿਖਾਓ",
+    "showMore_one": "{{count}} ਹੋਰ ਦਿਖਾਓ",
+    "showMore_other": "{{count}} ਹੋਰ ਦਿਖਾਓ",
+    "severity": {
+      "urgent": "ਅਰਜੈਂਟ",
+      "action": "ਕਦਮ",
+      "onTrack": "ਸਹੀ ਰਾਹ 'ਤੇ",
+      "tip": "ਸੁਝਾਅ"
+    }
+  },
+  "activity": {
+    "title": "ਤਾਜ਼ਾ ਗਤੀਵਿਧੀ",
+    "subtitle": "ਪਲੇਟਫਾਰਮ ਭਰ ਵਿੱਚ ਤਾਜ਼ੀਆਂ ਕਾਰਵਾਈਆਂ",
+    "live": "ਲਾਈਵ",
+    "byActor": "{{name}} ਵੱਲੋਂ",
+    "showAll": "ਸਭ ਦਿਖਾਓ",
+    "viewAllProperties": "ਸਾਰੀਆਂ ਜਾਇਦਾਦਾਂ ਦੇਖੋ",
+    "filters": {
+      "all": "ਸਭ",
+      "added": "ਜੋੜੀਆਂ",
+      "verified": "ਤਸਦੀਕਸ਼ੁਦਾ",
+      "updated": "ਅੱਪਡੇਟ ਕੀਤੀਆਂ"
+    },
+    "types": {
+      "propertyAdded": "ਜਾਇਦਾਦ ਜੋੜੀ",
+      "propertyVerified": "ਜਾਇਦਾਦ ਤਸਦੀਕ ਹੋਈ",
+      "propertyUpdated": "ਜਾਇਦਾਦ ਅੱਪਡੇਟ ਹੋਈ"
+    },
+    "empty": {
+      "noActivity": "ਹੁਣੇ ਕੋਈ ਗਤੀਵਿਧੀ ਨਹੀਂ",
+      "addProperties": "ਇੱਥੇ ਗਤੀਵਿਧੀ ਦੇਖਣ ਲਈ ਜਾਇਦਾਦਾਂ ਜੋੜੋ",
+      "noFiltered": "ਤਾਜ਼ੇ ਇਵੈਂਟਾਂ ਵਿੱਚ ਕੋਈ {{filter}} ਗਤੀਵਿਧੀ ਨਹੀਂ"
+    }
+  },
+  "recentTable": {
+    "title": "ਤਾਜ਼ੀਆਂ ਜਾਇਦਾਦਾਂ",
+    "subtitle": "ਪਲੇਟਫਾਰਮ 'ਤੇ ਨਵੀਨਤਮ ਜੋੜਾਂ",
+    "columns": {
+      "address": "ਪਤਾ",
+      "type": "ਕਿਸਮ",
+      "status": "ਸਥਿਤੀ",
+      "missingFields": "ਗੁੰਮ ਖੇਤਰ"
+    },
+    "missingCount_one": "{{count}} ਗੁੰਮ",
+    "missingCount_other": "{{count}} ਗੁੰਮ",
+    "noneMissing": "ਕੋਈ ਨਹੀਂ",
+    "empty": {
+      "title": "ਕੋਈ ਜਾਇਦਾਦ ਨਹੀਂ ਮਿਲੀ",
+      "description": "ਇੱਥੇ ਦੇਖਣ ਲਈ ਜਾਇਦਾਦ ਜੋੜੋ।"
+    },
+    "error": {
+      "title": "ਜਾਇਦਾਦਾਂ ਲੋਡ ਨਹੀਂ ਹੋ ਸਕੀਆਂ",
+      "description": "ਦੁਬਾਰਾ ਕੋਸ਼ਿਸ਼ ਕਰਨ ਲਈ ਕਿਰਪਾ ਕਰਕੇ ਪੇਜ਼ ਤਾਜ਼ਾ ਕਰੋ।"
+    }
+  },
+  "property": {
+    "addProperty": "ਜਾਇਦਾਦ ਜੋੜੋ",
+    "addFirstProperty": "ਆਪਣੀ ਪਹਿਲੀ ਜਾਇਦਾਦ ਜੋੜੋ",
+    "pdf": {
+      "downloadReport": "ਰਿਪੋਰਟ ਡਾਊਨਲੋਡ ਕਰੋ",
+      "generating": "ਤਿਆਰ ਕੀਤਾ ਜਾ ਰਿਹਾ ਹੈ...",
+      "buttonTooltip": "PDF ਰਿਪੋਰਟ ਡਾਊਨਲੋਡ ਕਰੋ",
+      "preparing": "PDF ਇੰਜਣ ਤਿਆਰ ਕੀਤਾ ਜਾ ਰਿਹਾ ਹੈ...",
+      "downloaded": "ਰਿਪੋਰਟ ਡਾਊਨਲੋਡ ਹੋਈ",
+      "savedTo": "{{filename}} ਤੁਹਾਡੇ ਡਾਊਨਲੋਡ ਫੋਲਡਰ ਵਿੱਚ ਸੁਰੱਖਿਅਤ ਕੀਤਾ।",
+      "loadFailed": "ਜਾਇਦਾਦ ਡੇਟਾ ਲੋਡ ਨਹੀਂ ਹੋ ਸਕਿਆ",
+      "downloadFailed": "ਡਾਊਨਲੋਡ ਅਸਫਲ ਰਿਹਾ",
+      "generateFailed": "ਰਿਪੋਰਟ ਤਿਆਰ ਨਹੀਂ ਕੀਤੀ ਜਾ ਸਕੀ। ਦੁਬਾਰਾ ਕੋਸ਼ਿਸ਼ ਕਰੋ।"
+    },
+    "search": {
+      "title": "ਜਾਇਦਾਦ ਖੋਜ",
+      "placeholder": "ਪੇਜ਼, ਜਾਇਦਾਦਾਂ, ਕਾਰਵਾਈਆਂ ਖੋਜੋ...",
+      "loadingPortfolio": "ਪੋਰਟਫੋਲੀਓ ਲੋਡ ਹੋ ਰਿਹਾ ਹੈ...",
+      "readyToIndex": "ਤੁਹਾਡੀ ਪਹਿਲੀ ਜਾਇਦਾਦ ਇੰਡੈਕਸ ਕਰਨ ਲਈ ਤਿਆਰ",
+      "live": "ਲਾਈਵ",
+      "propertiesIndexed": "{{n}} {{unit}} ਇੰਡੈਕਸ ਕੀਤੀਆਂ",
+      "propertyUnit": "ਜਾਇਦਾਦ",
+      "propertiesUnit": "ਜਾਇਦਾਦਾਂ",
+      "citiesCovered": "{{n}} {{unit}} ਕਵਰ ਕੀਤੇ",
+      "cityUnit": "ਸ਼ਹਿਰ",
+      "citiesUnit": "ਸ਼ਹਿਰ",
+      "synced": "ਸਿੰਕ ਹੋਇਆ",
+      "highRisk": "{{n}} ਉੱਚ ਜੋਖਮ",
+      "noPropertiesFound": "ਕੋਈ ਜਾਇਦਾਦ ਨਹੀਂ ਮਿਲੀ",
+      "trySearching": "ਸ਼ਹਿਰ ਦਾ ਨਾਮ, ਪਤਾ, ਜਾਂ ZIP ਕੋਡ ਨਾਲ ਖੋਜੋ — ਜਾਂ ਆਪਣੀ ਪਹਿਲੀ ਜਾਇਦਾਦ ਜੋੜੋ।",
+      "noMatches": "ਕੋਈ ਮੇਲ ਨਹੀਂ",
+      "tryDifferent": "ਵੱਖਰਾ ਸ਼ਹਿਰ, ਪਤਾ ਜਾਂ ZIP ਕੋਡ ਅਜ਼ਮਾਓ।",
+      "searchFailed": "ਖੋਜ ਅਸਫਲ ਰਹੀ",
+      "tryAgain": "ਕਿਰਪਾ ਕਰਕੇ ਇੱਕ ਪਲ ਵਿੱਚ ਦੁਬਾਰਾ ਕੋਸ਼ਿਸ਼ ਕਰੋ।",
+      "couldntLoad": "ਜਾਇਦਾਦਾਂ ਲੋਡ ਨਹੀਂ ਹੋ ਸਕੀਆਂ",
+      "pleaseRefresh": "ਕਿਰਪਾ ਕਰਕੇ ਪੇਜ਼ ਤਾਜ਼ਾ ਕਰੋ।",
+      "found": "{{n}} {{unit}} ਮਿਲੀਆਂ",
+      "ofTotal": "({{n}} ਵਿੱਚੋਂ)",
+      "pageTitle": "ਜਾਇਦਾਦ ਖੋਜ | Real Estate Due Diligence",
+      "ariaLabel": "ਜਾਇਦਾਦ ਖੋਜ",
+      "clearSearch": "ਖੋਜ ਸਾਫ਼ ਕਰੋ",
+      "searching": "ਖੋਜਿਆ ਜਾ ਰਿਹਾ ਹੈ...",
+      "searchButton": "ਖੋਜੋ",
+      "searchingFor": "\"{{query}}\" ਲਈ ਖੋਜਿਆ ਜਾ ਰਿਹਾ ਹੈ...",
+      "noMatchesFor": "\"{{query}}\" ਲਈ ਕੋਈ ਮੇਲ ਨਹੀਂ",
+      "tryDifferentHint": "ਵੱਖਰਾ ਸ਼ਹਿਰ, ਪਤਾ ਜਾਂ ZIP ਅਜ਼ਮਾਓ",
+      "matchCount_one": "{{count}} ਮੇਲ",
+      "matchCount_other": "{{count}} ਮੇਲ",
+      "untitledProperty": "ਸਿਰਲੇਖ ਰਹਿਤ ਜਾਇਦਾਦ",
+      "locationUnknown": "ਥਾਂ ਅਣਜਾਣ",
+      "valueLabel": "ਮੁੱਲ",
+      "seeAllResults_one": "ਸਾਰੇ {{count}} ਨਤੀਜੇ ਦੇਖੋ",
+      "seeAllResults_other": "ਸਾਰੇ {{count}} ਨਤੀਜੇ ਦੇਖੋ",
+      "kbNavigate": "ਨੇਵੀਗੇਟ",
+      "kbSelect": "ਚੁਣੋ",
+      "kbClose": "ਬੰਦ ਕਰੋ"
+    },
+    "addModal": {
+      "title": "ਨਵੀਂ ਜਾਇਦਾਦ ਜੋੜੋ",
+      "subtitle": "ਬੁਨਿਆਦੀ ਗੱਲਾਂ ਤੋਂ ਸ਼ੁਰੂ ਕਰੋ — ਬਾਕੀ ਕਦੇ ਵੀ ਪੂਰਾ ਕਰ ਸਕਦੇ ਹੋ",
+      "closeAria": "ਬੰਦ ਕਰੋ",
+      "verification": "ਤਸਦੀਕ",
+      "optional": "ਵਿਕਲਪਿਕ",
+      "poweredBy": "OpenStreetMap ਦੁਆਰਾ ਸੰਚਾਲਿਤ",
+      "banner": {
+        "requiredPrefix": "ਕੇਵਲ",
+        "requiredSuffix": "ਲਾਜ਼ਮੀ ਹਨ",
+        "address": "ਪਤਾ",
+        "city": "ਸ਼ਹਿਰ",
+        "requiredConnector": "ਅਤੇ",
+        "hint": "ਬਾਕੀ ਵੇਰਵੇ ਕਦੇ ਵੀ ਜੋੜੋ — ਜਾਇਦਾਦਾਂ ਬਣਾਉਣ ਤੋਂ ਬਾਅਦ ਪੂਰੀਆਂ ਕੀਤੀਆਂ ਜਾ ਸਕਦੀਆਂ ਹਨ।"
+      },
+      "sections": {
+        "location": "ਥਾਂ",
+        "locationSub": "ਇਹ ਜਾਇਦਾਦ ਕਿੱਥੇ ਹੈ?",
+        "propertyDetails": "ਜਾਇਦਾਦ ਵੇਰਵੇ",
+        "propertyDetailsSub": "ਸਾਨੂੰ ਇਸਨੂੰ ਵਰਗੀਕਰਨ ਅਤੇ ਮੁੱਲ ਦੇਣ ਵਿੱਚ ਮਦਦ ਕਰੋ",
+        "extraDetails": "ਵਾਧੂ ਵੇਰਵੇ",
+        "extraDetailsSub": "ਵਿਕਲਪਿਕ — ਰਿਪੋਰਟਾਂ ਅਤੇ ਤੁਲਨਾਵਾਂ ਵਿੱਚ ਮਦਦ ਕਰਦਾ ਹੈ",
+        "photo": "ਫ਼ੋਟੋ",
+        "photoSub": "ਫ਼ੋਟੋ ਜੋੜੋ ਜਾਂ ਅਸੀਂ ਸਮਾਰਟ ਪਲੇਸਹੋਲਡਰ ਵਰਤਾਂਗੇ"
+      },
+      "fields": {
+        "streetAddress": "ਗਲੀ ਪਤਾ",
+        "city": "ਸ਼ਹਿਰ",
+        "state": "ਰਾਜ",
+        "pinCode": "PIN ਕੋਡ",
+        "propertyType": "ਜਾਇਦਾਦ ਕਿਸਮ",
+        "area": "ਰਕਬਾ",
+        "marketValue": "ਬਾਜ਼ਾਰ ਮੁੱਲ",
+        "yearBuilt": "ਉਸਾਰੀ ਸਾਲ",
+        "bedrooms": "ਬੈੱਡਰੂਮ",
+        "bathrooms": "ਬਾਥਰੂਮ",
+        "stories": "ਮੰਜ਼ਿਲਾਂ",
+        "propertyPhoto": "ਜਾਇਦਾਦ ਫ਼ੋਟੋ"
+      },
+      "placeholders": {
+        "address": "ਪਤਾ ਟਾਈਪ ਕਰਨਾ ਸ਼ੁਰੂ ਕਰੋ...",
+        "city": "ਸ਼ਹਿਰ ਚੁਣੋ ਜਾਂ ਟਾਈਪ ਕਰੋ",
+        "state": "ਰਾਜ ਚੁਣੋ",
+        "pinCode": "560001",
+        "propertyType": "ਜਾਇਦਾਦ ਕਿਸਮ ਚੁਣੋ",
+        "area": "1800",
+        "marketValue": "15000000",
+        "yearBuilt": "2015",
+        "bedrooms": "3",
+        "bathrooms": "2",
+        "stories": "2"
+      },
+      "hints": {
+        "characters": "{{count}} ਅੱਖਰ",
+        "sqft": "ਵਰਗ ਫੁੱਟ",
+        "inr": "ਭਾਰਤੀ ਰੁਪਏ",
+        "photoPlaceholder": "ਇਸਨੂੰ ਛੱਡੋ ਅਤੇ ਅਸੀਂ ਜਾਇਦਾਦ ਕਿਸਮ ਅਨੁਸਾਰ ਪਲੇਸਹੋਲਡਰ ਵਰਤਾਂਗੇ।"
+      },
+      "types": {
+        "residentialLabel": "ਰਿਹਾਇਸ਼ੀ",
+        "residentialDesc": "ਘਰ, ਅਪਾਰਟਮੈਂਟ, ਵਿਲਾ",
+        "commercialLabel": "ਵਪਾਰਕ",
+        "commercialDesc": "ਦਫਤਰ, ਦੁਕਾਨ, ਹੋਟਲ",
+        "industrialLabel": "ਉਦਯੋਗਿਕ",
+        "industrialDesc": "ਵੇਅਰਹਾਊਸ, ਕਾਰਖਾਨਾ",
+        "landLabel": "ਜ਼ਮੀਨ",
+        "landDesc": "ਪਲਾਟ, ਖੇਤੀਬਾੜੀ",
+        "mixedUseLabel": "ਮਿਲੀ-ਜੁਲੀ ਵਰਤੋਂ",
+        "mixedUseDesc": "ਰਿਹਾਇਸ਼ੀ + ਵਪਾਰਕ"
+      },
+      "errors": {
+        "addressRequired": "ਪਤਾ ਲਾਜ਼ਮੀ ਹੈ",
+        "addressLength": "ਪਤਾ ਘੱਟੋ-ਘੱਟ 6 ਅੱਖਰਾਂ ਦਾ ਹੋਣਾ ਚਾਹੀਦਾ ਹੈ",
+        "cityRequired": "ਸ਼ਹਿਰ ਲਾਜ਼ਮੀ ਹੈ",
+        "pinInvalid": "PIN ਬਿਲਕੁਲ 6 ਅੰਕਾਂ ਦਾ ਹੋਣਾ ਚਾਹੀਦਾ ਹੈ",
+        "areaInvalid": "ਰਕਬਾ 0 ਤੋਂ ਵੱਧ ਹੋਣਾ ਚਾਹੀਦਾ ਹੈ",
+        "valueInvalid": "ਮੁੱਲ 0 ਤੋਂ ਵੱਧ ਹੋਣਾ ਚਾਹੀਦਾ ਹੈ",
+        "yearRange": "ਸਾਲ 1800 ਅਤੇ {{max}} ਦੇ ਵਿਚਕਾਰ ਹੋਣਾ ਚਾਹੀਦਾ ਹੈ",
+        "cannotBeNegative": "ਨਕਾਰਾਤਮਕ ਨਹੀਂ ਹੋ ਸਕਦਾ",
+        "storiesRange": "ਮੰਜ਼ਿਲਾਂ 1 ਅਤੇ 200 ਦੇ ਵਿਚਕਾਰ ਹੋਣੀਆਂ ਚਾਹੀਦੀਆਂ ਹਨ",
+        "formHasErrors": "ਫਾਰਮ ਵਿੱਚ ਗਲਤੀਆਂ ਹਨ",
+        "reviewFields": "ਕਿਰਪਾ ਕਰਕੇ ਹੇਠਾਂ ਉਜਾਗਰ ਕੀਤੇ ਖੇਤਰ ਦੇਖੋ।",
+        "couldntAdd": "ਜਾਇਦਾਦ ਨਹੀਂ ਜੋੜੀ ਜਾ ਸਕੀ",
+        "tryAgainMoment": "ਕਿਰਪਾ ਕਰਕੇ ਇੱਕ ਪਲ ਵਿੱਚ ਦੁਬਾਰਾ ਕੋਸ਼ਿਸ਼ ਕਰੋ।"
+      },
+      "toasts": {
+        "addedVerified": "ਜਾਇਦਾਦ ਜੋੜੀ ਅਤੇ ਪੂਰੀ ਤਰ੍ਹਾਂ ਤਸਦੀਕ ਹੋਈ",
+        "addedVerifiedDesc": "ਸਾਰੇ 7 ਡੇਟਾ ਗੁਣਵੱਤਾ ਜਾਂਚ ਪਾਸ ਹੋਈਆਂ।",
+        "added": "ਜਾਇਦਾਦ ਜੋੜੀ",
+        "addedDesc_one": "ਬਾਅਦ ਵਿੱਚ ਪੂਰੀ ਤਰ੍ਹਾਂ ਤਸਦੀਕ ਕਰਨ ਲਈ {{count}} ਹੋਰ ਖੇਤਰ ਪੂਰਾ ਕਰੋ।",
+        "addedDesc_other": "ਬਾਅਦ ਵਿੱਚ ਪੂਰੀ ਤਰ੍ਹਾਂ ਤਸਦੀਕ ਕਰਨ ਲਈ {{count}} ਹੋਰ ਖੇਤਰ ਪੂਰੇ ਕਰੋ।"
+      },
+      "footer": {
+        "willBeVerified": "ਤੁਰੰਤ ਤਸਦੀਕ ਹੋਵੇਗੀ",
+        "fieldsToVerification_one": "ਪੂਰੀ ਤਸਦੀਕ ਲਈ {{count}} ਖੇਤਰ",
+        "fieldsToVerification_other": "ਪੂਰੀ ਤਸਦੀਕ ਲਈ {{count}} ਖੇਤਰ",
+        "cancel": "ਰੱਦ ਕਰੋ",
+        "saving": "ਸੁਰੱਖਿਅਤ ਕੀਤਾ ਜਾ ਰਿਹਾ ਹੈ",
+        "addProperty": "ਜਾਇਦਾਦ ਜੋੜੋ"
+      }
+    },
+    "editModal": {
+      "title": "ਜਾਇਦਾਦ ਸੰਪਾਦਿਤ ਕਰੋ",
+      "sections": {
+        "photoSub": "ਜਾਇਦਾਦ ਫ਼ੋਟੋ ਅੱਪਡੇਟ ਕਰੋ ਜਾਂ ਜੋੜੋ"
+      },
+      "placeholders": {
+        "address": "742 Evergreen Terrace"
+      },
+      "banner": {
+        "allPassed": "ਸਾਰੇ ਡੇਟਾ ਗੁਣਵੱਤਾ ਜਾਂਚ ਪਾਸ ਹੋਈਆਂ",
+        "awayFromVerification_one": "ਪੂਰੀ ਤਸਦੀਕ ਤੋਂ {{count}} ਖੇਤਰ ਦੂਰ",
+        "awayFromVerification_other": "ਪੂਰੀ ਤਸਦੀਕ ਤੋਂ {{count}} ਖੇਤਰ ਦੂਰ",
+        "hint": "ਇਸ ਜਾਇਦਾਦ ਨੂੰ ਤਸਦੀਕਸ਼ੁਦਾ ਚਿੰਨ੍ਹਿਤ ਕਰਨ ਲਈ ਸਾਰੇ ਖੇਤਰ ਪੂਰੇ ਕਰੋ।"
+      },
+      "toasts": {
+        "verified": "ਜਾਇਦਾਦ ਤਸਦੀਕ ਹੋਈ",
+        "changesSaved": "ਬਦਲਾਅ ਸੁਰੱਖਿਅਤ ਹੋਏ",
+        "stillNeeded_one": "ਤਸਦੀਕ ਲਈ {{count}} ਖੇਤਰ ਅਜੇ ਵੀ ਲੋੜੀਂਦਾ ਹੈ।",
+        "stillNeeded_other": "ਤਸਦੀਕ ਲਈ {{count}} ਖੇਤਰ ਅਜੇ ਵੀ ਲੋੜੀਂਦੇ ਹਨ।",
+        "saveFailed": "ਬਦਲਾਅ ਸੁਰੱਖਿਅਤ ਨਹੀਂ ਹੋ ਸਕੇ"
+      },
+      "footer": {
+        "willMarkVerified": "ਸੁਰੱਖਿਅਤ ਕਰਨ ਨਾਲ ਇਸਨੂੰ ਤਸਦੀਕਸ਼ੁਦਾ ਚਿੰਨ੍ਹਿਤ ਕੀਤਾ ਜਾਵੇਗਾ",
+        "saveChanges": "ਬਦਲਾਅ ਸੁਰੱਖਿਅਤ ਕਰੋ",
+        "fieldsToVerification_one": "ਪੂਰੀ ਤਸਦੀਕ ਲਈ {{count}} ਖੇਤਰ",
+        "fieldsToVerification_other": "ਪੂਰੀ ਤਸਦੀਕ ਲਈ {{count}} ਖੇਤਰ"
+      }
+    },
+    "aggregation": {
+      "enums": {
+        "taxStatus": {
+          "PAID": "ਅਦਾ ਕੀਤਾ",
+          "PENDING": "ਲੰਬਿਤ",
+          "OVERDUE": "ਮਿਆਦ ਲੰਘੀ"
+        },
+        "permitType": {
+          "BUILDING": "ਇਮਾਰਤ",
+          "RENOVATION": "ਨਵੀਨੀਕਰਨ",
+          "OCCUPANCY": "ਰਿਹਾਇਸ਼",
+          "DEMOLITION": "ਢਾਹੁਣਾ",
+          "ELECTRICAL": "ਬਿਜਲਈ",
+          "PLUMBING": "ਪਲੰਬਿੰਗ"
+        },
+        "permitStatus": {
+          "APPROVED": "ਮਨਜ਼ੂਰ",
+          "PENDING": "ਲੰਬਿਤ",
+          "EXPIRED": "ਮਿਆਦ ਲੰਘੀ",
+          "REJECTED": "ਰੱਦ ਕੀਤਾ"
+        }
+      },
+      "completeness": {
+        "title": "ਡੇਟਾ ਸੰਪੂਰਨਤਾ",
+        "subtitle": "6 ਡੇਟਾ ਸਰੋਤਾਂ ਵਿੱਚ ਇਕੱਤਰੀਕਰਨ ਸਿਹਤ",
+        "refreshAria": "ਇਕੱਤਰੀਕਰਨ ਤਾਜ਼ਾ ਕਰੋ",
+        "refreshTitle": "ਸਾਰੇ ਸਰੋਤ ਤਾਜ਼ੇ ਕਰੋ",
+        "overallStatus": "ਸਮੁੱਚੀ ਸਥਿਤੀ",
+        "coverage": "ਕਵਰੇਜ",
+        "liveSources_one": "ਲਾਈਵ ਸਰੋਤ",
+        "liveSources_other": "ਲਾਈਵ ਸਰੋਤ",
+        "mockSources_one": "ਨਮੂਨਾ ਸਰੋਤ",
+        "mockSources_other": "ਨਮੂਨਾ ਸਰੋਤ",
+        "unavailable": "ਉਪਲਬਧ ਨਹੀਂ",
+        "dataSources": "ਡੇਟਾ ਸਰੋਤ",
+        "totalCount": "{{n}} ਕੁੱਲ",
+        "latestFetch": "ਤਾਜ਼ਾ ਪ੍ਰਾਪਤੀ:",
+        "oldest": "ਸਭ ਤੋਂ ਪੁਰਾਣਾ:",
+        "duration": "ਅਵਧੀ:",
+        "overallOk": "ਸਾਰੇ ਸਰੋਤ ਉਪਲਬਧ",
+        "overallPartial": "ਅੰਸ਼ਕ ਡੇਟਾ",
+        "overallDegraded": "ਖ਼ਰਾਬ — ਕੁਝ ਸਰੋਤ ਬੰਦ",
+        "overallLoading": "ਲੋਡ ਹੋ ਰਿਹਾ ਹੈ",
+        "statusEmpty": "ਖਾਲੀ",
+        "statusDown": "ਬੰਦ",
+        "sources": {
+          "ownership": "ਮਾਲਕੀ ਰਜਿਸਟਰੀ",
+          "taxHistory": "ਨਗਰ ਪਾਲਿਕਾ ਟੈਕਸ ਰਿਕਾਰਡ",
+          "zoning": "ਜ਼ੋਨਿੰਗ ਅਥਾਰਟੀ",
+          "floodZone": "ਹੜ੍ਹ ਜੋਖਮ ਮੁਲਾਂਕਣ",
+          "permits": "ਪਰਮਿਟ ਡੇਟਾਬੇਸ",
+          "environmental": "ਵਾਤਾਵਰਣ ਨਿਗਰਾਨੀ"
+        }
+      },
+      "environmental": {
+        "title": "ਵਾਤਾਵਰਣ",
+        "subtitle": "ਹਵਾ ਗੁਣਵੱਤਾ ਅਤੇ ਆਲੇ-ਦੁਆਲੇ",
+        "emptyLabel": "ਵਾਤਾਵਰਣ ਡੇਟਾ",
+        "aqi": "ਹਵਾ ਗੁਣਵੱਤਾ ਸੂਚਕਾਂਕ",
+        "mainPollutant": "ਮੁੱਖ ਪ੍ਰਦੂਸ਼ਕ",
+        "nearestStation": "ਨੇੜੇ ਦਾ ਨਿਗਰਾਨੀ ਸਟੇਸ਼ਨ",
+        "measured": "{{ago}} ਮਾਪਿਆ",
+        "greenCover": "ਹਰਿਆਲੀ ਢੱਕਣ",
+        "noiseLevel": "ਰੌਲੇ ਦਾ ਪੱਧਰ",
+        "soilType": "ਮਿੱਟੀ ਦੀ ਕਿਸਮ",
+        "industrialZone": "ਉਦਯੋਗਿਕ ਜ਼ੋਨ",
+        "nearby": "ਨੇੜੇ",
+        "notNearby": "ਨੇੜੇ ਨਹੀਂ"
+      },
+      "flood": {
+        "title": "ਹੜ੍ਹ ਜੋਖਮ",
+        "subtitle": "ਹੜ੍ਹ ਜ਼ੋਨ ਵਰਗੀਕਰਨ ਅਤੇ ਇਤਿਹਾਸ",
+        "emptyLabel": "ਹੜ੍ਹ ਡੇਟਾ",
+        "zone": "ਜ਼ੋਨ",
+        "insuranceRecommended": "ਹੜ੍ਹ ਬੀਮਾ ਸਿਫਾਰਸ਼ ਕੀਤਾ",
+        "insuranceNotMandatory": "ਹੜ੍ਹ ਬੀਮਾ ਲਾਜ਼ਮੀ ਨਹੀਂ",
+        "basedOn": "{{agency}} ਦੇ ਆਧਾਰ 'ਤੇ",
+        "regionalHazard": "ਖੇਤਰੀ ਖ਼ਤਰੇ ਦਾ ਡੇਟਾ",
+        "nearestWater": "ਨੇੜੇ ਦਾ ਜਲ-ਸਰੋਤ",
+        "distance": "ਦੂਰੀ",
+        "lastFlood": "ਪਿਛਲਾ ਵੱਡਾ ਹੜ੍ਹ:"
+      },
+      "zoning": {
+        "title": "ਜ਼ੋਨਿੰਗ ਜਾਣਕਾਰੀ",
+        "subtitle": "ਜ਼ਮੀਨ ਵਰਤੋਂ ਵਰਗੀਕਰਨ ਅਤੇ ਇਮਾਰਤ ਨਿਯਮ",
+        "emptyLabel": "ਜ਼ੋਨਿੰਗ ਜਾਣਕਾਰੀ",
+        "zoneCode": "ਜ਼ੋਨ ਕੋਡ",
+        "category": "ਸ਼੍ਰੇਣੀ",
+        "maxFar": "ਵੱਧ ਤੋਂ ਵੱਧ FAR",
+        "groundCoverage": "ਜ਼ਮੀਨ ਕਵਰੇਜ",
+        "maxHeight": "ਵੱਧ ਤੋਂ ਵੱਧ ਉਚਾਈ",
+        "allowedUses": "ਮਨਜ਼ੂਰ ਵਰਤੋਂ",
+        "restrictedUses": "ਪਾਬੰਦੀਸ਼ੁਦਾ ਵਰਤੋਂ",
+        "referencePlan": "ਹਵਾਲਾ ਯੋਜਨਾ"
+      },
+      "section": {
+        "waiting": "ਡੇਟਾ ਦੀ ਉਡੀਕ...",
+        "errorTitle": "ਭਾਗ ਅਸਥਾਈ ਤੌਰ 'ਤੇ ਉਪਲਬਧ ਨਹੀਂ",
+        "errorReason": "ਬਾਹਰੀ ਡੇਟਾ ਸਰੋਤ ਤੱਕ ਪਹੁੰਚਿਆ ਨਹੀਂ ਜਾ ਸਕਿਆ। ਜਲਦੀ ਦੁਬਾਰਾ ਕੋਸ਼ਿਸ਼ ਕਰੋ।",
+        "emptyTitle": "ਕੋਈ {{item}} ਉਪਲਬਧ ਨਹੀਂ",
+        "emptyReason": "ਇਸ ਜਾਇਦਾਦ ਲਈ ਹੁਣੇ ਕੋਈ ਰਿਕਾਰਡ ਨਹੀਂ ਹੈ।",
+        "dataFallback": "ਡੇਟਾ"
+      },
+      "badge": {
+        "mock": "ਨਮੂਨਾ"
+      },
+      "ownership": {
+        "title": "ਮਾਲਕੀ",
+        "subtitle": "ਮੌਜੂਦਾ ਮਾਲਕ ਅਤੇ ਰਜਿਸਟ੍ਰੇਸ਼ਨ ਵੇਰਵੇ",
+        "emptyLabel": "ਮਾਲਕੀ ਰਿਕਾਰਡ",
+        "currentOwner": "ਮੌਜੂਦਾ ਮਾਲਕ",
+        "coOwners": "ਸਹਿ-ਮਾਲਕ:",
+        "ownershipType": "ਮਾਲਕੀ ਕਿਸਮ",
+        "registrationNo": "ਰਜਿਸਟ੍ਰੇਸ਼ਨ ਨੰ.",
+        "registeredOn": "ਰਜਿਸਟ੍ਰੇਸ਼ਨ ਮਿਤੀ",
+        "subRegistrar": "ਸਬ-ਰਜਿਸਟਰਾਰ ਦਫ਼ਤਰ",
+        "registeredValue": "ਰਜਿਸਟਰਡ ਮੁੱਲ",
+        "stampDuty": "ਅਦਾ ਕੀਤੀ ਸਟੈਂਪ ਡਿਊਟੀ"
+      },
+      "permits": {
+        "title": "ਪਰਮਿਟ ਅਤੇ ਮਨਜ਼ੂਰੀਆਂ",
+        "subtitle": "ਇਮਾਰਤ, ਰਿਹਾਇਸ਼ ਅਤੇ ਨਵੀਨੀਕਰਨ ਪਰਮਿਟ",
+        "emptyLabel": "ਪਰਮਿਟ",
+        "issued": "ਜਾਰੀ:",
+        "expires": "ਮਿਆਦ:",
+        "noRecords": "ਇਸ ਜਾਇਦਾਦ ਲਈ ਕੋਈ ਪਰਮਿਟ ਦਰਜ ਨਹੀਂ।"
+      },
+      "tax": {
+        "title": "ਜਾਇਦਾਦ ਟੈਕਸ ਇਤਿਹਾਸ",
+        "subtitle": "ਮੁਲਾਂਕਣ ਅਤੇ ਅਦਾਇਗੀ ਰਿਕਾਰਡ",
+        "emptyLabel": "ਟੈਕਸ ਰਿਕਾਰਡ",
+        "year": "ਸਾਲ",
+        "assessedValue": "ਮੁਲਾਂਕਿਤ ਮੁੱਲ",
+        "taxDue": "ਬਕਾਇਆ ਟੈਕਸ",
+        "status": "ਸਥਿਤੀ",
+        "receipt": "ਰਸੀਦ",
+        "noRecords": "ਇਸ ਜਾਇਦਾਦ ਲਈ ਕੋਈ ਟੈਕਸ ਰਿਕਾਰਡ ਉਪਲਬਧ ਨਹੀਂ।"
+      }
+    },
+    "quickImage": {
+      "addPhoto": "ਫ਼ੋਟੋ ਜੋੜੋ",
+      "updatePhoto": "ਫ਼ੋਟੋ ਅੱਪਡੇਟ ਕਰੋ",
+      "closeAria": "ਬੰਦ ਕਰੋ",
+      "cancel": "ਰੱਦ ਕਰੋ",
+      "saving": "ਸੁਰੱਖਿਅਤ ਕੀਤਾ ਜਾ ਰਿਹਾ ਹੈ",
+      "removePhoto": "ਫ਼ੋਟੋ ਹਟਾਓ",
+      "savePhoto": "ਫ਼ੋਟੋ ਸੁਰੱਖਿਅਤ ਕਰੋ",
+      "saveChanges": "ਬਦਲਾਅ ਸੁਰੱਖਿਅਤ ਕਰੋ",
+      "noChanges": "ਕੋਈ ਬਦਲਾਅ ਨਹੀਂ",
+      "removedTitle": "ਫ਼ੋਟੋ ਹਟਾਈ",
+      "removedDesc": "ਜਾਇਦਾਦ ਹੁਣ ਪਲੇਸਹੋਲਡਰ ਦਿਖਾਵੇਗੀ।",
+      "updatedTitle": "ਫ਼ੋਟੋ ਅੱਪਡੇਟ ਹੋਈ",
+      "updatedDesc": "ਤੁਹਾਡੀ ਜਾਇਦਾਦ ਦੀ ਫ਼ੋਟੋ ਸੁਰੱਖਿਅਤ ਹੋਈ।",
+      "updateFailed": "ਫ਼ੋਟੋ ਅੱਪਡੇਟ ਨਹੀਂ ਹੋ ਸਕੀ",
+      "tryAgainMoment": "ਕਿਰਪਾ ਕਰਕੇ ਇੱਕ ਪਲ ਵਿੱਚ ਦੁਬਾਰਾ ਕੋਸ਼ਿਸ਼ ਕਰੋ।",
+      "stagedWarningTitle": "ਫ਼ੋਟੋ ਹਟਾਉਣ ਲਈ ਤਿਆਰ",
+      "stagedWarningDesc": "ਪੁਸ਼ਟੀ ਕਰਨ ਲਈ <1>ਫ਼ੋਟੋ ਹਟਾਓ</1> ਕਲਿੱਕ ਕਰੋ, ਜਾਂ ਮੌਜੂਦਾ ਫ਼ੋਟੋ ਰੱਖਣ ਲਈ <3>ਰੱਦ ਕਰੋ</3>।",
+      "replaceHint": "ਮੌਜੂਦਾ ਫ਼ੋਟੋ ਬਦਲੋ, ਜਾਂ ਪਲੇਸਹੋਲਡਰ ਵਰਤਣ ਲਈ ਇਸਨੂੰ ਹਟਾਓ।",
+      "addHint": "ਖੋਜ ਨਤੀਜਿਆਂ ਵਿੱਚ ਇਸ ਜਾਇਦਾਦ ਦੀ ਪਛਾਣ ਵਿੱਚ ਮਦਦ ਲਈ ਫ਼ੋਟੋ ਜੋੜੋ।"
+    },
+    "saveComparison": {
+      "closeAria": "ਬੰਦ ਕਰੋ",
+      "titleSave": "ਤੁਲਨਾ ਸੁਰੱਖਿਅਤ ਕਰੋ",
+      "titleSaved": "ਤੁਲਨਾ ਸੁਰੱਖਿਅਤ ਹੋਈ!",
+      "subtitleSave_one": "ਇਹ {{count}} ਜਾਇਦਾਦ ਤੁਲਨਾ ਆਪਣੇ ਖਾਤੇ ਵਿੱਚ ਸੁਰੱਖਿਅਤ ਕਰੋ।",
+      "subtitleSave_other": "ਇਹ {{count}} ਜਾਇਦਾਦ ਤੁਲਨਾ ਆਪਣੇ ਖਾਤੇ ਵਿੱਚ ਸੁਰੱਖਿਅਤ ਕਰੋ।",
+      "subtitleSaved": "ਤੁਸੀਂ ਇਹ ਤੁਲਨਾ ਆਪਣੀ ਸੁਰੱਖਿਅਤ ਸੂਚੀ ਤੋਂ ਕਦੇ ਵੀ ਲੋਡ ਕਰ ਸਕਦੇ ਹੋ।",
+      "nameLabel": "ਨਾਮ",
+      "namePlaceholder": "ਉਦਾ. ਮੁੰਬਈ ਬਨਾਮ ਪੁਣੇ ਤੁਲਨਾ",
+      "nameRequired": "ਨਾਮ ਲਾਜ਼ਮੀ ਹੈ",
+      "nameMin": "ਨਾਮ ਘੱਟੋ-ਘੱਟ 3 ਅੱਖਰਾਂ ਦਾ ਹੋਣਾ ਚਾਹੀਦਾ ਹੈ",
+      "nameMax": "ਨਾਮ 100 ਅੱਖਰਾਂ ਤੋਂ ਵੱਧ ਨਹੀਂ ਹੋ ਸਕਦਾ",
+      "notesLabel": "ਨੋਟ",
+      "notesOptional": "(ਵਿਕਲਪਿਕ)",
+      "notesPlaceholder": "ਇਸ ਤੁਲਨਾ ਬਾਰੇ ਕੋਈ ਨੋਟ ਜੋੜੋ...",
+      "notesMax": "ਨੋਟ 1000 ਅੱਖਰਾਂ ਤੋਂ ਵੱਧ ਨਹੀਂ ਹੋ ਸਕਦੇ",
+      "propertiesCount_one": "ਇਸ ਤੁਲਨਾ ਵਿੱਚ {{count}} ਜਾਇਦਾਦ ਸੁਰੱਖਿਅਤ ਹੋਵੇਗੀ",
+      "propertiesCount_other": "ਇਸ ਤੁਲਨਾ ਵਿੱਚ {{count}} ਜਾਇਦਾਦਾਂ ਸੁਰੱਖਿਅਤ ਹੋਣਗੀਆਂ",
+      "cancel": "ਰੱਦ ਕਰੋ",
+      "saveButton": "ਤੁਲਨਾ ਸੁਰੱਖਿਅਤ ਕਰੋ",
+      "saving": "ਸੁਰੱਖਿਅਤ ਕੀਤਾ ਜਾ ਰਿਹਾ ਹੈ...",
+      "tipEsc": "ਸੁਝਾਅ: ਦਬਾਓ",
+      "tipEscSuffix": "ਰੱਦ ਕਰਨ ਲਈ",
+      "closingAuto": "ਆਪਣੇ ਆਪ ਬੰਦ ਹੋ ਰਿਹਾ ਹੈ..."
+    },
+    "logout": {
+      "closeAria": "ਬੰਦ ਕਰੋ",
+      "title": "ਸਾਈਨ ਆਊਟ ਕਰਨ ਲਈ ਤਿਆਰ ਹੋ?",
+      "subtitle": "ਆਪਣੇ ਡੈਸ਼ਬੋਰਡ ਅਤੇ ਜਾਇਦਾਦ ਡੇਟਾ ਤੱਕ ਪਹੁੰਚਣ ਲਈ ਤੁਹਾਨੂੰ ਦੁਬਾਰਾ ਲੌਗ ਇਨ ਕਰਨਾ ਪਵੇਗਾ।",
+      "activeBadge": "ਸਰਗਰਮ",
+      "signedInFallback": "ਸਾਈਨ ਇਨ ਹੈ",
+      "fallbackUser": "ਉਪਯੋਗਕਰਤਾ",
+      "stayIn": "ਸਾਈਨ ਇਨ ਰਹੋ",
+      "confirm": "ਹਾਂ, ਲੌਗ ਆਊਟ ਕਰੋ",
+      "signingOut": "ਸਾਈਨ ਆਊਟ ਹੋ ਰਿਹਾ ਹੈ…",
+      "tipEsc": "ਸੁਝਾਅ: ਦਬਾਓ",
+      "tipEscSuffix": "ਰੱਦ ਕਰਨ ਲਈ"
+    },
+    "detailPage": {
+      "pageTitle": "ਜਾਇਦਾਦ ਵੇਰਵੇ | Real Estate Due Diligence Agent",
+      "couldNotLoad": "ਜਾਇਦਾਦ ਵੇਰਵੇ ਲੋਡ ਨਹੀਂ ਹੋ ਸਕੇ",
+      "notFound": "ਜਾਇਦਾਦ ਨਹੀਂ ਮਿਲੀ",
+      "mayBeRemoved": "ਇਸਨੂੰ ਹਟਾਇਆ ਗਿਆ ਹੋ ਸਕਦਾ ਹੈ।"
+    },
+    "propertyTypes": {
+      "COMMERCIAL": "ਵਪਾਰਕ",
+      "RESIDENTIAL": "ਰਿਹਾਇਸ਼ੀ",
+      "INDUSTRIAL": "ਉਦਯੋਗਿਕ",
+      "LAND": "ਜ਼ਮੀਨ",
+      "MIXED_USE": "ਮਿਲੀ-ਜੁਲੀ ਵਰਤੋਂ",
+      "AGRICULTURAL": "ਖੇਤੀਬਾੜੀ"
+    },
+    "filter": {
+      "filter": "ਫਿਲਟਰ",
+      "clearFilters": "ਫਿਲਟਰ ਸਾਫ਼ ਕਰੋ",
+      "noMatchFilters": "ਕੋਈ ਜਾਇਦਾਦ ਤੁਹਾਡੇ ਫਿਲਟਰਾਂ ਨਾਲ ਮੇਲ ਨਹੀਂ ਖਾਂਦੀ",
+      "tryRemoving": "ਕੁਝ ਫਿਲਟਰ ਹਟਾਉਣ ਜਾਂ ਸਭ ਸਾਫ਼ ਕਰਨ ਦੀ ਕੋਸ਼ਿਸ਼ ਕਰੋ",
+      "title": "ਫਿਲਟਰ",
+      "subtitle": "ਆਪਣੀ ਜਾਇਦਾਦ ਸੂਚੀ ਸੁਧਾਰੋ",
+      "activeCount_one": "{{count}} ਫਿਲਟਰ ਸਰਗਰਮ",
+      "activeCount_other": "{{count}} ਫਿਲਟਰ ਸਰਗਰਮ",
+      "resetFilters": "ਫਿਲਟਰ ਰੀਸੈਟ ਕਰੋ",
+      "matching": "ਮੇਲ ਖਾਂਦੀ",
+      "viewProperties_one": "{{count}} ਜਾਇਦਾਦ ਦੇਖੋ",
+      "viewProperties_other": "{{count}} ਜਾਇਦਾਦਾਂ ਦੇਖੋ",
+      "sections": {
+        "propertyType": "ਜਾਇਦਾਦ ਕਿਸਮ",
+        "city": "ਸ਼ਹਿਰ",
+        "priceRange": "ਕੀਮਤ ਸੀਮਾ",
+        "dataQuality": "ਡੇਟਾ ਗੁਣਵੱਤਾ",
+        "sortBy": "ਕ੍ਰਮ ਅਨੁਸਾਰ"
+      },
+      "activeLabel": "ਸਰਗਰਮ",
+      "chipMinPrice": "ਘੱਟੋ-ਘੱਟ: {{value}}",
+      "chipMaxPrice": "ਵੱਧ ਤੋਂ ਵੱਧ: {{value}}",
+      "chipSort": "ਕ੍ਰਮ: {{label}}",
+      "chipRemove": "{{label}} ਹਟਾਓ",
+      "noTypesYet": "ਡੇਟਾ ਵਿੱਚ ਹੁਣੇ ਕੋਈ ਕਿਸਮ ਨਹੀਂ",
+      "noCitiesYet": "ਡੇਟਾ ਵਿੱਚ ਹੁਣੇ ਕੋਈ ਸ਼ਹਿਰ ਨਹੀਂ",
+      "minPrice": "ਘੱਟੋ-ਘੱਟ (₹)",
+      "maxPrice": "ਵੱਧ ਤੋਂ ਵੱਧ (₹)",
+      "anyPrice": "ਕੋਈ ਵੀ",
+      "highestInDb": "ਡੇਟਾਬੇਸ ਵਿੱਚ ਸਭ ਤੋਂ ਵੱਧ: {{amount}}",
+      "verifiedOnly": "ਕੇਵਲ ਤਸਦੀਕਸ਼ੁਦਾ",
+      "verifiedOnlyDesc": "ਉਹ ਜਾਇਦਾਦਾਂ ਦਿਖਾਓ ਜੋ ਸਾਰੇ ਗੁਣਵੱਤਾ ਜਾਂਚ ਪਾਸ ਕਰ ਚੁੱਕੀਆਂ ਹਨ",
+      "toggleVerified": "ਕੇਵਲ-ਤਸਦੀਕਸ਼ੁਦਾ ਫਿਲਟਰ ਟੌਗਲ ਕਰੋ",
+      "highRiskOnly": "ਕੇਵਲ ਉੱਚ ਜੋਖਮ",
+      "highRiskDesc": "66 ਤੋਂ ਵੱਧ ਜੋਖਮ ਸਕੋਰ ਵਾਲੀਆਂ ਜਾਇਦਾਦਾਂ ਦਿਖਾਓ",
+      "toggleHighRisk": "ਉੱਚ-ਜੋਖਮ ਫਿਲਟਰ ਟੌਗਲ ਕਰੋ",
+      "sortOptions": {
+        "recent": "ਹਾਲ ਵਿੱਚ ਜੋੜੀਆਂ",
+        "priceAsc": "ਕੀਮਤ: ਘੱਟ → ਵੱਧ",
+        "priceDesc": "ਕੀਮਤ: ਵੱਧ → ਘੱਟ",
+        "alpha": "ਵਰਣਮਾਲਾ (A–Z)",
+        "riskDesc": "ਸਭ ਤੋਂ ਵੱਧ ਜੋਖਮ ਪਹਿਲਾਂ"
+      }
+    },
+    "card": {
+      "verified": "ਤਸਦੀਕਸ਼ੁਦਾ",
+      "pending": "ਲੰਬਿਤ",
+      "incomplete": "ਅਧੂਰਾ",
+      "marketValue": "ਬਾਜ਼ਾਰ ਮੁੱਲ",
+      "completeToVerify": "ਤਸਦੀਕ ਕਰਨ ਲਈ ਪੂਰਾ ਕਰੋ",
+      "missing": "ਗੁੰਮ:",
+      "addPhoto": "ਫ਼ੋਟੋ ਜੋੜੋ",
+      "changePhoto": "ਫ਼ੋਟੋ ਬਦਲੋ",
+      "lowRisk": "ਘੱਟ ਜੋਖਮ",
+      "mediumRisk": "ਦਰਮਿਆਨਾ ਜੋਖਮ",
+      "highRisk": "ਉੱਚ ਜੋਖਮ",
+      "unknownAddress": "ਅਣਜਾਣ ਪਤਾ",
+      "propertyFallback": "ਜਾਇਦਾਦ",
+      "addToCompare": "ਤੁਲਨਾ ਵਿੱਚ ਜੋੜੋ",
+      "removeFromCompare": "ਤੁਲਨਾ ਤੋਂ ਹਟਾਓ",
+      "maxCompareReached": "ਤੁਲਨਾ ਲਈ ਵੱਧ ਤੋਂ ਵੱਧ 3 ਜਾਇਦਾਦਾਂ",
+      "verifiedTooltip": "ਤਸਦੀਕਸ਼ੁਦਾ — ਸਾਰੇ {{n}} ਡੇਟਾ ਗੁਣਵੱਤਾ ਜਾਂਚ ਪਾਸ",
+      "pendingTooltip": "ਲੰਬਿਤ — {{total}} ਵਿੱਚੋਂ {{passed}} ਜਾਂਚ ਪਾਸ।\nਗੁੰਮ: {{missing}}",
+      "bedroomsShort": "{{n}} BR",
+      "bathroomsShort": "{{n}} BA",
+      "riskScoreTooltip": "ਜੋਖਮ ਸਕੋਰ: {{score}}/100",
+      "moreItems": "+{{n}} ਹੋਰ",
+      "photoPending": "ਫ਼ੋਟੋ ਲੰਬਿਤ"
+    },
+    "risk": {
+      "title": "ਜੋਖਮ ਮੁਲਾਂਕਣ",
+      "subtitle": "ਅਸਲ ਇਕੱਤਰ ਡੇਟਾ ਦੇ ਆਧਾਰ 'ਤੇ",
+      "unavailable": "ਜੋਖਮ ਸਕੋਰ ਉਪਲਬਧ ਨਹੀਂ",
+      "couldntLoad": "ਜੋਖਮ ਸਕੋਰ ਲੋਡ ਨਹੀਂ ਹੋ ਸਕਿਆ",
+      "categoryBreakdown": "ਸ਼੍ਰੇਣੀ ਵੰਡ",
+      "weight": "ਭਾਰ {{pct}}",
+      "factorsCount": "ਜੋਖਮ ਕਾਰਕ · {{n}}",
+      "incompleteNote": "ਕੁਝ ਡੇਟਾ ਸਰੋਤਾਂ ਨੇ ਨਮੂਨਾ ਜਾਂ ਅਣਉਪਲਬਧ ਡੇਟਾ ਦਿੱਤਾ। ਵੱਧ ਅਸਲ ਡੇਟਾ ਉਪਲਬਧ ਹੋਣ ਨਾਲ ਸਕੋਰ ਸੁਧਰ ਸਕਦਾ ਹੈ।",
+      "categories": {
+        "financial": "ਵਿੱਤੀ",
+        "legal": "ਕਾਨੂੰਨੀ",
+        "environmental": "ਵਾਤਾਵਰਣ",
+        "structural": "ਢਾਂਚਾਗਤ"
+      }
+    },
+    "building": {
+      "title": "ਇਮਾਰਤ ਜਾਣਕਾਰੀ",
+      "subtitle": "ਤੁਹਾਡੇ ਦੁਆਰਾ ਪ੍ਰਦਾਨ ਕੀਤੇ ਢਾਂਚਾਗਤ ਵੇਰਵੇ",
+      "storiesCount_one": "{{count}} ਮੰਜ਼ਿਲ",
+      "storiesCount_other": "{{count}} ਮੰਜ਼ਿਲਾਂ",
+      "emptyTitle": "ਕੋਈ ਇਮਾਰਤ ਵੇਰਵੇ ਨਹੀਂ ਜੋੜੇ",
+      "emptyDesc": "ਜੋਖਮ ਸਕੋਰਿੰਗ ਸਟੀਕਤਾ ਸੁਧਾਰਨ ਲਈ ਢਾਂਚਾ ਕਿਸਮ, ਉਸਾਰੀ ਸਾਲ, ਬੈੱਡਰੂਮ ਅਤੇ ਹੋਰ ਜੋੜੋ।",
+      "addDetails": "ਇਮਾਰਤ ਵੇਰਵੇ ਜੋੜੋ"
+    },
+    "details": {
+      "verifiedProperty": "ਤਸਦੀਕਸ਼ੁਦਾ ਜਾਇਦਾਦ",
+      "pendingVerification": "ਤਸਦੀਕ ਲੰਬਿਤ",
+      "active": "ਸਰਗਰਮ",
+      "userProvided": "ਉਪਯੋਗਕਰਤਾ ਦੁਆਰਾ",
+      "editDetails": "ਵੇਰਵੇ ਸੰਪਾਦਿਤ ਕਰੋ",
+      "estimatedMarketValue": "ਅਨੁਮਾਨਿਤ ਬਾਜ਼ਾਰ ਮੁੱਲ",
+      "yearBuilt": "ਉਸਾਰੀ ਸਾਲ",
+      "stories": "ਮੰਜ਼ਿਲਾਂ",
+      "lotSize": "ਜ਼ਮੀਨ ਦਾ ਆਕਾਰ",
+      "zoning": "ਜ਼ੋਨਿੰਗ",
+      "beds": "ਬਿਸਤਰੇ",
+      "baths": "ਬਾਥ",
+      "sqft": "ਵ.ਫੁੱਟ",
+      "type": "ਕਿਸਮ",
+      "pricePerSqft": "ਕੀਮਤ/ਵ.ਫੁੱਟ",
+      "editProperty": "ਜਾਇਦਾਦ ਸੰਪਾਦਿਤ ਕਰੋ",
+      "backToSearch": "ਖੋਜ 'ਤੇ ਵਾਪਸ",
+      "monthlyEst": "ਅਨੁ. {{amount}}/ਮਹੀਨਾ",
+      "getPrequalified": "ਪੂਰਵ-ਯੋਗਤਾ ਪ੍ਰਾਪਤ ਕਰੋ"
+    },
+    "comparison": {
+      "title": "ਜਾਇਦਾਦ ਤੁਲਨਾ",
+      "subtitle": "{{n}} {{unit}} ਦਾ ਪਾਸੇ-ਪਾਸੇ ਵਿਸ਼ਲੇਸ਼ਣ · ਕੇਵਲ ਅਸਲ ਡੇਟਾ",
+      "pageTitle": "ਜਾਇਦਾਦ ਤੁਲਨਾ | Real Estate Due Diligence Agent",
+      "couldNotLoad": "ਤੁਲਨਾ ਲੋਡ ਨਹੀਂ ਹੋ ਸਕੀ",
+      "pleaseGoBack": "ਕਿਰਪਾ ਕਰਕੇ ਵਾਪਸ ਜਾਓ ਅਤੇ ਦੁਬਾਰਾ ਕੋਸ਼ਿਸ਼ ਕਰੋ।",
+      "loadFailed": "ਤੁਲਨਾ ਡੇਟਾ ਲੋਡ ਕਰਨ ਵਿੱਚ ਅਸਫਲ",
+      "selectHelper": "ਜਾਇਦਾਦ ਖੋਜ 'ਤੇ ਜਾਓ, ਹਰ ਕਾਰਡ 'ਤੇ ਤੁਲਨਾ ਚੈੱਕਬਾਕਸ ਵਰਤ ਕੇ 2–3 ਜਾਇਦਾਦਾਂ ਚੁਣੋ, ਫਿਰ \"ਤੁਲਨਾ ਕਰੋ\" ਕਲਿੱਕ ਕਰੋ।",
+      "backToSearch": "ਜਾਇਦਾਦ ਖੋਜ 'ਤੇ ਵਾਪਸ",
+      "metricHeader": "ਮਾਪਦੰਡ",
+      "propertyUnit": "ਜਾਇਦਾਦ",
+      "propertiesUnit": "ਜਾਇਦਾਦਾਂ",
+      "mySaved": "ਮੇਰੀਆਂ ਸੁਰੱਖਿਅਤ",
+      "saveComparison": "ਤੁਲਨਾ ਸੁਰੱਖਿਅਤ ਕਰੋ",
+      "goToSearch": "ਜਾਇਦਾਦ ਖੋਜ 'ਤੇ ਜਾਓ",
+      "selectAtLeast2": "ਤੁਲਨਾ ਕਰਨ ਲਈ ਘੱਟੋ-ਘੱਟ 2 ਜਾਇਦਾਦਾਂ ਚੁਣੋ",
+      "compareLabel": "ਤੁਲਨਾ ਕਰੋ",
+      "selectedCount": "3 ਵਿੱਚੋਂ {{count}} ਚੁਣੀਆਂ",
+      "compareCount_one": "{{count}} ਜਾਇਦਾਦ ਤੁਲਨਾ ਕਰੋ",
+      "compareCount_other": "{{count}} ਜਾਇਦਾਦਾਂ ਤੁਲਨਾ ਕਰੋ",
+      "selectMinimum": "— ਘੱਟੋ-ਘੱਟ 2 ਚੁਣੋ",
+      "removeProperty": "{{address}} ਹਟਾਓ",
+      "sections": {
+        "financial": "ਵਿੱਤੀ",
+        "propertyDetails": "ਜਾਇਦਾਦ ਵੇਰਵੇ",
+        "riskAssessment": "ਜੋਖਮ ਮੁਲਾਂਕਣ",
+        "dataQuality": "ਡੇਟਾ ਗੁਣਵੱਤਾ",
+        "integrationSources": "ਏਕੀਕਰਨ ਡੇਟਾ ਸਰੋਤ",
+        "environmental": "ਵਾਤਾਵਰਣ"
+      },
+      "metrics": {
+        "marketValue": "ਬਾਜ਼ਾਰ ਮੁੱਲ",
+        "area": "ਰਕਬਾ",
+        "pricePerSqft": "ਕੀਮਤ / ਵ.ਫੁੱਟ",
+        "lotSize": "ਜ਼ਮੀਨ ਦਾ ਆਕਾਰ",
+        "yearBuilt": "ਉਸਾਰੀ ਸਾਲ",
+        "type": "ਕਿਸਮ",
+        "bedrooms": "ਬੈੱਡਰੂਮ",
+        "bathrooms": "ਬਾਥਰੂਮ",
+        "stories": "ਮੰਜ਼ਿਲਾਂ",
+        "condition": "ਹਾਲਤ",
+        "structureType": "ਢਾਂਚਾ ਕਿਸਮ",
+        "zoning": "ਜ਼ੋਨਿੰਗ",
+        "overallRisk": "ਸਮੁੱਚਾ ਜੋਖਮ",
+        "financialRisk": "ਵਿੱਤੀ ਜੋਖਮ",
+        "legalRisk": "ਕਾਨੂੰਨੀ ਜੋਖਮ",
+        "environmentalRisk": "ਵਾਤਾਵਰਣ ਜੋਖਮ",
+        "structuralRisk": "ਢਾਂਚਾਗਤ ਜੋਖਮ",
+        "verification": "ਤਸਦੀਕ",
+        "ownership": "ਮਾਲਕੀ",
+        "taxHistory": "ਟੈਕਸ ਇਤਿਹਾਸ",
+        "floodZone": "ਹੜ੍ਹ ਜ਼ੋਨ",
+        "permits": "ਪਰਮਿਟ",
+        "aqi": "AQI",
+        "floodRisk": "ਹੜ੍ਹ ਜੋਖਮ",
+        "nearIndustrial": "ਉਦਯੋਗਿਕ ਜ਼ੋਨ ਦੇ ਨੇੜੇ"
+      },
+      "risk": {
+        "low": "ਘੱਟ ਜੋਖਮ",
+        "medium": "ਦਰਮਿਆਨਾ ਜੋਖਮ",
+        "high": "ਉੱਚ ਜੋਖਮ"
+      },
+      "status": {
+        "live": "ਲਾਈਵ",
+        "cached": "ਕੈਸ਼ਡ",
+        "sample": "ਨਮੂਨਾ",
+        "unavailable": "ਉਪਲਬਧ ਨਹੀਂ",
+        "timedOut": "ਸਮਾਂ ਲੰਘਿਆ",
+        "error": "ਗਲਤੀ",
+        "noData": "ਕੋਈ ਡੇਟਾ ਨਹੀਂ"
+      },
+      "legend": {
+        "title": "ਦੰਤਕਥਾ",
+        "best": "ਸਭ ਤੋਂ ਵਧੀਆ ਮੁੱਲ",
+        "worst": "ਸਭ ਤੋਂ ਮਾੜਾ ਮੁੱਲ",
+        "middle": "ਮੱਧ",
+        "note": "ਤੁਲਨਾਵਾਂ ਸਾਪੇਖਿਕ ਹਨ — ਕੋਈ ਬਾਹਰੀ ਮਾਪਦੰਡ ਨਹੀਂ ਵਰਤੇ"
+      }
+    }
+  },
+  "profile": {
+    "title": "ਖਾਤਾ ਪ੍ਰਬੰਧਨ",
+    "subtitle": "ਆਪਣੀ ਪੇਸ਼ੇਵਰ ਪਛਾਣ ਅਤੇ ਐਪਲੀਕੇਸ਼ਨ ਸੁਰੱਖਿਆ ਨਿਯੰਤਰਿਤ ਕਰੋ।",
+    "pageTitle": "ਪ੍ਰੋਫਾਈਲ | Real Estate Due Diligence Agent",
+    "fallbackUser": "ਉਪਯੋਗਕਰਤਾ",
+    "sections": {
+      "accountDetails": "ਖਾਤਾ ਵੇਰਵੇ",
+      "accountDetailsSubtitle": "ਪ੍ਰਾਇਮਰੀ ਸੰਪਰਕ ਅਤੇ ਸੰਗਠਨਾਤਮਕ ਜਾਣਕਾਰੀ।",
+      "security": "ਸੁਰੱਖਿਆ ਅਤੇ ਪਹੁੰਚ",
+      "securitySubtitle": "ਆਪਣੇ ਪ੍ਰਮਾਣਿਕਤਾ ਤਰੀਕਿਆਂ ਅਤੇ ਸੁਰੱਖਿਆ ਪ੍ਰੋਟੋਕੋਲ ਪ੍ਰਬੰਧਿਤ ਕਰੋ।",
+      "dangerZone": "ਖ਼ਤਰਨਾਕ ਖੇਤਰ",
+      "dangerZoneSubtitle": "ਵਾਪਸ ਨਾ ਹੋਣ ਵਾਲੀਆਂ ਕਾਰਵਾਈਆਂ। ਕਿਰਪਾ ਕਰਕੇ ਸਾਵਧਾਨੀ ਨਾਲ ਅੱਗੇ ਵਧੋ।"
+    },
+    "fields": {
+      "fullName": "ਪੂਰਾ ਨਾਮ",
+      "email": "ਈਮੇਲ ਪਤਾ",
+      "phone": "ਫ਼ੋਨ",
+      "signInMethod": "ਸਾਈਨ-ਇਨ ਤਰੀਕਾ",
+      "accessLevel": "ਪਹੁੰਚ ਪੱਧਰ",
+      "memberSince": "ਮੈਂਬਰ ਬਣਨ ਤੋਂ"
+    },
+    "placeholders": {
+      "fullName": "ਤੁਹਾਡਾ ਪੂਰਾ ਨਾਮ",
+      "phone": "10-ਅੰਕੀ ਮੋਬਾਈਲ"
+    },
+    "actions": {
+      "editProfile": "ਪ੍ਰੋਫਾਈਲ ਸੰਪਾਦਿਤ ਕਰੋ",
+      "cancel": "ਰੱਦ ਕਰੋ",
+      "saveChanges": "ਬਦਲਾਅ ਸੁਰੱਖਿਅਤ ਕਰੋ",
+      "saving": "ਸੁਰੱਖਿਅਤ ਕੀਤਾ ਜਾ ਰਿਹਾ ਹੈ...",
+      "changePassword": "ਪਾਸਵਰਡ ਬਦਲੋ",
+      "deleteAccount": "ਖਾਤਾ ਮਿਟਾਓ"
+    },
+    "password": {
+      "title": "ਖਾਤਾ ਪਾਸਵਰਡ",
+      "description": "ਆਪਣੇ ਖਾਤੇ ਨੂੰ ਸੁਰੱਖਿਅਤ ਰੱਖਣ ਲਈ ਕਦੇ ਵੀ ਪਾਸਵਰਡ ਅੱਪਡੇਟ ਕਰੋ।",
+      "googleOnly": "ਤੁਸੀਂ Google ਨਾਲ ਸਾਈਨ ਇਨ ਕਰਦੇ ਹੋ। ਕੋਈ ਪਾਸਵਰਡ ਸੈੱਟ ਨਹੀਂ।"
+    },
+    "delete": {
+      "title": "ਇਹ ਖਾਤਾ ਮਿਟਾਓ",
+      "description": "ਤੁਹਾਡੀ ਪ੍ਰੋਫਾਈਲ, ਤੁਹਾਡੇ ਦੁਆਰਾ ਜੋੜੀਆਂ ਸਾਰੀਆਂ ਜਾਇਦਾਦਾਂ ਅਤੇ ਸਾਰਾ ਸੈਸ਼ਨ ਡੇਟਾ ਸਥਾਈ ਤੌਰ 'ਤੇ ਹਟਾਉਂਦਾ ਹੈ। ਇਹ ਵਾਪਸ ਨਹੀਂ ਕੀਤਾ ਜਾ ਸਕਦਾ।"
+    },
+    "signOutAll": {
+      "title": "ਸਾਰੇ ਡਿਵਾਈਸਾਂ ਤੋਂ ਸਾਈਨ ਆਊਟ ਕਰੋ",
+      "description": "ਫੋਨ, ਟੈਬਲੈੱਟ ਅਤੇ ਹੋਰ ਬ੍ਰਾਊਜ਼ਰ — ਹਰ ਥਾਂ ਆਪਣਾ ਸੈਸ਼ਨ ਖਤਮ ਕਰੋ। ਉਪਯੋਗੀ ਜੇ ਤੁਸੀਂ ਆਪਣਾ ਡਿਵਾਈਸ ਸਾਂਝਾ ਕੀਤਾ ਜਾਂ ਇੱਕ ਤੱਕ ਪਹੁੰਚ ਗੁਆ ਦਿੱਤੀ।",
+      "button": "ਹਰ ਥਾਂ ਸਾਈਨ ਆਊਟ ਕਰੋ"
+    },
+    "roles": {
+      "BUYER": "ਖਰੀਦਦਾਰ",
+      "REAL_ESTATE_AGENT": "ਰੀਅਲ ਅਸਟੇਟ ਏਜੰਟ",
+      "LEGAL_REVIEWER": "ਕਾਨੂੰਨੀ ਸਮੀਖਿਅਕ",
+      "FINANCIAL_INSTITUTION": "ਵਿੱਤੀ ਸੰਸਥਾ",
+      "ADMIN": "ਪ੍ਰਸ਼ਾਸਕ"
+    },
+    "roleTaglines": {
+      "BUYER": "ਜਾਇਦਾਦ ਖਰੀਦਦਾਰ · ਡਿਊ ਡਿਲੀਜੈਂਸ",
+      "REAL_ESTATE_AGENT": "ਰੀਅਲ ਅਸਟੇਟ ਪੇਸ਼ੇਵਰ · ਮਾਰਕੀਟ ਮਾਹਰ",
+      "LEGAL_REVIEWER": "ਕਾਨੂੰਨੀ ਸਲਾਹਕਾਰ · ਪਾਲਣਾ ਸਮੀਖਿਆ",
+            "FINANCIAL_INSTITUTION": "ਵਿੱਤੀ ਸੰਸਥਾ · ਸੰਪਤੀ ਮੁਲਾਂਕਣ",
+      "ADMIN": "ਸਿਸਟਮ ਪ੍ਰਸ਼ਾਸਕ · ਪੂਰੀ ਪਹੁੰਚ"
+    },
+    "authProvider": {
+      "LOCAL": "ਈਮੇਲ + ਪਾਸਵਰਡ",
+      "GOOGLE": "Google",
+      "LOCAL_AND_GOOGLE": "ਈਮੇਲ + Google"
+    },
+    "locked": "ਲੌਕ",
+    "verified": "ਤਸਦੀਕਸ਼ੁਦਾ {{role}}",
+    "errors": {
+      "nameValidation": "3–100 ਅੱਖਰ, ਕੇਵਲ ਅੱਖਰ ਅਤੇ ਖਾਲੀ ਥਾਂ",
+      "phoneValidation": "10 ਅੰਕ, 6–9 ਨਾਲ ਸ਼ੁਰੂ",
+      "couldntLoad": "ਪ੍ਰੋਫਾਈਲ ਲੋਡ ਨਹੀਂ ਹੋ ਸਕੀ",
+      "pleaseRefresh": "ਕਿਰਪਾ ਕਰਕੇ ਪੇਜ਼ ਤਾਜ਼ਾ ਕਰੋ।",
+      "unableToLoad": "ਪ੍ਰੋਫਾਈਲ ਲੋਡ ਕਰਨ ਵਿੱਚ ਅਸਮਰੱਥ। ਕਿਰਪਾ ਕਰਕੇ ਪੇਜ਼ ਤਾਜ਼ਾ ਕਰੋ।",
+      "updateFailed": "ਅੱਪਡੇਟ ਅਸਫਲ ਰਿਹਾ"
+    },
+    "success": {
+      "profileUpdated": "ਪ੍ਰੋਫਾਈਲ ਅੱਪਡੇਟ ਹੋਈ",
+      "changesSaved": "ਤੁਹਾਡੇ ਬਦਲਾਅ ਸੁਰੱਖਿਅਤ ਹੋ ਗਏ।"
+    }
+  },
+  "deleteAccount": {
+    "title": "ਖਾਤਾ ਮਿਟਾਓ",
+    "subtitle": "ਇਹ ਕਾਰਵਾਈ ਵਾਪਸ ਨਹੀਂ ਕੀਤੀ ਜਾ ਸਕਦੀ।",
+    "impactTitle": "ਹੇਠ ਲਿਖਿਆ ਸਥਾਈ ਤੌਰ 'ਤੇ ਮਿਟਾਇਆ ਜਾਵੇਗਾ:",
+    "impact": {
+      "account": "ਤੁਹਾਡਾ ਖਾਤਾ ਅਤੇ ਪ੍ਰੋਫਾਈਲ",
+      "properties": "ਤੁਹਾਡੇ ਦੁਆਰਾ ਜੋੜੀਆਂ ਸਾਰੀਆਂ ਜਾਇਦਾਦਾਂ",
+      "sessions": "ਤੁਹਾਡਾ ਸਾਰਾ ਸੈਸ਼ਨ ਡੇਟਾ"
+    },
+    "passwordLabel": "ਆਪਣਾ ਪਾਸਵਰਡ ਦਾਖਲ ਕਰੋ",
+    "passwordPlaceholder": "ਮੌਜੂਦਾ ਪਾਸਵਰਡ",
+    "emailLabel": "ਪੁਸ਼ਟੀ ਕਰਨ ਲਈ ਆਪਣੀ ਈਮੇਲ ਟਾਈਪ ਕਰੋ",
+    "typeToConfirmPrefix": "ਟਾਈਪ ਕਰੋ",
+    "typeToConfirmSuffix": "ਪੁਸ਼ਟੀ ਕਰਨ ਲਈ",
+    "deleteButton": "ਖਾਤਾ ਮਿਟਾਓ",
+    "toasts": {
+      "confirmRequired": "ਪੁਸ਼ਟੀ ਲਾਜ਼ਮੀ ਹੈ",
+      "typeExactly": "ਇਸ ਕਾਰਵਾਈ ਦੀ ਪੁਸ਼ਟੀ ਕਰਨ ਲਈ ਬਿਲਕੁਲ DELETE ਟਾਈਪ ਕਰੋ।",
+      "passwordRequired": "ਪਾਸਵਰਡ ਲਾਜ਼ਮੀ ਹੈ",
+      "emailRequired": "ਈਮੇਲ ਲਾਜ਼ਮੀ ਹੈ",
+      "enterPasswordToConfirm": "ਪੁਸ਼ਟੀ ਕਰਨ ਲਈ ਆਪਣਾ ਪਾਸਵਰਡ ਦਾਖਲ ਕਰੋ।",
+      "enterEmailToConfirm": "ਪੁਸ਼ਟੀ ਕਰਨ ਲਈ ਆਪਣੀ ਈਮੇਲ ਦਾਖਲ ਕਰੋ।",
+      "accountDeleted": "ਖਾਤਾ ਮਿਟਾਇਆ",
+      "redirecting": "ਤੁਹਾਨੂੰ ਇੱਕ ਪਲ ਵਿੱਚ ਮੋੜਿਆ ਜਾਵੇਗਾ।",
+      "couldNotDelete": "ਖਾਤਾ ਮਿਟਾਇਆ ਨਹੀਂ ਜਾ ਸਕਿਆ",
+      "tryAgainMoment": "ਕਿਰਪਾ ਕਰਕੇ ਇੱਕ ਪਲ ਵਿੱਚ ਦੁਬਾਰਾ ਕੋਸ਼ਿਸ਼ ਕਰੋ।",
+      "tryAgain": "ਕਿਰਪਾ ਕਰਕੇ ਦੁਬਾਰਾ ਕੋਸ਼ਿਸ਼ ਕਰੋ।"
+    }
+  },
+  "changePassword": {
+    "title": "ਪਾਸਵਰਡ ਬਦਲੋ",
+    "subtitle": "ਆਪਣਾ ਖਾਤਾ ਪਾਸਵਰਡ ਅੱਪਡੇਟ ਕਰੋ",
+    "currentLabel": "ਮੌਜੂਦਾ ਪਾਸਵਰਡ",
+    "currentPlaceholder": "ਮੌਜੂਦਾ ਪਾਸਵਰਡ ਦਾਖਲ ਕਰੋ",
+    "newLabel": "ਨਵਾਂ ਪਾਸਵਰਡ",
+    "newPlaceholder": "ਘੱਟੋ-ਘੱਟ 8 ਅੱਖਰ",
+    "confirmLabel": "ਨਵੇਂ ਪਾਸਵਰਡ ਦੀ ਪੁਸ਼ਟੀ ਕਰੋ",
+    "confirmPlaceholder": "ਨਵਾਂ ਪਾਸਵਰਡ ਦੁਬਾਰਾ ਦਾਖਲ ਕਰੋ",
+    "submit": "ਪਾਸਵਰਡ ਬਦਲੋ",
+    "saving": "ਸੁਰੱਖਿਅਤ ਕੀਤਾ ਜਾ ਰਿਹਾ ਹੈ...",
+    "errors": {
+      "currentRequired": "ਮੌਜੂਦਾ ਪਾਸਵਰਡ ਲਾਜ਼ਮੀ ਹੈ",
+      "newRequired": "ਨਵਾਂ ਪਾਸਵਰਡ ਲਾਜ਼ਮੀ ਹੈ"
+    },
+    "toasts": {
+      "samePassword": "ਇੱਕੋ ਪਾਸਵਰਡ",
+      "samePasswordDesc": "ਨਵਾਂ ਪਾਸਵਰਡ ਤੁਹਾਡੇ ਮੌਜੂਦਾ ਪਾਸਵਰਡ ਤੋਂ ਵੱਖਰਾ ਹੋਣਾ ਚਾਹੀਦਾ ਹੈ।",
+      "success": "ਪਾਸਵਰਡ ਬਦਲਿਆ",
+      "successDesc": "ਤੁਸੀਂ ਆਪਣੇ ਨਵੇਂ ਪਾਸਵਰਡ ਨਾਲ ਸਾਈਨ ਇਨ ਕਰ ਸਕਦੇ ਹੋ।",
+      "failed": "ਬਦਲਾਅ ਅਸਫਲ ਰਿਹਾ"
+    }
+  },
+  "signOutAll": {
+    "title": "ਸਾਰੇ ਡਿਵਾਈਸਾਂ ਤੋਂ ਸਾਈਨ ਆਊਟ ਕਰਨਾ ਹੈ?",
+    "subtitle": "ਇਹ ਇਸ ਖਾਤੇ ਨਾਲ ਇਸ ਵੇਲੇ ਸਾਈਨ ਇਨ ਹਰ ਡਿਵਾਈਸ 'ਤੇ ਤੁਹਾਡਾ ਸੈਸ਼ਨ ਖਤਮ ਕਰੇਗਾ।",
+    "confirmButton": "ਹਾਂ, ਹਰ ਥਾਂ ਸਾਈਨ ਆਊਟ ਕਰੋ",
+    "processing": "ਹਰ ਥਾਂ ਸਾਈਨ ਆਊਟ ਹੋ ਰਿਹਾ ਹੈ…",
+    "tipEsc": "ਸੁਝਾਅ: ਦਬਾਓ",
+    "tipEscSuffix": "ਰੱਦ ਕਰਨ ਲਈ",
+    "useIfPrefix": "ਇਹ ਵਰਤੋ ਜੇ:",
+    "useIfBody": "ਤੁਹਾਡਾ ਖਾਤਾ ਖ਼ਤਰੇ ਵਿੱਚ ਹੋ ਸਕਦਾ ਹੈ, ਤੁਸੀਂ ਆਪਣਾ ਡਿਵਾਈਸ ਸਾਂਝਾ ਕੀਤਾ, ਜਾਂ ਕਿਤੇ ਲੌਗ ਆਊਟ ਕਰਨਾ ਭੁੱਲ ਗਏ।",
+    "impact": {
+      "endSessions": {
+        "title": "ਸਾਰੇ ਸਰਗਰਮ ਸੈਸ਼ਨ ਖਤਮ ਹੋਣਗੇ",
+        "description": "ਫੋਨ, ਟੈਬਲੈੱਟ, ਹੋਰ ਬ੍ਰਾਊਜ਼ਰ — ਹਰ ਥਾਂ ਜਿੱਥੇ ਤੁਸੀਂ ਸਾਈਨ ਇਨ ਹੋ"
+      },
+      "logoutHere": {
+        "title": "ਤੁਸੀਂ ਇੱਥੋਂ ਵੀ ਲੌਗ ਆਊਟ ਹੋਵੋਗੇ",
+        "description": "ਜਾਰੀ ਰੱਖਣ ਲਈ ਤੁਹਾਨੂੰ ਦੁਬਾਰਾ ਸਾਈਨ ਇਨ ਕਰਨਾ ਪਵੇਗਾ"
+      }
+    },
+    "toasts": {
+      "signedOutTitle": "ਹਰ ਥਾਂ ਸਾਈਨ ਆਊਟ ਹੋਇਆ",
+      "signedOutDesc": "ਤੁਹਾਡੇ ਸਾਰੇ ਸਰਗਰਮ ਸੈਸ਼ਨ ਖਤਮ ਹੋ ਗਏ।",
+      "failedTitle": "ਸਾਈਨ ਆਊਟ ਨਹੀਂ ਹੋ ਸਕਿਆ"
+    }
+  },
+  "avatar": {
+    "aria": {
+      "changePhoto": "ਪ੍ਰੋਫਾਈਲ ਫ਼ੋਟੋ ਬਦਲੋ",
+      "photoOptions": "ਫ਼ੋਟੋ ਵਿਕਲਪ"
+    },
+    "menu": {
+      "upload": "ਫ਼ੋਟੋ ਅੱਪਲੋਡ ਕਰੋ",
+      "change": "ਫ਼ੋਟੋ ਬਦਲੋ",
+      "remove": "ਫ਼ੋਟੋ ਹਟਾਓ",
+      "fileHint": "JPG, PNG, WebP · ਵੱਧ ਤੋਂ ਵੱਧ 5 MB"
+    },
+    "preview": {
+      "title": "ਪ੍ਰੀਵਿਊ ਅਤੇ ਅੱਪਲੋਡ",
+      "alt": "ਪ੍ਰੀਵਿਊ",
+      "fileSizeKB": "{{size}} KB",
+      "upload": "ਫ਼ੋਟੋ ਅੱਪਲੋਡ ਕਰੋ",
+      "uploading": "ਅੱਪਲੋਡ ਹੋ ਰਿਹਾ ਹੈ..."
+    },
+    "toasts": {
+      "invalidFile": "ਅਵੈਧ ਫ਼ਾਈਲ",
+      "photoUpdated": "ਪ੍ਰੋਫਾਈਲ ਫ਼ੋਟੋ ਅੱਪਡੇਟ ਹੋਈ",
+      "uploadFailed": "ਅੱਪਲੋਡ ਅਸਫਲ ਰਿਹਾ",
+      "photoRemoved": "ਪ੍ਰੋਫਾਈਲ ਫ਼ੋਟੋ ਹਟਾਈ",
+      "removeFailed": "ਫ਼ੋਟੋ ਹਟਾਉਣ ਵਿੱਚ ਅਸਫਲ"
+    }
+  },
+  "settings": {
+    "title": "ਸੈਟਿੰਗਜ਼",
+    "language": {
+      "sectionTitle": "ਭਾਸ਼ਾ",
+      "sectionSubtitle": "ਇੰਟਰਫੇਸ ਲਈ ਆਪਣੀ ਪਸੰਦੀਦਾ ਭਾਸ਼ਾ ਚੁਣੋ।",
+      "label": "ਇੰਟਰਫੇਸ ਭਾਸ਼ਾ",
+      "selectPlaceholder": "ਭਾਸ਼ਾ ਚੁਣੋ",
+      "saved": "ਭਾਸ਼ਾ ਅੱਪਡੇਟ ਹੋਈ",
+      "savedDescription": "ਇੰਟਰਫੇਸ ਭਾਸ਼ਾ {{language}} ਵਿੱਚ ਬਦਲੀ ਗਈ।"
+    }
+  },
+  "commandPalette": {
+    "searchPlaceholder": "ਪੇਜ਼, ਜਾਇਦਾਦਾਂ ਜਾਂ ਕਾਰਵਾਈਆਂ ਖੋਜੋ...",
+    "ariaLabel": "Command palette ਖੋਜ",
+    "searchingProperties": "ਜਾਇਦਾਦਾਂ ਖੋਜੀਆਂ ਜਾ ਰਹੀਆਂ ਹਨ...",
+    "clear": "ਸਾਫ਼ ਕਰੋ",
+    "recentSearchLabel": "ਤਾਜ਼ਾ ਖੋਜ",
+    "sections": {
+      "recent": "ਤਾਜ਼ਾ",
+      "pages": "ਪੇਜ਼",
+      "properties": "ਜਾਇਦਾਦਾਂ",
+      "propertiesSubtitle": "ਡੇਟਾਬੇਸ ਤੋਂ ਲਾਈਵ",
+      "actions": "ਕਾਰਵਾਈਆਂ"
+    },
+    "empty": {
+      "title": "\u201C{{query}}\u201D ਲਈ ਕੋਈ ਮੇਲ ਨਹੀਂ",
+      "hint": "ਪੇਜ਼ ਨਾਮ, ਜਾਇਦਾਦ ਪਤਾ ਜਾਂ ਕਾਰਵਾਈ ਖੋਜਣ ਦੀ ਕੋਸ਼ਿਸ਼ ਕਰੋ"
+    },
+    "kbd": {
+      "navigate": "ਨੇਵੀਗੇਟ",
+      "select": "ਚੁਣੋ",
+      "close": "ਬੰਦ ਕਰੋ",
+      "esc": "esc"
+    },
+    "pages": {
+      "dashboard": {
+        "label": "ਡੈਸ਼ਬੋਰਡ",
+        "description": "ਪੋਰਟਫੋਲੀਓ ਸੰਖੇਪ ਅਤੇ KPIs"
+      },
+      "search": {
+        "label": "ਜਾਇਦਾਦ ਖੋਜ",
+        "description": "ਜਾਇਦਾਦਾਂ ਲੱਭੋ ਅਤੇ ਤਸਦੀਕ ਕਰੋ"
+      },
+      "diligence": {
+        "label": "ਡਿਊ ਡਿਲੀਜੈਂਸ",
+        "description": "ਡੂੰਘੀ ਤਸਦੀਕ ਵਰਕਫ਼ਲੋ"
+      },
+      "risk": {
+        "label": "ਜੋਖਮ ਮੁਲਾਂਕਣ",
+        "description": "ਜੋਖਮ ਸਕੋਰ ਅਤੇ ਚੇਤਾਵਨੀਆਂ"
+      },
+      "compare": {
+        "label": "ਜਾਇਦਾਦ ਤੁਲਨਾ",
+        "description": "ਪਾਸੇ-ਪਾਸੇ ਵਿਸ਼ਲੇਸ਼ਣ"
+      },
+      "reports": {
+        "label": "ਰਿਪੋਰਟਾਂ",
+        "description": "ਤਿਆਰ PDF ਰਿਪੋਰਟਾਂ"
+      },
+      "notifications": {
+        "label": "ਸੂਚਨਾਵਾਂ",
+        "description": "ਚੇਤਾਵਨੀਆਂ ਅਤੇ ਗਤੀਵਿਧੀ ਫੀਡ"
+      },
+      "audit": {
+        "label": "ਆਡਿਟ ਲੌਗ",
+        "description": "ਹਰ ਕਾਰਵਾਈ, ਸਮਾਂ-ਮੋਹਰ ਸਮੇਤ"
+      },
+      "profile": {
+        "label": "ਮੇਰੀ ਪ੍ਰੋਫਾਈਲ",
+        "description": "ਖਾਤਾ ਅਤੇ ਤਰਜੀਹਾਂ"
+      }
+    },
+    "actions": {
+      "addProperty": {
+        "label": "ਨਵੀਂ ਜਾਇਦਾਦ ਜੋੜੋ",
+        "description": "ਨਵੀਂ ਲਿਸਟਿੰਗ ਰਜਿਸਟਰ ਕਰੋ"
+      },
+      "logout": {
+        "label": "ਲੌਗ ਆਊਟ",
+        "description": "ਆਪਣਾ ਸੈਸ਼ਨ ਖਤਮ ਕਰੋ"
+      }
+    }
+  },
+  "navbar": {
+    "toggleSidebar": "ਸਾਈਡਬਾਰ ਟੌਗਲ ਕਰੋ",
+    "openCommandPalette": "Command palette ਖੋਲ੍ਹੋ",
+    "userMenu": "ਉਪਯੋਗਕਰਤਾ ਮੀਨੂ",
+    "signedIn": "ਸਾਈਨ ਇਨ ਹੈ",
+    "myProfile": "ਮੇਰੀ ਪ੍ਰੋਫਾਈਲ",
+    "logOut": "ਲੌਗ ਆਊਟ"
+  },
+  "emptyState": {
+    "defaultTitle": "ਇੱਥੇ ਹੁਣੇ ਕੁਝ ਨਹੀਂ",
+    "defaultDescription": "ਆਪਣਾ ਪਹਿਲਾ ਆਈਟਮ ਜੋੜ ਕੇ ਸ਼ੁਰੂ ਕਰੋ।"
+  },
+  "support": {
+    "hero": {
+      "title": "ਅਸੀਂ ਕਿਵੇਂ ਮਦਦ ਕਰ ਸਕਦੇ ਹਾਂ?",
+      "subtitle": "ਆਮ ਸਵਾਲਾਂ ਦੇ ਜਵਾਬ ਅਤੇ ਸਾਡੇ ਤੱਕ ਪਹੁੰਚਣ ਦੇ ਸਿੱਧੇ ਤਰੀਕੇ। ਜੇ ਤੁਸੀਂ ਜੋ ਲੱਭ ਰਹੇ ਹੋ ਉਹ ਨਹੀਂ ਮਿਲਦਾ, ਸਾਨੂੰ ਈਮੇਲ ਕਰੋ ਅਤੇ ਅਸੀਂ ਕਾਰੋਬਾਰੀ ਦਿਨਾਂ ਵਿੱਚ 48 ਘੰਟਿਆਂ ਵਿੱਚ ਜਵਾਬ ਦੇਵਾਂਗੇ।",
+      "searchPlaceholder": "ਲੇਖ, ਸਵਾਲ, ਵਿਸ਼ੇਸ਼ਤਾਵਾਂ ਖੋਜੋ...",
+      "statusOperational": "ਸਾਰੀਆਂ ਪ੍ਰਣਾਲੀਆਂ ਚੱਲ ਰਹੀਆਂ ਹਨ"
+    },
+    "contact": {
+      "eyebrow": "ਸੰਪਰਕ ਕਰੋ",
+      "title": "ਸਾਡੇ ਨਾਲ ਸਿੱਧਾ ਸੰਪਰਕ ਕਰੋ",
+      "subtitle": "ਸਭ ਤੋਂ ਉਚਿਤ ਵਿਕਲਪ ਚੁਣੋ — ਕਲਿੱਕ ਕਰਨ ਨਾਲ ਪੂਰਵ-ਭਰੀ ਵਿਸ਼ਾ ਲਾਈਨ ਨਾਲ ਤੁਹਾਡਾ ਈਮੇਲ ਕਲਾਇੰਟ ਖੁੱਲ੍ਹੇਗਾ।",
+      "openEmail": "ਈਮੇਲ ਖੋਲ੍ਹੋ",
+      "general": {
+        "title": "ਆਮ ਸਵਾਲ",
+        "description": "ਉਤਪਾਦ ਸਹਾਇਤਾ, ਖਾਤਾ ਸਵਾਲ, ਜਾਂ ਕੋਈ ਹੋਰ ਗੈਰ-ਜ਼ਰੂਰੀ ਗੱਲ।",
+        "subject": "ਸਹਾਇਤਾ ਬੇਨਤੀ — Due Diligence Platform",
+        "body": "ਹੈਲੋ ਟੀਮ,\n\nਮੈਨੂੰ ਇਸ ਬਾਰੇ ਇੱਕ ਸਵਾਲ ਹੈ:\n\n"
+      },
+      "bug": {
+        "title": "ਬੱਗ ਰਿਪੋਰਟ ਕਰੋ",
+        "description": "ਕੁਝ ਉਮੀਦ ਅਨੁਸਾਰ ਕੰਮ ਨਹੀਂ ਕਰ ਰਿਹਾ? ਸਾਨੂੰ ਦੱਸੋ ਕਿ ਤੁਸੀਂ ਕੀ ਦੇਖਿਆ ਅਤੇ ਕੀ ਉਮੀਦ ਕੀਤੀ ਸੀ।",
+        "subject": "ਬੱਗ ਰਿਪੋਰਟ — Due Diligence Platform",
+        "body": "ਮੈਂ ਕੀ ਕੀਤਾ:\n\nਮੈਂ ਕੀ ਉਮੀਦ ਕੀਤੀ:\n\nਅਸਲ ਵਿੱਚ ਕੀ ਹੋਇਆ:\n\nਬ੍ਰਾਊਜ਼ਰ ਅਤੇ ਵਰਜ਼ਨ:\n\n"
+      },
+      "feature": {
+        "title": "ਵਿਸ਼ੇਸ਼ਤਾ ਬੇਨਤੀ ਕਰੋ",
+        "description": "ਕੋਈ ਵਿਚਾਰ ਹੈ ਜੋ ਪਲੇਟਫਾਰਮ ਨੂੰ ਬਿਹਤਰ ਬਣਾਵੇਗਾ? ਅਸੀਂ ਹਰ ਸੁਨੇਹਾ ਪੜ੍ਹਦੇ ਹਾਂ।",
+        "subject": "ਵਿਸ਼ੇਸ਼ਤਾ ਬੇਨਤੀ — Due Diligence Platform",
+        "body": "ਮੈਂ ਦੇਖਣਾ ਚਾਹੁੰਦਾ ਹਾਂ:\n\nਇਹ ਕਿਉਂ ਮਦਦਗਾਰ ਹੋਵੇਗਾ:\n\n"
+      }
+    },
+    "faq": {
+      "eyebrow": "ਗਿਆਨ ਅਧਾਰ",
+      "title": "ਅਕਸਰ ਪੁੱਛੇ ਜਾਣ ਵਾਲੇ ਸਵਾਲ",
+      "allCategory": "ਸਭ",
+      "articleCount_one": "{{count}} ਲੇਖ",
+      "articleCount_other": "{{count}} ਲੇਖ",
+      "noResults": {
+        "title": "ਤੁਹਾਡੀ ਖੋਜ ਨਾਲ ਕੋਈ ਲੇਖ ਮੇਲ ਨਹੀਂ ਖਾਂਦਾ",
+        "hint": "ਵੱਖਰੇ ਕੀਵਰਡ ਅਜ਼ਮਾਓ ਜਾਂ ਸਾਰੇ ਲੇਖ ਦੇਖਣ ਲਈ ਫਿਲਟਰ ਸਾਫ਼ ਕਰੋ।",
+        "emailButton": "ਸਾਨੂੰ ਇਹ ਸਵਾਲ ਈਮੇਲ ਕਰੋ",
+        "emailSubjectPrefix": "ਸਹਾਇਤਾ:",
+        "emailSubjectFallback": "FAQ ਵਿੱਚ ਨਹੀਂ ਮਿਲਿਆ ਸਵਾਲ"
+      }
+    },
+    "response": {
+      "eyebrow": "ਜਵਾਬ ਸਮਾਂ",
+      "headline": "48 ਘੰਟਿਆਂ ਵਿੱਚ",
+      "description": "ਅਸੀਂ ਕਾਰੋਬਾਰੀ ਦਿਨਾਂ (ਸੋਮ–ਸ਼ੁੱਕਰ) ਈਮੇਲਾਂ ਦਾ ਜਵਾਬ ਦਿੰਦੇ ਹਾਂ। ਗੁੰਝਲਦਾਰ ਮੁੱਦਿਆਂ ਵਿੱਚ ਜ਼ਿਆਦਾ ਸਮਾਂ ਲੱਗ ਸਕਦਾ ਹੈ — ਅਸੀਂ ਹਮੇਸ਼ਾ ਪਹਿਲਾਂ ਪ੍ਰਾਪਤੀ ਦੀ ਪੁਸ਼ਟੀ ਕਰਦੇ ਹਾਂ।"
+    },
+    "direct": {
+      "eyebrow": "ਸਿੱਧੀ ਈਮੇਲ",
+      "headline": "ਟੀਮ ਨਾਲ ਸੰਪਰਕ ਕਰੋ"
+    },
+    "related": {
+      "eyebrow": "ਸੰਬੰਧਿਤ",
+      "title": "ਹੋਰ ਸਰੋਤ",
+      "security": {
+        "title": "ਸੁਰੱਖਿਆ",
+        "description": "ਅਸੀਂ ਤੁਹਾਡਾ ਡੇਟਾ ਕਿਵੇਂ ਸੁਰੱਖਿਅਤ ਕਰਦੇ ਹਾਂ — ਜੋ ਬਣਾਇਆ ਅਤੇ ਯੋਜਨਾਬੱਧ ਹੈ ਦਾ ਪੂਰਾ ਖੁਲਾਸਾ।"
+      },
+      "source": {
+        "title": "ਸੋਰਸ ਕੋਡ",
+        "description": "GitHub 'ਤੇ ਓਪਨ-ਸੋਰਸ। ਮੁੱਦੇ ਰਿਪੋਰਟ ਕਰੋ, ਕੋਡ ਪੜ੍ਹੋ, ਜਾਂ ਯੋਗਦਾਨ ਦਿਓ।"
+      }
+    },
+    "footer": {
+      "note": "ਇਹ ਸਹਾਇਤਾ ਪੇਜ਼ ਲਾਈਵ ਚੈਟ, ਟਿਕਟ ਸਿਸਟਮ ਜਾਂ ਸਵੈਚਾਲਿਤ ਹੈਲਪਡੈਸਕ ਨਹੀਂ ਹੈ। ਇਹ ਪਲੇਟਫਾਰਮ ਬਣਾਉਣ ਵਾਲੀ ਟੀਮ ਤੱਕ ਸਿੱਧੀ ਲਾਈਨ ਹੈ। ਅਸੀਂ ਹਰ ਈਮੇਲ ਪੜ੍ਹਦੇ ਹਾਂ ਅਤੇ ਨਿੱਜੀ ਤੌਰ 'ਤੇ ਜਵਾਬ ਦਿੰਦੇ ਹਾਂ।"
+    }
+  },
+  "savedComparisons": {
+    "pageTitle": "ਸੁਰੱਖਿਅਤ ਤੁਲਨਾਵਾਂ | Real Estate Due Diligence Agent",
+    "title": "ਸੁਰੱਖਿਅਤ ਤੁਲਨਾਵਾਂ",
+    "countLabel_one": "{{count}} ਸੁਰੱਖਿਅਤ ਤੁਲਨਾ",
+    "countLabel_other": "{{count}} ਸੁਰੱਖਿਅਤ ਤੁਲਨਾਵਾਂ",
+    "searchPlaceholder": "ਨਾਮ ਜਾਂ ਨੋਟਾਂ ਨਾਲ ਖੋਜੋ...",
+    "emptyTitle": "ਹੁਣੇ ਕੋਈ ਸੁਰੱਖਿਅਤ ਤੁਲਨਾ ਨਹੀਂ",
+    "emptyDesc": "ਜਾਇਦਾਦ ਤੁਲਨਾ 'ਤੇ ਜਾਓ, 2–3 ਜਾਇਦਾਦਾਂ ਚੁਣੋ, ਅਤੇ \"ਤੁਲਨਾ ਸੁਰੱਖਿਅਤ ਕਰੋ\" ਕਲਿੱਕ ਕਰੋ।",
+    "startComparing": "ਜਾਇਦਾਦਾਂ ਦੀ ਤੁਲਨਾ ਸ਼ੁਰੂ ਕਰੋ",
+    "noResults": "\"{{query}}\" ਲਈ ਕੋਈ ਨਤੀਜੇ ਨਹੀਂ",
+    "propertyCount_one": "{{count}} ਜਾਇਦਾਦ",
+    "propertyCount_other": "{{count}} ਜਾਇਦਾਦਾਂ",
+    "savedOn": "{{date}} ਨੂੰ ਸੁਰੱਖਿਅਤ",
+    "updatedOn": "{{date}} ਨੂੰ ਅੱਪਡੇਟ",
+    "deleteAria": "{{name}} ਮਿਟਾਓ",
+    "loadComparison": "ਤੁਲਨਾ ਲੋਡ ਕਰੋ"
+  },
+  "savedSheet": {
+    "ariaLabel": "ਸੁਰੱਖਿਅਤ ਤੁਲਨਾਵਾਂ",
+    "savedCount_one": "{{count}} ਸੁਰੱਖਿਅਤ",
+    "savedCount_other": "{{count}} ਸੁਰੱਖਿਅਤ",
+    "loading": "ਸੁਰੱਖਿਅਤ ਤੁਲਨਾਵਾਂ ਲੋਡ ਹੋ ਰਹੀਆਂ ਹਨ...",
+    "emptyHint": "ਜਾਇਦਾਦਾਂ ਦੀ ਤੁਲਨਾ ਕਰੋ ਅਤੇ ਉਹਨਾਂ ਨੂੰ ਇੱਥੇ ਰੱਖਣ ਲਈ \"ਤੁਲਨਾ ਸੁਰੱਖਿਅਤ ਕਰੋ\" ਕਲਿੱਕ ਕਰੋ।",
+    "load": "ਲੋਡ ਕਰੋ",
+    "viewAll": "ਸਾਰੀਆਂ ਸੁਰੱਖਿਅਤ ਤੁਲਨਾਵਾਂ ਦੇਖੋ →"
+  },
+  "marketChart": {
+    "title": "ਬਾਜ਼ਾਰ ਮੁੱਲ ਰੁਝਾਨ",
+    "subtitle": "6-ਮਹੀਨੇ ਦਾ ਅਨੁਮਾਨਿਤ ਰੁਝਾਨ · ਕੇਵਲ ਸੰਕੇਤਕ",
+    "estimatedBadge": "ਅਨੁਮਾਨਿਤ ਡੇਟਾ",
+    "propertyLabel": "ਜਾਇਦਾਦ {{letter}}"
+  },
+  "common": {
+    "loading": "ਲੋਡ ਹੋ ਰਿਹਾ ਹੈ...",
+    "error": "ਕੁਝ ਗਲਤ ਹੋਇਆ",
+    "retry": "ਦੁਬਾਰਾ ਕੋਸ਼ਿਸ਼ ਕਰੋ",
+    "save": "ਸੁਰੱਖਿਅਤ ਕਰੋ",
+    "cancel": "ਰੱਦ ਕਰੋ",
+    "delete": "ਮਿਟਾਓ",
+    "edit": "ਸੰਪਾਦਿਤ ਕਰੋ",
+    "close": "ਬੰਦ ਕਰੋ",
+    "back": "ਪਿੱਛੇ",
+    "next": "ਅੱਗੇ",
+    "confirm": "ਪੁਸ਼ਟੀ ਕਰੋ",
+    "yes": "ਹਾਂ",
+    "no": "ਨਹੀਂ",
+    "search": "ਖੋਜੋ",
+    "filter": "ਫਿਲਟਰ",
+    "clear": "ਸਾਫ਼ ਕਰੋ",
+    "clearAll": "ਸਭ ਸਾਫ਼ ਕਰੋ",
+    "apply": "ਲਾਗੂ ਕਰੋ",
+    "refresh": "ਤਾਜ਼ਾ ਕਰੋ",
+    "download": "ਡਾਊਨਲੋਡ",
+    "upload": "ਅੱਪਲੋਡ",
+    "submit": "ਜਮ੍ਹਾਂ ਕਰੋ",
+    "noData": "ਕੋਈ ਡੇਟਾ ਉਪਲਬਧ ਨਹੀਂ",
+    "justNow": "ਹੁਣੇ",
+    "minutesAgo": "{{n}}ਮਿੰਟ ਪਹਿਲਾਂ",
+    "hoursAgo": "{{n}}ਘੰ ਪਹਿਲਾਂ",
+    "daysAgo": "{{n}}ਦਿਨ ਪਹਿਲਾਂ",
+    "secondsAgo": "{{n}}ਸੈ ਪਹਿਲਾਂ",
+    "syncedAgo": "ਸਿੰਕ ਹੋਇਆ",
+    "breadcrumbLabel": "Breadcrumb",
+    "breadcrumbs": {
+      "details": "ਵੇਰਵੇ"
+    }
+  },
+  "pages": {
+    "dueDiligence": {
+      "title": "ਡਿਊ ਡਿਲੀਜੈਂਸ ਡੈਸ਼ਬੋਰਡ ਜਲਦੀ ਆ ਰਿਹਾ ਹੈ",
+      "description": "ਤੁਹਾਡੀਆਂ ਸਾਰੀਆਂ ਜਾਇਦਾਦਾਂ ਦੀ ਡਿਊ ਡਿਲੀਜੈਂਸ ਸਥਿਤੀ ਦਾ ਸਮੁੱਚਾ ਦ੍ਰਿਸ਼ ਇੱਥੇ ਦਿਖੇਗਾ।"
+    },
+    "riskAssessment": {
+      "title": "ਜੋਖਮ ਮੁਲਾਂਕਣ ਸੰਖੇਪ ਜਲਦੀ ਆ ਰਿਹਾ ਹੈ",
+      "description": "ਪੋਰਟਫੋਲੀਓ-ਵਿਆਪੀ ਜੋਖਮ ਵਿਸ਼ਲੇਸ਼ਣ ਅਤੇ ਤਰਜੀਹੀ ਕਾਰਵਾਈ ਆਈਟਮ ਇੱਥੇ ਦਿਖਣਗੇ।"
+    },
+    "reports": {
+      "title": "ਰਿਪੋਰਟਾਂ ਜਲਦੀ ਆ ਰਹੀਆਂ ਹਨ",
+      "description": "ਪੋਰਟਫੋਲੀਓ ਰਿਪੋਰਟਾਂ, ਜੋਖਮ ਸੰਖੇਪ ਅਤੇ ਡਿਊ ਡਿਲੀਜੈਂਸ ਦਸਤਾਵੇਜ਼ ਤਿਆਰ ਕਰੋ। ਇਹ ਵਿਸ਼ੇਸ਼ਤਾ ਵਿਕਾਸ ਵਿੱਚ ਹੈ।"
+    },
+    "notifications": {
+      "title": "ਤੁਸੀਂ ਪੂਰੀ ਤਰ੍ਹਾਂ ਅੱਪਡੇਟ ਹੋ",
+      "description": "ਕੋਈ ਨਵੀਂ ਸੂਚਨਾ ਨਹੀਂ। ਜਦੋਂ ਜਾਇਦਾਦਾਂ ਨੂੰ ਧਿਆਨ ਦੀ ਲੋੜ ਹੋਵੇਗੀ ਜਾਂ ਰਿਪੋਰਟਾਂ ਤਿਆਰ ਹੋਣਗੀਆਂ ਅਸੀਂ ਸੂਚਿਤ ਕਰਾਂਗੇ।"
+    },
+    "auditLogs": {
+      "title": "ਹੁਣੇ ਕੋਈ ਆਡਿਟ ਐਂਟਰੀ ਨਹੀਂ",
+      "description": "ਪਾਲਣਾ ਅਤੇ ਸੁਰੱਖਿਆ ਸਮੀਖਿਆ ਲਈ ਸਿਸਟਮ ਕਾਰਵਾਈਆਂ ਅਤੇ ਉਪਯੋਗਕਰਤਾ ਗਤੀਵਿਧੀ ਇੱਥੇ ਟ੍ਰੈਕ ਕੀਤੀ ਜਾਵੇਗੀ।"
+    }
+  }
 }

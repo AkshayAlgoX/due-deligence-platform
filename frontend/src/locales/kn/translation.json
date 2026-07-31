@@ -1,10 +1,1434 @@
 {
-  "nav": { "dashboard": "ಡ್ಯಾಶ್‌ಬೋರ್ಡ್", "propertySearch": "ಆಸ್ತಿ ಹುಡುಕಾಟ", "dueDiligence": "ಸರಿಯಾದ ಶ್ರದ್ಧೆ", "riskAssessment": "ಅಪಾಯ ಮೌಲ್ಯಮಾಪನ", "propertyComparison": "ಆಸ್ತಿ ಹೋಲಿಕೆ", "savedComparisons": "ಉಳಿಸಿದ ಹೋಲಿಕೆಗಳು", "reports": "ವರದಿಗಳು", "notifications": "ಅಧಿಸೂಚನೆಗಳು", "auditLogs": "ಆಡಿಟ್ ಲಾಗ್‌ಗಳು", "profile": "ಪ್ರೊಫೈಲ್", "support": "ಬೆಂಬಲ", "sections": { "main": "ಮುಖ್ಯ", "analysis": "ವಿಶ್ಲೇಷಣೆ", "insights": "ಒಳನೋಟಗಳು", "account": "ಖಾತೆ" }, "sessionActive": "ಸೆಷನ್ ಸಕ್ರಿಯ", "version": "v1.0" },
-  "auth": { "login": { "title": "ಮತ್ತೆ ಸ್ವಾಗತ", "subtitle": "ನಿಮ್ಮ ಆಸ್ತಿ ಪೋರ್ಟ್‌ಫೋಲಿಯೊ ಅಪಾಯಗಳನ್ನು ನಿರ್ವಹಿಸಲು ಸೈನ್ ಇನ್ ಮಾಡಿ.", "emailLabel": "ವೃತ್ತಿಪರ ಇಮೇಲ್", "emailPlaceholder": "name@company.com", "passwordLabel": "ಪಾಸ್‌ವರ್ಡ್", "forgotPassword": "ಪಾಸ್‌ವರ್ಡ್ ಮರೆತಿದ್ದೀರಾ?", "rememberMe": "ಈ ಬ್ರೌಸರ್‌ನಲ್ಲಿ ಸೈನ್ ಇನ್ ಆಗಿರಿ", "signIn": "ಸೈನ್ ಇನ್", "newToPlatform": "ಪ್ಲಾಟ್‌ಫಾರ್ಮ್‌ಗೆ ಹೊಸಬರೇ?", "createAccount": "ಉಚಿತ ಖಾತೆ ತೆರೆಯಿರಿ" } },
-  "dashboard": { "greetings": { "morning": "ಶುಭ ಬೆಳಿಗ್ಗೆ", "afternoon": "ನಮಸ್ಕಾರ", "evening": "ಶುಭ ಸಂಜೆ" }, "subtitle": "ನಿಮ್ಮ ಪೋರ್ಟ್‌ಫೋಲಿಯೊ ಒಂದು ನೋಟದಲ್ಲಿ", "stats": { "totalProperties": "ಒಟ್ಟು ಆಸ್ತಿಗಳು", "verified": "ಪರಿಶೀಲಿಸಲಾಗಿದೆ", "pending": "ಬಾಕಿ ಇದೆ", "platformUsers": "ಪ್ಲಾಟ್‌ಫಾರ್ಮ್ ಬಳಕೆದಾರರು" }, "empty": { "title": "ಇನ್ನೂ ಆಸ್ತಿಗಳಿಲ್ಲ", "addFirst": "ನಿಮ್ಮ ಮೊದಲ ಆಸ್ತಿ ಸೇರಿಸಿ" } },
-  "property": { "addProperty": "ಆಸ್ತಿ ಸೇರಿಸಿ", "search": { "title": "ಆಸ್ತಿ ಹುಡುಕಾಟ", "noPropertiesFound": "ಆಸ್ತಿಗಳು ಕಂಡುಬಂದಿಲ್ಲ" }, "card": { "verified": "ಪರಿಶೀಲಿಸಲಾಗಿದೆ", "pending": "ಬಾಕಿ", "marketValue": "ಮಾರುಕಟ್ಟೆ ಮೌಲ್ಯ" }, "details": { "backToSearch": "ಹುಡುಕಾಟಕ್ಕೆ ಹಿಂತಿರುಗಿ", "editProperty": "ಆಸ್ತಿ ತಿದ್ದು" } },
-  "profile": { "title": "ಖಾತೆ ನಿರ್ವಹಣೆ", "subtitle": "ನಿಮ್ಮ ವೃತ್ತಿಪರ ಗುರುತು ಮತ್ತು ಅಪ್ಲಿಕೇಶನ್ ಭದ್ರತೆಯನ್ನು ನಿಯಂತ್ರಿಸಿ.", "fields": { "fullName": "ಪೂರ್ಣ ಹೆಸರು", "email": "ಇಮೇಲ್ ವಿಳಾಸ", "phone": "ಫೋನ್" }, "actions": { "editProfile": "ಪ್ರೊಫೈಲ್ ತಿದ್ದು", "cancel": "ರದ್ದು ಮಾಡಿ", "saveChanges": "ಬದಲಾವಣೆಗಳನ್ನು ಉಳಿಸಿ", "deleteAccount": "ಖಾತೆ ಅಳಿಸಿ" }, "roles": { "BUYER": "ಖರೀದಿದಾರ", "REAL_ESTATE_AGENT": "ರಿಯಲ್ ಎಸ್ಟೇಟ್ ಏಜೆಂಟ್", "ADMIN": "ನಿರ್ವಾಹಕ" }, "locked": "ಲಾಕ್ ಆಗಿದೆ" },
-  "settings": { "title": "ಸೆಟ್ಟಿಂಗ್‌ಗಳು", "language": { "sectionTitle": "ಭಾಷೆ", "sectionSubtitle": "ಇಂಟರ್ಫೇಸ್‌ಗಾಗಿ ನಿಮ್ಮ ಆದ್ಯತೆಯ ಭಾಷೆಯನ್ನು ಆಯ್ಕೆಮಾಡಿ.", "label": "ಇಂಟರ್ಫೇಸ್ ಭಾಷೆ", "selectPlaceholder": "ಭಾಷೆ ಆಯ್ಕೆಮಾಡಿ", "saved": "ಭಾಷೆ ನವೀಕರಿಸಲಾಗಿದೆ", "savedDescription": "ಇಂಟರ್ಫೇಸ್ ಭಾಷೆಯನ್ನು {{language}} ಗೆ ಬದಲಾಯಿಸಲಾಗಿದೆ." } },
-  "common": { "loading": "ಲೋಡ್ ಆಗುತ್ತಿದೆ...", "error": "ಏನೋ ತಪ್ಪಾಗಿದೆ", "save": "ಉಳಿಸಿ", "cancel": "ರದ್ದು", "back": "ಹಿಂದೆ", "noData": "ಡೇಟಾ ಲಭ್ಯವಿಲ್ಲ", "justNow": "ಈಗಷ್ಟೇ" },
-  "pages": { "dueDiligence": { "title": "ಡ್ಯೂ ಡಿಲಿಜೆನ್ಸ್ ಡ್ಯಾಶ್‌ಬೋರ್ಡ್ ಶೀಘ್ರದಲ್ಲೇ ಬರಲಿದೆ", "description": "ನಿಮ್ಮ ಎಲ್ಲಾ ಆಸ್ತಿಗಳ ಸ್ಥಿತಿ ಇಲ್ಲಿ ಕಾಣಿಸಲಾಗುತ್ತದೆ." }, "reports": { "title": "ವರದಿಗಳು ಶೀಘ್ರದಲ್ಲೇ ಬರಲಿದೆ", "description": "ಪೋರ್ಟ್‌ಫೋಲಿಯೊ ವರದಿಗಳು ಮತ್ತು ಅಪಾಯ ಸಾರಾಂಶಗಳನ್ನು ರಚಿಸಿ." }, "notifications": { "title": "ನೀವು ಎಲ್ಲವನ್ನೂ ಓದಿದ್ದೀರಿ", "description": "ಹೊಸ ಅಧಿಸೂಚನೆಗಳಿಲ್ಲ." }, "auditLogs": { "title": "ಇನ್ನೂ ಆಡಿಟ್ ನಮೂದುಗಳಿಲ್ಲ", "description": "ಸಿಸ್ಟಮ್ ಕ್ರಿಯೆಗಳು ಮತ್ತು ಬಳಕೆದಾರ ಚಟುವಟಿಕೆಗಳು ಇಲ್ಲಿ ಟ್ರ್ಯಾಕ್ ಆಗುತ್ತವೆ." }, "riskAssessment": { "title": "ಅಪಾಯ ಮೌಲ್ಯಮಾಪನ ಅವಲೋಕನ ಶೀಘ್ರದಲ್ಲೇ ಬರಲಿದೆ", "description": "ಪೋರ್ಟ್‌ಫೋಲಿಯೊ-ವ್ಯಾಪಕ ಅಪಾಯ ವಿಶ್ಲೇಷಣೆ ಇಲ್ಲಿ ತೋರಿಸಲಾಗುತ್ತದೆ." } }
+  "cookies": {
+    "banner": {
+      "ariaLabel": "ಕುಕಿ ಒಪ್ಪಿಗೆ",
+      "title": "ಈ ಸೈಟ್‌ನಲ್ಲಿ ಕುಕಿಗಳು",
+      "description": "ನಿಮ್ಮನ್ನು ಸೈನ್ ಇನ್ ಆಗಿ ಇಡಲು ನಾವು ಅಗತ್ಯ ಕುಕಿಗಳನ್ನು ಬಳಸುತ್ತೇವೆ. ವಿಶ್ಲೇಷಣೆ ನಮ್ಮನ್ನು ಸುಧಾರಿಸಲು ಸಹಾಯ ಮಾಡುತ್ತದೆ — ಆಯ್ಕೆ ನಿಮ್ಮದು.",
+      "rejectNonEssential": "ಅನಗತ್ಯವನ್ನು ತಿರಸ್ಕರಿಸಿ",
+      "customize": "ಕಸ್ಟಮೈಸ್ ಮಾಡಿ",
+      "acceptAll": "ಎಲ್ಲವನ್ನೂ ಒಪ್ಪಿಕೊಳ್ಳಿ"
+    },
+    "prefs": {
+      "title": "ಕುಕಿ ಆದ್ಯತೆಗಳು",
+      "subtitle": "ನಾವು ಯಾವ ಡೇಟಾ ಸಂಗ್ರಹಿಸುತ್ತೇವೆ ಎಂಬುದನ್ನು ನೀವು ನಿಯಂತ್ರಿಸುತ್ತೀರಿ.",
+      "essential": {
+        "title": "ಅಗತ್ಯ",
+        "description": "ದೃಢೀಕರಣ, ಸೆಶನ್ ನಿರ್ವಹಣೆ ಮತ್ತು ಭದ್ರತೆಗೆ ಅಗತ್ಯ. ನಿಷ್ಕ್ರಿಯಗೊಳಿಸಲಾಗುವುದಿಲ್ಲ."
+      },
+      "analytics": {
+        "title": "ವಿಶ್ಲೇಷಣೆ",
+        "description": "Google Analytics 4 — ಅನಾಮಧೇಯ ಪುಟ ವೀಕ್ಷಣೆಗಳು ಮತ್ತು ಈವೆಂಟ್‌ಗಳು. ಯಾವ ವೈಶಿಷ್ಟ್ಯಗಳು ಬಳಕೆಯಾಗುತ್ತವೆ ಎಂದು ಅರ್ಥಮಾಡಿಕೊಳ್ಳಲು ಸಹಾಯ ಮಾಡುತ್ತದೆ. ಡಿಫಾಲ್ಟ್‌ನಲ್ಲಿ ಆಫ್."
+      },
+      "rejectAll": "ಎಲ್ಲವನ್ನೂ ತಿರಸ್ಕರಿಸಿ",
+      "acceptAll": "ಎಲ್ಲವನ್ನೂ ಒಪ್ಪಿಕೊಳ್ಳಿ",
+      "saveChoices": "ಆಯ್ಕೆಗಳನ್ನು ಉಳಿಸಿ"
+    }
+  },
+  "nav": {
+    "dashboard": "ಡ್ಯಾಶ್‌ಬೋರ್ಡ್",
+    "propertySearch": "ಆಸ್ತಿ ಹುಡುಕಾಟ",
+    "dueDiligence": "ಡ್ಯೂ ಡಿಲಿಜೆನ್ಸ್",
+    "riskAssessment": "ಅಪಾಯ ಮೌಲ್ಯಮಾಪನ",
+    "propertyComparison": "ಆಸ್ತಿ ಹೋಲಿಕೆ",
+    "savedComparisons": "ಉಳಿಸಿದ ಹೋಲಿಕೆಗಳು",
+    "reports": "ವರದಿಗಳು",
+    "notifications": "ಅಧಿಸೂಚನೆಗಳು",
+    "auditLogs": "ಆಡಿಟ್ ಲಾಗ್‌ಗಳು",
+    "profile": "ಪ್ರೊಫೈಲ್",
+    "settings": "ಸೆಟ್ಟಿಂಗ್‌ಗಳು",
+    "support": "ಬೆಂಬಲ",
+    "sections": {
+      "main": "ಮುಖ್ಯ",
+      "analysis": "ವಿಶ್ಲೇಷಣೆ",
+      "insights": "ಒಳನೋಟಗಳು",
+      "account": "ಖಾತೆ"
+    },
+    "sessionActive": "ಸೆಶನ್ ಸಕ್ರಿಯ",
+    "version": "v1.0"
+  },
+  "auth": {
+    "login": {
+      "title": "ಮರಳಿ ಸ್ವಾಗತ",
+      "subtitle": "ನಿಮ್ಮ ಆಸ್ತಿ ಪೋರ್ಟ್‌ಫೋಲಿಯೋ ಅಪಾಯಗಳನ್ನು ನಿರ್ವಹಿಸಲು ಸೈನ್ ಇನ್ ಮಾಡಿ.",
+      "emailLabel": "ವೃತ್ತಿಪರ ಇಮೇಲ್",
+      "emailPlaceholder": "name@company.com",
+      "passwordLabel": "ಪಾಸ್‌ವರ್ಡ್",
+      "forgotPassword": "ಪಾಸ್‌ವರ್ಡ್ ಮರೆತಿರಾ?",
+      "rememberMe": "ಈ ಬ್ರೌಸರ್‌ನಲ್ಲಿ ನನ್ನನ್ನು ಸೈನ್ ಇನ್ ಆಗಿ ಇಡಿ",
+      "signIn": "ಸೈನ್ ಇನ್",
+      "contactSupport": "ಬೆಂಬಲ ಸಂಪರ್ಕಿಸಿ",
+      "orContinueWith": "ಅಥವಾ ಮುಂದುವರಿಯಿರಿ",
+      "newToPlatform": "ಪ್ಲ್ಯಾಟ್‌ಫಾರ್ಮ್‌ಗೆ ಹೊಸಬರೇ?",
+      "createAccount": "ಉಚಿತ ಖಾತೆ ರಚಿಸಿ",
+      "hidePassword": "ಪಾಸ್‌ವರ್ಡ್ ಮರೆಮಾಡಿ",
+      "showPassword": "ಪಾಸ್‌ವರ್ಡ್ ತೋರಿಸಿ",
+      "redirectingToDashboard": "ನಿಮ್ಮ ಡ್ಯಾಶ್‌ಬೋರ್ಡ್‌ಗೆ ಮರುನಿರ್ದೇಶಿಸಲಾಗುತ್ತಿದೆ.",
+      "platformDesc": "ಆಸ್ತಿ ಬುದ್ಧಿಮತ್ತೆಗಾಗಿ ಪರಿಶೀಲನೆ-ಪ್ರಥಮ ಪ್ಲ್ಯಾಟ್‌ಫಾರ್ಮ್ — ಪ್ರತಿ ಲಿಸ್ಟಿಂಗ್ ಲೈವ್ ಆಗುವ ಮೊದಲು ಏಳು ಡೇಟಾ-ಗುಣಮಟ್ಟ ಪರೀಕ್ಷೆಗಳನ್ನು ಹಾದುಹೋಗುತ್ತದೆ.",
+      "verifiedListingsDesc": "ಏಳು-ಹಂತ ಡೇಟಾ-ಗುಣಮಟ್ಟ ಎಂಜಿನ್",
+      "secureByDefaultDesc": "JWT ಸೆಶನ್‌ಗಳು, ಹ್ಯಾಶ್ ಮಾಡಿದ ಪಾಸ್‌ವರ್ಡ್‌ಗಳು",
+      "roleBasedAccessDesc": "ಖರೀದಿದಾರ, ಏಜೆಂಟ್, ಪರಿಶೀಲಕ, ನಿರ್ವಾಹಕ",
+      "imgAlt": "ಆಧುನಿಕ ಗಾಜಿನ ಗಗನಚುಂಬಿ",
+      "continueWithGoogle": "Google ಮೂಲಕ ಮುಂದುವರಿಯಿರಿ",
+      "signingIn": "ಸೈನ್ ಇನ್ ಆಗುತ್ತಿದೆ…",
+      "almostThere": "ಬಹುತೇಕ ಆಯಿತು",
+      "finishProfile": "ನಿಮ್ಮ ಪ್ರೊಫೈಲ್ ಸೆಟಪ್ ಮುಗಿಸೋಣ.",
+      "unexpectedResponse": "ಸರ್ವರ್‌ನಿಂದ ಅನಿರೀಕ್ಷಿತ ಪ್ರತಿಕ್ರಿಯೆ. ದಯವಿಟ್ಟು ಮತ್ತೆ ಪ್ರಯತ್ನಿಸಿ.",
+      "googleFailed": "Google ಸೈನ್-ಇನ್ ವಿಫಲವಾಗಿದೆ",
+      "features": {
+        "analysis": "ಸಮಗ್ರ ಆಸ್ತಿ ವಿಶ್ಲೇಷಣೆ",
+        "auditing": "ಸುರಕ್ಷಿತ ಡ್ಯೂ ಡಿಲಿಜೆನ್ಸ್ ಆಡಿಟಿಂಗ್",
+        "risk": "ಸ್ವಯಂಚಾಲಿತ ಅಪಾಯ ಮೌಲ್ಯಮಾಪನ"
+      },
+      "secureBy": "ವಿನ್ಯಾಸದಿಂದ ಸುರಕ್ಷಿತ",
+      "learnHow": "ಹೇಗೆ ಎಂದು ತಿಳಿಯಿರಿ",
+      "platformOnline": "ಪ್ಲ್ಯಾಟ್‌ಫಾರ್ಮ್ ಆನ್‌ಲೈನ್",
+      "builtForTrust": "ವಿಶ್ವಾಸಕ್ಕಾಗಿ ನಿರ್ಮಿಸಲಾಗಿದೆ",
+      "verifiedListings": "ಪರಿಶೀಲಿಸಿದ ಲಿಸ್ಟಿಂಗ್‌ಗಳು ಮಾತ್ರ",
+      "secureByDefault": "ಡಿಫಾಲ್ಟ್‌ನಲ್ಲಿ ಸುರಕ್ಷಿತ",
+      "roleBasedAccess": "ಪಾತ್ರ-ಆಧಾರಿತ ಪ್ರವೇಶ"
+    },
+    "register": {
+      "title": "ನಿಮ್ಮ ಖಾತೆ ರಚಿಸಿ",
+      "subtitle": "ಸುರಕ್ಷಿತ ಡ್ಯೂ ಡಿಲಿಜೆನ್ಸ್ ಪ್ರಾರಂಭಿಸಲು ಪ್ಲ್ಯಾಟ್‌ಫಾರ್ಮ್‌ಗೆ ಸೇರಿ.",
+      "createAccount": "ಖಾತೆ ರಚಿಸಿ",
+      "pleaseWait": "ದಯವಿಟ್ಟು ನಿರೀಕ್ಷಿಸಿ…",
+      "welcomeCheck": "ಸ್ವಾಗತ ✓",
+      "alreadyHaveAccount": "ಈಗಾಗಲೇ ಖಾತೆ ಇದೆಯೇ?",
+      "signIn": "ಸೈನ್ ಇನ್",
+      "secureByDesign": "ವಿನ್ಯಾಸದಿಂದ ಸುರಕ್ಷಿತ",
+      "securityTagline": "JWT ದೃಢೀಕರಣ · BCrypt ಹ್ಯಾಶಿಂಗ್ · ಪಾತ್ರ-ಆಧಾರಿತ ಪ್ರವೇಶ ನಿಯಂತ್ರಣ",
+      "fields": {
+        "fullName": "ಪೂರ್ಣ ಹೆಸರು",
+        "email": "ಇಮೇಲ್",
+        "confirm": "ದೃಢೀಕರಿಸಿ",
+        "phoneNumber": "ಫೋನ್ ಸಂಖ್ಯೆ",
+        "role": "ಪಾತ್ರ"
+      },
+      "placeholders": {
+        "fullName": "John Smith",
+        "password": "ಕನಿಷ್ಠ 8 ಅಕ್ಷರಗಳು",
+        "confirm": "ಮತ್ತೆ ನಮೂದಿಸಿ",
+        "phone": "9876543210",
+        "role": "ಪಾತ್ರ ಆಯ್ಕೆಮಾಡಿ"
+      },
+      "errors": {
+        "fullNameRequired": "ಪೂರ್ಣ ಹೆಸರು ಅಗತ್ಯ.",
+        "fullNameShort": "ಪೂರ್ಣ ಹೆಸರು ಕನಿಷ್ಠ 3 ಅಕ್ಷರಗಳಿರಬೇಕು.",
+        "fullNameLong": "ಪೂರ್ಣ ಹೆಸರು 100 ಅಕ್ಷರಗಳನ್ನು ಮೀರಬಾರದು.",
+        "emailRequired": "ವೃತ್ತಿಪರ ಇಮೇಲ್ ಅಗತ್ಯ.",
+        "emailInvalid": "ದಯವಿಟ್ಟು ಮಾನ್ಯ ಇಮೇಲ್ ವಿಳಾಸ ನಮೂದಿಸಿ.",
+        "passwordLong": "ಪಾಸ್‌ವರ್ಡ್ 20 ಅಕ್ಷರಗಳನ್ನು ಮೀರಬಾರದು.",
+        "confirmRequired": "ದಯವಿಟ್ಟು ನಿಮ್ಮ ಪಾಸ್‌ವರ್ಡ್ ದೃಢೀಕರಿಸಿ.",
+        "passwordsMismatch": "ಪಾಸ್‌ವರ್ಡ್‌ಗಳು ಹೊಂದಾಣಿಕೆಯಾಗುತ್ತಿಲ್ಲ.",
+        "phoneRequired": "ಫೋನ್ ಸಂಖ್ಯೆ ಅಗತ್ಯ.",
+        "phoneInvalid": "ಮಾನ್ಯ 10-ಅಂಕಿಯ ಭಾರತೀಯ ಮೊಬೈಲ್ ಸಂಖ್ಯೆ ನಮೂದಿಸಿ (6–9 ರಿಂದ ಪ್ರಾರಂಭ).",
+        "roleRequired": "ದಯವಿಟ್ಟು ಪಾತ್ರ ಆಯ್ಕೆಮಾಡಿ.",
+        "emailExists": "ಈ ಇಮೇಲ್‌ನೊಂದಿಗೆ ಖಾತೆ ಈಗಾಗಲೇ ಅಸ್ತಿತ್ವದಲ್ಲಿದೆ."
+      },
+      "toasts": {
+        "welcome": "ಸ್ವಾಗತ",
+        "welcomeDesc": "ನಿಮ್ಮ ಖಾತೆ ಸಿದ್ಧ. ಮರುನಿರ್ದೇಶಿಸಲಾಗುತ್ತಿದೆ…",
+        "emailRegistered": "ಇಮೇಲ್ ಈಗಾಗಲೇ ನೋಂದಾಯಿಸಲಾಗಿದೆ",
+        "emailRegisteredDesc": "ಬದಲಿಗೆ ಸೈನ್ ಇನ್ ಮಾಡಲು ಪ್ರಯತ್ನಿಸಿ, ಅಥವಾ ಬೇರೆ ಇಮೇಲ್ ಬಳಸಿ.",
+        "failed": "ನೋಂದಣಿ ವಿಫಲ",
+        "tryAgain": "ದಯವಿಟ್ಟು ಮತ್ತೆ ಪ್ರಯತ್ನಿಸಿ."
+      },
+      "whyPlatform": "ಈ ಪ್ಲ್ಯಾಟ್‌ಫಾರ್ಮ್ ಏಕೆ",
+      "headline": "ಆಸ್ತಿ ಡ್ಯೂ ಡಿಲಿಜೆನ್ಸ್‌ಗಾಗಿ ಪ್ರಾಮಾಣಿಕ ಪರಿಕರಗಳು",
+      "features": {
+        "verificationFirst": "ಪರಿಶೀಲನೆ-ಪ್ರಥಮ ಲಿಸ್ಟಿಂಗ್‌ಗಳು",
+        "verificationFirstDesc": "ಪ್ರತಿ ಆಸ್ತಿ ಪರಿಶೀಲಿಸಿದ ಎಂದು ಗುರುತಿಸಲ್ಪಡುವ ಮೊದಲು ಏಳು-ಹಂತ ಡೇಟಾ-ಗುಣಮಟ್ಟ ಎಂಜಿನ್‌ನ ಮೂಲಕ ಹಾದುಹೋಗುತ್ತದೆ.",
+        "secure": "ಡಿಫಾಲ್ಟ್‌ನಲ್ಲಿ ಸುರಕ್ಷಿತ",
+        "secureDesc": "JWT ಸೆಶನ್‌ಗಳು, BCrypt ಪಾಸ್‌ವರ್ಡ್ ಹ್ಯಾಶಿಂಗ್ ಮತ್ತು ಪ್ರತಿ ಎಂಡ್‌ಪಾಯಿಂಟ್‌ನಲ್ಲಿ ಪಾತ್ರ-ಆಧಾರಿತ ಪ್ರವೇಶ.",
+        "teams": "ನೈಜ ತಂಡಗಳಿಗಾಗಿ ನಿರ್ಮಿಸಲಾಗಿದೆ",
+        "teamsDesc": "ಐದು ವಿಭಿನ್ನ ಪಾತ್ರಗಳು — ಖರೀದಿದಾರ, ಏಜೆಂಟ್, ಕಾನೂನು ಪರಿಶೀಲಕ, ಹಣಕಾಸು ಸಂಸ್ಥೆ ಮತ್ತು ನಿರ್ವಾಹಕ.",
+        "consent": "ಒಪ್ಪಿಗೆ-ಪ್ರಥಮ ವಿಶ್ಲೇಷಣೆ",
+        "consentDesc": "ನೀವು ಆಯ್ಕೆ ಮಾಡುವವರೆಗೆ ಏನೂ ಲೋಡ್ ಆಗುವುದಿಲ್ಲ. ಕುಕಿ ಆದ್ಯತೆಗಳನ್ನು ಕಟ್ಟುನಿಟ್ಟಾಗಿ ಪಾಲಿಸಲಾಗುತ್ತದೆ."
+      },
+      "platformOnline": "ಪ್ಲ್ಯಾಟ್‌ಫಾರ್ಮ್ ಆನ್‌ಲೈನ್",
+      "secureBy": "ವಿನ್ಯಾಸದಿಂದ ಸುರಕ್ಷಿತ",
+      "learnHow": "ಹೇಗೆ ಎಂದು ತಿಳಿಯಿರಿ"
+    },
+    "forgotPassword": {
+      "step1Title": "ನಿಮ್ಮ ಪಾಸ್‌ವರ್ಡ್ ರೀಸೆಟ್ ಮಾಡಿ",
+      "step1Subtitle": "ನಿಮ್ಮ ಇಮೇಲ್ ನಮೂದಿಸಿ, ನಾವು 6-ಅಂಕಿಯ ಕೋಡ್ ಕಳುಹಿಸುತ್ತೇವೆ.",
+      "emailLabel": "ಇಮೇಲ್ ವಿಳಾಸ",
+      "sendCode": "ಕೋಡ್ ಕಳುಹಿಸಿ",
+      "alreadyHaveCode": "ನನ್ನ ಬಳಿ ಈಗಾಗಲೇ ಕೋಡ್ ಇದೆ",
+      "step2Title": "ಕೋಡ್ ನಮೂದಿಸಿ",
+      "step2Subtitle": "ಗೆ ಕಳುಹಿಸಲಾಗಿದೆ",
+      "verifyCode": "ಕೋಡ್ ಪರಿಶೀಲಿಸಿ",
+      "changeEmail": "ಇಮೇಲ್ ಬದಲಿಸಿ",
+      "resendCode": "ಕೋಡ್ ಮರುಕಳುಹಿಸಿ",
+      "resendIn": "{{n}}s ನಲ್ಲಿ ಮರುಕಳುಹಿಸಿ",
+      "waitBefore": "ಮರುಕಳುಹಿಸಲು {{n}}s ನಿರೀಕ್ಷಿಸಿ",
+      "step3Title": "ಹೊಸ ಪಾಸ್‌ವರ್ಡ್ ಹೊಂದಿಸಿ",
+      "step3Subtitle": "ದೊಡ್ಡ ಮತ್ತು ಸಣ್ಣ ಅಕ್ಷರಗಳ ಮಿಶ್ರಣ ಮತ್ತು ಒಂದು ಸಂಖ್ಯೆಯೊಂದಿಗೆ ಕನಿಷ್ಠ 8 ಅಕ್ಷರಗಳು ಬಳಸಿ.",
+      "newPassword": "ಹೊಸ ಪಾಸ್‌ವರ್ಡ್",
+      "confirmPassword": "ಪಾಸ್‌ವರ್ಡ್ ದೃಢೀಕರಿಸಿ",
+      "resetPassword": "ಪಾಸ್‌ವರ್ಡ್ ರೀಸೆಟ್ ಮಾಡಿ",
+      "requirements": {
+        "length": "ಕನಿಷ್ಠ 8 ಅಕ್ಷರಗಳು",
+        "case": "ದೊಡ್ಡ ಮತ್ತು ಸಣ್ಣ ಅಕ್ಷರಗಳು",
+        "number": "ಒಂದು ಸಂಖ್ಯೆ ಒಳಗೊಂಡಿದೆ",
+        "match": "ಪಾಸ್‌ವರ್ಡ್‌ಗಳು ಹೊಂದಾಣಿಕೆಯಾಗುತ್ತವೆ"
+      },
+      "step4Title": "ಪಾಸ್‌ವರ್ಡ್ ನವೀಕರಿಸಲಾಗಿದೆ",
+      "step4Subtitle": "ಮುಂದುವರಿಯಲು ನಿಮ್ಮ ಹೊಸ ಪಾಸ್‌ವರ್ಡ್‌ನೊಂದಿಗೆ ಸೈನ್ ಇನ್ ಮಾಡಿ.",
+      "backToSignIn": "ಸೈನ್ ಇನ್‌ಗೆ ಹಿಂತಿರುಗಿ",
+      "redirectingIn": "{{n}}s ನಲ್ಲಿ ಮರುನಿರ್ದೇಶಿಸಲಾಗುತ್ತಿದೆ…",
+      "capsLock": "Caps Lock ಆನ್ ಆಗಿದೆ",
+      "pleaseWait": "ದಯವಿಟ್ಟು ನಿರೀಕ್ಷಿಸಿ",
+      "cooldownDesc": "ನೀವು {{n}}s ನಲ್ಲಿ ಹೊಸ ಕೋಡ್ ವಿನಂತಿಸಬಹುದು.",
+      "codeSent": "ಕೋಡ್ ಕಳುಹಿಸಲಾಗಿದೆ",
+      "checkInbox": "6-ಅಂಕಿಯ ಕೋಡ್‌ಗಾಗಿ ನಿಮ್ಮ ಇನ್‌ಬಾಕ್ಸ್ ಪರಿಶೀಲಿಸಿ.",
+      "sendFailed": "ಕೋಡ್ ಕಳುಹಿಸಲಾಗಲಿಲ್ಲ",
+      "newCodeSent": "ಹೊಸ ಕೋಡ್ ಕಳುಹಿಸಲಾಗಿದೆ",
+      "resendFailed": "ಮರುಕಳುಹಿಸಲಾಗಲಿಲ್ಲ",
+      "enterSixDigit": "6-ಅಂಕಿಯ ಕೋಡ್ ನಮೂದಿಸಿ",
+      "invalidCode": "ಅಮಾನ್ಯ ಅಥವಾ ಅವಧಿ ಮೀರಿದ ಕೋಡ್",
+      "verifyFailed": "ಪರಿಶೀಲನೆ ವಿಫಲ",
+      "checkCodeAndRetry": "ದಯವಿಟ್ಟು ಕೋಡ್ ಪರಿಶೀಲಿಸಿ ಮತ್ತೆ ಪ್ರಯತ್ನಿಸಿ.",
+      "enterNewPassword": "ಹೊಸ ಪಾಸ್‌ವರ್ಡ್ ನಮೂದಿಸಿ",
+      "pwdComplexity": "ದೊಡ್ಡ ಅಕ್ಷರ, ಸಣ್ಣ ಅಕ್ಷರ ಮತ್ತು ಒಂದು ಸಂಖ್ಯೆ ಸೇರಿಸಿ",
+      "confirmYourPassword": "ನಿಮ್ಮ ಪಾಸ್‌ವರ್ಡ್ ದೃಢೀಕರಿಸಿ",
+      "resetFailed": "ಪಾಸ್‌ವರ್ಡ್ ರೀಸೆಟ್ ಮಾಡಲಾಗಲಿಲ್ಲ",
+      "codeAlreadySent": "ಕೋಡ್ ಈಗಾಗಲೇ ಕಳುಹಿಸಲಾಗಿದೆ. ಮೊದಲು ನಿಮ್ಮ ಇನ್‌ಬಾಕ್ಸ್ ಪರಿಶೀಲಿಸಿ.",
+      "enterEmailUsed": "ನೀವು ಬಳಸಿದ ಇಮೇಲ್ ನಮೂದಿಸಿ",
+      "sentTo": "ಗೆ ಕಳುಹಿಸಲಾಗಿದೆ",
+      "digitAria": "ಅಂಕಿ {{n}}"
+    },
+    "errors": {
+      "emailRequired": "ನಿಮ್ಮ ಇಮೇಲ್ ನಮೂದಿಸಿ",
+      "emailInvalid": "ಮಾನ್ಯ ಇಮೇಲ್ ವಿಳಾಸ ನಮೂದಿಸಿ",
+      "passwordRequired": "ನಿಮ್ಮ ಪಾಸ್‌ವರ್ಡ್ ನಮೂದಿಸಿ",
+      "passwordLength": "ಕನಿಷ್ಠ 8 ಅಕ್ಷರಗಳು",
+      "fieldErrors": "ದಯವಿಟ್ಟು ನಿಮ್ಮ ವಿವರಗಳನ್ನು ಪರಿಶೀಲಿಸಿ",
+      "someFieldsNeedAttention": "ಕೆಲವು ಕ್ಷೇತ್ರಗಳಿಗೆ ಗಮನ ನೀಡಬೇಕಾಗಿದೆ.",
+      "signInFailed": "ಸೈನ್ ಇನ್ ವಿಫಲ",
+      "checkCredentials": "ದಯವಿಟ್ಟು ನಿಮ್ಮ ರುಜುವಾತುಗಳನ್ನು ಪರಿಶೀಲಿಸಿ ಮತ್ತೆ ಪ್ರಯತ್ನಿಸಿ.",
+      "passwordLetter": "ಒಂದು ಅಕ್ಷರ ಒಳಗೊಂಡಿರಬೇಕು",
+      "passwordNumber": "ಒಂದು ಸಂಖ್ಯೆ ಒಳಗೊಂಡಿರಬೇಕು"
+    }
+  },
+  "dashboard": {
+    "greetings": {
+      "morning": "ಶುಭ ಬೆಳಗ್ಗೆ",
+      "afternoon": "ಶುಭ ಮಧ್ಯಾಹ್ನ",
+      "evening": "ಶುಭ ಸಂಜೆ"
+    },
+    "subtitle": "ನಿಮ್ಮ ಪೋರ್ಟ್‌ಫೋಲಿಯೋ ಒಂದು ನೋಟದಲ್ಲಿ",
+    "platformOverview": "ಪ್ಲ್ಯಾಟ್‌ಫಾರ್ಮ್ ಅವಲೋಕನ",
+    "pageTitle": "ಡ್ಯಾಶ್‌ಬೋರ್ಡ್ | Real Estate Due Diligence Agent",
+    "refreshed": "ಡ್ಯಾಶ್‌ಬೋರ್ಡ್ ನವೀಕರಿಸಲಾಗಿದೆ",
+    "stats": {
+      "totalProperties": "ಒಟ್ಟು ಆಸ್ತಿಗಳು",
+      "verified": "ಪರಿಶೀಲಿಸಿದ",
+      "pending": "ಬಾಕಿ",
+      "platformUsers": "ಪ್ಲ್ಯಾಟ್‌ಫಾರ್ಮ್ ಬಳಕೆದಾರರು",
+      "plusThisWeek": "+{{count}} ಈ ವಾರ",
+      "ofTotal": "ಒಟ್ಟಿನ {{pct}}%",
+      "awaitingVerification": "ಪರಿಶೀಲನೆ ನಿರೀಕ್ಷಿಸುತ್ತಿದೆ",
+      "allCaughtUp": "ಎಲ್ಲವೂ ಸರಿಯಾಗಿದೆ",
+      "activeIn30Days": "30 ದಿನಗಳಲ್ಲಿ {{n}} ಸಕ್ರಿಯ",
+      "noPropertiesAdded": "ಯಾವುದೇ ಆಸ್ತಿ ಸೇರಿಸಲಾಗಿಲ್ಲ",
+      "nothingToVerify": "ಇನ್ನೂ ಪರಿಶೀಲಿಸಲು ಏನೂ ಇಲ್ಲ"
+    },
+    "empty": {
+      "title": "ಇನ್ನೂ ಯಾವುದೇ ಆಸ್ತಿ ಇಲ್ಲ",
+      "description": "ಪರಿಶೀಲನೆ ಫಲಿತಾಂಶಗಳು ಮತ್ತು ಪೋರ್ಟ್‌ಫೋಲಿಯೋ ಒಳನೋಟಗಳನ್ನು ನೋಡಲು ನಿಮ್ಮ ಮೊದಲ ಆಸ್ತಿ ಸೇರಿಸಿ.",
+      "addFirst": "ನಿಮ್ಮ ಮೊದಲ ಆಸ್ತಿ ಸೇರಿಸಿ"
+    },
+    "refresh": "ರಿಫ್ರೆಶ್",
+    "errors": {
+      "unauthorized": "ಆ ಪುಟ ಪ್ರವೇಶಿಸಲು ನಿಮಗೆ ಅನುಮತಿ ಇಲ್ಲ.",
+      "couldntLoad": "ಡ್ಯಾಶ್‌ಬೋರ್ಡ್ ಲೋಡ್ ಆಗಲಿಲ್ಲ",
+      "pleaseRefresh": "ದಯವಿಟ್ಟು ಪುಟವನ್ನು ರಿಫ್ರೆಶ್ ಮಾಡಿ ಅಥವಾ ಮತ್ತೆ ಪ್ರಯತ್ನಿಸಿ.",
+      "unableToLoadStats": "ಅಂಕಿಅಂಶಗಳನ್ನು ಲೋಡ್ ಮಾಡಲಾಗಲಿಲ್ಲ. ದಯವಿಟ್ಟು ಪುಟ ರಿಫ್ರೆಶ್ ಮಾಡಿ."
+    }
+  },
+  "hero": {
+    "portfolio": {
+      "label": "ಪೋರ್ಟ್‌ಫೋಲಿಯೋ ಮೌಲ್ಯ",
+      "citiesCount_one": "{{count}} ನಗರ",
+      "citiesCount_other": "{{count}} ನಗರಗಳು",
+      "acrossProperties_one": "{{count}} ಆಸ್ತಿಯಾದ್ಯಂತ",
+      "acrossProperties_other": "{{count}} ಆಸ್ತಿಗಳಾದ್ಯಂತ",
+      "topAsset": "ಅಗ್ರ ಆಸ್ತಿ"
+    },
+    "verification": {
+      "label": "ಪರಿಶೀಲನೆ",
+      "allVerified": "ಎಲ್ಲವೂ ಪರಿಶೀಲಿಸಲಾಗಿದೆ",
+      "noPropertiesYet": "ಇನ್ನೂ ಯಾವುದೇ ಆಸ್ತಿ ಇಲ್ಲ",
+      "portfolioComplete": "ಪೋರ್ಟ್‌ಫೋಲಿಯೋ ಸಂಪೂರ್ಣ",
+      "pendingCount_one": "{{count}} ಬಾಕಿ",
+      "pendingCount_other": "{{count}} ಬಾಕಿ"
+    },
+    "aqi": {
+      "label": "ವಾಯು ಗುಣಮಟ್ಟ",
+      "live": "ಲೈವ್",
+      "fetchingLive": "ಲೈವ್ ಡೇಟಾ ಪಡೆಯುತ್ತಿದೆ...",
+      "addPropertyToSee": "ಲೈವ್ ವಾಯು ಗುಣಮಟ್ಟ ನೋಡಲು ಆಸ್ತಿ ಸೇರಿಸಿ"
+    }
+  },
+  "trend": {
+    "title": "ಕಾಲಾನಂತರ ಪೋರ್ಟ್‌ಫೋಲಿಯೋ ಮೌಲ್ಯ",
+    "dataPointsInWindow_one": "ಆಯ್ಕೆಮಾಡಿದ ವಿಂಡೋದಲ್ಲಿ {{count}} ಡೇಟಾ ಬಿಂದು",
+    "dataPointsInWindow_other": "ಆಯ್ಕೆಮಾಡಿದ ವಿಂಡೋದಲ್ಲಿ {{count}} ಡೇಟಾ ಬಿಂದುಗಳು",
+    "deltaVsAgo": "{{days}}d ಹಿಂದಿನ ತುಲನೆಯಲ್ಲಿ {{sign}}{{pct}}%",
+    "noChange": "ಯಾವುದೇ ಬದಲಾವಣೆ ಇಲ್ಲ",
+    "empty": {
+      "title": "ಟ್ರ್ಯಾಕಿಂಗ್ ಇಂದಿನಿಂದ ಪ್ರಾರಂಭ",
+      "description": "ನಿಮ್ಮ ಪೋರ್ಟ್‌ಫೋಲಿಯೋ ಮೌಲ್ಯ ಟ್ರೆಂಡ್ ನೋಡಲು ನಾಳೆ ಮತ್ತೆ ಬನ್ನಿ."
+    },
+    "error": {
+      "couldntLoad": "ಟ್ರೆಂಡ್ ಡೇಟಾ ಲೋಡ್ ಮಾಡಲಾಗಲಿಲ್ಲ."
+    },
+    "tooltip": {
+      "propertiesCount_one": "{{count}} ಆಸ್ತಿ",
+      "propertiesCount_other": "{{count}} ಆಸ್ತಿಗಳು",
+      "verifiedCount_one": "{{count}} ಪರಿಶೀಲಿಸಿದ",
+      "verifiedCount_other": "{{count}} ಪರಿಶೀಲಿಸಿದ"
+    }
+  },
+  "breakdown": {
+    "title": "ಪೋರ್ಟ್‌ಫೋಲಿಯೋ ವಿಭಜನೆ",
+    "subtitle": "ಆಸ್ತಿ ಪ್ರಕಾರದ ಪ್ರಕಾರ",
+    "empty": {
+      "title": "ಇನ್ನೂ ಡೇಟಾ ಇಲ್ಲ",
+      "description": "ವಿಭಜನೆ ನೋಡಲು ಆಸ್ತಿಗಳನ್ನು ಸೇರಿಸಿ"
+    },
+    "tooltip": {
+      "propertyCount_one": "{{count}} ಆಸ್ತಿ",
+      "propertyCount_other": "{{count}} ಆಸ್ತಿಗಳು",
+      "valueLabel": "ಮೌಲ್ಯ"
+    }
+  },
+  "map": {
+    "title": "ಪೋರ್ಟ್‌ಫೋಲಿಯೋ ಭೂಗೋಳ",
+    "status": {
+      "loading": "ನಕ್ಷೆ ಲೋಡ್ ಆಗುತ್ತಿದೆ...",
+      "noPropertiesYet": "ಇನ್ನೂ ಯಾವುದೇ ಆಸ್ತಿ ಇಲ್ಲ",
+      "mappedOfTotal": "{{total}} ರಲ್ಲಿ {{mapped}} ಮ್ಯಾಪ್ ಮಾಡಲಾಗಿದೆ",
+      "pendingCount_one": "{{count}} ಬಾಕಿ",
+      "pendingCount_other": "{{count}} ಬಾಕಿ"
+    },
+    "zoomHint": "ಜೂಮ್‌ಗಾಗಿ +/− ಬಳಸಿ",
+    "retryGeocoding": "ಜಿಯೋಕೋಡಿಂಗ್ ಮರು ಪ್ರಯತ್ನಿಸಿ",
+    "geocoding": "ಜಿಯೋಕೋಡಿಂಗ್...",
+    "viewDetails": "ವಿವರಗಳನ್ನು ವೀಕ್ಷಿಸಿ",
+    "empty": {
+      "noMappedTitle": "ಇನ್ನೂ ಮ್ಯಾಪ್ ಮಾಡಿದ ಆಸ್ತಿಗಳಿಲ್ಲ",
+      "noMappedDesc": "ಅವುಗಳನ್ನು ನಕ್ಷೆಯಲ್ಲಿ ನೋಡಲು ವಿಳಾಸ ಸಲಹೆಗಳನ್ನು ಬಳಸಿ ಆಸ್ತಿಗಳನ್ನು ಸೇರಿಸಿ.",
+      "noCoordsTitle": "ಇನ್ನೂ ನಿರ್ದೇಶಾಂಕಗಳು ಸೆರೆಹಿಡಿಯಲಾಗಿಲ್ಲ",
+      "noCoordsDesc": "ಆಸ್ತಿಗಳು ಅಸ್ತಿತ್ವದಲ್ಲಿವೆ ಆದರೆ ಜಿಯೋಕೋಡಿಂಗ್ ಅಗತ್ಯವಿದೆ. ನಿರ್ವಾಹಕರು ಮೇಲೆ ಟ್ರಿಗರ್ ಮಾಡಬಹುದು."
+    },
+    "error": {
+      "couldntLoad": "ನಕ್ಷೆ ಡೇಟಾ ಲೋಡ್ ಮಾಡಲಾಗಲಿಲ್ಲ."
+    },
+    "toasts": {
+      "geocodedCount_one": "{{count}} ಆಸ್ತಿ ಜಿಯೋಕೋಡ್ ಆಗಿದೆ",
+      "geocodedCount_other": "{{count}} ಆಸ್ತಿಗಳು ಜಿಯೋಕೋಡ್ ಆಗಿವೆ",
+      "reloadingMap": "ನಕ್ಷೆ ಮರುಲೋಡ್ ಆಗುತ್ತಿದೆ...",
+      "noNewLocations": "ಹೊಸ ಸ್ಥಳಗಳು ಕಂಡುಬಂದಿಲ್ಲ",
+      "tooVague": "ಉಳಿದ ವಿಳಾಸಗಳು ಜಿಯೋಕೋಡ್ ಮಾಡಲು ತುಂಬಾ ಅಸ್ಪಷ್ಟವಾಗಿರಬಹುದು.",
+      "geocodingFailed": "ಜಿಯೋಕೋಡಿಂಗ್ ವಿಫಲ",
+      "tryAgainLater": "ದಯವಿಟ್ಟು ನಂತರ ಮತ್ತೆ ಪ್ರಯತ್ನಿಸಿ."
+    }
+  },
+  "recommendations": {
+    "title": "ಶಿಫಾರಸುಗಳು",
+    "actionsCount_one": "ನಿಮ್ಮ ಪೋರ್ಟ್‌ಫೋಲಿಯೋ ಸುಧಾರಿಸಲು {{count}} ಕ್ರಮ",
+    "actionsCount_other": "ನಿಮ್ಮ ಪೋರ್ಟ್‌ಫೋಲಿಯೋ ಸುಧಾರಿಸಲು {{count}} ಕ್ರಮಗಳು",
+    "urgentCount_one": "{{count}} ತುರ್ತು",
+    "urgentCount_other": "{{count}} ತುರ್ತು",
+    "dismiss": "ವಜಾ ಮಾಡಿ",
+    "showLess": "ಕಡಿಮೆ ತೋರಿಸಿ",
+    "showMore_one": "{{count}} ಹೆಚ್ಚು ತೋರಿಸಿ",
+    "showMore_other": "{{count}} ಹೆಚ್ಚು ತೋರಿಸಿ",
+    "severity": {
+      "urgent": "ತುರ್ತು",
+      "action": "ಕ್ರಮ",
+      "onTrack": "ಟ್ರ್ಯಾಕ್‌ನಲ್ಲಿದೆ",
+      "tip": "ಸಲಹೆ"
+    }
+  },
+  "activity": {
+    "title": "ಇತ್ತೀಚಿನ ಚಟುವಟಿಕೆ",
+    "subtitle": "ಪ್ಲ್ಯಾಟ್‌ಫಾರ್ಮ್‌ನಾದ್ಯಂತ ಇತ್ತೀಚಿನ ಕ್ರಮಗಳು",
+    "live": "ಲೈವ್",
+    "byActor": "{{name}} ಅವರಿಂದ",
+    "showAll": "ಎಲ್ಲವನ್ನೂ ತೋರಿಸಿ",
+    "viewAllProperties": "ಎಲ್ಲಾ ಆಸ್ತಿಗಳನ್ನು ವೀಕ್ಷಿಸಿ",
+    "filters": {
+      "all": "ಎಲ್ಲಾ",
+      "added": "ಸೇರಿಸಿದ",
+      "verified": "ಪರಿಶೀಲಿಸಿದ",
+      "updated": "ನವೀಕರಿಸಿದ"
+    },
+    "types": {
+      "propertyAdded": "ಆಸ್ತಿ ಸೇರಿಸಲಾಗಿದೆ",
+      "propertyVerified": "ಆಸ್ತಿ ಪರಿಶೀಲಿಸಲಾಗಿದೆ",
+      "propertyUpdated": "ಆಸ್ತಿ ನವೀಕರಿಸಲಾಗಿದೆ"
+    },
+    "empty": {
+      "noActivity": "ಇನ್ನೂ ಯಾವುದೇ ಚಟುವಟಿಕೆ ಇಲ್ಲ",
+      "addProperties": "ಇಲ್ಲಿ ಚಟುವಟಿಕೆ ನೋಡಲು ಆಸ್ತಿಗಳನ್ನು ಸೇರಿಸಿ",
+      "noFiltered": "ಇತ್ತೀಚಿನ ಘಟನೆಗಳಲ್ಲಿ ಯಾವುದೇ {{filter}} ಚಟುವಟಿಕೆ ಇಲ್ಲ"
+    }
+  },
+  "recentTable": {
+    "title": "ಇತ್ತೀಚಿನ ಆಸ್ತಿಗಳು",
+    "subtitle": "ಪ್ಲ್ಯಾಟ್‌ಫಾರ್ಮ್‌ಗೆ ಇತ್ತೀಚಿನ ಸೇರ್ಪಡೆಗಳು",
+    "columns": {
+      "address": "ವಿಳಾಸ",
+      "type": "ಪ್ರಕಾರ",
+      "status": "ಸ್ಥಿತಿ",
+      "missingFields": "ಕಾಣೆಯಾದ ಕ್ಷೇತ್ರಗಳು"
+    },
+    "missingCount_one": "{{count}} ಕಾಣೆ",
+    "missingCount_other": "{{count}} ಕಾಣೆ",
+    "noneMissing": "ಯಾವುದೂ ಇಲ್ಲ",
+    "empty": {
+      "title": "ಯಾವುದೇ ಆಸ್ತಿ ಕಂಡುಬಂದಿಲ್ಲ",
+      "description": "ಇಲ್ಲಿ ನೋಡಲು ಆಸ್ತಿ ಸೇರಿಸಿ."
+    },
+    "error": {
+      "title": "ಆಸ್ತಿಗಳನ್ನು ಲೋಡ್ ಮಾಡಲಾಗಲಿಲ್ಲ",
+      "description": "ಮತ್ತೆ ಪ್ರಯತ್ನಿಸಲು ದಯವಿಟ್ಟು ಪುಟ ರಿಫ್ರೆಶ್ ಮಾಡಿ."
+    }
+  },
+  "property": {
+    "addProperty": "ಆಸ್ತಿ ಸೇರಿಸಿ",
+    "addFirstProperty": "ನಿಮ್ಮ ಮೊದಲ ಆಸ್ತಿ ಸೇರಿಸಿ",
+    "pdf": {
+      "downloadReport": "ವರದಿ ಡೌನ್‌ಲೋಡ್ ಮಾಡಿ",
+      "generating": "ರಚಿಸಲಾಗುತ್ತಿದೆ...",
+      "buttonTooltip": "PDF ವರದಿ ಡೌನ್‌ಲೋಡ್ ಮಾಡಿ",
+      "preparing": "PDF ಎಂಜಿನ್ ಸಿದ್ಧಪಡಿಸಲಾಗುತ್ತಿದೆ...",
+      "downloaded": "ವರದಿ ಡೌನ್‌ಲೋಡ್ ಆಗಿದೆ",
+      "savedTo": "{{filename}} ನಿಮ್ಮ ಡೌನ್‌ಲೋಡ್ ಫೋಲ್ಡರ್‌ನಲ್ಲಿ ಉಳಿಸಲಾಗಿದೆ.",
+      "loadFailed": "ಆಸ್ತಿ ಡೇಟಾ ಲೋಡ್ ಮಾಡಲಾಗಲಿಲ್ಲ",
+      "downloadFailed": "ಡೌನ್‌ಲೋಡ್ ವಿಫಲ",
+      "generateFailed": "ವರದಿ ರಚಿಸಲಾಗಲಿಲ್ಲ. ಮತ್ತೆ ಪ್ರಯತ್ನಿಸಿ."
+    },
+    "search": {
+      "title": "ಆಸ್ತಿ ಹುಡುಕಾಟ",
+      "placeholder": "ಪುಟಗಳು, ಆಸ್ತಿಗಳು, ಕ್ರಮಗಳನ್ನು ಹುಡುಕಿ...",
+      "loadingPortfolio": "ಪೋರ್ಟ್‌ಫೋಲಿಯೋ ಲೋಡ್ ಆಗುತ್ತಿದೆ...",
+      "readyToIndex": "ನಿಮ್ಮ ಮೊದಲ ಆಸ್ತಿ ಇಂಡೆಕ್ಸ್ ಮಾಡಲು ಸಿದ್ಧ",
+      "live": "ಲೈವ್",
+      "propertiesIndexed": "{{n}} {{unit}} ಇಂಡೆಕ್ಸ್ ಆಗಿದೆ",
+      "propertyUnit": "ಆಸ್ತಿ",
+      "propertiesUnit": "ಆಸ್ತಿಗಳು",
+      "citiesCovered": "{{n}} {{unit}} ಒಳಗೊಂಡಿದೆ",
+      "cityUnit": "ನಗರ",
+      "citiesUnit": "ನಗರಗಳು",
+      "synced": "ಸಿಂಕ್ ಆಗಿದೆ",
+      "highRisk": "{{n}} ಹೆಚ್ಚಿನ ಅಪಾಯ",
+      "noPropertiesFound": "ಯಾವುದೇ ಆಸ್ತಿ ಕಂಡುಬಂದಿಲ್ಲ",
+      "trySearching": "ನಗರದ ಹೆಸರು, ವಿಳಾಸ ಅಥವಾ ZIP ಕೋಡ್‌ನಿಂದ ಹುಡುಕಿ — ಅಥವಾ ನಿಮ್ಮ ಮೊದಲ ಆಸ್ತಿ ಸೇರಿಸಿ.",
+      "noMatches": "ಯಾವುದೇ ಹೊಂದಾಣಿಕೆ ಇಲ್ಲ",
+      "tryDifferent": "ಬೇರೆ ನಗರ, ವಿಳಾಸ ಅಥವಾ ZIP ಕೋಡ್ ಪ್ರಯತ್ನಿಸಿ.",
+      "searchFailed": "ಹುಡುಕಾಟ ವಿಫಲ",
+      "tryAgain": "ದಯವಿಟ್ಟು ಕ್ಷಣದಲ್ಲಿ ಮತ್ತೆ ಪ್ರಯತ್ನಿಸಿ.",
+      "couldntLoad": "ಆಸ್ತಿಗಳನ್ನು ಲೋಡ್ ಮಾಡಲಾಗಲಿಲ್ಲ",
+      "pleaseRefresh": "ದಯವಿಟ್ಟು ಪುಟ ರಿಫ್ರೆಶ್ ಮಾಡಿ.",
+      "found": "{{n}} {{unit}} ಕಂಡುಬಂದಿದೆ",
+      "ofTotal": "({{n}} ರಲ್ಲಿ)",
+      "pageTitle": "ಆಸ್ತಿ ಹುಡುಕಾಟ | Real Estate Due Diligence",
+      "ariaLabel": "ಆಸ್ತಿ ಹುಡುಕಾಟ",
+      "clearSearch": "ಹುಡುಕಾಟ ತೆರವುಗೊಳಿಸಿ",
+      "searching": "ಹುಡುಕಾಟ ನಡೆಯುತ್ತಿದೆ...",
+      "searchButton": "ಹುಡುಕಿ",
+      "searchingFor": "\"{{query}}\" ಗಾಗಿ ಹುಡುಕುತ್ತಿದೆ...",
+      "noMatchesFor": "\"{{query}}\" ಗೆ ಯಾವುದೇ ಹೊಂದಾಣಿಕೆ ಇಲ್ಲ",
+      "tryDifferentHint": "ಬೇರೆ ನಗರ, ವಿಳಾಸ ಅಥವಾ ZIP ಪ್ರಯತ್ನಿಸಿ",
+      "matchCount_one": "{{count}} ಹೊಂದಾಣಿಕೆ",
+      "matchCount_other": "{{count}} ಹೊಂದಾಣಿಕೆಗಳು",
+      "untitledProperty": "ಶೀರ್ಷಿಕೆಯಿಲ್ಲದ ಆಸ್ತಿ",
+      "locationUnknown": "ಸ್ಥಳ ತಿಳಿದಿಲ್ಲ",
+      "valueLabel": "ಮೌಲ್ಯ",
+      "seeAllResults_one": "ಎಲ್ಲಾ {{count}} ಫಲಿತಾಂಶ ನೋಡಿ",
+      "seeAllResults_other": "ಎಲ್ಲಾ {{count}} ಫಲಿತಾಂಶಗಳನ್ನು ನೋಡಿ",
+      "kbNavigate": "ನ್ಯಾವಿಗೇಟ್",
+      "kbSelect": "ಆಯ್ಕೆ",
+      "kbClose": "ಮುಚ್ಚಿ"
+    },
+    "addModal": {
+      "title": "ಹೊಸ ಆಸ್ತಿ ಸೇರಿಸಿ",
+      "subtitle": "ಮೂಲಭೂತ ವಿಷಯಗಳಿಂದ ಪ್ರಾರಂಭಿಸಿ — ಉಳಿದದ್ದನ್ನು ಯಾವಾಗ ಬೇಕಾದರೂ ಪೂರ್ಣಗೊಳಿಸಬಹುದು",
+      "closeAria": "ಮುಚ್ಚಿ",
+      "verification": "ಪರಿಶೀಲನೆ",
+      "optional": "ಐಚ್ಛಿಕ",
+      "poweredBy": "OpenStreetMap ನಿಂದ ಚಾಲಿತ",
+      "banner": {
+        "requiredPrefix": "ಕೇವಲ",
+        "requiredSuffix": "ಅಗತ್ಯ",
+        "address": "ವಿಳಾಸ",
+        "city": "ನಗರ",
+        "requiredConnector": "ಮತ್ತು",
+        "hint": "ಉಳಿದ ವಿವರಗಳನ್ನು ಯಾವಾಗ ಬೇಕಾದರೂ ಸೇರಿಸಿ — ರಚಿಸಿದ ನಂತರ ಆಸ್ತಿಗಳನ್ನು ಪೂರ್ಣಗೊಳಿಸಬಹುದು."
+      },
+      "sections": {
+        "location": "ಸ್ಥಳ",
+        "locationSub": "ಈ ಆಸ್ತಿ ಎಲ್ಲಿದೆ?",
+        "propertyDetails": "ಆಸ್ತಿ ವಿವರಗಳು",
+        "propertyDetailsSub": "ಅದನ್ನು ವರ್ಗೀಕರಿಸಲು ಮತ್ತು ಮೌಲ್ಯಮಾಪನ ಮಾಡಲು ಸಹಾಯ ಮಾಡಿ",
+        "extraDetails": "ಹೆಚ್ಚುವರಿ ವಿವರಗಳು",
+        "extraDetailsSub": "ಐಚ್ಛಿಕ — ವರದಿಗಳು ಮತ್ತು ಹೋಲಿಕೆಗಳಲ್ಲಿ ಸಹಾಯ ಮಾಡುತ್ತದೆ",
+        "photo": "ಫೋಟೋ",
+        "photoSub": "ಫೋಟೋ ಸೇರಿಸಿ ಅಥವಾ ನಾವು ಸ್ಮಾರ್ಟ್ ಪ್ಲೇಸ್‌ಹೋಲ್ಡರ್ ಬಳಸುತ್ತೇವೆ"
+      },
+      "fields": {
+        "streetAddress": "ಬೀದಿ ವಿಳಾಸ",
+        "city": "ನಗರ",
+        "state": "ರಾಜ್ಯ",
+        "pinCode": "PIN ಕೋಡ್",
+        "propertyType": "ಆಸ್ತಿ ಪ್ರಕಾರ",
+        "area": "ವಿಸ್ತೀರ್ಣ",
+        "marketValue": "ಮಾರುಕಟ್ಟೆ ಮೌಲ್ಯ",
+        "yearBuilt": "ನಿರ್ಮಾಣ ವರ್ಷ",
+        "bedrooms": "ಮಲಗುವ ಕೋಣೆಗಳು",
+        "bathrooms": "ಸ್ನಾನ ಕೋಣೆಗಳು",
+        "stories": "ಮಹಡಿಗಳು",
+        "propertyPhoto": "ಆಸ್ತಿ ಫೋಟೋ"
+      },
+      "placeholders": {
+        "address": "ವಿಳಾಸ ಟೈಪ್ ಮಾಡಲು ಪ್ರಾರಂಭಿಸಿ...",
+        "city": "ನಗರ ಆಯ್ಕೆಮಾಡಿ ಅಥವಾ ಟೈಪ್ ಮಾಡಿ",
+        "state": "ರಾಜ್ಯ ಆಯ್ಕೆಮಾಡಿ",
+        "pinCode": "560001",
+        "propertyType": "ಆಸ್ತಿ ಪ್ರಕಾರ ಆಯ್ಕೆಮಾಡಿ",
+        "area": "1800",
+        "marketValue": "15000000",
+        "yearBuilt": "2015",
+        "bedrooms": "3",
+        "bathrooms": "2",
+        "stories": "2"
+      },
+      "hints": {
+        "characters": "{{count}} ಅಕ್ಷರಗಳು",
+        "sqft": "ಚದರ ಅಡಿ",
+        "inr": "ಭಾರತೀಯ ರೂಪಾಯಿ",
+        "photoPlaceholder": "ಇದನ್ನು ಬಿಟ್ಟುಬಿಡಿ ಮತ್ತು ನಾವು ಆಸ್ತಿ ಪ್ರಕಾರದ ಆಧಾರದ ಮೇಲೆ ಪ್ಲೇಸ್‌ಹೋಲ್ಡರ್ ಬಳಸುತ್ತೇವೆ."
+      },
+      "types": {
+        "residentialLabel": "ವಸತಿ",
+        "residentialDesc": "ಮನೆ, ಅಪಾರ್ಟ್‌ಮೆಂಟ್, ವಿಲ್ಲಾ",
+        "commercialLabel": "ವಾಣಿಜ್ಯ",
+        "commercialDesc": "ಕಚೇರಿ, ಚಿಲ್ಲರೆ, ಹೋಟೆಲ್",
+        "industrialLabel": "ಕೈಗಾರಿಕಾ",
+        "industrialDesc": "ಗೋದಾಮು, ಕಾರ್ಖಾನೆ",
+        "landLabel": "ಭೂಮಿ",
+        "landDesc": "ನಿವೇಶನ, ಕೃಷಿ",
+        "mixedUseLabel": "ಮಿಶ್ರ ಬಳಕೆ",
+        "mixedUseDesc": "ವಸತಿ + ವಾಣಿಜ್ಯ"
+      },
+      "errors": {
+        "addressRequired": "ವಿಳಾಸ ಅಗತ್ಯ",
+        "addressLength": "ವಿಳಾಸ ಕನಿಷ್ಠ 6 ಅಕ್ಷರಗಳಿರಬೇಕು",
+        "cityRequired": "ನಗರ ಅಗತ್ಯ",
+        "pinInvalid": "PIN ಸರಿಯಾಗಿ 6 ಅಂಕಿಗಳಿರಬೇಕು",
+        "areaInvalid": "ವಿಸ್ತೀರ್ಣ 0 ಕ್ಕಿಂತ ಹೆಚ್ಚಿರಬೇಕು",
+        "valueInvalid": "ಮೌಲ್ಯ 0 ಕ್ಕಿಂತ ಹೆಚ್ಚಿರಬೇಕು",
+        "yearRange": "ವರ್ಷ 1800 ಮತ್ತು {{max}} ನಡುವಿರಬೇಕು",
+        "cannotBeNegative": "ಋಣಾತ್ಮಕವಾಗಿರಬಾರದು",
+        "storiesRange": "ಮಹಡಿಗಳು 1 ಮತ್ತು 200 ನಡುವಿರಬೇಕು",
+        "formHasErrors": "ಫಾರ್ಮ್‌ನಲ್ಲಿ ದೋಷಗಳಿವೆ",
+        "reviewFields": "ದಯವಿಟ್ಟು ಕೆಳಗೆ ಹೈಲೈಟ್ ಮಾಡಿದ ಕ್ಷೇತ್ರಗಳನ್ನು ಪರಿಶೀಲಿಸಿ.",
+        "couldntAdd": "ಆಸ್ತಿ ಸೇರಿಸಲಾಗಲಿಲ್ಲ",
+        "tryAgainMoment": "ದಯವಿಟ್ಟು ಕ್ಷಣದಲ್ಲಿ ಮತ್ತೆ ಪ್ರಯತ್ನಿಸಿ."
+      },
+      "toasts": {
+        "addedVerified": "ಆಸ್ತಿ ಸೇರಿಸಿ ಮತ್ತು ಸಂಪೂರ್ಣ ಪರಿಶೀಲಿಸಲಾಗಿದೆ",
+        "addedVerifiedDesc": "ಎಲ್ಲಾ 7 ಡೇಟಾ ಗುಣಮಟ್ಟ ಪರೀಕ್ಷೆಗಳು ಉತ್ತೀರ್ಣ.",
+        "added": "ಆಸ್ತಿ ಸೇರಿಸಲಾಗಿದೆ",
+        "addedDesc_one": "ನಂತರ ಸಂಪೂರ್ಣ ಪರಿಶೀಲಿಸಲು {{count}} ಹೆಚ್ಚಿನ ಕ್ಷೇತ್ರ ಪೂರ್ಣಗೊಳಿಸಿ.",
+        "addedDesc_other": "ನಂತರ ಸಂಪೂರ್ಣ ಪರಿಶೀಲಿಸಲು {{count}} ಹೆಚ್ಚಿನ ಕ್ಷೇತ್ರಗಳನ್ನು ಪೂರ್ಣಗೊಳಿಸಿ."
+      },
+      "footer": {
+        "willBeVerified": "ತಕ್ಷಣ ಪರಿಶೀಲಿಸಲಾಗುತ್ತದೆ",
+        "fieldsToVerification_one": "ಸಂಪೂರ್ಣ ಪರಿಶೀಲನೆಗೆ {{count}} ಕ್ಷೇತ್ರ",
+        "fieldsToVerification_other": "ಸಂಪೂರ್ಣ ಪರಿಶೀಲನೆಗೆ {{count}} ಕ್ಷೇತ್ರಗಳು",
+        "cancel": "ರದ್ದುಮಾಡಿ",
+        "saving": "ಉಳಿಸಲಾಗುತ್ತಿದೆ",
+        "addProperty": "ಆಸ್ತಿ ಸೇರಿಸಿ"
+      }
+    },
+    "editModal": {
+      "title": "ಆಸ್ತಿ ಸಂಪಾದಿಸಿ",
+      "sections": {
+        "photoSub": "ಆಸ್ತಿ ಫೋಟೋ ನವೀಕರಿಸಿ ಅಥವಾ ಸೇರಿಸಿ"
+      },
+      "placeholders": {
+        "address": "742 Evergreen Terrace"
+      },
+      "banner": {
+        "allPassed": "ಎಲ್ಲಾ ಡೇಟಾ ಗುಣಮಟ್ಟ ಪರೀಕ್ಷೆಗಳು ಉತ್ತೀರ್ಣ",
+        "awayFromVerification_one": "ಸಂಪೂರ್ಣ ಪರಿಶೀಲನೆಯಿಂದ {{count}} ಕ್ಷೇತ್ರ ದೂರ",
+        "awayFromVerification_other": "ಸಂಪೂರ್ಣ ಪರಿಶೀಲನೆಯಿಂದ {{count}} ಕ್ಷೇತ್ರಗಳು ದೂರ",
+        "hint": "ಈ ಆಸ್ತಿಯನ್ನು ಪರಿಶೀಲಿಸಿದ ಎಂದು ಗುರುತಿಸಲು ಎಲ್ಲಾ ಕ್ಷೇತ್ರಗಳನ್ನು ಪೂರ್ಣಗೊಳಿಸಿ."
+      },
+      "toasts": {
+        "verified": "ಆಸ್ತಿ ಪರಿಶೀಲಿಸಲಾಗಿದೆ",
+        "changesSaved": "ಬದಲಾವಣೆಗಳನ್ನು ಉಳಿಸಲಾಗಿದೆ",
+        "stillNeeded_one": "ಪರಿಶೀಲನೆಗೆ {{count}} ಕ್ಷೇತ್ರ ಇನ್ನೂ ಅಗತ್ಯ.",
+        "stillNeeded_other": "ಪರಿಶೀಲನೆಗೆ {{count}} ಕ್ಷೇತ್ರಗಳು ಇನ್ನೂ ಅಗತ್ಯ.",
+        "saveFailed": "ಬದಲಾವಣೆಗಳನ್ನು ಉಳಿಸಲಾಗಲಿಲ್ಲ"
+      },
+      "footer": {
+        "willMarkVerified": "ಉಳಿಸುವುದರಿಂದ ಇದನ್ನು ಪರಿಶೀಲಿಸಿದ ಎಂದು ಗುರುತಿಸಲಾಗುತ್ತದೆ",
+        "saveChanges": "ಬದಲಾವಣೆಗಳನ್ನು ಉಳಿಸಿ",
+        "fieldsToVerification_one": "ಸಂಪೂರ್ಣ ಪರಿಶೀಲನೆಗೆ {{count}} ಕ್ಷೇತ್ರ",
+        "fieldsToVerification_other": "ಸಂಪೂರ್ಣ ಪರಿಶೀಲನೆಗೆ {{count}} ಕ್ಷೇತ್ರಗಳು"
+      }
+    },
+    "aggregation": {
+      "enums": {
+        "taxStatus": {
+          "PAID": "ಪಾವತಿಸಲಾಗಿದೆ",
+          "PENDING": "ಬಾಕಿ",
+          "OVERDUE": "ಗಡುವು ಮೀರಿದೆ"
+        },
+        "permitType": {
+          "BUILDING": "ಕಟ್ಟಡ",
+          "RENOVATION": "ನವೀಕರಣ",
+          "OCCUPANCY": "ಆಕ್ರಮಣ",
+          "DEMOLITION": "ಧ್ವಂಸ",
+          "ELECTRICAL": "ವಿದ್ಯುತ್",
+          "PLUMBING": "ಪ್ಲಂಬಿಂಗ್"
+        },
+        "permitStatus": {
+          "APPROVED": "ಅನುಮೋದಿಸಲಾಗಿದೆ",
+          "PENDING": "ಬಾಕಿ",
+          "EXPIRED": "ಅವಧಿ ಮೀರಿದೆ",
+          "REJECTED": "ತಿರಸ್ಕರಿಸಲಾಗಿದೆ"
+        }
+      },
+      "completeness": {
+        "title": "ಡೇಟಾ ಸಂಪೂರ್ಣತೆ",
+        "subtitle": "6 ಡೇಟಾ ಮೂಲಗಳಾದ್ಯಂತ ಸಂಗ್ರಹಣ ಆರೋಗ್ಯ",
+        "refreshAria": "ಸಂಗ್ರಹಣ ರಿಫ್ರೆಶ್",
+        "refreshTitle": "ಎಲ್ಲಾ ಮೂಲಗಳನ್ನು ರಿಫ್ರೆಶ್ ಮಾಡಿ",
+        "overallStatus": "ಒಟ್ಟಾರೆ ಸ್ಥಿತಿ",
+        "coverage": "ಕವರೇಜ್",
+        "liveSources_one": "ಲೈವ್ ಮೂಲ",
+        "liveSources_other": "ಲೈವ್ ಮೂಲಗಳು",
+        "mockSources_one": "ಮಾದರಿ ಮೂಲ",
+        "mockSources_other": "ಮಾದರಿ ಮೂಲಗಳು",
+        "unavailable": "ಲಭ್ಯವಿಲ್ಲ",
+        "dataSources": "ಡೇಟಾ ಮೂಲಗಳು",
+        "totalCount": "{{n}} ಒಟ್ಟು",
+        "latestFetch": "ಇತ್ತೀಚಿನ ಪಡೆಯುವಿಕೆ:",
+        "oldest": "ಹಳೆಯದು:",
+        "duration": "ಅವಧಿ:",
+        "overallOk": "ಎಲ್ಲಾ ಮೂಲಗಳು ಲಭ್ಯ",
+        "overallPartial": "ಭಾಗಶಃ ಡೇಟಾ",
+        "overallDegraded": "ಹದಗೆಟ್ಟಿದೆ — ಕೆಲವು ಮೂಲಗಳು ಕೆಳಗಿವೆ",
+        "overallLoading": "ಲೋಡ್ ಆಗುತ್ತಿದೆ",
+        "statusEmpty": "ಖಾಲಿ",
+        "statusDown": "ಕೆಳಗಿದೆ",
+        "sources": {
+          "ownership": "ಮಾಲೀಕತ್ವ ನೋಂದಣಿ",
+          "taxHistory": "ಪುರಸಭೆ ತೆರಿಗೆ ದಾಖಲೆಗಳು",
+          "zoning": "ವಲಯ ಪ್ರಾಧಿಕಾರ",
+          "floodZone": "ಪ್ರವಾಹ ಅಪಾಯ ಮೌಲ್ಯಮಾಪನ",
+          "permits": "ಅನುಮತಿ ಡೇಟಾಬೇಸ್",
+          "environmental": "ಪರಿಸರ ಮೇಲ್ವಿಚಾರಣೆ"
+        }
+      },
+      "environmental": {
+        "title": "ಪರಿಸರ",
+        "subtitle": "ವಾಯು ಗುಣಮಟ್ಟ ಮತ್ತು ಸುತ್ತಮುತ್ತ",
+        "emptyLabel": "ಪರಿಸರ ಡೇಟಾ",
+        "aqi": "ವಾಯು ಗುಣಮಟ್ಟ ಸೂಚ್ಯಂಕ",
+        "mainPollutant": "ಮುಖ್ಯ ಮಾಲಿನ್ಯಕಾರ",
+        "nearestStation": "ಹತ್ತಿರದ ಮೇಲ್ವಿಚಾರಣಾ ಕೇಂದ್ರ",
+        "measured": "{{ago}} ಅಳೆಯಲಾಗಿದೆ",
+        "greenCover": "ಹಸಿರು ಹೊದಿಕೆ",
+        "noiseLevel": "ಶಬ್ದ ಮಟ್ಟ",
+        "soilType": "ಮಣ್ಣಿನ ಪ್ರಕಾರ",
+        "industrialZone": "ಕೈಗಾರಿಕಾ ವಲಯ",
+        "nearby": "ಹತ್ತಿರ",
+        "notNearby": "ಹತ್ತಿರ ಇಲ್ಲ"
+      },
+      "flood": {
+        "title": "ಪ್ರವಾಹ ಅಪಾಯ",
+        "subtitle": "ಪ್ರವಾಹ ವಲಯ ವರ್ಗೀಕರಣ ಮತ್ತು ಇತಿಹಾಸ",
+        "emptyLabel": "ಪ್ರವಾಹ ಡೇಟಾ",
+        "zone": "ವಲಯ",
+        "insuranceRecommended": "ಪ್ರವಾಹ ವಿಮೆ ಶಿಫಾರಸು",
+        "insuranceNotMandatory": "ಪ್ರವಾಹ ವಿಮೆ ಕಡ್ಡಾಯವಿಲ್ಲ",
+        "basedOn": "{{agency}} ಆಧಾರಿತ",
+        "regionalHazard": "ಪ್ರಾದೇಶಿಕ ಅಪಾಯ ಡೇಟಾ",
+        "nearestWater": "ಹತ್ತಿರದ ಜಲಮೂಲ",
+        "distance": "ದೂರ",
+        "lastFlood": "ಕೊನೆಯ ದೊಡ್ಡ ಪ್ರವಾಹ:"
+      },
+      "zoning": {
+        "title": "ವಲಯ ಮಾಹಿತಿ",
+        "subtitle": "ಭೂ ಬಳಕೆ ವರ್ಗೀಕರಣ ಮತ್ತು ಕಟ್ಟಡ ನಿಯಮಗಳು",
+        "emptyLabel": "ವಲಯ ಮಾಹಿತಿ",
+        "zoneCode": "ವಲಯ ಕೋಡ್",
+        "category": "ವರ್ಗ",
+        "maxFar": "ಗರಿಷ್ಠ FAR",
+        "groundCoverage": "ಭೂ ಕವರೇಜ್",
+        "maxHeight": "ಗರಿಷ್ಠ ಎತ್ತರ",
+        "allowedUses": "ಅನುಮತಿಸಿದ ಬಳಕೆಗಳು",
+        "restrictedUses": "ನಿರ್ಬಂಧಿತ ಬಳಕೆಗಳು",
+        "referencePlan": "ಉಲ್ಲೇಖ ಯೋಜನೆ"
+      },
+      "section": {
+        "waiting": "ಡೇಟಾಕ್ಕಾಗಿ ನಿರೀಕ್ಷಿಸಲಾಗುತ್ತಿದೆ...",
+        "errorTitle": "ವಿಭಾಗ ತಾತ್ಕಾಲಿಕವಾಗಿ ಲಭ್ಯವಿಲ್ಲ",
+        "errorReason": "ಬಾಹ್ಯ ಡೇಟಾ ಮೂಲವನ್ನು ತಲುಪಲಾಗಲಿಲ್ಲ. ಶೀಘ್ರದಲ್ಲಿ ಮತ್ತೆ ಪ್ರಯತ್ನಿಸಿ.",
+        "emptyTitle": "ಯಾವುದೇ {{item}} ಲಭ್ಯವಿಲ್ಲ",
+        "emptyReason": "ಈ ಆಸ್ತಿಗೆ ಇನ್ನೂ ಯಾವುದೇ ದಾಖಲೆಗಳಿಲ್ಲ.",
+        "dataFallback": "ಡೇಟಾ"
+      },
+      "badge": {
+        "mock": "ಮಾದರಿ"
+      },
+      "ownership": {
+        "title": "ಮಾಲೀಕತ್ವ",
+        "subtitle": "ಪ್ರಸ್ತುತ ಮಾಲೀಕ ಮತ್ತು ನೋಂದಣಿ ವಿವರಗಳು",
+        "emptyLabel": "ಮಾಲೀಕತ್ವ ದಾಖಲೆಗಳು",
+        "currentOwner": "ಪ್ರಸ್ತುತ ಮಾಲೀಕ",
+        "coOwners": "ಸಹ-ಮಾಲೀಕರು:",
+        "ownershipType": "ಮಾಲೀಕತ್ವ ಪ್ರಕಾರ",
+        "registrationNo": "ನೋಂದಣಿ ಸಂಖ್ಯೆ.",
+        "registeredOn": "ನೋಂದಾಯಿಸಿದ ದಿನಾಂಕ",
+        "subRegistrar": "ಉಪ-ನೋಂದಣಾಧಿಕಾರಿ ಕಚೇರಿ",
+        "registeredValue": "ನೋಂದಾಯಿತ ಮೌಲ್ಯ",
+        "stampDuty": "ಪಾವತಿಸಿದ ಸ್ಟ್ಯಾಂಪ್ ಡ್ಯೂಟಿ"
+      },
+      "permits": {
+        "title": "ಅನುಮತಿಗಳು ಮತ್ತು ಅನುಮೋದನೆಗಳು",
+        "subtitle": "ಕಟ್ಟಡ, ಆಕ್ರಮಣ ಮತ್ತು ನವೀಕರಣ ಅನುಮತಿಗಳು",
+        "emptyLabel": "ಅನುಮತಿಗಳು",
+        "issued": "ನೀಡಲಾಗಿದೆ:",
+        "expires": "ಅವಧಿ ಮುಗಿಯುತ್ತದೆ:",
+        "noRecords": "ಈ ಆಸ್ತಿಗೆ ಯಾವುದೇ ಅನುಮತಿ ದಾಖಲಾಗಿಲ್ಲ."
+      },
+      "tax": {
+        "title": "ಆಸ್ತಿ ತೆರಿಗೆ ಇತಿಹಾಸ",
+        "subtitle": "ಮೌಲ್ಯಮಾಪನ ಮತ್ತು ಪಾವತಿ ದಾಖಲೆಗಳು",
+        "emptyLabel": "ತೆರಿಗೆ ದಾಖಲೆಗಳು",
+        "year": "ವರ್ಷ",
+        "assessedValue": "ಮೌಲ್ಯಮಾಪಿತ ಮೌಲ್ಯ",
+        "taxDue": "ಬಾಕಿ ತೆರಿಗೆ",
+        "status": "ಸ್ಥಿತಿ",
+        "receipt": "ರಸೀದಿ",
+        "noRecords": "ಈ ಆಸ್ತಿಗೆ ಯಾವುದೇ ತೆರಿಗೆ ದಾಖಲೆಗಳು ಲಭ್ಯವಿಲ್ಲ."
+      }
+    },
+    "quickImage": {
+      "addPhoto": "ಫೋಟೋ ಸೇರಿಸಿ",
+      "updatePhoto": "ಫೋಟೋ ನವೀಕರಿಸಿ",
+      "closeAria": "ಮುಚ್ಚಿ",
+      "cancel": "ರದ್ದುಮಾಡಿ",
+      "saving": "ಉಳಿಸಲಾಗುತ್ತಿದೆ",
+      "removePhoto": "ಫೋಟೋ ತೆಗೆದುಹಾಕಿ",
+      "savePhoto": "ಫೋಟೋ ಉಳಿಸಿ",
+      "saveChanges": "ಬದಲಾವಣೆಗಳನ್ನು ಉಳಿಸಿ",
+      "noChanges": "ಯಾವುದೇ ಬದಲಾವಣೆಗಳಿಲ್ಲ",
+      "removedTitle": "ಫೋಟೋ ತೆಗೆದುಹಾಕಲಾಗಿದೆ",
+      "removedDesc": "ಆಸ್ತಿ ಈಗ ಪ್ಲೇಸ್‌ಹೋಲ್ಡರ್ ತೋರಿಸುತ್ತದೆ.",
+      "updatedTitle": "ಫೋಟೋ ನವೀಕರಿಸಲಾಗಿದೆ",
+      "updatedDesc": "ನಿಮ್ಮ ಆಸ್ತಿ ಫೋಟೋ ಉಳಿಸಲಾಗಿದೆ.",
+      "updateFailed": "ಫೋಟೋ ನವೀಕರಿಸಲಾಗಲಿಲ್ಲ",
+      "tryAgainMoment": "ದಯವಿಟ್ಟು ಕ್ಷಣದಲ್ಲಿ ಮತ್ತೆ ಪ್ರಯತ್ನಿಸಿ.",
+      "stagedWarningTitle": "ಫೋಟೋ ತೆಗೆದುಹಾಕಲು ಸಿದ್ಧ",
+      "stagedWarningDesc": "ದೃಢೀಕರಿಸಲು <1>ಫೋಟೋ ತೆಗೆದುಹಾಕಿ</1> ಕ್ಲಿಕ್ ಮಾಡಿ, ಅಥವಾ ಪ್ರಸ್ತುತ ಫೋಟೋ ಇಡಲು <3>ರದ್ದುಮಾಡಿ</3>.",
+      "replaceHint": "ಪ್ರಸ್ತುತ ಫೋಟೋ ಬದಲಿಸಿ, ಅಥವಾ ಪ್ಲೇಸ್‌ಹೋಲ್ಡರ್ ಬಳಸಲು ಅದನ್ನು ತೆಗೆದುಹಾಕಿ.",
+      "addHint": "ಹುಡುಕಾಟ ಫಲಿತಾಂಶಗಳಲ್ಲಿ ಈ ಆಸ್ತಿಯನ್ನು ಗುರುತಿಸಲು ಸಹಾಯ ಮಾಡಲು ಫೋಟೋ ಸೇರಿಸಿ."
+    },
+    "saveComparison": {
+      "closeAria": "ಮುಚ್ಚಿ",
+      "titleSave": "ಹೋಲಿಕೆ ಉಳಿಸಿ",
+      "titleSaved": "ಹೋಲಿಕೆ ಉಳಿಸಲಾಗಿದೆ!",
+      "subtitleSave_one": "ಈ {{count}} ಆಸ್ತಿ ಹೋಲಿಕೆಯನ್ನು ನಿಮ್ಮ ಖಾತೆಯಲ್ಲಿ ಉಳಿಸಿ.",
+      "subtitleSave_other": "ಈ {{count}} ಆಸ್ತಿ ಹೋಲಿಕೆಯನ್ನು ನಿಮ್ಮ ಖಾತೆಯಲ್ಲಿ ಉಳಿಸಿ.",
+      "subtitleSaved": "ನಿಮ್ಮ ಉಳಿಸಿದ ಪಟ್ಟಿಯಿಂದ ಯಾವಾಗ ಬೇಕಾದರೂ ಈ ಹೋಲಿಕೆ ಲೋಡ್ ಮಾಡಬಹುದು.",
+      "nameLabel": "ಹೆಸರು",
+      "namePlaceholder": "ಉದಾ. ಮುಂಬೈ ಮತ್ತು ಪುಣೆ ಹೋಲಿಕೆ",
+      "nameRequired": "ಹೆಸರು ಅಗತ್ಯ",
+      "nameMin": "ಹೆಸರು ಕನಿಷ್ಠ 3 ಅಕ್ಷರಗಳಿರಬೇಕು",
+      "nameMax": "ಹೆಸರು 100 ಅಕ್ಷರಗಳನ್ನು ಮೀರಬಾರದು",
+      "notesLabel": "ಟಿಪ್ಪಣಿಗಳು",
+      "notesOptional": "(ಐಚ್ಛಿಕ)",
+      "notesPlaceholder": "ಈ ಹೋಲಿಕೆಯ ಬಗ್ಗೆ ಟಿಪ್ಪಣಿಗಳನ್ನು ಸೇರಿಸಿ...",
+      "notesMax": "ಟಿಪ್ಪಣಿಗಳು 1000 ಅಕ್ಷರಗಳನ್ನು ಮೀರಬಾರದು",
+      "propertiesCount_one": "ಈ ಹೋಲಿಕೆಯಲ್ಲಿ {{count}} ಆಸ್ತಿ ಉಳಿಸಲಾಗುತ್ತದೆ",
+      "propertiesCount_other": "ಈ ಹೋಲಿಕೆಯಲ್ಲಿ {{count}} ಆಸ್ತಿಗಳನ್ನು ಉಳಿಸಲಾಗುತ್ತದೆ",
+      "cancel": "ರದ್ದುಮಾಡಿ",
+      "saveButton": "ಹೋಲಿಕೆ ಉಳಿಸಿ",
+      "saving": "ಉಳಿಸಲಾಗುತ್ತಿದೆ...",
+      "tipEsc": "ಸಲಹೆ: ಒತ್ತಿ",
+      "tipEscSuffix": "ರದ್ದುಮಾಡಲು",
+      "closingAuto": "ಸ್ವಯಂಚಾಲಿತವಾಗಿ ಮುಚ್ಚಲಾಗುತ್ತಿದೆ..."
+    },
+    "logout": {
+      "closeAria": "ಮುಚ್ಚಿ",
+      "title": "ಸೈನ್ ಔಟ್ ಮಾಡಲು ಸಿದ್ಧರಿದ್ದೀರಾ?",
+      "subtitle": "ನಿಮ್ಮ ಡ್ಯಾಶ್‌ಬೋರ್ಡ್ ಮತ್ತು ಆಸ್ತಿ ಡೇಟಾ ಪ್ರವೇಶಿಸಲು ನೀವು ಮತ್ತೆ ಲಾಗ್ ಇನ್ ಮಾಡಬೇಕಾಗುತ್ತದೆ.",
+      "activeBadge": "ಸಕ್ರಿಯ",
+      "signedInFallback": "ಸೈನ್ ಇನ್ ಆಗಿದೆ",
+      "fallbackUser": "ಬಳಕೆದಾರ",
+      "stayIn": "ಸೈನ್ ಇನ್ ಆಗಿ ಉಳಿಯಿರಿ",
+      "confirm": "ಹೌದು, ಲಾಗ್ ಔಟ್",
+      "signingOut": "ಸೈನ್ ಔಟ್ ಆಗುತ್ತಿದೆ…",
+      "tipEsc": "ಸಲಹೆ: ಒತ್ತಿ",
+      "tipEscSuffix": "ರದ್ದುಮಾಡಲು"
+    },
+    "detailPage": {
+      "pageTitle": "ಆಸ್ತಿ ವಿವರಗಳು | Real Estate Due Diligence Agent",
+      "couldNotLoad": "ಆಸ್ತಿ ವಿವರಗಳನ್ನು ಲೋಡ್ ಮಾಡಲಾಗಲಿಲ್ಲ",
+      "notFound": "ಆಸ್ತಿ ಕಂಡುಬಂದಿಲ್ಲ",
+      "mayBeRemoved": "ಅದನ್ನು ತೆಗೆದುಹಾಕಲಾಗಿರಬಹುದು."
+    },
+    "propertyTypes": {
+      "COMMERCIAL": "ವಾಣಿಜ್ಯ",
+      "RESIDENTIAL": "ವಸತಿ",
+      "INDUSTRIAL": "ಕೈಗಾರಿಕಾ",
+      "LAND": "ಭೂಮಿ",
+      "MIXED_USE": "ಮಿಶ್ರ ಬಳಕೆ",
+      "AGRICULTURAL": "ಕೃಷಿ"
+    },
+    "filter": {
+      "filter": "ಫಿಲ್ಟರ್",
+      "clearFilters": "ಫಿಲ್ಟರ್‌ಗಳನ್ನು ತೆರವುಗೊಳಿಸಿ",
+      "noMatchFilters": "ನಿಮ್ಮ ಫಿಲ್ಟರ್‌ಗಳಿಗೆ ಯಾವುದೇ ಆಸ್ತಿ ಹೊಂದಾಣಿಕೆಯಾಗುತ್ತಿಲ್ಲ",
+      "tryRemoving": "ಕೆಲವು ಫಿಲ್ಟರ್‌ಗಳನ್ನು ತೆಗೆದುಹಾಕಿ ಅಥವಾ ಎಲ್ಲವನ್ನೂ ತೆರವುಗೊಳಿಸಿ",
+      "title": "ಫಿಲ್ಟರ್‌ಗಳು",
+      "subtitle": "ನಿಮ್ಮ ಆಸ್ತಿ ಪಟ್ಟಿ ಪರಿಷ್ಕರಿಸಿ",
+      "activeCount_one": "{{count}} ಫಿಲ್ಟರ್ ಸಕ್ರಿಯ",
+      "activeCount_other": "{{count}} ಫಿಲ್ಟರ್‌ಗಳು ಸಕ್ರಿಯ",
+      "resetFilters": "ಫಿಲ್ಟರ್‌ಗಳನ್ನು ಮರುಹೊಂದಿಸಿ",
+      "matching": "ಹೊಂದಾಣಿಕೆಯಾಗುತ್ತಿದೆ",
+      "viewProperties_one": "{{count}} ಆಸ್ತಿ ವೀಕ್ಷಿಸಿ",
+      "viewProperties_other": "{{count}} ಆಸ್ತಿಗಳನ್ನು ವೀಕ್ಷಿಸಿ",
+      "sections": {
+        "propertyType": "ಆಸ್ತಿ ಪ್ರಕಾರ",
+        "city": "ನಗರ",
+        "priceRange": "ಬೆಲೆ ಶ್ರೇಣಿ",
+        "dataQuality": "ಡೇಟಾ ಗುಣಮಟ್ಟ",
+        "sortBy": "ಕ್ರಮದಲ್ಲಿ"
+      },
+      "activeLabel": "ಸಕ್ರಿಯ",
+      "chipMinPrice": "ಕನಿಷ್ಠ: {{value}}",
+      "chipMaxPrice": "ಗರಿಷ್ಠ: {{value}}",
+      "chipSort": "ಕ್ರಮ: {{label}}",
+      "chipRemove": "{{label}} ತೆಗೆದುಹಾಕಿ",
+      "noTypesYet": "ಡೇಟಾದಲ್ಲಿ ಇನ್ನೂ ಯಾವುದೇ ಪ್ರಕಾರಗಳಿಲ್ಲ",
+      "noCitiesYet": "ಡೇಟಾದಲ್ಲಿ ಇನ್ನೂ ಯಾವುದೇ ನಗರಗಳಿಲ್ಲ",
+      "minPrice": "ಕನಿಷ್ಠ (₹)",
+      "maxPrice": "ಗರಿಷ್ಠ (₹)",
+      "anyPrice": "ಯಾವುದಾದರೂ",
+      "highestInDb": "ಡೇಟಾಬೇಸ್‌ನಲ್ಲಿ ಅತ್ಯಧಿಕ: {{amount}}",
+      "verifiedOnly": "ಪರಿಶೀಲಿಸಿದ ಮಾತ್ರ",
+      "verifiedOnlyDesc": "ಎಲ್ಲಾ ಗುಣಮಟ್ಟ ಪರೀಕ್ಷೆಗಳನ್ನು ಉತ್ತೀರ್ಣ ಮಾಡಿದ ಆಸ್ತಿಗಳನ್ನು ತೋರಿಸಿ",
+      "toggleVerified": "ಪರಿಶೀಲಿಸಿದ-ಮಾತ್ರ ಫಿಲ್ಟರ್ ಟಾಗಲ್ ಮಾಡಿ",
+      "highRiskOnly": "ಹೆಚ್ಚಿನ ಅಪಾಯ ಮಾತ್ರ",
+      "highRiskDesc": "66 ಕ್ಕಿಂತ ಹೆಚ್ಚಿನ ಅಪಾಯ ಸ್ಕೋರ್ ಇರುವ ಆಸ್ತಿಗಳನ್ನು ತೋರಿಸಿ",
+      "toggleHighRisk": "ಹೆಚ್ಚಿನ ಅಪಾಯ ಫಿಲ್ಟರ್ ಟಾಗಲ್ ಮಾಡಿ",
+      "sortOptions": {
+        "recent": "ಇತ್ತೀಚಿಗೆ ಸೇರಿಸಿದ",
+        "priceAsc": "ಬೆಲೆ: ಕಡಿಮೆ → ಹೆಚ್ಚು",
+        "priceDesc": "ಬೆಲೆ: ಹೆಚ್ಚು → ಕಡಿಮೆ",
+        "alpha": "ವರ್ಣಮಾಲೆ (A–Z)",
+        "riskDesc": "ಅತ್ಯಧಿಕ ಅಪಾಯ ಮೊದಲು"
+      }
+    },
+    "card": {
+      "verified": "ಪರಿಶೀಲಿಸಿದ",
+      "pending": "ಬಾಕಿ",
+      "incomplete": "ಅಪೂರ್ಣ",
+      "marketValue": "ಮಾರುಕಟ್ಟೆ ಮೌಲ್ಯ",
+      "completeToVerify": "ಪರಿಶೀಲಿಸಲು ಪೂರ್ಣಗೊಳಿಸಿ",
+      "missing": "ಕಾಣೆಯಾಗಿದೆ:",
+      "addPhoto": "ಫೋಟೋ ಸೇರಿಸಿ",
+      "changePhoto": "ಫೋಟೋ ಬದಲಿಸಿ",
+      "lowRisk": "ಕಡಿಮೆ ಅಪಾಯ",
+      "mediumRisk": "ಮಧ್ಯಮ ಅಪಾಯ",
+      "highRisk": "ಹೆಚ್ಚಿನ ಅಪಾಯ",
+      "unknownAddress": "ಅಜ್ಞಾತ ವಿಳಾಸ",
+      "propertyFallback": "ಆಸ್ತಿ",
+      "addToCompare": "ಹೋಲಿಕೆಗೆ ಸೇರಿಸಿ",
+      "removeFromCompare": "ಹೋಲಿಕೆಯಿಂದ ತೆಗೆದುಹಾಕಿ",
+      "maxCompareReached": "ಹೋಲಿಕೆಗೆ ಗರಿಷ್ಠ 3 ಆಸ್ತಿಗಳು",
+      "verifiedTooltip": "ಪರಿಶೀಲಿಸಿದ — ಎಲ್ಲಾ {{n}} ಡೇಟಾ ಗುಣಮಟ್ಟ ಪರೀಕ್ಷೆಗಳು ಉತ್ತೀರ್ಣ",
+      "pendingTooltip": "ಬಾಕಿ — {{total}} ರಲ್ಲಿ {{passed}} ಪರೀಕ್ಷೆಗಳು ಉತ್ತೀರ್ಣ.\nಕಾಣೆ: {{missing}}",
+      "bedroomsShort": "{{n}} BR",
+      "bathroomsShort": "{{n}} BA",
+      "riskScoreTooltip": "ಅಪಾಯ ಸ್ಕೋರ್: {{score}}/100",
+      "moreItems": "+{{n}} ಹೆಚ್ಚು",
+      "photoPending": "ಫೋಟೋ ಬಾಕಿ"
+    },
+    "risk": {
+      "title": "ಅಪಾಯ ಮೌಲ್ಯಮಾಪನ",
+      "subtitle": "ನೈಜ ಸಂಗ್ರಹಿತ ಡೇಟಾ ಆಧಾರಿತ",
+      "unavailable": "ಅಪಾಯ ಸ್ಕೋರ್ ಲಭ್ಯವಿಲ್ಲ",
+      "couldntLoad": "ಅಪಾಯ ಸ್ಕೋರ್ ಲೋಡ್ ಮಾಡಲಾಗಲಿಲ್ಲ",
+      "categoryBreakdown": "ವರ್ಗ ವಿಭಜನೆ",
+      "weight": "ತೂಕ {{pct}}",
+      "factorsCount": "ಅಪಾಯ ಅಂಶಗಳು · {{n}}",
+      "incompleteNote": "ಕೆಲವು ಡೇಟಾ ಮೂಲಗಳು ಮಾದರಿ ಅಥವಾ ಲಭ್ಯವಿಲ್ಲದ ಡೇಟಾ ನೀಡಿವೆ. ಹೆಚ್ಚು ನೈಜ ಡೇಟಾ ಲಭ್ಯವಾದಂತೆ ಸ್ಕೋರ್ ಸುಧಾರಿಸಬಹುದು.",
+      "categories": {
+        "financial": "ಹಣಕಾಸು",
+        "legal": "ಕಾನೂನು",
+        "environmental": "ಪರಿಸರ",
+        "structural": "ರಚನಾತ್ಮಕ"
+      }
+    },
+    "building": {
+      "title": "ಕಟ್ಟಡ ಮಾಹಿತಿ",
+      "subtitle": "ನೀವು ಒದಗಿಸಿದ ರಚನಾತ್ಮಕ ವಿವರಗಳು",
+      "storiesCount_one": "{{count}} ಮಹಡಿ",
+      "storiesCount_other": "{{count}} ಮಹಡಿಗಳು",
+      "emptyTitle": "ಯಾವುದೇ ಕಟ್ಟಡ ವಿವರಗಳು ಸೇರಿಸಲಾಗಿಲ್ಲ",
+      "emptyDesc": "ಅಪಾಯ ಸ್ಕೋರಿಂಗ್‌ನ ನಿಖರತೆಯನ್ನು ಸುಧಾರಿಸಲು ರಚನೆ ಪ್ರಕಾರ, ನಿರ್ಮಾಣ ವರ್ಷ, ಮಲಗುವ ಕೋಣೆಗಳು ಮತ್ತು ಇತರೆ ವಿವರಗಳನ್ನು ಸೇರಿಸಿ.",
+      "addDetails": "ಕಟ್ಟಡ ವಿವರಗಳನ್ನು ಸೇರಿಸಿ"
+    },
+    "details": {
+      "verifiedProperty": "ಪರಿಶೀಲಿಸಿದ ಆಸ್ತಿ",
+      "pendingVerification": "ಪರಿಶೀಲನೆ ಬಾಕಿ",
+      "active": "ಸಕ್ರಿಯ",
+      "userProvided": "ಬಳಕೆದಾರ ಒದಗಿಸಿದ",
+      "editDetails": "ವಿವರಗಳನ್ನು ಸಂಪಾದಿಸಿ",
+      "estimatedMarketValue": "ಅಂದಾಜು ಮಾರುಕಟ್ಟೆ ಮೌಲ್ಯ",
+      "yearBuilt": "ನಿರ್ಮಾಣ ವರ್ಷ",
+      "stories": "ಮಹಡಿಗಳು",
+      "lotSize": "ಜಾಗದ ಗಾತ್ರ",
+      "zoning": "ವಲಯೀಕರಣ",
+      "beds": "ಹಾಸಿಗೆ ಕೊಠಡಿಗಳು",
+      "baths": "ಸ್ನಾನಗೃಹಗಳು",
+      "sqft": "ಚ.ಅಡಿ",
+      "type": "ಪ್ರಕಾರ",
+      "pricePerSqft": "ಪ್ರತಿ ಚ.ಅಡಿ ಬೆಲೆ",
+      "editProperty": "ಆಸ್ತಿ ಸಂಪಾದಿಸಿ",
+      "backToSearch": "ಹುಡುಕಾಟಕ್ಕೆ ಹಿಂತಿರುಗಿ",
+      "monthlyEst": "ಅಂದಾ. {{amount}}/ತಿಂಗಳು",
+      "getPrequalified": "ಪೂರ್ವ-ಅರ್ಹತೆ ಪಡೆಯಿರಿ"
+    },
+    "comparison": {
+      "title": "ಆಸ್ತಿ ಹೋಲಿಕೆ",
+      "subtitle": "{{n}} {{unit}}ಗಳ ಪಕ್ಕಪಕ್ಕದ ವಿಶ್ಲೇಷಣೆ · ನೈಜ ಡೇಟಾ ಮಾತ್ರ",
+      "pageTitle": "ಆಸ್ತಿ ಹೋಲಿಕೆ | Real Estate Due Diligence Agent",
+      "couldNotLoad": "ಹೋಲಿಕೆಯನ್ನು ಲೋಡ್ ಮಾಡಲಾಗಲಿಲ್ಲ",
+      "pleaseGoBack": "ದಯವಿಟ್ಟು ಹಿಂದಕ್ಕೆ ಹೋಗಿ ಮತ್ತೆ ಪ್ರಯತ್ನಿಸಿ.",
+      "loadFailed": "ಹೋಲಿಕೆ ಡೇಟಾ ಲೋಡ್ ವಿಫಲವಾಗಿದೆ",
+      "selectHelper": "ಆಸ್ತಿ ಹುಡುಕಾಟಕ್ಕೆ ಹೋಗಿ, ಪ್ರತಿ ಕಾರ್ಡ್‌ನಲ್ಲಿರುವ ಹೋಲಿಕೆ ಚೆಕ್‌ಬಾಕ್ಸ್ ಬಳಸಿ 2–3 ಆಸ್ತಿಗಳನ್ನು ಆಯ್ಕೆಮಾಡಿ, ನಂತರ \"ಹೋಲಿಸಿ\" ಕ್ಲಿಕ್ ಮಾಡಿ.",
+      "backToSearch": "ಆಸ್ತಿ ಹುಡುಕಾಟಕ್ಕೆ ಹಿಂತಿರುಗಿ",
+      "metricHeader": "ಮಾಪಕ",
+      "propertyUnit": "ಆಸ್ತಿ",
+      "propertiesUnit": "ಆಸ್ತಿಗಳು",
+      "mySaved": "ನನ್ನ ಉಳಿಸಿದವು",
+      "saveComparison": "ಹೋಲಿಕೆ ಉಳಿಸಿ",
+      "goToSearch": "ಆಸ್ತಿ ಹುಡುಕಾಟಕ್ಕೆ ಹೋಗಿ",
+      "selectAtLeast2": "ಹೋಲಿಕೆಗೆ ಕನಿಷ್ಠ 2 ಆಸ್ತಿಗಳನ್ನು ಆಯ್ಕೆಮಾಡಿ",
+      "compareLabel": "ಹೋಲಿಸಿ",
+      "selectedCount": "3 ರಲ್ಲಿ {{count}} ಆಯ್ಕೆಮಾಡಲಾಗಿದೆ",
+      "compareCount_one": "{{count}} ಆಸ್ತಿ ಹೋಲಿಸಿ",
+      "compareCount_other": "{{count}} ಆಸ್ತಿಗಳನ್ನು ಹೋಲಿಸಿ",
+      "selectMinimum": "— ಕನಿಷ್ಠ 2 ಆಯ್ಕೆಮಾಡಿ",
+      "removeProperty": "{{address}} ತೆಗೆದುಹಾಕಿ",
+      "sections": {
+        "financial": "ಹಣಕಾಸು",
+        "propertyDetails": "ಆಸ್ತಿ ವಿವರಗಳು",
+        "riskAssessment": "ಅಪಾಯ ಮೌಲ್ಯಮಾಪನ",
+        "dataQuality": "ಡೇಟಾ ಗುಣಮಟ್ಟ",
+        "integrationSources": "ಒಕ್ಕೂಟ ಡೇಟಾ ಮೂಲಗಳು",
+        "environmental": "ಪರಿಸರ"
+      },
+      "metrics": {
+        "marketValue": "ಮಾರುಕಟ್ಟೆ ಮೌಲ್ಯ",
+        "area": "ವಿಸ್ತೀರ್ಣ",
+        "pricePerSqft": "ಪ್ರತಿ ಚ.ಅಡಿ ಬೆಲೆ",
+        "lotSize": "ಜಾಗದ ಗಾತ್ರ",
+        "yearBuilt": "ನಿರ್ಮಾಣ ವರ್ಷ",
+        "type": "ಪ್ರಕಾರ",
+        "bedrooms": "ಮಲಗುವ ಕೋಣೆಗಳು",
+        "bathrooms": "ಸ್ನಾನ ಕೋಣೆಗಳು",
+        "stories": "ಮಹಡಿಗಳು",
+        "condition": "ಸ್ಥಿತಿ",
+        "structureType": "ರಚನೆ ಪ್ರಕಾರ",
+        "zoning": "ವಲಯೀಕರಣ",
+        "overallRisk": "ಒಟ್ಟಾರೆ ಅಪಾಯ",
+        "financialRisk": "ಹಣಕಾಸು ಅಪಾಯ",
+        "legalRisk": "ಕಾನೂನು ಅಪಾಯ",
+        "environmentalRisk": "ಪರಿಸರ ಅಪಾಯ",
+        "structuralRisk": "ರಚನಾತ್ಮಕ ಅಪಾಯ",
+        "verification": "ಪರಿಶೀಲನೆ",
+        "ownership": "ಮಾಲೀಕತ್ವ",
+        "taxHistory": "ತೆರಿಗೆ ಇತಿಹಾಸ",
+        "floodZone": "ಪ್ರವಾಹ ವಲಯ",
+        "permits": "ಅನುಮತಿಗಳು",
+        "aqi": "AQI",
+        "floodRisk": "ಪ್ರವಾಹ ಅಪಾಯ",
+        "nearIndustrial": "ಕೈಗಾರಿಕಾ ವಲಯದ ಹತ್ತಿರ"
+      },
+      "risk": {
+        "low": "ಕಡಿಮೆ ಅಪಾಯ",
+        "medium": "ಮಧ್ಯಮ ಅಪಾಯ",
+        "high": "ಹೆಚ್ಚಿನ ಅಪಾಯ"
+      },
+      "status": {
+        "live": "ಲೈವ್",
+        "cached": "ಕ್ಯಾಶ್ ಮಾಡಲಾಗಿದೆ",
+        "sample": "ಮಾದರಿ",
+        "unavailable": "ಲಭ್ಯವಿಲ್ಲ",
+        "timedOut": "ಸಮಯ ಮೀರಿದೆ",
+        "error": "ದೋಷ",
+        "noData": "ಡೇಟಾ ಇಲ್ಲ"
+      },
+      "legend": {
+        "title": "ವಿವರಣೆ",
+        "best": "ಅತ್ಯುತ್ತಮ ಮೌಲ್ಯ",
+        "worst": "ಕೆಟ್ಟ ಮೌಲ್ಯ",
+        "middle": "ಮಧ್ಯಮ",
+        "note": "ಹೋಲಿಕೆಗಳು ಸಾಪೇಕ್ಷವಾಗಿವೆ — ಯಾವುದೇ ಬಾಹ್ಯ ಮಾನದಂಡಗಳನ್ನು ಬಳಸಿಲ್ಲ"
+      }
+    }
+  },
+  "profile": {
+    "title": "ಖಾತೆ ನಿರ್ವಹಣೆ",
+    "subtitle": "ನಿಮ್ಮ ವೃತ್ತಿಪರ ಗುರುತು ಮತ್ತು ಅಪ್ಲಿಕೇಶನ್ ಭದ್ರತೆಯನ್ನು ನಿಯಂತ್ರಿಸಿ.",
+    "pageTitle": "ಪ್ರೊಫೈಲ್ | Real Estate Due Diligence Agent",
+    "fallbackUser": "ಬಳಕೆದಾರ",
+    "sections": {
+      "accountDetails": "ಖಾತೆ ವಿವರಗಳು",
+      "accountDetailsSubtitle": "ಪ್ರಾಥಮಿಕ ಸಂಪರ್ಕ ಮತ್ತು ಸಂಸ್ಥೆಯ ಮಾಹಿತಿ.",
+      "security": "ಭದ್ರತೆ ಮತ್ತು ಪ್ರವೇಶ",
+      "securitySubtitle": "ನಿಮ್ಮ ದೃಢೀಕರಣ ವಿಧಾನಗಳು ಮತ್ತು ಭದ್ರತಾ ಪ್ರೋಟೋಕಾಲ್‌ಗಳನ್ನು ನಿರ್ವಹಿಸಿ.",
+      "dangerZone": "ಅಪಾಯಕಾರಿ ವಲಯ",
+      "dangerZoneSubtitle": "ಹಿಂತಿರುಗಿಸಲಾಗದ ಕ್ರಮಗಳು. ದಯವಿಟ್ಟು ಎಚ್ಚರಿಕೆಯಿಂದ ಮುಂದುವರಿಯಿರಿ."
+    },
+    "fields": {
+      "fullName": "ಪೂರ್ಣ ಹೆಸರು",
+      "email": "ಇಮೇಲ್ ವಿಳಾಸ",
+      "phone": "ಫೋನ್",
+      "signInMethod": "ಸೈನ್-ಇನ್ ವಿಧಾನ",
+      "accessLevel": "ಪ್ರವೇಶ ಮಟ್ಟ",
+      "memberSince": "ಸದಸ್ಯರಾದದ್ದು"
+    },
+    "placeholders": {
+      "fullName": "ನಿಮ್ಮ ಪೂರ್ಣ ಹೆಸರು",
+      "phone": "10-ಅಂಕಿಯ ಮೊಬೈಲ್"
+    },
+    "actions": {
+      "editProfile": "ಪ್ರೊಫೈಲ್ ಸಂಪಾದಿಸಿ",
+      "cancel": "ರದ್ದುಮಾಡಿ",
+      "saveChanges": "ಬದಲಾವಣೆಗಳನ್ನು ಉಳಿಸಿ",
+      "saving": "ಉಳಿಸಲಾಗುತ್ತಿದೆ...",
+      "changePassword": "ಪಾಸ್‌ವರ್ಡ್ ಬದಲಿಸಿ",
+      "deleteAccount": "ಖಾತೆ ಅಳಿಸಿ"
+    },
+    "password": {
+      "title": "ಖಾತೆಯ ಪಾಸ್‌ವರ್ಡ್",
+      "description": "ನಿಮ್ಮ ಖಾತೆಯನ್ನು ಸುರಕ್ಷಿತವಾಗಿಡಲು ಯಾವಾಗ ಬೇಕಾದರೂ ಪಾಸ್‌ವರ್ಡ್ ನವೀಕರಿಸಿ.",
+      "googleOnly": "ನೀವು Google ಮೂಲಕ ಸೈನ್ ಇನ್ ಮಾಡುತ್ತೀರಿ. ಯಾವುದೇ ಪಾಸ್‌ವರ್ಡ್ ಹೊಂದಿಸಲಾಗಿಲ್ಲ."
+    },
+    "delete": {
+      "title": "ಈ ಖಾತೆಯನ್ನು ಅಳಿಸಿ",
+      "description": "ನಿಮ್ಮ ಪ್ರೊಫೈಲ್, ನೀವು ಸೇರಿಸಿದ ಎಲ್ಲಾ ಆಸ್ತಿಗಳು ಮತ್ತು ಎಲ್ಲಾ ಸೆಶನ್ ಡೇಟಾವನ್ನು ಶಾಶ್ವತವಾಗಿ ತೆಗೆದುಹಾಕುತ್ತದೆ. ಇದನ್ನು ಹಿಂತೆಗೆದುಕೊಳ್ಳಲಾಗುವುದಿಲ್ಲ."
+    },
+    "signOutAll": {
+      "title": "ಎಲ್ಲಾ ಸಾಧನಗಳಿಂದ ಸೈನ್ ಔಟ್ ಮಾಡಿ",
+      "description": "ಫೋನ್‌ಗಳು, ಟ್ಯಾಬ್ಲೆಟ್‌ಗಳು ಮತ್ತು ಇತರ ಬ್ರೌಸರ್‌ಗಳು — ಎಲ್ಲೆಡೆ ನಿಮ್ಮ ಸೆಶನ್ ಮುಕ್ತಾಯಗೊಳಿಸಿ. ನೀವು ನಿಮ್ಮ ಸಾಧನವನ್ನು ಹಂಚಿಕೊಂಡಿದ್ದರೆ ಅಥವಾ ಒಂದರ ಪ್ರವೇಶ ಕಳೆದುಕೊಂಡಿದ್ದರೆ ಇದು ಉಪಯುಕ್ತ.",
+      "button": "ಎಲ್ಲೆಡೆ ಸೈನ್ ಔಟ್ ಮಾಡಿ"
+    },
+    "roles": {
+      "BUYER": "ಖರೀದಿದಾರ",
+      "REAL_ESTATE_AGENT": "ರಿಯಲ್ ಎಸ್ಟೇಟ್ ಏಜೆಂಟ್",
+      "LEGAL_REVIEWER": "ಕಾನೂನು ಪರಿಶೀಲಕ",
+      "FINANCIAL_INSTITUTION": "ಹಣಕಾಸು ಸಂಸ್ಥೆ",
+      "ADMIN": "ನಿರ್ವಾಹಕ"
+    },
+    "roleTaglines": {
+      "BUYER": "ಆಸ್ತಿ ಖರೀದಿದಾರ · ಡ್ಯೂ ಡಿಲಿಜೆನ್ಸ್",
+      "REAL_ESTATE_AGENT": "ರಿಯಲ್ ಎಸ್ಟೇಟ್ ವೃತ್ತಿಪರ · ಮಾರುಕಟ್ಟೆ ಪರಿಣಿತಿ",
+      "LEGAL_REVIEWER": "ಕಾನೂನು ಸಲಹೆಗಾರ · ಅನುಸರಣೆ ಪರಿಶೀಲನೆ",
+      "FINANCIAL_INSTITUTION": "ಹಣಕಾಸು ಸಂಸ್ಥೆ · ಆಸ್ತಿ ಮೌಲ್ಯಮಾಪನ",
+      "ADMIN": "ಸಿಸ್ಟಮ್ ನಿರ್ವಾಹಕ · ಪೂರ್ಣ ಪ್ರವೇಶ"
+    },
+    "authProvider": {
+      "LOCAL": "ಇಮೇಲ್ + ಪಾಸ್‌ವರ್ಡ್",
+      "GOOGLE": "Google",
+      "LOCAL_AND_GOOGLE": "ಇಮೇಲ್ + Google"
+    },
+    "locked": "ಲಾಕ್ ಮಾಡಲಾಗಿದೆ",
+    "verified": "ಪರಿಶೀಲಿಸಿದ {{role}}",
+    "errors": {
+      "nameValidation": "3–100 ಅಕ್ಷರಗಳು, ಅಕ್ಷರಗಳು ಮತ್ತು ಖಾಲಿ ಜಾಗ ಮಾತ್ರ",
+      "phoneValidation": "10 ಅಂಕಿಗಳು, 6–9 ರಿಂದ ಪ್ರಾರಂಭವಾಗಬೇಕು",
+      "couldntLoad": "ಪ್ರೊಫೈಲ್ ಲೋಡ್ ಮಾಡಲಾಗಲಿಲ್ಲ",
+      "pleaseRefresh": "ದಯವಿಟ್ಟು ಪುಟ ರಿಫ್ರೆಶ್ ಮಾಡಿ.",
+      "unableToLoad": "ಪ್ರೊಫೈಲ್ ಲೋಡ್ ಮಾಡಲು ಸಾಧ್ಯವಾಗಲಿಲ್ಲ. ದಯವಿಟ್ಟು ಪುಟ ರಿಫ್ರೆಶ್ ಮಾಡಿ.",
+      "updateFailed": "ನವೀಕರಣ ವಿಫಲ"
+    },
+    "success": {
+      "profileUpdated": "ಪ್ರೊಫೈಲ್ ನವೀಕರಿಸಲಾಗಿದೆ",
+      "changesSaved": "ನಿಮ್ಮ ಬದಲಾವಣೆಗಳನ್ನು ಉಳಿಸಲಾಗಿದೆ."
+    }
+  },
+  "deleteAccount": {
+    "title": "ಖಾತೆ ಅಳಿಸಿ",
+    "subtitle": "ಈ ಕ್ರಮವನ್ನು ಹಿಂತೆಗೆದುಕೊಳ್ಳಲಾಗುವುದಿಲ್ಲ.",
+    "impactTitle": "ಈ ಕೆಳಗಿನವುಗಳನ್ನು ಶಾಶ್ವತವಾಗಿ ಅಳಿಸಲಾಗುತ್ತದೆ:",
+    "impact": {
+      "account": "ನಿಮ್ಮ ಖಾತೆ ಮತ್ತು ಪ್ರೊಫೈಲ್",
+      "properties": "ನೀವು ಸೇರಿಸಿದ ಎಲ್ಲಾ ಆಸ್ತಿಗಳು",
+      "sessions": "ನಿಮ್ಮ ಎಲ್ಲಾ ಸೆಶನ್ ಡೇಟಾ"
+    },
+    "passwordLabel": "ನಿಮ್ಮ ಪಾಸ್‌ವರ್ಡ್ ನಮೂದಿಸಿ",
+    "passwordPlaceholder": "ಪ್ರಸ್ತುತ ಪಾಸ್‌ವರ್ಡ್",
+    "emailLabel": "ದೃಢೀಕರಿಸಲು ನಿಮ್ಮ ಇಮೇಲ್ ಟೈಪ್ ಮಾಡಿ",
+    "typeToConfirmPrefix": "ದೃಢೀಕರಿಸಲು",
+    "typeToConfirmSuffix": "ಟೈಪ್ ಮಾಡಿ",
+    "deleteButton": "ಖಾತೆ ಅಳಿಸಿ",
+    "toasts": {
+      "confirmRequired": "ದೃಢೀಕರಣ ಅಗತ್ಯ",
+      "typeExactly": "ಈ ಕ್ರಮವನ್ನು ದೃಢೀಕರಿಸಲು ನಿಖರವಾಗಿ DELETE ಎಂದು ಟೈಪ್ ಮಾಡಿ.",
+      "passwordRequired": "ಪಾಸ್‌ವರ್ಡ್ ಅಗತ್ಯ",
+      "emailRequired": "ಇಮೇಲ್ ಅಗತ್ಯ",
+      "enterPasswordToConfirm": "ದೃಢೀಕರಿಸಲು ನಿಮ್ಮ ಪಾಸ್‌ವರ್ಡ್ ನಮೂದಿಸಿ.",
+      "enterEmailToConfirm": "ದೃಢೀಕರಿಸಲು ನಿಮ್ಮ ಇಮೇಲ್ ನಮೂದಿಸಿ.",
+      "accountDeleted": "ಖಾತೆ ಅಳಿಸಲಾಗಿದೆ",
+      "redirecting": "ನಿಮ್ಮನ್ನು ಕ್ಷಣದಲ್ಲಿ ಮರುನಿರ್ದೇಶಿಸಲಾಗುತ್ತದೆ.",
+      "couldNotDelete": "ಖಾತೆ ಅಳಿಸಲಾಗಲಿಲ್ಲ",
+      "tryAgainMoment": "ದಯವಿಟ್ಟು ಕ್ಷಣದಲ್ಲಿ ಮತ್ತೆ ಪ್ರಯತ್ನಿಸಿ.",
+      "tryAgain": "ದಯವಿಟ್ಟು ಮತ್ತೆ ಪ್ರಯತ್ನಿಸಿ."
+    }
+  },
+  "changePassword": {
+    "title": "ಪಾಸ್‌ವರ್ಡ್ ಬದಲಿಸಿ",
+    "subtitle": "ನಿಮ್ಮ ಖಾತೆಯ ಪಾಸ್‌ವರ್ಡ್ ನವೀಕರಿಸಿ",
+    "currentLabel": "ಪ್ರಸ್ತುತ ಪಾಸ್‌ವರ್ಡ್",
+    "currentPlaceholder": "ಪ್ರಸ್ತುತ ಪಾಸ್‌ವರ್ಡ್ ನಮೂದಿಸಿ",
+    "newLabel": "ಹೊಸ ಪಾಸ್‌ವರ್ಡ್",
+    "newPlaceholder": "ಕನಿಷ್ಠ 8 ಅಕ್ಷರಗಳು",
+    "confirmLabel": "ಹೊಸ ಪಾಸ್‌ವರ್ಡ್ ದೃಢೀಕರಿಸಿ",
+    "confirmPlaceholder": "ಹೊಸ ಪಾಸ್‌ವರ್ಡ್ ಮತ್ತೆ ನಮೂದಿಸಿ",
+    "submit": "ಪಾಸ್‌ವರ್ಡ್ ಬದಲಿಸಿ",
+    "saving": "ಉಳಿಸಲಾಗುತ್ತಿದೆ...",
+    "errors": {
+      "currentRequired": "ಪ್ರಸ್ತುತ ಪಾಸ್‌ವರ್ಡ್ ಅಗತ್ಯ",
+      "newRequired": "ಹೊಸ ಪಾಸ್‌ವರ್ಡ್ ಅಗತ್ಯ"
+    },
+    "toasts": {
+      "samePassword": "ಒಂದೇ ಪಾಸ್‌ವರ್ಡ್",
+      "samePasswordDesc": "ಹೊಸ ಪಾಸ್‌ವರ್ಡ್ ನಿಮ್ಮ ಪ್ರಸ್ತುತ ಪಾಸ್‌ವರ್ಡ್‌ಗಿಂತ ಭಿನ್ನವಾಗಿರಬೇಕು.",
+      "success": "ಪಾಸ್‌ವರ್ಡ್ ಬದಲಿಸಲಾಗಿದೆ",
+      "successDesc": "ನೀವು ನಿಮ್ಮ ಹೊಸ ಪಾಸ್‌ವರ್ಡ್‌ನೊಂದಿಗೆ ಸೈನ್ ಇನ್ ಮಾಡಬಹುದು.",
+      "failed": "ಬದಲಾವಣೆ ವಿಫಲ"
+    }
+  },
+  "signOutAll": {
+    "title": "ಎಲ್ಲಾ ಸಾಧನಗಳಿಂದ ಸೈನ್ ಔಟ್ ಮಾಡಬೇಕೇ?",
+    "subtitle": "ಈ ಖಾತೆಯೊಂದಿಗೆ ಪ್ರಸ್ತುತ ಸೈನ್ ಇನ್ ಆಗಿರುವ ಪ್ರತಿಯೊಂದು ಸಾಧನದಲ್ಲೂ ಇದು ನಿಮ್ಮ ಸೆಶನ್ ಅನ್ನು ಮುಕ್ತಾಯಗೊಳಿಸುತ್ತದೆ.",
+    "confirmButton": "ಹೌದು, ಎಲ್ಲೆಡೆ ಸೈನ್ ಔಟ್ ಮಾಡಿ",
+    "processing": "ಎಲ್ಲೆಡೆ ಸೈನ್ ಔಟ್ ಆಗುತ್ತಿದೆ…",
+    "tipEsc": "ಸಲಹೆ: ಒತ್ತಿ",
+    "tipEscSuffix": "ರದ್ದುಮಾಡಲು",
+    "useIfPrefix": "ಇದನ್ನು ಬಳಸಿ, ಯಾಕೆಂದರೆ:",
+    "useIfBody": "ನಿಮ್ಮ ಖಾತೆ ಅಪಾಯದಲ್ಲಿರಬಹುದು, ನೀವು ನಿಮ್ಮ ಸಾಧನವನ್ನು ಹಂಚಿಕೊಂಡಿರಬಹುದು ಅಥವಾ ಯಾವುದಾದರೂ ಸ್ಥಳದಲ್ಲಿ ಲಾಗ್ ಔಟ್ ಮಾಡಲು ಮರೆತಿರಬಹುದು.",
+    "impact": {
+      "endSessions": {
+        "title": "ಎಲ್ಲಾ ಸಕ್ರಿಯ ಸೆಶನ್‌ಗಳು ಮುಕ್ತಾಯಗೊಳ್ಳುತ್ತವೆ",
+        "description": "ಫೋನ್‌ಗಳು, ಟ್ಯಾಬ್ಲೆಟ್‌ಗಳು, ಇತರ ಬ್ರೌಸರ್‌ಗಳು — ನೀವು ಸೈನ್ ಇನ್ ಆಗಿರುವ ಎಲ್ಲೆಡೆ"
+      },
+      "logoutHere": {
+        "title": "ನೀವು ಇಲ್ಲಿಂದಲೂ ಲಾಗ್ ಔಟ್ ಆಗುತ್ತೀರಿ",
+        "description": "ಮುಂದುವರಿಯಲು ನೀವು ಮತ್ತೆ ಸೈನ್ ಇನ್ ಮಾಡಬೇಕಾಗುತ್ತದೆ"
+      }
+    },
+    "toasts": {
+      "signedOutTitle": "ಎಲ್ಲೆಡೆ ಸೈನ್ ಔಟ್ ಆಗಿದೆ",
+      "signedOutDesc": "ನಿಮ್ಮ ಎಲ್ಲಾ ಸಕ್ರಿಯ ಸೆಶನ್‌ಗಳು ಮುಕ್ತಾಯಗೊಂಡಿವೆ.",
+      "failedTitle": "ಸೈನ್ ಔಟ್ ಮಾಡಲು ಸಾಧ್ಯವಾಗಲಿಲ್ಲ"
+    }
+  },
+  "avatar": {
+    "aria": {
+      "changePhoto": "ಪ್ರೊಫೈಲ್ ಫೋಟೋ ಬದಲಿಸಿ",
+      "photoOptions": "ಫೋಟೋ ಆಯ್ಕೆಗಳು"
+    },
+    "menu": {
+      "upload": "ಫೋಟೋ ಅಪ್‌ಲೋಡ್ ಮಾಡಿ",
+      "change": "ಫೋಟೋ ಬದಲಿಸಿ",
+      "remove": "ಫೋಟೋ ತೆಗೆದುಹಾಕಿ",
+      "fileHint": "JPG, PNG, WebP · ಗರಿಷ್ಠ 5 MB"
+    },
+    "preview": {
+      "title": "ಪೂರ್ವವೀಕ್ಷಣೆ ಮತ್ತು ಅಪ್‌ಲೋಡ್",
+      "alt": "ಪೂರ್ವವೀಕ್ಷಣೆ",
+      "fileSizeKB": "{{size}} KB",
+      "upload": "ಫೋಟೋ ಅಪ್‌ಲೋಡ್ ಮಾಡಿ",
+      "uploading": "ಅಪ್‌ಲೋಡ್ ಆಗುತ್ತಿದೆ..."
+    },
+    "toasts": {
+      "invalidFile": "ಅಮಾನ್ಯ ಫೈಲ್",
+      "photoUpdated": "ಪ್ರೊಫೈಲ್ ಫೋಟೋ ನವೀಕರಿಸಲಾಗಿದೆ",
+      "uploadFailed": "ಅಪ್‌ಲೋಡ್ ವಿಫಲ",
+      "photoRemoved": "ಪ್ರೊಫೈಲ್ ಫೋಟೋ ತೆಗೆದುಹಾಕಲಾಗಿದೆ",
+      "removeFailed": "ಫೋಟೋ ತೆಗೆದುಹಾಕಲು ವಿಫಲವಾಗಿದೆ"
+    }
+  },
+  "settings": {
+    "title": "ಸೆಟ್ಟಿಂಗ್‌ಗಳು",
+    "language": {
+      "sectionTitle": "ಭಾಷೆ",
+      "sectionSubtitle": "ಇಂಟರ್ಫೇಸ್‌ಗಾಗಿ ನಿಮ್ಮ ಆದ್ಯತೆಯ ಭಾಷೆಯನ್ನು ಆಯ್ಕೆಮಾಡಿ.",
+      "label": "ಇಂಟರ್ಫೇಸ್ ಭಾಷೆ",
+      "selectPlaceholder": "ಭಾಷೆ ಆಯ್ಕೆಮಾಡಿ",
+      "saved": "ಭಾಷೆ ನವೀಕರಿಸಲಾಗಿದೆ",
+      "savedDescription": "ಇಂಟರ್ಫೇಸ್ ಭಾಷೆಯನ್ನು {{language}} ಗೆ ಬದಲಿಸಲಾಗಿದೆ."
+    }
+  },
+  "commandPalette": {
+    "searchPlaceholder": "ಪುಟಗಳು, ಆಸ್ತಿಗಳು ಅಥವಾ ಕ್ರಮಗಳನ್ನು ಹುಡುಕಿ...",
+    "ariaLabel": "Command palette ಹುಡುಕಾಟ",
+    "searchingProperties": "ಆಸ್ತಿಗಳನ್ನು ಹುಡುಕುತ್ತಿದೆ...",
+    "clear": "ತೆರವುಗೊಳಿಸಿ",
+    "recentSearchLabel": "ಇತ್ತೀಚಿನ ಹುಡುಕಾಟ",
+    "sections": {
+      "recent": "ಇತ್ತೀಚಿನ",
+      "pages": "ಪುಟಗಳು",
+      "properties": "ಆಸ್ತಿಗಳು",
+      "propertiesSubtitle": "ಡೇಟಾಬೇಸ್‌ನಿಂದ ಲೈವ್",
+      "actions": "ಕ್ರಮಗಳು"
+    },
+    "empty": {
+      "title": "\u201C{{query}}\u201D ಗೆ ಯಾವುದೇ ಹೊಂದಾಣಿಕೆಗಳಿಲ್ಲ",
+      "hint": "ಒಂದು ಪುಟದ ಹೆಸರು, ಆಸ್ತಿ ವಿಳಾಸ ಅಥವಾ ಕ್ರಮಕ್ಕಾಗಿ ಹುಡುಕಲು ಪ್ರಯತ್ನಿಸಿ"
+    },
+    "kbd": {
+      "navigate": "ನ್ಯಾವಿಗೇಟ್",
+      "select": "ಆಯ್ಕೆ",
+      "close": "ಮುಚ್ಚಿ",
+      "esc": "esc"
+    },
+    "pages": {
+      "dashboard": {
+        "label": "ಡ್ಯಾಶ್‌ಬೋರ್ಡ್",
+        "description": "ಪೋರ್ಟ್‌ಫೋಲಿಯೋ ಅವಲೋಕನ ಮತ್ತು KPIs"
+      },
+      "search": {
+        "label": "ಆಸ್ತಿ ಹುಡುಕಾಟ",
+        "description": "ಆಸ್ತಿಗಳನ್ನು ಹುಡುಕಿ ಮತ್ತು ಪರಿಶೀಲಿಸಿ"
+      },
+      "diligence": {
+        "label": "ಡ್ಯೂ ಡಿಲಿಜೆನ್ಸ್",
+        "description": "ಆಳವಾದ ಪರಿಶೀಲನೆ ಕಾರ್ಯಪ್ರವಾಹ"
+      },
+      "risk": {
+        "label": "ಅಪಾಯ ಮೌಲ್ಯಮಾಪನ",
+        "description": "ಅಪಾಯ ಸ್ಕೋರ್‌ಗಳು ಮತ್ತು ಎಚ್ಚರಿಕೆಗಳು"
+      },
+      "compare": {
+        "label": "ಆಸ್ತಿ ಹೋಲಿಕೆ",
+        "description": "ಪಕ್ಕಪಕ್ಕದ ವಿಶ್ಲೇಷಣೆ"
+      },
+      "reports": {
+        "label": "ವರದಿಗಳು",
+        "description": "ರಚಿಸಿದ PDF ವರದಿಗಳು"
+      },
+      "notifications": {
+        "label": "ಅಧಿಸೂಚನೆಗಳು",
+        "description": "ಎಚ್ಚರಿಕೆಗಳು ಮತ್ತು ಚಟುವಟಿಕೆ ಫೀಡ್"
+      },
+      "audit": {
+        "label": "ಆಡಿಟ್ ಲಾಗ್‌ಗಳು",
+        "description": "ಪ್ರತಿ ಕ್ರಮ, ಸಮಯಮುದ್ರೆಯೊಂದಿಗೆ"
+      },
+      "profile": {
+        "label": "ನನ್ನ ಪ್ರೊಫೈಲ್",
+        "description": "ಖಾತೆ ಮತ್ತು ಆದ್ಯತೆಗಳು"
+      }
+    },
+    "actions": {
+      "addProperty": {
+        "label": "ಹೊಸ ಆಸ್ತಿ ಸೇರಿಸಿ",
+        "description": "ಹೊಸ ಲಿಸ್ಟಿಂಗ್ ನೋಂದಾಯಿಸಿ"
+      },
+      "logout": {
+        "label": "ಲಾಗ್ ಔಟ್",
+        "description": "ನಿಮ್ಮ ಸೆಶನ್ ಮುಕ್ತಾಯಗೊಳಿಸಿ"
+      }
+    }
+  },
+  "navbar": {
+    "toggleSidebar": "ಸೈಡ್‌ಬಾರ್ ಟಾಗಲ್ ಮಾಡಿ",
+    "openCommandPalette": "Command palette ತೆರೆಯಿರಿ",
+    "userMenu": "ಬಳಕೆದಾರ ಮೆನು",
+    "signedIn": "ಸೈನ್ ಇನ್ ಆಗಿದೆ",
+    "myProfile": "ನನ್ನ ಪ್ರೊಫೈಲ್",
+    "logOut": "ಲಾಗ್ ಔಟ್"
+  },
+  "emptyState": {
+    "defaultTitle": "ಇಲ್ಲಿ ಇನ್ನೂ ಏನೂ ಇಲ್ಲ",
+    "defaultDescription": "ನಿಮ್ಮ ಮೊದಲ ಐಟಂ ಸೇರಿಸುವ ಮೂಲಕ ಪ್ರಾರಂಭಿಸಿ."
+  },
+  "support": {
+    "hero": {
+      "title": "ನಾವು ಹೇಗೆ ಸಹಾಯ ಮಾಡಬಹುದು?",
+      "subtitle": "ಸಾಮಾನ್ಯ ಪ್ರಶ್ನೆಗಳಿಗೆ ಉತ್ತರಗಳು ಮತ್ತು ನಮ್ಮನ್ನು ಸಂಪರ್ಕಿಸಲು ನೇರ ಮಾರ್ಗಗಳು. ನಿಮಗೆ ಬೇಕಾದುದು ಸಿಗದಿದ್ದರೆ, ನಮಗೆ ಇಮೇಲ್ ಮಾಡಿ; ನಾವು ಕೆಲಸದ ದಿನಗಳಲ್ಲಿ 48 ಗಂಟೆಗಳೊಳಗೆ ಪ್ರತಿಕ್ರಿಯಿಸುತ್ತೇವೆ.",
+      "searchPlaceholder": "ಲೇಖನಗಳು, ಪ್ರಶ್ನೆಗಳು, ವೈಶಿಷ್ಟ್ಯಗಳನ್ನು ಹುಡುಕಿ...",
+      "statusOperational": "ಎಲ್ಲಾ ವ್ಯವಸ್ಥೆಗಳು ಕಾರ್ಯನಿರ್ವಹಿಸುತ್ತಿವೆ"
+    },
+    "contact": {
+      "eyebrow": "ಸಂಪರ್ಕಿಸಿ",
+      "title": "ನಮ್ಮನ್ನು ನೇರವಾಗಿ ಸಂಪರ್ಕಿಸಿ",
+      "subtitle": "ನಿಮಗೆ ಅತ್ಯುತ್ತಮವಾಗಿ ಹೊಂದುವ ಆಯ್ಕೆಯನ್ನು ಆರಿಸಿ — ಕ್ಲಿಕ್ ಮಾಡಿದಾಗ ಪೂರ್ವಭರಿತ ವಿಷಯ ಸಾಲಿನೊಂದಿಗೆ ನಿಮ್ಮ ಇಮೇಲ್ ಕ್ಲೈಂಟ್ ತೆರೆಯುತ್ತದೆ.",
+      "openEmail": "ಇಮೇಲ್ ತೆರೆಯಿರಿ",
+      "general": {
+        "title": "ಸಾಮಾನ್ಯ ಪ್ರಶ್ನೆ",
+        "description": "ಉತ್ಪನ್ನ ಸಹಾಯ, ಖಾತೆ ಪ್ರಶ್ನೆಗಳು ಅಥವಾ ತುರ್ತುವಲ್ಲದ ಯಾವುದಾದರೂ.",
+        "subject": "ಬೆಂಬಲ ವಿನಂತಿ — Due Diligence Platform",
+        "body": "ಹಾಯ್ ತಂಡ,\n\nನನಗೆ ಈ ವಿಷಯದ ಬಗ್ಗೆ ಒಂದು ಪ್ರಶ್ನೆಯಿದೆ:\n\n"
+      },
+      "bug": {
+        "title": "ದೋಷ ವರದಿ ಮಾಡಿ",
+        "description": "ಯಾವುದೋ ನಿರೀಕ್ಷಿಸಿದಂತೆ ಕೆಲಸ ಮಾಡುತ್ತಿಲ್ಲವೇ? ನೀವು ಏನು ನೋಡಿದ್ದೀರಿ ಮತ್ತು ಏನನ್ನು ನಿರೀಕ್ಷಿಸಿದ್ದೀರಿ ಎಂಬುದನ್ನು ನಮಗೆ ತಿಳಿಸಿ.",
+        "subject": "ದೋಷ ವರದಿ — Due Diligence Platform",
+        "body": "ನಾನು ಏನು ಮಾಡಿದೆ:\n\nನಾನು ಏನನ್ನು ನಿರೀಕ್ಷಿಸಿದೆ:\n\nವಾಸ್ತವವಾಗಿ ಏನಾಯಿತು:\n\nಬ್ರೌಸರ್ ಮತ್ತು ಆವೃತ್ತಿ:\n\n"
+      },
+      "feature": {
+        "title": "ವೈಶಿಷ್ಟ್ಯ ವಿನಂತಿಸಿ",
+        "description": "ಪ್ಲ್ಯಾಟ್‌ಫಾರ್ಮ್ ಅನ್ನು ಉತ್ತಮಗೊಳಿಸುವ ಒಂದು ಆಲೋಚನೆ ಇದೆಯೇ? ನಾವು ಪ್ರತಿ ಸಂದೇಶವನ್ನು ಓದುತ್ತೇವೆ.",
+        "subject": "ವೈಶಿಷ್ಟ್ಯ ವಿನಂತಿ — Due Diligence Platform",
+        "body": "ನಾನು ನೋಡಲು ಇಷ್ಟಪಡುವುದು:\n\nಇದು ಹೇಗೆ ಸಹಾಯ ಮಾಡುತ್ತದೆ:\n\n"
+      }
+    },
+    "faq": {
+      "eyebrow": "ಜ್ಞಾನ ಭಂಡಾರ",
+      "title": "ಪದೇ ಪದೇ ಕೇಳಲಾಗುವ ಪ್ರಶ್ನೆಗಳು",
+      "allCategory": "ಎಲ್ಲಾ",
+      "articleCount_one": "{{count}} ಲೇಖನ",
+      "articleCount_other": "{{count}} ಲೇಖನಗಳು",
+      "noResults": {
+        "title": "ನಿಮ್ಮ ಹುಡುಕಾಟಕ್ಕೆ ಹೊಂದುವ ಲೇಖನಗಳಿಲ್ಲ",
+        "hint": "ಬೇರೆ ಕೀವರ್ಡ್‌ಗಳನ್ನು ಪ್ರಯತ್ನಿಸಿ ಅಥವಾ ಎಲ್ಲಾ ಲೇಖನಗಳನ್ನು ನೋಡಲು ಫಿಲ್ಟರ್ ತೆರವುಗೊಳಿಸಿ.",
+        "emailButton": "ಈ ಪ್ರಶ್ನೆಯನ್ನು ನಮಗೆ ಇಮೇಲ್ ಮಾಡಿ",
+        "emailSubjectPrefix": "ಬೆಂಬಲ:",
+        "emailSubjectFallback": "FAQ ಯಲ್ಲಿ ಇಲ್ಲದ ಪ್ರಶ್ನೆ"
+      }
+    },
+    "response": {
+      "eyebrow": "ಪ್ರತಿಕ್ರಿಯೆ ಸಮಯ",
+      "headline": "48 ಗಂಟೆಗಳೊಳಗೆ",
+      "description": "ನಾವು ಕೆಲಸದ ದಿನಗಳಲ್ಲಿ (ಸೋಮ–ಶುಕ್ರ) ಇಮೇಲ್‌ಗಳಿಗೆ ಪ್ರತಿಕ್ರಿಯಿಸುತ್ತೇವೆ. ಸಂಕೀರ್ಣ ಸಮಸ್ಯೆಗಳಿಗೆ ಹೆಚ್ಚು ಸಮಯ ಹಿಡಿಯಬಹುದು — ಮೊದಲು ನಾವು ಸ್ವೀಕೃತಿಯನ್ನು ಖಚಿತಪಡಿಸುತ್ತೇವೆ."
+    },
+    "direct": {
+      "eyebrow": "ನೇರ ಇಮೇಲ್",
+      "headline": "ತಂಡವನ್ನು ಸಂಪರ್ಕಿಸಿ"
+    },
+    "related": {
+      "eyebrow": "ಸಂಬಂಧಿತ",
+      "title": "ಇನ್ನಷ್ಟು ಸಂಪನ್ಮೂಲಗಳು",
+      "security": {
+        "title": "ಭದ್ರತೆ",
+        "description": "ನಾವು ನಿಮ್ಮ ಡೇಟಾವನ್ನು ಹೇಗೆ ರಕ್ಷಿಸುತ್ತೇವೆ — ನಿರ್ಮಿತವಾಗಿರುವುದು ಮತ್ತು ಯೋಜಿತವಾಗಿರುವುದರ ಸಂಪೂರ್ಣ ಬಹಿರಂಗಪಡಿಕೆ."
+      },
+      "source": {
+        "title": "ಮೂಲ ಕೋಡ್",
+        "description": "GitHub ನಲ್ಲಿ ಓಪನ್-ಸೋರ್ಸ್. ಸಮಸ್ಯೆಗಳನ್ನು ವರದಿ ಮಾಡಿ, ಕೋಡ್ ಓದಿ ಅಥವಾ ಕೊಡುಗೆ ನೀಡಿ."
+      }
+    },
+    "footer": {
+      "note": "ಈ ಬೆಂಬಲ ಪುಟವು ಲೈವ್ ಚಾಟ್, ಟಿಕೆಟ್ ವ್ಯವಸ್ಥೆ ಅಥವಾ ಸ್ವಯಂಚಾಲಿತ ಹೆಲ್ಪ್‌ಡೆಸ್ಕ್ ಅಲ್ಲ. ಇದು ಪ್ಲ್ಯಾಟ್‌ಫಾರ್ಮ್ ನಿರ್ಮಿಸಿದ ತಂಡಕ್ಕೆ ನೇರ ಸಂಪರ್ಕ ಮಾರ್ಗವಾಗಿದೆ. ನಾವು ಪ್ರತಿ ಇಮೇಲ್ ಓದಿ ವೈಯಕ್ತಿಕವಾಗಿ ಪ್ರತಿಕ್ರಿಯಿಸುತ್ತೇವೆ."
+    }
+  },
+  "savedComparisons": {
+    "pageTitle": "ಉಳಿಸಿದ ಹೋಲಿಕೆಗಳು | Real Estate Due Diligence Agent",
+    "title": "ಉಳಿಸಿದ ಹೋಲಿಕೆಗಳು",
+    "countLabel_one": "{{count}} ಉಳಿಸಿದ ಹೋಲಿಕೆ",
+    "countLabel_other": "{{count}} ಉಳಿಸಿದ ಹೋಲಿಕೆಗಳು",
+    "searchPlaceholder": "ಹೆಸರು ಅಥವಾ ಟಿಪ್ಪಣಿಗಳಿಂದ ಹುಡುಕಿ...",
+    "emptyTitle": "ಇನ್ನೂ ಉಳಿಸಿದ ಹೋಲಿಕೆಗಳಿಲ್ಲ",
+    "emptyDesc": "ಆಸ್ತಿ ಹೋಲಿಕೆಗೆ ಹೋಗಿ, 2–3 ಆಸ್ತಿಗಳನ್ನು ಆಯ್ಕೆಮಾಡಿ ಮತ್ತು \"ಹೋಲಿಕೆ ಉಳಿಸಿ\" ಕ್ಲಿಕ್ ಮಾಡಿ.",
+    "startComparing": "ಆಸ್ತಿಗಳನ್ನು ಹೋಲಿಸಲು ಪ್ರಾರಂಭಿಸಿ",
+    "noResults": "\"{{query}}\" ಗೆ ಯಾವುದೇ ಫಲಿತಾಂಶಗಳಿಲ್ಲ",
+    "propertyCount_one": "{{count}} ಆಸ್ತಿ",
+    "propertyCount_other": "{{count}} ಆಸ್ತಿಗಳು",
+    "savedOn": "{{date}} ರಂದು ಉಳಿಸಲಾಗಿದೆ",
+    "updatedOn": "{{date}} ರಂದು ನವೀಕರಿಸಲಾಗಿದೆ",
+    "deleteAria": "{{name}} ಅಳಿಸಿ",
+    "loadComparison": "ಹೋಲಿಕೆ ಲೋಡ್ ಮಾಡಿ"
+  },
+  "savedSheet": {
+    "ariaLabel": "ಉಳಿಸಿದ ಹೋಲಿಕೆಗಳು",
+    "savedCount_one": "{{count}} ಉಳಿಸಲಾಗಿದೆ",
+    "savedCount_other": "{{count}} ಉಳಿಸಲಾಗಿದೆ",
+    "loading": "ಉಳಿಸಿದ ಹೋಲಿಕೆಗಳು ಲೋಡ್ ಆಗುತ್ತಿವೆ...",
+    "emptyHint": "ಆಸ್ತಿಗಳನ್ನು ಹೋಲಿಸಿ ಮತ್ತು ಅವನ್ನು ಇಲ್ಲಿ ಉಳಿಸಲು \"ಹೋಲಿಕೆ ಉಳಿಸಿ\" ಕ್ಲಿಕ್ ಮಾಡಿ.",
+    "load": "ಲೋಡ್ ಮಾಡಿ",
+    "viewAll": "ಎಲ್ಲಾ ಉಳಿಸಿದ ಹೋಲಿಕೆಗಳನ್ನು ನೋಡಿ →"
+  },
+  "marketChart": {
+    "title": "ಮಾರುಕಟ್ಟೆ ಮೌಲ್ಯ ಟ್ರೆಂಡ್",
+    "subtitle": "6-ತಿಂಗಳ ಅಂದಾಜು ಟ್ರೆಂಡ್ · ಸೂಚಕ ಮಾತ್ರ",
+    "estimatedBadge": "ಅಂದಾಜು ಡೇಟಾ",
+    "propertyLabel": "ಆಸ್ತಿ {{letter}}"
+  },
+  "common": {
+    "loading": "ಲೋಡ್ ಆಗುತ್ತಿದೆ...",
+    "error": "ಏನೋ ತಪ್ಪಾಗಿದೆ",
+    "retry": "ಮತ್ತೆ ಪ್ರಯತ್ನಿಸಿ",
+    "save": "ಉಳಿಸಿ",
+    "cancel": "ರದ್ದುಮಾಡಿ",
+    "delete": "ಅಳಿಸಿ",
+    "edit": "ಸಂಪಾದಿಸಿ",
+    "close": "ಮುಚ್ಚಿ",
+    "back": "ಹಿಂದೆ",
+    "next": "ಮುಂದೆ",
+    "confirm": "ದೃಢೀಕರಿಸಿ",
+    "yes": "ಹೌದು",
+    "no": "ಇಲ್ಲ",
+    "search": "ಹುಡುಕಿ",
+    "filter": "ಫಿಲ್ಟರ್",
+    "clear": "ತೆರವುಗೊಳಿಸಿ",
+    "clearAll": "ಎಲ್ಲವನ್ನೂ ತೆರವುಗೊಳಿಸಿ",
+    "apply": "ಅನ್ವಯಿಸಿ",
+    "refresh": "ರಿಫ್ರೆಶ್",
+    "download": "ಡೌನ್‌ಲೋಡ್",
+    "upload": "ಅಪ್‌ಲೋಡ್",
+    "submit": "ಸಲ್ಲಿಸಿ",
+    "noData": "ಯಾವುದೇ ಡೇಟಾ ಲಭ್ಯವಿಲ್ಲ",
+    "justNow": "ಈಗಷ್ಟೇ",
+    "minutesAgo": "{{n}}ನಿ ಹಿಂದೆ",
+    "hoursAgo": "{{n}}ಗಂ ಹಿಂದೆ",
+    "daysAgo": "{{n}}ದಿ ಹಿಂದೆ",
+    "secondsAgo": "{{n}}ಸೆ ಹಿಂದೆ",
+    "syncedAgo": "ಸಿಂಕ್ ಆಗಿದೆ",
+    "breadcrumbLabel": "Breadcrumb",
+    "breadcrumbs": {
+      "details": "ವಿವರಗಳು"
+    }
+  },
+  "pages": {
+    "dueDiligence": {
+      "title": "ಡ್ಯೂ ಡಿಲಿಜೆನ್ಸ್ ಡ್ಯಾಶ್‌ಬೋರ್ಡ್ ಶೀಘ್ರದಲ್ಲೇ ಬರುತ್ತದೆ",
+      "description": "ನಿಮ್ಮ ಎಲ್ಲಾ ಆಸ್ತಿಗಳ ಡ್ಯೂ ಡಿಲಿಜೆನ್ಸ್ ಸ್ಥಿತಿಯ ಸಮಗ್ರ ನೋಟ ಇಲ್ಲಿ ಕಾಣಿಸಿಕೊಳ್ಳುತ್ತದೆ."
+    },
+    "riskAssessment": {
+      "title": "ಅಪಾಯ ಮೌಲ್ಯಮಾಪನ ಅವಲೋಕನ ಶೀಘ್ರದಲ್ಲೇ ಬರುತ್ತದೆ",
+      "description": "ಪೋರ್ಟ್‌ಫೋಲಿಯೋ-ವ್ಯಾಪಿ ಅಪಾಯ ವಿಶ್ಲೇಷಣೆ ಮತ್ತು ಆದ್ಯತೆಯ ಕ್ರಮಗಳು ಇಲ್ಲಿ ಕಾಣಿಸಿಕೊಳ್ಳುತ್ತವೆ."
+    },
+    "reports": {
+      "title": "ವರದಿಗಳು ಶೀಘ್ರದಲ್ಲೇ ಬರುತ್ತವೆ",
+      "description": "ಪೋರ್ಟ್‌ಫೋಲಿಯೋ ವರದಿಗಳು, ಅಪಾಯ ಸಾರಾಂಶಗಳು ಮತ್ತು ಡ್ಯೂ ಡಿಲಿಜೆನ್ಸ್ ದಾಖಲೆಗಳನ್ನು ರಚಿಸಿ. ಈ ವೈಶಿಷ್ಟ್ಯ ಅಭಿವೃದ್ಧಿಯಲ್ಲಿದೆ."
+    },
+    "notifications": {
+      "title": "ನೀವು ಸಂಪೂರ್ಣವಾಗಿ ನವೀಕರಿಸಿದ್ದೀರಿ",
+      "description": "ಯಾವುದೇ ಹೊಸ ಅಧಿಸೂಚನೆಗಳಿಲ್ಲ. ಆಸ್ತಿಗಳಿಗೆ ಗಮನ ಬೇಕಾದಾಗ ಅಥವಾ ವರದಿಗಳು ಸಿದ್ಧವಾದಾಗ ನಾವು ನಿಮಗೆ ತಿಳಿಸುತ್ತೇವೆ."
+    },
+    "auditLogs": {
+      "title": "ಇನ್ನೂ ಯಾವುದೇ ಆಡಿಟ್ ದಾಖಲೆಗಳಿಲ್ಲ",
+      "description": "ಅನುಸರಣೆ ಮತ್ತು ಭದ್ರತಾ ಪರಿಶೀಲನೆಗಾಗಿ ಸಿಸ್ಟಮ್ ಕ್ರಮಗಳು ಮತ್ತು ಬಳಕೆದಾರ ಚಟುವಟಿಕೆಗಳನ್ನು ಇಲ್ಲಿ ಟ್ರ್ಯಾಕ್ ಮಾಡಲಾಗುತ್ತದೆ."
+    }
+  }
 }
+      

@@ -1,10 +1,1433 @@
 {
-  "nav": { "dashboard": "ڈیش بورڈ", "propertySearch": "جائیداد تلاش", "dueDiligence": "مناسب محنت", "riskAssessment": "خطرے کا جائزہ", "propertyComparison": "جائیداد کا موازنہ", "savedComparisons": "محفوظ موازنے", "reports": "رپورٹیں", "notifications": "اطلاعات", "auditLogs": "آڈٹ لاگ", "profile": "پروفائل", "support": "مدد", "sections": { "main": "مرکزی", "analysis": "تجزیہ", "insights": "بصیرت", "account": "اکاؤنٹ" }, "sessionActive": "سیشن فعال", "version": "v1.0" },
-  "auth": { "login": { "title": "واپس خوش آمدید", "subtitle": "اپنے جائیداد پورٹ فولیو خطرات کا انتظام کرنے کے لیے سائن ان کریں۔", "emailLabel": "پیشہ ورانہ ای میل", "emailPlaceholder": "name@company.com", "passwordLabel": "پاس ورڈ", "forgotPassword": "پاس ورڈ بھول گئے؟", "rememberMe": "اس براؤزر میں سائن ان رہیں", "signIn": "سائن ان", "newToPlatform": "پلیٹ فارم پر نئے ہیں؟", "createAccount": "مفت اکاؤنٹ بنائیں" } },
-  "dashboard": { "greetings": { "morning": "صبح بخیر", "afternoon": "السلام علیکم", "evening": "شام بخیر" }, "subtitle": "ایک نظر میں آپ کا پورٹ فولیو", "stats": { "totalProperties": "کل جائیدادیں", "verified": "تصدیق شدہ", "pending": "زیر التواء", "platformUsers": "پلیٹ فارم صارفین" }, "empty": { "title": "ابھی تک کوئی جائیداد نہیں", "addFirst": "اپنی پہلی جائیداد شامل کریں" } },
-  "property": { "addProperty": "جائیداد شامل کریں", "search": { "title": "جائیداد تلاش", "noPropertiesFound": "کوئی جائیداد نہیں ملی" }, "card": { "verified": "تصدیق شدہ", "pending": "زیر التواء", "marketValue": "بازار قدر" }, "details": { "backToSearch": "تلاش پر واپس", "editProperty": "جائیداد ترمیم کریں" } },
-  "profile": { "title": "اکاؤنٹ مینجمنٹ", "subtitle": "اپنی پیشہ ورانہ شناخت اور ایپلیکیشن سیکیورٹی کو کنٹرول کریں۔", "fields": { "fullName": "پورا نام", "email": "ای میل پتہ", "phone": "فون" }, "actions": { "editProfile": "پروفائل ترمیم کریں", "cancel": "منسوخ", "saveChanges": "تبدیلیاں محفوظ کریں", "deleteAccount": "اکاؤنٹ حذف کریں" }, "roles": { "BUYER": "خریدار", "REAL_ESTATE_AGENT": "ریئل اسٹیٹ ایجنٹ", "ADMIN": "منتظم" }, "locked": "مقفل" },
-  "settings": { "title": "ترتیبات", "language": { "sectionTitle": "زبان", "sectionSubtitle": "انٹرفیس کے لیے اپنی پسندیدہ زبان منتخب کریں۔", "label": "انٹرفیس زبان", "selectPlaceholder": "زبان منتخب کریں", "saved": "زبان اپ ڈیٹ ہو گئی", "savedDescription": "انٹرفیس زبان {{language}} میں تبدیل کر دی گئی ہے۔" } },
-  "common": { "loading": "لوڈ ہو رہا ہے...", "error": "کچھ غلط ہو گیا", "save": "محفوظ کریں", "cancel": "منسوخ", "back": "پیچھے", "noData": "کوئی ڈیٹا دستیاب نہیں", "justNow": "ابھی" },
-  "pages": { "dueDiligence": { "title": "ڈیو ڈیلیجنس ڈیش بورڈ جلد آ رہا ہے", "description": "آپ کی تمام جائیدادوں کی حیثیت یہاں دکھائی جائے گی۔" }, "reports": { "title": "رپورٹیں جلد آ رہی ہیں", "description": "پورٹ فولیو رپورٹیں اور خطرے کے خلاصے بنائیں۔" }, "notifications": { "title": "آپ نے سب کچھ پڑھ لیا", "description": "کوئی نئی اطلاع نہیں۔" }, "auditLogs": { "title": "ابھی تک کوئی آڈٹ اندراج نہیں", "description": "سسٹم اقدامات اور صارف سرگرمی یہاں ٹریک کی جائے گی۔" }, "riskAssessment": { "title": "خطرے کے جائزے کا جائزہ جلد آ رہا ہے", "description": "پورٹ فولیو بھر خطرے کا تجزیہ یہاں دکھائی دے گا۔" } }
+  "cookies": {
+    "banner": {
+      "ariaLabel": "کوکی رضامندی",
+      "title": "اس سائٹ پر کوکیز",
+      "description": "ہم آپ کو سائن اِن رکھے رکھنے کے لیے ضروری کوکیز استعمال کرتے ہیں۔ Analytics ہمیں بہتری میں مدد دیتا ہے — انتخاب آپ کا ہے۔",
+      "rejectNonEssential": "غیر ضروری مسترد کریں",
+      "customize": "حسبِ ضرورت بنائیں",
+      "acceptAll": "سب قبول کریں"
+    },
+    "prefs": {
+      "title": "کوکی ترجیحات",
+      "subtitle": "ہم کون سا ڈیٹا جمع کریں، یہ آپ کنٹرول کرتے ہیں۔",
+      "essential": {
+        "title": "ضروری",
+        "description": "تصدیق، سیشن مینجمنٹ اور سیکیورٹی کے لیے ضروری۔ اسے غیر فعال نہیں کیا جا سکتا۔"
+      },
+      "analytics": {
+        "title": "Analytics",
+        "description": "Google Analytics 4 — گمنام صفحہ ملاحظات اور ایونٹس۔ یہ سمجھنے میں مدد دیتا ہے کہ کون سی خصوصیات استعمال ہو رہی ہیں۔ بطور ڈیفالٹ بند۔"
+      },
+      "rejectAll": "سب مسترد کریں",
+      "acceptAll": "سب قبول کریں",
+      "saveChoices": "انتخاب محفوظ کریں"
+    }
+  },
+  "nav": {
+    "dashboard": "ڈیش بورڈ",
+    "propertySearch": "جائیداد کی تلاش",
+    "dueDiligence": "ڈیو ڈِلیجنس",
+    "riskAssessment": "خطرے کا جائزہ",
+    "propertyComparison": "جائیداد کا موازنہ",
+    "savedComparisons": "محفوظ شدہ موازنات",
+    "reports": "رپورٹس",
+    "notifications": "اطلاعات",
+    "auditLogs": "آڈٹ لاگز",
+    "profile": "پروفائل",
+    "settings": "سیٹنگز",
+    "support": "سپورٹ",
+    "sections": {
+      "main": "اہم",
+      "analysis": "تجزیہ",
+      "insights": "بصیرتیں",
+      "account": "اکاؤنٹ"
+    },
+    "sessionActive": "سیشن فعال ہے",
+    "version": "v1.0"
+  },
+  "auth": {
+    "login": {
+      "title": "خوش آمدید",
+      "subtitle": "اپنے جائیداد پورٹ فولیو کے خطرات منظم کرنے کے لیے سائن اِن کریں۔",
+      "emailLabel": "پیشہ ورانہ ای میل",
+      "emailPlaceholder": "name@company.com",
+      "passwordLabel": "پاس ورڈ",
+      "forgotPassword": "پاس ورڈ بھول گئے؟",
+      "rememberMe": "اس براؤزر میں مجھے سائن اِن رکھیں",
+      "signIn": "سائن اِن کریں",
+      "contactSupport": "سپورٹ سے رابطہ کریں",
+      "orContinueWith": "یا اس کے ساتھ جاری رکھیں",
+      "newToPlatform": "پلیٹ فارم پر نئے ہیں؟",
+      "createAccount": "مفت اکاؤنٹ بنائیں",
+      "hidePassword": "پاس ورڈ چھپائیں",
+      "showPassword": "پاس ورڈ دکھائیں",
+      "redirectingToDashboard": "آپ کے ڈیش بورڈ پر بھیجا جا رہا ہے۔",
+      "platformDesc": "جائیداد کی معلومات کے لیے verification-first پلیٹ فارم — ہر listing لائیو ہونے سے پہلے سات data-quality checks سے گزرتی ہے۔",
+      "verifiedListingsDesc": "سات نکاتی data-quality engine",
+      "secureByDefaultDesc": "JWT sessions، hashed passwords",
+      "roleBasedAccessDesc": "خریدار، ایجنٹ، جائزہ کار، منتظم",
+      "imgAlt": "جدید شیشے کی بلند عمارت",
+      "continueWithGoogle": "Google کے ساتھ جاری رکھیں",
+      "signingIn": "سائن اِن ہو رہا ہے…",
+      "almostThere": "تقریباً ہو گیا",
+      "finishProfile": "آئیے آپ کی پروفائل کی ترتیب مکمل کریں۔",
+      "unexpectedResponse": "سرور سے غیر متوقع جواب ملا۔ براہِ کرم دوبارہ کوشش کریں۔",
+      "googleFailed": "Google سائن اِن ناکام رہا",
+      "features": {
+        "analysis": "جامع جائیداد تجزیہ",
+        "auditing": "محفوظ ڈیو ڈِلیجنس آڈٹنگ",
+        "risk": "خودکار خطرے کا جائزہ"
+      },
+      "secureBy": "ڈیزائن کے اعتبار سے محفوظ",
+      "learnHow": "جانیں کیسے",
+      "platformOnline": "پلیٹ فارم آن لائن",
+      "builtForTrust": "اعتماد کے لیے بنایا گیا",
+      "verifiedListings": "صرف تصدیق شدہ listings",
+      "secureByDefault": "بطور ڈیفالٹ محفوظ",
+      "roleBasedAccess": "کردار کی بنیاد پر رسائی"
+    },
+    "register": {
+      "title": "اپنا اکاؤنٹ بنائیں",
+      "subtitle": "محفوظ ڈیو ڈِلیجنس شروع کرنے کے لیے پلیٹ فارم میں شامل ہوں۔",
+      "createAccount": "اکاؤنٹ بنائیں",
+      "pleaseWait": "براہِ کرم انتظار کریں…",
+      "welcomeCheck": "خوش آمدید ✓",
+      "alreadyHaveAccount": "کیا آپ کے پاس پہلے سے اکاؤنٹ ہے؟",
+      "signIn": "سائن اِن کریں",
+      "secureByDesign": "ڈیزائن کے اعتبار سے محفوظ",
+      "securityTagline": "JWT authentication · BCrypt hashing · کردار پر مبنی رسائی کنٹرول",
+      "fields": {
+        "fullName": "پورا نام",
+        "email": "ای میل",
+        "confirm": "تصدیق کریں",
+        "phoneNumber": "فون نمبر",
+        "role": "کردار"
+      },
+      "placeholders": {
+        "fullName": "John Smith",
+        "password": "کم از کم 8 حروف",
+        "confirm": "دوبارہ درج کریں",
+        "phone": "9876543210",
+        "role": "کردار منتخب کریں"
+      },
+      "errors": {
+        "fullNameRequired": "پورا نام ضروری ہے۔",
+        "fullNameShort": "پورا نام کم از کم 3 حروف پر مشتمل ہونا چاہیے۔",
+        "fullNameLong": "پورا نام 100 حروف سے زیادہ نہیں ہونا چاہیے۔",
+        "emailRequired": "پیشہ ورانہ ای میل ضروری ہے۔",
+        "emailInvalid": "براہِ کرم درست ای میل پتہ درج کریں۔",
+        "passwordLong": "پاس ورڈ 20 حروف سے زیادہ نہیں ہونا چاہیے۔",
+        "confirmRequired": "براہِ کرم اپنے پاس ورڈ کی تصدیق کریں۔",
+        "passwordsMismatch": "پاس ورڈ آپس میں میل نہیں کھاتے۔",
+        "phoneRequired": "فون نمبر ضروری ہے۔",
+        "phoneInvalid": "درست 10 ہندسوں والا بھارتی موبائل نمبر درج کریں (6–9 سے شروع ہو)۔",
+        "roleRequired": "براہِ کرم ایک کردار منتخب کریں۔",
+        "emailExists": "اس ای میل کے ساتھ اکاؤنٹ پہلے سے موجود ہے۔"
+      },
+      "toasts": {
+        "welcome": "خوش آمدید",
+        "welcomeDesc": "آپ کا اکاؤنٹ تیار ہے۔ بھیجا جا رہا ہے…",
+        "emailRegistered": "ای میل پہلے سے رجسٹرڈ ہے",
+        "emailRegisteredDesc": "اس کے بجائے سائن اِن کرنے کی کوشش کریں، یا کوئی دوسری ای میل استعمال کریں۔",
+        "failed": "رجسٹریشن ناکام رہی",
+        "tryAgain": "براہِ کرم دوبارہ کوشش کریں۔"
+      },
+      "whyPlatform": "یہ پلیٹ فارم کیوں",
+      "headline": "جائیداد ڈیو ڈِلیجنس کے لیے دیانت دار ٹولنگ",
+      "features": {
+        "verificationFirst": "verification-first listings",
+        "verificationFirstDesc": "ہر جائیداد verified نشان لگنے سے پہلے سات نکاتی data-quality engine سے گزرتی ہے۔",
+        "secure": "بطور ڈیفالٹ محفوظ",
+        "secureDesc": "JWT sessions، BCrypt password hashing، اور ہر endpoint پر کردار پر مبنی رسائی۔",
+        "teams": "حقیقی ٹیموں کے لیے بنایا گیا",
+        "teamsDesc": "پانچ واضح کردار — خریدار، ایجنٹ، قانونی جائزہ کار، مالیاتی ادارہ، اور منتظم۔",
+        "consent": "رضامندی-اول Analytics",
+        "consentDesc": "آپ کے opt in کرنے تک کچھ بھی load نہیں ہوتا۔ کوکی ترجیحات کا سختی سے احترام کیا جاتا ہے۔"
+      },
+      "platformOnline": "پلیٹ فارم آن لائن",
+      "secureBy": "ڈیزائن کے اعتبار سے محفوظ",
+      "learnHow": "جانیں کیسے"
+    },
+    "forgotPassword": {
+      "step1Title": "اپنا پاس ورڈ ری سیٹ کریں",
+      "step1Subtitle": "اپنی ای میل درج کریں اور ہم آپ کو 6 ہندسوں کا کوڈ بھیجیں گے۔",
+      "emailLabel": "ای میل پتہ",
+      "sendCode": "کوڈ بھیجیں",
+      "alreadyHaveCode": "میرے پاس پہلے سے کوڈ موجود ہے",
+      "step2Title": "کوڈ درج کریں",
+      "step2Subtitle": "پر بھیجا گیا",
+      "verifyCode": "کوڈ کی تصدیق کریں",
+      "changeEmail": "ای میل تبدیل کریں",
+      "resendCode": "کوڈ دوبارہ بھیجیں",
+      "resendIn": "{{n}}s میں دوبارہ بھیجیں",
+      "waitBefore": "دوبارہ بھیجنے سے پہلے {{n}}s انتظار کریں",
+      "step3Title": "نیا پاس ورڈ مقرر کریں",
+      "step3Subtitle": "کم از کم 8 حروف استعمال کریں، جن میں بڑے اور چھوٹے حروف اور ایک عدد شامل ہو۔",
+      "newPassword": "نیا پاس ورڈ",
+      "confirmPassword": "پاس ورڈ کی تصدیق کریں",
+      "resetPassword": "پاس ورڈ ری سیٹ کریں",
+      "requirements": {
+        "length": "کم از کم 8 حروف",
+        "case": "بڑے اور چھوٹے حروف",
+        "number": "ایک عدد شامل ہو",
+        "match": "پاس ورڈ آپس میں میل کھاتے ہیں"
+      },
+      "step4Title": "پاس ورڈ اپ ڈیٹ ہو گیا",
+      "step4Subtitle": "جاری رکھنے کے لیے اپنے نئے پاس ورڈ سے سائن اِن کریں۔",
+      "backToSignIn": "سائن اِن پر واپس جائیں",
+      "redirectingIn": "{{n}}s میں بھیجا جا رہا ہے…",
+      "capsLock": "Caps Lock آن ہے",
+      "pleaseWait": "براہِ کرم انتظار کریں",
+      "cooldownDesc": "آپ {{n}}s میں نیا کوڈ مانگ سکتے ہیں۔",
+      "codeSent": "کوڈ بھیج دیا گیا",
+      "checkInbox": "6 ہندسوں والے کوڈ کے لیے اپنا inbox چیک کریں۔",
+      "sendFailed": "کوڈ نہیں بھیجا جا سکا",
+      "newCodeSent": "نیا کوڈ بھیج دیا گیا",
+      "resendFailed": "دوبارہ نہیں بھیجا جا سکا",
+      "enterSixDigit": "6 ہندسوں والا کوڈ درج کریں",
+      "invalidCode": "غلط یا میعاد ختم شدہ کوڈ",
+      "verifyFailed": "تصدیق ناکام رہی",
+      "checkCodeAndRetry": "براہِ کرم کوڈ چیک کریں اور دوبارہ کوشش کریں۔",
+      "enterNewPassword": "نیا پاس ورڈ درج کریں",
+      "pwdComplexity": "بڑا حرف، چھوٹا حرف اور ایک عدد شامل کریں",
+      "confirmYourPassword": "اپنے پاس ورڈ کی تصدیق کریں",
+      "resetFailed": "پاس ورڈ ری سیٹ نہیں ہو سکا",
+      "codeAlreadySent": "کوڈ پہلے ہی بھیجا جا چکا ہے۔ پہلے اپنا inbox چیک کریں۔",
+      "enterEmailUsed": "وہ ای میل درج کریں جو آپ نے استعمال کی تھی",
+      "sentTo": "پر بھیجا گیا",
+      "digitAria": "ہندسہ {{n}}"
+    },
+    "errors": {
+      "emailRequired": "اپنی ای میل درج کریں",
+      "emailInvalid": "درست ای میل پتہ درج کریں",
+      "passwordRequired": "اپنا پاس ورڈ درج کریں",
+      "passwordLength": "کم از کم 8 حروف",
+      "fieldErrors": "براہِ کرم اپنی تفصیلات چیک کریں",
+      "someFieldsNeedAttention": "کچھ خانوں پر توجہ دینے کی ضرورت ہے۔",
+      "signInFailed": "سائن اِن ناکام رہا",
+      "checkCredentials": "براہِ کرم اپنی اسناد چیک کریں اور دوبارہ کوشش کریں۔",
+      "passwordLetter": "ایک حرف شامل ہونا چاہیے",
+      "passwordNumber": "ایک عدد شامل ہونا چاہیے"
+    }
+  },
+  "dashboard": {
+    "greetings": {
+      "morning": "صبح بخیر",
+      "afternoon": "دوپہر بخیر",
+      "evening": "شام بخیر"
+    },
+    "subtitle": "ایک نظر میں آپ کا پورٹ فولیو",
+    "platformOverview": "پلیٹ فارم کا جائزہ",
+    "pageTitle": "ڈیش بورڈ | Real Estate Due Diligence Agent",
+    "refreshed": "ڈیش بورڈ اپ ڈیٹ ہو گیا",
+    "stats": {
+      "totalProperties": "کل جائیدادیں",
+      "verified": "تصدیق شدہ",
+      "pending": "زیرِ التواء",
+      "platformUsers": "پلیٹ فارم صارفین",
+      "plusThisWeek": "+{{count}} اس ہفتے",
+      "ofTotal": "کل کا {{pct}}%",
+      "awaitingVerification": "تصدیق کی منتظر",
+      "allCaughtUp": "سب کچھ اپ ڈیٹ ہے",
+      "activeIn30Days": "30 دن میں {{n}} فعال",
+      "noPropertiesAdded": "کوئی جائیداد شامل نہیں کی گئی",
+      "nothingToVerify": "ابھی تصدیق کے لیے کچھ نہیں"
+    },
+    "empty": {
+      "title": "ابھی تک کوئی جائیداد نہیں",
+      "description": "تصدیقی نتائج اور پورٹ فولیو بصیرتیں دیکھنے کے لیے اپنی پہلی جائیداد شامل کریں۔",
+      "addFirst": "اپنی پہلی جائیداد شامل کریں"
+    },
+    "refresh": "ریفریش کریں",
+    "errors": {
+      "unauthorized": "آپ کو اس صفحے تک رسائی کی اجازت نہیں ہے۔",
+      "couldntLoad": "ڈیش بورڈ لوڈ نہیں ہو سکا",
+      "pleaseRefresh": "براہِ کرم صفحہ ریفریش کریں یا دوبارہ کوشش کریں۔",
+      "unableToLoadStats": "اعداد و شمار لوڈ نہیں ہو سکے۔ براہِ کرم صفحہ ریفریش کریں۔"
+    }
+  },
+  "hero": {
+    "portfolio": {
+      "label": "پورٹ فولیو کی مالیت",
+      "citiesCount_one": "{{count}} شہر",
+      "citiesCount_other": "{{count}} شہر",
+      "acrossProperties_one": "{{count}} جائیداد میں",
+      "acrossProperties_other": "{{count}} جائیدادوں میں",
+      "topAsset": "سب سے نمایاں اثاثہ"
+    },
+    "verification": {
+      "label": "تصدیق",
+      "allVerified": "سب تصدیق شدہ",
+      "noPropertiesYet": "ابھی تک کوئی جائیداد نہیں",
+      "portfolioComplete": "پورٹ فولیو مکمل",
+      "pendingCount_one": "{{count}} زیرِ التواء",
+      "pendingCount_other": "{{count}} زیرِ التواء"
+    },
+    "aqi": {
+      "label": "ہوا کا معیار",
+      "live": "لائیو",
+      "fetchingLive": "لائیو ڈیٹا حاصل کیا جا رہا ہے...",
+      "addPropertyToSee": "لائیو ہوا کا معیار دیکھنے کے لیے جائیداد شامل کریں"
+    }
+  },
+  "trend": {
+    "title": "وقت کے ساتھ پورٹ فولیو کی مالیت",
+    "dataPointsInWindow_one": "منتخب window میں {{count}} data point",
+    "dataPointsInWindow_other": "منتخب window میں {{count}} data points",
+    "deltaVsAgo": "{{days}}d پہلے کے مقابلے میں {{sign}}{{pct}}%",
+    "noChange": "کوئی تبدیلی نہیں",
+    "empty": {
+      "title": "ٹریکنگ آج سے شروع ہوتی ہے",
+      "description": "اپنے پورٹ فولیو ویلیو ٹرینڈ کو دیکھنے کے لیے کل واپس آئیں۔"
+    },
+    "error": {
+      "couldntLoad": "ٹرینڈ ڈیٹا لوڈ نہیں ہو سکا۔"
+    },
+    "tooltip": {
+      "propertiesCount_one": "{{count}} جائیداد",
+      "propertiesCount_other": "{{count}} جائیدادیں",
+      "verifiedCount_one": "{{count}} تصدیق شدہ",
+      "verifiedCount_other": "{{count}} تصدیق شدہ"
+    }
+  },
+  "breakdown": {
+    "title": "پورٹ فولیو کی تقسیم",
+    "subtitle": "جائیداد کی قسم کے لحاظ سے",
+    "empty": {
+      "title": "ابھی کوئی ڈیٹا نہیں",
+      "description": "تقسیم دیکھنے کے لیے جائیدادیں شامل کریں"
+    },
+    "tooltip": {
+      "propertyCount_one": "{{count}} جائیداد",
+      "propertyCount_other": "{{count}} جائیدادیں",
+      "valueLabel": "مالیت"
+    }
+  },
+  "map": {
+    "title": "پورٹ فولیو جغرافیہ",
+    "status": {
+      "loading": "نقشہ لوڈ ہو رہا ہے...",
+      "noPropertiesYet": "ابھی تک کوئی جائیداد نہیں",
+      "mappedOfTotal": "{{total}} میں سے {{mapped}} نقشے پر موجود",
+      "pendingCount_one": "{{count}} زیرِ التواء",
+      "pendingCount_other": "{{count}} زیرِ التواء"
+    },
+    "zoomHint": "زوم کے لیے +/− استعمال کریں",
+    "retryGeocoding": "Geocoding دوبارہ آزمائیں",
+    "geocoding": "Geocoding...",
+    "viewDetails": "تفصیلات دیکھیں",
+    "empty": {
+      "noMappedTitle": "ابھی تک نقشے پر کوئی جائیداد نہیں",
+      "noMappedDesc": "انہیں نقشے پر دیکھنے کے لیے address suggestions استعمال کرکے جائیدادیں شامل کریں۔",
+      "noCoordsTitle": "ابھی تک coordinates حاصل نہیں ہوئے",
+      "noCoordsDesc": "جائیدادیں موجود ہیں مگر geocoding درکار ہے۔ admins اوپر سے اسے چلا سکتے ہیں۔"
+    },
+    "error": {
+      "couldntLoad": "نقشے کا ڈیٹا لوڈ نہیں ہو سکا۔"
+    },
+    "toasts": {
+      "geocodedCount_one": "{{count}} جائیداد geocoded ہوئی",
+      "geocodedCount_other": "{{count}} جائیدادیں geocoded ہوئیں",
+      "reloadingMap": "نقشہ دوبارہ لوڈ ہو رہا ہے...",
+      "noNewLocations": "کوئی نئی جگہ نہیں ملی",
+      "tooVague": "باقی پتے شاید geocode کرنے کے لیے بہت غیر واضح ہیں۔",
+      "geocodingFailed": "Geocoding ناکام رہی",
+      "tryAgainLater": "براہِ کرم بعد میں دوبارہ کوشش کریں۔"
+    }
+  },
+  "recommendations": {
+    "title": "سفارشات",
+    "actionsCount_one": "آپ کے پورٹ فولیو کو بہتر بنانے کے لیے {{count}} قدم",
+    "actionsCount_other": "آپ کے پورٹ فولیو کو بہتر بنانے کے لیے {{count}} اقدامات",
+    "urgentCount_one": "{{count}} فوری",
+    "urgentCount_other": "{{count}} فوری",
+    "dismiss": "ہٹا دیں",
+    "showLess": "کم دکھائیں",
+    "showMore_one": "{{count}} مزید دکھائیں",
+    "showMore_other": "{{count}} مزید دکھائیں",
+    "severity": {
+      "urgent": "فوری",
+      "action": "اقدام",
+      "onTrack": "صحیح سمت میں",
+      "tip": "مشورہ"
+    }
+  },
+  "activity": {
+    "title": "حالیہ سرگرمی",
+    "subtitle": "پلیٹ فارم بھر میں تازہ ترین کارروائیاں",
+    "live": "لائیو",
+    "byActor": "{{name}} کی جانب سے",
+    "showAll": "سب دکھائیں",
+    "viewAllProperties": "تمام جائیدادیں دیکھیں",
+    "filters": {
+      "all": "سب",
+      "added": "شامل کی گئی",
+      "verified": "تصدیق شدہ",
+      "updated": "اپ ڈیٹ شدہ"
+    },
+    "types": {
+      "propertyAdded": "جائیداد شامل کی گئی",
+      "propertyVerified": "جائیداد کی تصدیق ہوئی",
+      "propertyUpdated": "جائیداد اپ ڈیٹ ہوئی"
+    },
+    "empty": {
+      "noActivity": "ابھی کوئی سرگرمی نہیں",
+      "addProperties": "یہاں سرگرمی دیکھنے کے لیے جائیدادیں شامل کریں",
+      "noFiltered": "حالیہ سرگرمیوں میں کوئی {{filter}} سرگرمی نہیں"
+    }
+  },
+  "recentTable": {
+    "title": "حالیہ جائیدادیں",
+    "subtitle": "پلیٹ فارم میں تازہ ترین شامل کی گئی جائیدادیں",
+    "columns": {
+      "address": "پتہ",
+      "type": "قسم",
+      "status": "حالت",
+      "missingFields": "گم شدہ خانے"
+    },
+    "missingCount_one": "{{count}} گم",
+    "missingCount_other": "{{count}} گم",
+    "noneMissing": "کوئی نہیں",
+    "empty": {
+      "title": "کوئی جائیداد نہیں ملی",
+      "description": "یہاں دیکھنے کے لیے جائیداد شامل کریں۔"
+    },
+    "error": {
+      "title": "جائیدادیں لوڈ نہیں ہو سکیں",
+      "description": "دوبارہ کوشش کے لیے براہِ کرم صفحہ ریفریش کریں۔"
+    }
+  },
+  "property": {
+    "addProperty": "جائیداد شامل کریں",
+    "addFirstProperty": "اپنی پہلی جائیداد شامل کریں",
+    "pdf": {
+      "downloadReport": "رپورٹ ڈاؤن لوڈ کریں",
+      "generating": "تیار کیا جا رہا ہے...",
+      "buttonTooltip": "PDF رپورٹ ڈاؤن لوڈ کریں",
+      "preparing": "PDF engine تیار کیا جا رہا ہے...",
+      "downloaded": "رپورٹ ڈاؤن لوڈ ہو گئی",
+      "savedTo": "{{filename}} آپ کے downloads folder میں محفوظ ہو گئی۔",
+      "loadFailed": "جائیداد کا ڈیٹا لوڈ نہیں ہو سکا",
+      "downloadFailed": "ڈاؤن لوڈ ناکام رہی",
+      "generateFailed": "رپورٹ تیار نہیں ہو سکی۔ دوبارہ کوشش کریں۔"
+    },
+    "search": {
+      "title": "جائیداد کی تلاش",
+      "placeholder": "صفحات، جائیدادیں، اقدامات تلاش کریں...",
+      "loadingPortfolio": "پورٹ فولیو لوڈ ہو رہا ہے...",
+      "readyToIndex": "آپ کی پہلی جائیداد index کرنے کے لیے تیار",
+      "live": "لائیو",
+      "propertiesIndexed": "{{n}} {{unit}} index ہوئی",
+      "propertyUnit": "جائیداد",
+      "propertiesUnit": "جائیدادیں",
+      "citiesCovered": "{{n}} {{unit}} شامل",
+      "cityUnit": "شہر",
+      "citiesUnit": "شہر",
+      "synced": "سنک شدہ",
+      "highRisk": "{{n}} بلند خطرہ",
+      "noPropertiesFound": "کوئی جائیداد نہیں ملی",
+      "trySearching": "شہر کے نام، پتے، یا ZIP code سے تلاش کریں — یا اپنی پہلی جائیداد شامل کریں۔",
+      "noMatches": "کوئی مطابقت نہیں",
+      "tryDifferent": "کوئی اور شہر، پتہ یا ZIP code آزمائیں۔",
+      "searchFailed": "تلاش ناکام رہی",
+      "tryAgain": "براہِ کرم تھوڑی دیر بعد دوبارہ کوشش کریں۔",
+      "couldntLoad": "جائیدادیں لوڈ نہیں ہو سکیں",
+      "pleaseRefresh": "براہِ کرم صفحہ ریفریش کریں۔",
+      "found": "{{n}} {{unit}} ملیں",
+      "ofTotal": "({{n}} میں سے)",
+      "pageTitle": "جائیداد کی تلاش | Real Estate Due Diligence",
+      "ariaLabel": "جائیداد کی تلاش",
+      "clearSearch": "تلاش صاف کریں",
+      "searching": "تلاش کی جا رہی ہے...",
+      "searchButton": "تلاش",
+      "searchingFor": "\"{{query}}\" تلاش کیا جا رہا ہے...",
+      "noMatchesFor": "\"{{query}}\" کے لیے کوئی مطابقت نہیں",
+      "tryDifferentHint": "کوئی اور شہر، پتہ یا ZIP آزمائیں",
+      "matchCount_one": "{{count}} مطابقت",
+      "matchCount_other": "{{count}} مطابقتیں",
+      "untitledProperty": "بلا عنوان جائیداد",
+      "locationUnknown": "نامعلوم مقام",
+      "valueLabel": "مالیت",
+      "seeAllResults_one": "تمام {{count}} نتیجہ دیکھیں",
+      "seeAllResults_other": "تمام {{count}} نتائج دیکھیں",
+      "kbNavigate": "نےویگیٹ",
+      "kbSelect": "منتخب کریں",
+      "kbClose": "بند کریں"
+    },
+    "addModal": {
+      "title": "نئی جائیداد شامل کریں",
+      "subtitle": "بنیادی معلومات سے آغاز کریں — باقی بعد میں کبھی بھی مکمل کر سکتے ہیں",
+      "closeAria": "بند کریں",
+      "verification": "تصدیق",
+      "optional": "اختیاری",
+      "poweredBy": "OpenStreetMap کے ذریعے",
+      "banner": {
+        "requiredPrefix": "صرف",
+        "requiredSuffix": "ضروری ہیں",
+        "address": "پتہ",
+        "city": "شہر",
+        "requiredConnector": "اور",
+        "hint": "باقی تفصیلات بعد میں کبھی بھی شامل کریں — جائیدادیں بننے کے بعد مکمل کی جا سکتی ہیں۔"
+      },
+      "sections": {
+        "location": "مقام",
+        "locationSub": "یہ جائیداد کہاں ہے؟",
+        "propertyDetails": "جائیداد کی تفصیلات",
+        "propertyDetailsSub": "اس کی درجہ بندی اور قیمت جاننے میں ہماری مدد کریں",
+        "extraDetails": "اضافی تفصیلات",
+        "extraDetailsSub": "اختیاری — رپورٹس اور موازنوں میں مددگار",
+        "photo": "تصویر",
+        "photoSub": "تصویر شامل کریں یا ہم ایک smart placeholder استعمال کریں گے"
+      },
+      "fields": {
+        "streetAddress": "گلی کا پتہ",
+        "city": "شہر",
+        "state": "ریاست",
+        "pinCode": "PIN code",
+        "propertyType": "جائیداد کی قسم",
+        "area": "رقبہ",
+        "marketValue": "بازاری مالیت",
+        "yearBuilt": "تعمیر کا سال",
+        "bedrooms": "بیڈ رومز",
+        "bathrooms": "باتھ رومز",
+        "stories": "منزلیں",
+        "propertyPhoto": "جائیداد کی تصویر"
+      },
+      "placeholders": {
+        "address": "پتہ ٹائپ کرنا شروع کریں...",
+        "city": "شہر منتخب کریں یا لکھیں",
+        "state": "ریاست منتخب کریں",
+        "pinCode": "560001",
+        "propertyType": "جائیداد کی قسم منتخب کریں",
+        "area": "1800",
+        "marketValue": "15000000",
+        "yearBuilt": "2015",
+        "bedrooms": "3",
+        "bathrooms": "2",
+        "stories": "2"
+      },
+      "hints": {
+        "characters": "{{count}} حروف",
+        "sqft": "مربع فٹ",
+        "inr": "بھارتی روپے",
+        "photoPlaceholder": "اسے چھوڑ دیں اور ہم جائیداد کی قسم کی بنیاد پر placeholder استعمال کریں گے۔"
+      },
+      "types": {
+        "residentialLabel": "رہائشی",
+        "residentialDesc": "گھر، اپارٹمنٹ، ولا",
+        "commercialLabel": "تجارتی",
+        "commercialDesc": "دفتر، retail، ہوٹل",
+        "industrialLabel": "صنعتی",
+        "industrialDesc": "warehouse، factory",
+        "landLabel": "زمین",
+        "landDesc": "plot، زرعی",
+        "mixedUseLabel": "مخلوط استعمال",
+        "mixedUseDesc": "رہائشی + تجارتی"
+      },
+      "errors": {
+        "addressRequired": "پتہ ضروری ہے",
+        "addressLength": "پتہ کم از کم 6 حروف پر مشتمل ہونا چاہیے",
+        "cityRequired": "شہر ضروری ہے",
+        "pinInvalid": "PIN بالکل 6 ہندسوں کا ہونا چاہیے",
+        "areaInvalid": "رقبہ 0 سے زیادہ ہونا چاہیے",
+        "valueInvalid": "مالیت 0 سے زیادہ ہونی چاہیے",
+        "yearRange": "سال 1800 اور {{max}} کے درمیان ہونا چاہیے",
+        "cannotBeNegative": "منفی نہیں ہو سکتا",
+        "storiesRange": "منزلیں 1 اور 200 کے درمیان ہونی چاہییں",
+        "formHasErrors": "فارم میں غلطیاں ہیں",
+        "reviewFields": "براہِ کرم نیچے نمایاں کیے گئے خانے چیک کریں۔",
+        "couldntAdd": "جائیداد شامل نہیں ہو سکی",
+        "tryAgainMoment": "براہِ کرم تھوڑی دیر بعد دوبارہ کوشش کریں۔"
+      },
+      "toasts": {
+        "addedVerified": "جائیداد شامل ہو گئی اور مکمل طور پر تصدیق شدہ ہے",
+        "addedVerifiedDesc": "تمام 7 data quality checks کامیاب ہوئیں۔",
+        "added": "جائیداد شامل ہو گئی",
+        "addedDesc_one": "بعد میں مکمل تصدیق کے لیے {{count}} مزید خانہ مکمل کریں۔",
+        "addedDesc_other": "بعد میں مکمل تصدیق کے لیے {{count}} مزید خانے مکمل کریں۔"
+      },
+      "footer": {
+        "willBeVerified": "فوراً تصدیق ہو جائے گی",
+        "fieldsToVerification_one": "مکمل تصدیق کے لیے {{count}} خانہ",
+        "fieldsToVerification_other": "مکمل تصدیق کے لیے {{count}} خانے",
+        "cancel": "منسوخ کریں",
+        "saving": "محفوظ کیا جا رہا ہے",
+        "addProperty": "جائیداد شامل کریں"
+      }
+    },
+    "editModal": {
+      "title": "جائیداد میں ترمیم کریں",
+      "sections": {
+        "photoSub": "جائیداد کی تصویر اپ ڈیٹ کریں یا شامل کریں"
+      },
+      "placeholders": {
+        "address": "742 Evergreen Terrace"
+      },
+      "banner": {
+        "allPassed": "تمام data quality checks کامیاب ہوئیں",
+        "awayFromVerification_one": "مکمل تصدیق سے {{count}} خانہ دور",
+        "awayFromVerification_other": "مکمل تصدیق سے {{count}} خانے دور",
+        "hint": "اس جائیداد کو verified نشان لگانے کے لیے تمام خانے مکمل کریں۔"
+      },
+      "toasts": {
+        "verified": "جائیداد کی تصدیق ہو گئی",
+        "changesSaved": "تبدیلیاں محفوظ ہو گئیں",
+        "stillNeeded_one": "تصدیق کے لیے ابھی {{count}} خانہ درکار ہے۔",
+        "stillNeeded_other": "تصدیق کے لیے ابھی {{count}} خانے درکار ہیں۔",
+        "saveFailed": "تبدیلیاں محفوظ نہیں ہو سکیں"
+      },
+      "footer": {
+        "willMarkVerified": "محفوظ کرنے سے اسے verified نشان لگا دیا جائے گا",
+        "saveChanges": "تبدیلیاں محفوظ کریں",
+        "fieldsToVerification_one": "مکمل تصدیق کے لیے {{count}} خانہ",
+        "fieldsToVerification_other": "مکمل تصدیق کے لیے {{count}} خانے"
+      }
+    },
+    "aggregation": {
+      "enums": {
+        "taxStatus": {
+          "PAID": "ادا شدہ",
+          "PENDING": "زیرِ التواء",
+          "OVERDUE": "بقایاجات"
+        },
+        "permitType": {
+          "BUILDING": "عمارت",
+          "RENOVATION": "تزئین و مرمت",
+          "OCCUPANCY": "رہائش",
+          "DEMOLITION": "مسماری",
+          "ELECTRICAL": "برقی",
+          "PLUMBING": "پلمبنگ"
+        },
+        "permitStatus": {
+          "APPROVED": "منظور شدہ",
+          "PENDING": "زیرِ التواء",
+          "EXPIRED": "میعاد ختم",
+          "REJECTED": "مسترد شدہ"
+        }
+      },
+      "completeness": {
+        "title": "ڈیٹا کی تکمیل",
+        "subtitle": "6 data sources میں aggregation کی صحت",
+        "refreshAria": "aggregation ریفریش کریں",
+        "refreshTitle": "تمام sources ریفریش کریں",
+        "overallStatus": "مجموعی حالت",
+        "coverage": "کوریج",
+        "liveSources_one": "لائیو source",
+        "liveSources_other": "لائیو sources",
+        "mockSources_one": "mock source",
+        "mockSources_other": "mock sources",
+        "unavailable": "دستیاب نہیں",
+        "dataSources": "ڈیٹا ذرائع",
+        "totalCount": "{{n}} کل",
+        "latestFetch": "تازہ ترین حاصل شدہ:",
+        "oldest": "سب سے پرانا:",
+        "duration": "دورانیہ:",
+        "overallOk": "تمام ذرائع دستیاب ہیں",
+        "overallPartial": "جزوی ڈیٹا",
+        "overallDegraded": "خراب حالت — کچھ ذرائع بند ہیں",
+        "overallLoading": "لوڈ ہو رہا ہے",
+        "statusEmpty": "خالی",
+        "statusDown": "بند",
+        "sources": {
+          "ownership": "ملکیتی رجسٹری",
+          "taxHistory": "بلدیاتی ٹیکس ریکارڈ",
+          "zoning": "زوننگ اتھارٹی",
+          "floodZone": "سیلابی خطرے کا جائزہ",
+          "permits": "پرمٹ ڈیٹابیس",
+          "environmental": "ماحولیاتی نگرانی"
+        }
+      },
+      "environmental": {
+        "title": "ماحولیاتی",
+        "subtitle": "ہوا کا معیار اور اردگرد کا ماحول",
+        "emptyLabel": "ماحولیاتی ڈیٹا",
+        "aqi": "ہوا کے معیار کا اشاریہ",
+        "mainPollutant": "اہم آلودہ عنصر",
+        "nearestStation": "قریب ترین نگرانی اسٹیشن",
+        "measured": "{{ago}} ناپا گیا",
+        "greenCover": "سبز احاطہ",
+        "noiseLevel": "شور کی سطح",
+        "soilType": "مٹی کی قسم",
+        "industrialZone": "صنعتی زون",
+        "nearby": "قریب",
+        "notNearby": "قریب نہیں"
+      },
+      "flood": {
+        "title": "سیلابی خطرہ",
+        "subtitle": "سیلابی زون کی درجہ بندی اور تاریخ",
+        "emptyLabel": "سیلابی ڈیٹا",
+        "zone": "زون",
+        "insuranceRecommended": "سیلابی بیمہ تجویز کردہ",
+        "insuranceNotMandatory": "سیلابی بیمہ لازمی نہیں",
+        "basedOn": "{{agency}} کی بنیاد پر",
+        "regionalHazard": "علاقائی خطرے کا ڈیٹا",
+        "nearestWater": "قریب ترین آبی ذخیرہ",
+        "distance": "فاصلہ",
+        "lastFlood": "آخری بڑا سیلاب:"
+      },
+      "zoning": {
+        "title": "زوننگ کی معلومات",
+        "subtitle": "زمین کے استعمال کی درجہ بندی اور تعمیراتی اصول",
+        "emptyLabel": "زوننگ کی معلومات",
+        "zoneCode": "زون کوڈ",
+        "category": "زمرہ",
+        "maxFar": "زیادہ سے زیادہ FAR",
+        "groundCoverage": "زمینی کوریج",
+        "maxHeight": "زیادہ سے زیادہ اونچائی",
+        "allowedUses": "منظور شدہ استعمال",
+        "restrictedUses": "ممنوعہ استعمال",
+        "referencePlan": "حوالہ منصوبہ"
+      },
+      "section": {
+        "waiting": "ڈیٹا کا انتظار ہو رہا ہے...",
+        "errorTitle": "یہ سیکشن عارضی طور پر دستیاب نہیں",
+        "errorReason": "بیرونی data source تک رسائی حاصل نہیں ہو سکی۔ براہِ کرم جلد دوبارہ کوشش کریں۔",
+        "emptyTitle": "کوئی {{item}} دستیاب نہیں",
+        "emptyReason": "اس جائیداد کے لیے ابھی تک کوئی ریکارڈ موجود نہیں۔",
+        "dataFallback": "ڈیٹا"
+      },
+      "badge": {
+        "mock": "نمونہ"
+      },
+      "ownership": {
+        "title": "ملکیت",
+        "subtitle": "موجودہ مالک اور رجسٹریشن کی تفصیلات",
+        "emptyLabel": "ملکیتی ریکارڈ",
+        "currentOwner": "موجودہ مالک",
+        "coOwners": "شریک مالکان:",
+        "ownershipType": "ملکیت کی قسم",
+        "registrationNo": "رجسٹریشن نمبر",
+        "registeredOn": "رجسٹریشن کی تاریخ",
+        "subRegistrar": "سب رجسٹرار دفتر",
+        "registeredValue": "رجسٹرڈ مالیت",
+        "stampDuty": "ادا شدہ Stamp Duty"
+      },
+      "permits": {
+        "title": "پرمٹس اور منظوریات",
+        "subtitle": "عمارت، رہائش اور تزئین و مرمت کے پرمٹس",
+        "emptyLabel": "پرمٹس",
+        "issued": "جاری:",
+        "expires": "اختتام:",
+        "noRecords": "اس جائیداد کے لیے کوئی پرمٹ ریکارڈ میں موجود نہیں۔"
+      },
+      "tax": {
+        "title": "جائیداد ٹیکس کی تاریخ",
+        "subtitle": "تخمینہ اور ادائیگی کے ریکارڈ",
+        "emptyLabel": "ٹیکس ریکارڈ",
+        "year": "سال",
+        "assessedValue": "متعین کردہ مالیت",
+        "taxDue": "واجب الادا ٹیکس",
+        "status": "حالت",
+        "receipt": "رسید",
+        "noRecords": "اس جائیداد کے لیے کوئی ٹیکس ریکارڈ دستیاب نہیں۔"
+      }
+    },
+    "quickImage": {
+      "addPhoto": "تصویر شامل کریں",
+      "updatePhoto": "تصویر اپ ڈیٹ کریں",
+      "closeAria": "بند کریں",
+      "cancel": "منسوخ کریں",
+      "saving": "محفوظ کیا جا رہا ہے",
+      "removePhoto": "تصویر ہٹائیں",
+      "savePhoto": "تصویر محفوظ کریں",
+      "saveChanges": "تبدیلیاں محفوظ کریں",
+      "noChanges": "کوئی تبدیلی نہیں",
+      "removedTitle": "تصویر ہٹا دی گئی",
+      "removedDesc": "جائیداد اب placeholder دکھائے گی۔",
+      "updatedTitle": "تصویر اپ ڈیٹ ہو گئی",
+      "updatedDesc": "آپ کی جائیداد کی تصویر محفوظ ہو گئی ہے۔",
+      "updateFailed": "تصویر اپ ڈیٹ نہیں ہو سکی",
+      "tryAgainMoment": "براہِ کرم تھوڑی دیر بعد دوبارہ کوشش کریں۔",
+      "stagedWarningTitle": "تصویر ہٹانے کے لیے تیار",
+      "stagedWarningDesc": "تصدیق کے لیے <1>تصویر ہٹائیں</1> پر کلک کریں، یا موجودہ تصویر برقرار رکھنے کے لیے <3>منسوخ کریں</3>۔",
+      "replaceHint": "موجودہ تصویر تبدیل کریں، یا placeholder استعمال کرنے کے لیے اسے ہٹا دیں۔",
+      "addHint": "تلاش کے نتائج میں اس جائیداد کی شناخت میں مدد کے لیے تصویر شامل کریں۔"
+    },
+    "saveComparison": {
+      "closeAria": "بند کریں",
+      "titleSave": "موازنہ محفوظ کریں",
+      "titleSaved": "موازنہ محفوظ ہو گیا!",
+      "subtitleSave_one": "اس {{count}} جائیداد کے موازنے کو اپنے اکاؤنٹ میں محفوظ کریں۔",
+      "subtitleSave_other": "اس {{count}} جائیدادوں کے موازنے کو اپنے اکاؤنٹ میں محفوظ کریں۔",
+      "subtitleSaved": "آپ اس موازنے کو اپنی محفوظ شدہ فہرست سے کسی بھی وقت لوڈ کر سکتے ہیں۔",
+      "nameLabel": "نام",
+      "namePlaceholder": "مثلاً Mumbai vs Pune comparison",
+      "nameRequired": "نام ضروری ہے",
+      "nameMin": "نام کم از کم 3 حروف پر مشتمل ہونا چاہیے",
+      "nameMax": "نام 100 حروف سے زیادہ نہیں ہو سکتا",
+      "notesLabel": "نوٹس",
+      "notesOptional": "(اختیاری)",
+      "notesPlaceholder": "اس موازنے کے بارے میں کوئی نوٹ شامل کریں...",
+      "notesMax": "نوٹس 1000 حروف سے زیادہ نہیں ہو سکتے",
+      "propertiesCount_one": "اس موازنے میں {{count}} جائیداد محفوظ ہو گی",
+      "propertiesCount_other": "اس موازنے میں {{count}} جائیدادیں محفوظ ہوں گی",
+      "cancel": "منسوخ کریں",
+      "saveButton": "موازنہ محفوظ کریں",
+      "saving": "محفوظ کیا جا رہا ہے...",
+      "tipEsc": "مشورہ: دبائیں",
+      "tipEscSuffix": "منسوخ کرنے کے لیے",
+      "closingAuto": "خودکار طور پر بند ہو رہا ہے..."
+    },
+    "logout": {
+      "closeAria": "بند کریں",
+      "title": "کیا آپ سائن آؤٹ کرنا چاہتے ہیں؟",
+      "subtitle": "اپنے ڈیش بورڈ اور جائیداد کے ڈیٹا تک دوبارہ رسائی کے لیے آپ کو دوبارہ لاگ اِن کرنا ہوگا۔",
+      "activeBadge": "فعال",
+      "signedInFallback": "سائن اِن ہے",
+      "fallbackUser": "صارف",
+      "stayIn": "سائن اِن رہیں",
+      "confirm": "ہاں، لاگ آؤٹ کریں",
+      "signingOut": "سائن آؤٹ ہو رہا ہے…",
+      "tipEsc": "مشورہ: دبائیں",
+      "tipEscSuffix": "منسوخ کرنے کے لیے"
+    },
+    "detailPage": {
+      "pageTitle": "جائیداد کی تفصیلات | Real Estate Due Diligence Agent",
+      "couldNotLoad": "جائیداد کی تفصیلات لوڈ نہیں ہو سکیں",
+      "notFound": "جائیداد نہیں ملی",
+      "mayBeRemoved": "شاید اسے ہٹا دیا گیا ہو۔"
+    },
+    "propertyTypes": {
+      "COMMERCIAL": "تجارتی",
+      "RESIDENTIAL": "رہائشی",
+      "INDUSTRIAL": "صنعتی",
+      "LAND": "زمین",
+      "MIXED_USE": "مخلوط استعمال",
+      "AGRICULTURAL": "زرعی"
+    },
+    "filter": {
+      "filter": "فلٹر",
+      "clearFilters": "فلٹر صاف کریں",
+      "noMatchFilters": "کوئی جائیداد آپ کے فلٹرز سے مطابقت نہیں رکھتی",
+      "tryRemoving": "کچھ فلٹر ہٹائیں یا سب صاف کر دیں",
+      "title": "فلٹرز",
+      "subtitle": "اپنی جائیدادوں کی فہرست بہتر بنائیں",
+      "activeCount_one": "{{count}} فلٹر فعال",
+      "activeCount_other": "{{count}} فلٹر فعال",
+      "resetFilters": "فلٹر ری سیٹ کریں",
+      "matching": "مطابقت رکھنے والی",
+      "viewProperties_one": "{{count}} جائیداد دیکھیں",
+      "viewProperties_other": "{{count}} جائیدادیں دیکھیں",
+      "sections": {
+        "propertyType": "جائیداد کی قسم",
+        "city": "شہر",
+        "priceRange": "قیمت کی حد",
+        "dataQuality": "ڈیٹا کا معیار",
+        "sortBy": "ترتیب"
+      },
+      "activeLabel": "فعال",
+      "chipMinPrice": "کم از کم: {{value}}",
+      "chipMaxPrice": "زیادہ سے زیادہ: {{value}}",
+      "chipSort": "ترتیب: {{label}}",
+      "chipRemove": "{{label}} ہٹائیں",
+      "noTypesYet": "ڈیٹا میں ابھی کوئی قسم موجود نہیں",
+      "noCitiesYet": "ڈیٹا میں ابھی کوئی شہر موجود نہیں",
+      "minPrice": "کم از کم (₹)",
+      "maxPrice": "زیادہ سے زیادہ (₹)",
+      "anyPrice": "کوئی بھی",
+      "highestInDb": "ڈیٹابیس میں سب سے زیادہ: {{amount}}",
+      "verifiedOnly": "صرف تصدیق شدہ",
+      "verifiedOnlyDesc": "وہ جائیدادیں دکھائیں جنہوں نے تمام quality checks پاس کی ہوں",
+      "toggleVerified": "صرف verified فلٹر ٹوگل کریں",
+      "highRiskOnly": "صرف زیادہ خطرہ",
+      "highRiskDesc": "وہ جائیدادیں دکھائیں جن کا خطرے کا اسکور 66 سے زیادہ ہو",
+      "toggleHighRisk": "زیادہ خطرے کا فلٹر ٹوگل کریں",
+      "sortOptions": {
+        "recent": "حال ہی میں شامل شدہ",
+        "priceAsc": "قیمت: کم → زیادہ",
+        "priceDesc": "قیمت: زیادہ → کم",
+        "alpha": "حروف تہجی (A–Z)",
+        "riskDesc": "زیادہ خطرہ پہلے"
+      }
+    },
+    "card": {
+      "verified": "تصدیق شدہ",
+      "pending": "زیرِ التواء",
+      "incomplete": "نامکمل",
+      "marketValue": "بازاری مالیت",
+      "completeToVerify": "تصدیق کے لیے مکمل کریں",
+      "missing": "غائب:",
+      "addPhoto": "تصویر شامل کریں",
+      "changePhoto": "تصویر تبدیل کریں",
+      "lowRisk": "کم خطرہ",
+      "mediumRisk": "درمیانی خطرہ",
+      "highRisk": "زیادہ خطرہ",
+      "unknownAddress": "نامعلوم پتہ",
+      "propertyFallback": "جائیداد",
+      "addToCompare": "موازنے میں شامل کریں",
+      "removeFromCompare": "موازنے سے ہٹائیں",
+      "maxCompareReached": "موازنے کے لیے زیادہ سے زیادہ 3 جائیدادیں",
+      "verifiedTooltip": "تصدیق شدہ — تمام {{n}} data quality checks کامیاب",
+      "pendingTooltip": "زیرِ التواء — {{total}} میں سے {{passed}} checks کامیاب۔\nغائب: {{missing}}",
+      "bedroomsShort": "{{n}} BR",
+      "bathroomsShort": "{{n}} BA",
+      "riskScoreTooltip": "خطرے کا اسکور: {{score}}/100",
+      "moreItems": "+{{n}} مزید",
+      "photoPending": "تصویر زیرِ التواء"
+    },
+    "risk": {
+      "title": "خطرے کا جائزہ",
+      "subtitle": "حقیقی aggregated data کی بنیاد پر",
+      "unavailable": "خطرے کا اسکور دستیاب نہیں",
+      "couldntLoad": "خطرے کا اسکور لوڈ نہیں ہو سکا",
+      "categoryBreakdown": "زمروں کی تقسیم",
+      "weight": "وزن {{pct}}",
+      "factorsCount": "خطرے کے عوامل · {{n}}",
+      "incompleteNote": "کچھ data sources نے mock یا unavailable data واپس کیا۔ مزید حقیقی ڈیٹا دستیاب ہونے پر اسکور بہتر ہو سکتا ہے۔",
+      "categories": {
+        "financial": "مالیاتی",
+        "legal": "قانونی",
+        "environmental": "ماحولیاتی",
+        "structural": "ساختی"
+      }
+    },
+    "building": {
+      "title": "عمارت کی معلومات",
+      "subtitle": "آپ کی فراہم کردہ ساختی تفصیلات",
+      "storiesCount_one": "{{count}} منزل",
+      "storiesCount_other": "{{count}} منزلیں",
+      "emptyTitle": "عمارت کی کوئی تفصیل شامل نہیں",
+      "emptyDesc": "خطرے کے اسکور کی درستگی بہتر بنانے کے لیے ساخت کی قسم، تعمیر کا سال، بیڈ رومز اور مزید شامل کریں۔",
+      "addDetails": "عمارت کی تفصیلات شامل کریں"
+    },
+    "details": {
+      "verifiedProperty": "تصدیق شدہ جائیداد",
+      "pendingVerification": "تصدیق زیرِ التواء",
+      "active": "فعال",
+      "userProvided": "صارف کی فراہم کردہ",
+      "editDetails": "تفصیلات میں ترمیم کریں",
+      "estimatedMarketValue": "متوقع بازاری مالیت",
+      "yearBuilt": "تعمیر کا سال",
+      "stories": "منزلیں",
+      "lotSize": "پلاٹ کا حجم",
+      "zoning": "زوننگ",
+      "beds": "بیڈز",
+      "baths": "باتھز",
+      "sqft": "مربع فٹ",
+      "type": "قسم",
+      "pricePerSqft": "قیمت/مربع فٹ",
+      "editProperty": "جائیداد میں ترمیم کریں",
+      "backToSearch": "تلاش پر واپس جائیں",
+      "monthlyEst": "تخمینی {{amount}}/ماہ",
+      "getPrequalified": "پیشگی اہلیت حاصل کریں"
+    },
+    "comparison": {
+      "title": "جائیداد کا موازنہ",
+      "subtitle": "{{n}} {{unit}} کا ساتھ ساتھ تجزیہ · صرف حقیقی ڈیٹا",
+      "pageTitle": "جائیداد کا موازنہ | Real Estate Due Diligence Agent",
+      "couldNotLoad": "موازنہ لوڈ نہیں ہو سکا",
+      "pleaseGoBack": "براہِ کرم واپس جائیں اور دوبارہ کوشش کریں۔",
+      "loadFailed": "موازنے کا ڈیٹا لوڈ نہیں ہو سکا",
+      "selectHelper": "جائیداد کی تلاش پر جائیں، ہر کارڈ پر compare checkbox سے 2–3 جائیدادیں منتخب کریں، پھر \"موازنہ\" پر کلک کریں۔",
+      "backToSearch": "جائیداد کی تلاش پر واپس جائیں",
+      "metricHeader": "پیمانہ",
+      "propertyUnit": "جائیداد",
+      "propertiesUnit": "جائیدادیں",
+      "mySaved": "میری محفوظ شدہ",
+      "saveComparison": "موازنہ محفوظ کریں",
+      "goToSearch": "جائیداد کی تلاش پر جائیں",
+      "selectAtLeast2": "موازنے کے لیے کم از کم 2 جائیدادیں منتخب کریں",
+      "compareLabel": "موازنہ",
+      "selectedCount": "3 میں سے {{count}} منتخب",
+      "compareCount_one": "{{count}} جائیداد کا موازنہ کریں",
+      "compareCount_other": "{{count}} جائیدادوں کا موازنہ کریں",
+      "selectMinimum": "— کم از کم 2 منتخب کریں",
+      "removeProperty": "{{address}} ہٹائیں",
+      "sections": {
+        "financial": "مالیاتی",
+        "propertyDetails": "جائیداد کی تفصیلات",
+        "riskAssessment": "خطرے کا جائزہ",
+        "dataQuality": "ڈیٹا کا معیار",
+        "integrationSources": "integration data sources",
+        "environmental": "ماحولیاتی"
+      },
+      "metrics": {
+        "marketValue": "بازاری مالیت",
+        "area": "رقبہ",
+        "pricePerSqft": "قیمت / مربع فٹ",
+        "lotSize": "پلاٹ کا حجم",
+        "yearBuilt": "تعمیر کا سال",
+        "type": "قسم",
+        "bedrooms": "بیڈ رومز",
+        "bathrooms": "باتھ رومز",
+        "stories": "منزلیں",
+        "condition": "حالت",
+        "structureType": "ساخت کی قسم",
+        "zoning": "زوننگ",
+        "overallRisk": "مجموعی خطرہ",
+        "financialRisk": "مالیاتی خطرہ",
+        "legalRisk": "قانونی خطرہ",
+        "environmentalRisk": "ماحولیاتی خطرہ",
+        "structuralRisk": "ساختی خطرہ",
+        "verification": "تصدیق",
+        "ownership": "ملکیت",
+        "taxHistory": "ٹیکس کی تاریخ",
+        "floodZone": "سیلابی زون",
+        "permits": "پرمٹس",
+        "aqi": "AQI",
+        "floodRisk": "سیلابی خطرہ",
+        "nearIndustrial": "صنعتی زون کے قریب"
+      },
+      "risk": {
+        "low": "کم خطرہ",
+        "medium": "درمیانی خطرہ",
+        "high": "زیادہ خطرہ"
+      },
+      "status": {
+        "live": "لائیو",
+        "cached": "cached",
+        "sample": "نمونہ",
+        "unavailable": "دستیاب نہیں",
+        "timedOut": "وقت ختم",
+        "error": "خرابی",
+        "noData": "کوئی ڈیٹا نہیں"
+      },
+      "legend": {
+        "title": "وضاحت",
+        "best": "بہترین قدر",
+        "worst": "بدترین قدر",
+        "middle": "درمیانی",
+        "note": "موازنہ نسبتاً ہے — کوئی بیرونی benchmark استعمال نہیں ہوا"
+      }
+    }
+  },
+  "profile": {
+    "title": "اکاؤنٹ مینجمنٹ",
+    "subtitle": "اپنی پیشہ ورانہ شناخت اور ایپلی کیشن سیکیورٹی کو کنٹرول کریں۔",
+    "pageTitle": "پروفائل | Real Estate Due Diligence Agent",
+    "fallbackUser": "صارف",
+    "sections": {
+      "accountDetails": "اکاؤنٹ کی تفصیلات",
+      "accountDetailsSubtitle": "بنیادی رابطہ اور تنظیمی معلومات۔",
+      "security": "سیکیورٹی اور رسائی",
+      "securitySubtitle": "اپنے authentication methods اور security protocols منظم کریں۔",
+      "dangerZone": "خطرے کا حصہ",
+      "dangerZoneSubtitle": "ناقابلِ واپسی اقدامات۔ براہِ کرم احتیاط سے آگے بڑھیں۔"
+    },
+    "fields": {
+      "fullName": "پورا نام",
+      "email": "ای میل پتہ",
+      "phone": "فون",
+      "signInMethod": "سائن اِن طریقہ",
+      "accessLevel": "رسائی کی سطح",
+      "memberSince": "رکن بننے کی تاریخ"
+    },
+    "placeholders": {
+      "fullName": "آپ کا پورا نام",
+      "phone": "10 ہندسوں کا موبائل"
+    },
+    "actions": {
+      "editProfile": "پروفائل میں ترمیم کریں",
+      "cancel": "منسوخ کریں",
+      "saveChanges": "تبدیلیاں محفوظ کریں",
+      "saving": "محفوظ کیا جا رہا ہے...",
+      "changePassword": "پاس ورڈ تبدیل کریں",
+      "deleteAccount": "اکاؤنٹ حذف کریں"
+    },
+    "password": {
+      "title": "اکاؤنٹ پاس ورڈ",
+      "description": "اپنے اکاؤنٹ کو محفوظ رکھنے کے لیے جب چاہیں پاس ورڈ اپ ڈیٹ کریں۔",
+      "googleOnly": "آپ Google سے سائن اِن کرتے ہیں۔ کوئی پاس ورڈ مقرر نہیں۔"
+    },
+    "delete": {
+      "title": "یہ اکاؤنٹ حذف کریں",
+      "description": "آپ کی پروفائل، آپ کی شامل کردہ تمام جائیدادیں، اور تمام session data مستقل طور پر حذف کر دیے جائیں گے۔ اسے واپس نہیں لایا جا سکتا۔"
+    },
+    "signOutAll": {
+      "title": "تمام ڈیوائسز سے سائن آؤٹ کریں",
+      "description": "فون، ٹیبلیٹس، اور دیگر براؤزرز — ہر جگہ اپنا سیشن ختم کریں۔ یہ تب مفید ہے جب آپ نے اپنا آلہ کسی سے شیئر کیا ہو یا کسی ایک تک رسائی کھو دی ہو۔",
+      "button": "ہر جگہ سائن آؤٹ کریں"
+    },
+    "roles": {
+      "BUYER": "خریدار",
+      "REAL_ESTATE_AGENT": "ریئل اسٹیٹ ایجنٹ",
+      "LEGAL_REVIEWER": "قانونی جائزہ کار",
+      "FINANCIAL_INSTITUTION": "مالیاتی ادارہ",
+      "ADMIN": "منتظم"
+    },
+    "roleTaglines": {
+      "BUYER": "جائیداد خریدار · ڈیو ڈِلیجنس",
+      "REAL_ESTATE_AGENT": "ریئل اسٹیٹ پیشہ ور · مارکیٹ ماہر",
+      "LEGAL_REVIEWER": "قانونی مشیر · compliance review",
+      "FINANCIAL_INSTITUTION": "مالیاتی ادارہ · اثاثہ جاتی قدر کا جائزہ",
+      "ADMIN": "سسٹم منتظم · مکمل رسائی"
+    },
+    "authProvider": {
+      "LOCAL": "ای میل + پاس ورڈ",
+      "GOOGLE": "Google",
+      "LOCAL_AND_GOOGLE": "ای میل + Google"
+    },
+    "locked": "مقفل",
+    "verified": "تصدیق شدہ {{role}}",
+    "errors": {
+      "nameValidation": "3–100 حروف، صرف حروف اور خالی جگہیں",
+      "phoneValidation": "10 ہندسے، 6–9 سے شروع",
+      "couldntLoad": "پروفائل لوڈ نہیں ہو سکی",
+      "pleaseRefresh": "براہِ کرم صفحہ ریفریش کریں۔",
+      "unableToLoad": "پروفائل لوڈ نہیں ہو سکی۔ براہِ کرم صفحہ ریفریش کریں۔",
+      "updateFailed": "اپ ڈیٹ ناکام رہی"
+    },
+    "success": {
+      "profileUpdated": "پروفائل اپ ڈیٹ ہو گئی",
+      "changesSaved": "آپ کی تبدیلیاں محفوظ ہو گئی ہیں۔"
+    }
+  },
+  "deleteAccount": {
+    "title": "اکاؤنٹ حذف کریں",
+    "subtitle": "یہ کارروائی واپس نہیں ہو سکتی۔",
+    "impactTitle": "درج ذیل چیزیں مستقل طور پر حذف ہو جائیں گی:",
+    "impact": {
+      "account": "آپ کا اکاؤنٹ اور پروفائل",
+      "properties": "آپ کی شامل کردہ تمام جائیدادیں",
+      "sessions": "آپ کا تمام session data"
+    },
+    "passwordLabel": "اپنا پاس ورڈ درج کریں",
+    "passwordPlaceholder": "موجودہ پاس ورڈ",
+    "emailLabel": "تصدیق کے لیے اپنی ای میل لکھیں",
+    "typeToConfirmPrefix": "تصدیق کے لیے",
+    "typeToConfirmSuffix": "لکھیں",
+    "deleteButton": "اکاؤنٹ حذف کریں",
+    "toasts": {
+      "confirmRequired": "تصدیق ضروری ہے",
+      "typeExactly": "اس کارروائی کی تصدیق کے لیے بالکل DELETE لکھیں۔",
+      "passwordRequired": "پاس ورڈ ضروری ہے",
+      "emailRequired": "ای میل ضروری ہے",
+      "enterPasswordToConfirm": "تصدیق کے لیے اپنا پاس ورڈ درج کریں۔",
+      "enterEmailToConfirm": "تصدیق کے لیے اپنی ای میل درج کریں۔",
+      "accountDeleted": "اکاؤنٹ حذف ہو گیا",
+      "redirecting": "آپ کو ایک لمحے میں ری ڈائریکٹ کیا جائے گا۔",
+      "couldNotDelete": "اکاؤنٹ حذف نہیں ہو سکا",
+      "tryAgainMoment": "براہِ کرم تھوڑی دیر بعد دوبارہ کوشش کریں۔",
+      "tryAgain": "براہِ کرم دوبارہ کوشش کریں۔"
+    }
+  },
+  "changePassword": {
+    "title": "پاس ورڈ تبدیل کریں",
+    "subtitle": "اپنے اکاؤنٹ کا پاس ورڈ اپ ڈیٹ کریں",
+    "currentLabel": "موجودہ پاس ورڈ",
+    "currentPlaceholder": "موجودہ پاس ورڈ درج کریں",
+    "newLabel": "نیا پاس ورڈ",
+    "newPlaceholder": "کم از کم 8 حروف",
+    "confirmLabel": "نئے پاس ورڈ کی تصدیق کریں",
+    "confirmPlaceholder": "نیا پاس ورڈ دوبارہ درج کریں",
+    "submit": "پاس ورڈ تبدیل کریں",
+    "saving": "محفوظ کیا جا رہا ہے...",
+    "errors": {
+      "currentRequired": "موجودہ پاس ورڈ ضروری ہے",
+      "newRequired": "نیا پاس ورڈ ضروری ہے"
+    },
+    "toasts": {
+      "samePassword": "ایک ہی پاس ورڈ",
+      "samePasswordDesc": "نیا پاس ورڈ آپ کے موجودہ پاس ورڈ سے مختلف ہونا چاہیے۔",
+      "success": "پاس ورڈ تبدیل ہو گیا",
+      "successDesc": "اب آپ اپنے نئے پاس ورڈ سے سائن اِن کر سکتے ہیں۔",
+      "failed": "تبدیلی ناکام رہی"
+    }
+  },
+  "signOutAll": {
+    "title": "کیا تمام ڈیوائسز سے سائن آؤٹ کرنا ہے؟",
+    "subtitle": "یہ اس اکاؤنٹ سے اس وقت سائن اِن ہر ڈیوائس پر آپ کا سیشن ختم کر دے گا۔",
+    "confirmButton": "ہاں، ہر جگہ سائن آؤٹ کریں",
+    "processing": "ہر جگہ سائن آؤٹ کیا جا رہا ہے…",
+    "tipEsc": "مشورہ: دبائیں",
+    "tipEscSuffix": "منسوخ کرنے کے لیے",
+    "useIfPrefix": "اسے استعمال کریں اگر:",
+    "useIfBody": "آپ کے اکاؤنٹ کے ساتھ سمجھوتہ ہوا ہو، آپ نے اپنا آلہ کسی سے شیئر کیا ہو، یا آپ کہیں لاگ آؤٹ کرنا بھول گئے ہوں۔",
+    "impact": {
+      "endSessions": {
+        "title": "تمام فعال سیشن ختم ہو جائیں گے",
+        "description": "فون، ٹیبلیٹ، دوسرے براؤزر — ہر جگہ جہاں آپ سائن اِن ہیں"
+      },
+      "logoutHere": {
+        "title": "آپ یہاں سے بھی لاگ آؤٹ ہو جائیں گے",
+        "description": "جاری رکھنے کے لیے آپ کو دوبارہ سائن اِن کرنا ہوگا"
+      }
+    },
+    "toasts": {
+      "signedOutTitle": "ہر جگہ سائن آؤٹ ہو گیا",
+      "signedOutDesc": "آپ کے تمام فعال سیشن ختم کر دیے گئے ہیں۔",
+      "failedTitle": "سائن آؤٹ نہیں ہو سکا"
+    }
+  },
+  "avatar": {
+    "aria": {
+      "changePhoto": "پروفائل تصویر تبدیل کریں",
+      "photoOptions": "تصویر کے اختیارات"
+    },
+    "menu": {
+      "upload": "تصویر اپ لوڈ کریں",
+      "change": "تصویر تبدیل کریں",
+      "remove": "تصویر ہٹائیں",
+      "fileHint": "JPG, PNG, WebP · زیادہ سے زیادہ 5 MB"
+    },
+    "preview": {
+      "title": "پیش منظر اور اپ لوڈ",
+      "alt": "پیش منظر",
+      "fileSizeKB": "{{size}} KB",
+      "upload": "تصویر اپ لوڈ کریں",
+      "uploading": "اپ لوڈ ہو رہی ہے..."
+    },
+    "toasts": {
+      "invalidFile": "غلط فائل",
+      "photoUpdated": "پروفائل تصویر اپ ڈیٹ ہو گئی",
+      "uploadFailed": "اپ لوڈ ناکام رہا",
+      "photoRemoved": "پروفائل تصویر ہٹا دی گئی",
+      "removeFailed": "تصویر ہٹانے میں ناکامی"
+    }
+  },
+  "settings": {
+    "title": "سیٹنگز",
+    "language": {
+      "sectionTitle": "زبان",
+      "sectionSubtitle": "انٹرفیس کے لیے اپنی پسندیدہ زبان منتخب کریں۔",
+      "label": "انٹرفیس کی زبان",
+      "selectPlaceholder": "زبان منتخب کریں",
+      "saved": "زبان اپ ڈیٹ ہو گئی",
+      "savedDescription": "انٹرفیس کی زبان {{language}} میں تبدیل کر دی گئی ہے۔"
+    }
+  },
+  "commandPalette": {
+    "searchPlaceholder": "صفحات، جائیدادیں، یا اقدامات تلاش کریں...",
+    "ariaLabel": "Command palette تلاش",
+    "searchingProperties": "جائیدادیں تلاش کی جا رہی ہیں...",
+    "clear": "صاف کریں",
+    "recentSearchLabel": "حالیہ تلاش",
+    "sections": {
+      "recent": "حالیہ",
+      "pages": "صفحات",
+      "properties": "جائیدادیں",
+      "propertiesSubtitle": "براہِ راست database سے",
+      "actions": "اقدامات"
+    },
+    "empty": {
+      "title": "\u201C{{query}}\u201D کے لیے کوئی مطابقت نہیں",
+      "hint": "کسی صفحے کا نام، جائیداد کا پتہ، یا کوئی کارروائی تلاش کرنے کی کوشش کریں"
+    },
+    "kbd": {
+      "navigate": "نےویگیٹ",
+      "select": "منتخب کریں",
+      "close": "بند کریں",
+      "esc": "esc"
+    },
+    "pages": {
+      "dashboard": {
+        "label": "ڈیش بورڈ",
+        "description": "پورٹ فولیو کا جائزہ اور KPIs"
+      },
+      "search": {
+        "label": "جائیداد کی تلاش",
+        "description": "جائیدادیں تلاش کریں اور تصدیق کریں"
+      },
+      "diligence": {
+        "label": "ڈیو ڈِلیجنس",
+        "description": "گہری تصدیقی workflow"
+      },
+      "risk": {
+        "label": "خطرے کا جائزہ",
+        "description": "خطرے کے اسکور اور وارننگز"
+      },
+      "compare": {
+        "label": "جائیداد کا موازنہ",
+        "description": "ساتھ ساتھ تجزیہ"
+      },
+      "reports": {
+        "label": "رپورٹس",
+        "description": "تیار شدہ PDF رپورٹس"
+      },
+      "notifications": {
+        "label": "اطلاعات",
+        "description": "الرٹس اور activity feed"
+      },
+      "audit": {
+        "label": "آڈٹ لاگز",
+        "description": "ہر کارروائی، وقت کے اندراج کے ساتھ"
+      },
+      "profile": {
+        "label": "میری پروفائل",
+        "description": "اکاؤنٹ اور ترجیحات"
+      }
+    },
+    "actions": {
+      "addProperty": {
+        "label": "نئی جائیداد شامل کریں",
+        "description": "نئی listing رجسٹر کریں"
+      },
+      "logout": {
+        "label": "لاگ آؤٹ",
+        "description": "اپنا سیشن ختم کریں"
+      }
+    }
+  },
+  "navbar": {
+    "toggleSidebar": "سائیڈبار ٹوگل کریں",
+    "openCommandPalette": "Command palette کھولیں",
+    "userMenu": "صارف مینو",
+    "signedIn": "سائن اِن ہے",
+    "myProfile": "میری پروفائل",
+    "logOut": "لاگ آؤٹ"
+  },
+  "emptyState": {
+    "defaultTitle": "ابھی یہاں کچھ نہیں",
+    "defaultDescription": "اپنی پہلی شے شامل کر کے آغاز کریں۔"
+  },
+  "support": {
+    "hero": {
+      "title": "ہم کیسے مدد کر سکتے ہیں؟",
+      "subtitle": "عام سوالات کے جواب اور ہم تک پہنچنے کے براہِ راست طریقے۔ اگر آپ کو مطلوبہ چیز نہ ملے تو ہمیں ای میل کریں، ہم کاروباری دنوں میں 48 گھنٹوں کے اندر جواب دیں گے۔",
+      "searchPlaceholder": "مضامین، سوالات، خصوصیات تلاش کریں...",
+      "statusOperational": "تمام نظام درست کام کر رہے ہیں"
+    },
+    "contact": {
+      "eyebrow": "رابطہ کریں",
+      "title": "ہم سے براہِ راست رابطہ کریں",
+      "subtitle": "وہ آپشن منتخب کریں جو آپ کے لیے بہتر ہو — کلک کرنے پر آپ کا ای میل client ایک پہلے سے پُر subject line کے ساتھ کھلے گا۔",
+      "openEmail": "ای میل کھولیں",
+      "general": {
+        "title": "عام سوال",
+        "description": "پروڈکٹ مدد، اکاؤنٹ سے متعلق سوالات، یا کوئی بھی غیر فوری مسئلہ۔",
+        "subject": "Support request — Due Diligence Platform",
+        "body": "Hi team,\n\nI have a question about:\n\n"
+      },
+      "bug": {
+        "title": "بگ رپورٹ کریں",
+        "description": "کیا کچھ توقع کے مطابق کام نہیں کر رہا؟ ہمیں بتائیں کہ آپ نے کیا دیکھا اور آپ کی کیا توقع تھی۔",
+        "subject": "Bug report — Due Diligence Platform",
+        "body": "What I did:\n\nWhat I expected:\n\nWhat actually happened:\n\nBrowser & version:\n\n"
+      },
+      "feature": {
+        "title": "ایک فیچر تجویز کریں",
+        "description": "کوئی خیال ہے جو پلیٹ فارم کو بہتر بنا سکے؟ ہم ہر پیغام پڑھتے ہیں۔",
+        "subject": "Feature request — Due Diligence Platform",
+        "body": "I'd like to see:\n\nWhy this would help:\n\n"
+      }
+    },
+    "faq": {
+      "eyebrow": "علمی ذخیرہ",
+      "title": "اکثر پوچھے جانے والے سوالات",
+      "allCategory": "سب",
+      "articleCount_one": "{{count}} مضمون",
+      "articleCount_other": "{{count}} مضامین",
+      "noResults": {
+        "title": "آپ کی تلاش سے کوئی مضمون مطابقت نہیں رکھتا",
+        "hint": "کوئی اور keyword آزمائیں یا تمام مضامین دیکھنے کے لیے filter صاف کریں۔",
+        "emailButton": "یہ سوال ہمیں ای میل کریں",
+        "emailSubjectPrefix": "Support:",
+        "emailSubjectFallback": "سوال FAQ میں موجود نہیں"
+      }
+    },
+    "response": {
+      "eyebrow": "جواب کا وقت",
+      "headline": "48 گھنٹوں کے اندر",
+      "description": "ہم کاروباری دنوں (پیر–جمعہ) میں ای میلز کا جواب دیتے ہیں۔ پیچیدہ مسائل میں زیادہ وقت لگ سکتا ہے — ہم ہمیشہ پہلے موصول ہونے کی تصدیق کرتے ہیں۔"
+    },
+    "direct": {
+      "eyebrow": "براہِ راست ای میل",
+      "headline": "ٹیم سے رابطہ کریں"
+    },
+    "related": {
+      "eyebrow": "متعلقہ",
+      "title": "مزید وسائل",
+      "security": {
+        "title": "سیکیورٹی",
+        "description": "ہم آپ کا ڈیٹا کیسے محفوظ رکھتے ہیں — جو کچھ بنایا گیا ہے اور جو منصوبہ بندی میں ہے، اس کی مکمل وضاحت۔"
+      },
+      "source": {
+        "title": "سورس کوڈ",
+        "description": "GitHub پر open-source۔ مسائل رپورٹ کریں، کوڈ پڑھیں، یا تعاون کریں۔"
+      }
+    },
+    "footer": {
+      "note": "یہ support page کوئی live chat، ticket system، یا خودکار helpdesk نہیں ہے۔ یہ اس ٹیم تک براہِ راست رسائی ہے جس نے پلیٹ فارم بنایا ہے۔ ہم ہر ای میل پڑھتے ہیں اور ذاتی طور پر جواب دیتے ہیں۔"
+    }
+  },
+  "savedComparisons": {
+    "pageTitle": "محفوظ شدہ موازنات | Real Estate Due Diligence Agent",
+    "title": "محفوظ شدہ موازنات",
+    "countLabel_one": "{{count}} محفوظ شدہ موازنہ",
+    "countLabel_other": "{{count}} محفوظ شدہ موازنات",
+    "searchPlaceholder": "نام یا نوٹس کے ذریعے تلاش کریں...",
+    "emptyTitle": "ابھی تک کوئی محفوظ شدہ موازنہ نہیں",
+    "emptyDesc": "جائیداد کے موازنے پر جائیں، 2–3 جائیدادیں منتخب کریں، اور \"موازنہ محفوظ کریں\" پر کلک کریں۔",
+    "startComparing": "جائیدادوں کا موازنہ شروع کریں",
+    "noResults": "\"{{query}}\" کے لیے کوئی نتیجہ نہیں",
+    "propertyCount_one": "{{count}} جائیداد",
+    "propertyCount_other": "{{count}} جائیدادیں",
+    "savedOn": "{{date}} کو محفوظ کیا گیا",
+    "updatedOn": "{{date}} کو اپ ڈیٹ کیا گیا",
+    "deleteAria": "{{name}} حذف کریں",
+    "loadComparison": "موازنہ لوڈ کریں"
+  },
+  "savedSheet": {
+    "ariaLabel": "محفوظ شدہ موازنات",
+    "savedCount_one": "{{count}} محفوظ",
+    "savedCount_other": "{{count}} محفوظ",
+    "loading": "محفوظ شدہ موازنات لوڈ ہو رہے ہیں...",
+    "emptyHint": "جائیدادوں کا موازنہ کریں اور انہیں یہاں رکھنے کے لیے \"موازنہ محفوظ کریں\" پر کلک کریں۔",
+    "load": "لوڈ کریں",
+    "viewAll": "تمام محفوظ شدہ موازنات دیکھیں →"
+  },
+  "marketChart": {
+    "title": "بازاری مالیت کا رجحان",
+    "subtitle": "6 ماہ کا تخمینی رجحان · صرف اشارتی",
+    "estimatedBadge": "تخمینی ڈیٹا",
+    "propertyLabel": "جائیداد {{letter}}"
+  },
+  "common": {
+    "loading": "لوڈ ہو رہا ہے...",
+    "error": "کچھ غلط ہو گیا",
+    "retry": "دوبارہ کوشش کریں",
+    "save": "محفوظ کریں",
+    "cancel": "منسوخ کریں",
+    "delete": "حذف کریں",
+    "edit": "ترمیم کریں",
+    "close": "بند کریں",
+    "back": "واپس",
+    "next": "اگلا",
+    "confirm": "تصدیق کریں",
+    "yes": "ہاں",
+    "no": "نہیں",
+    "search": "تلاش",
+    "filter": "فلٹر",
+    "clear": "صاف کریں",
+    "clearAll": "سب صاف کریں",
+    "apply": "لاگو کریں",
+    "refresh": "ریفریش",
+    "download": "ڈاؤن لوڈ",
+    "upload": "اپ لوڈ",
+    "submit": "جمع کریں",
+    "noData": "کوئی ڈیٹا دستیاب نہیں",
+    "justNow": "ابھی",
+    "minutesAgo": "{{n}}m پہلے",
+    "hoursAgo": "{{n}}h پہلے",
+    "daysAgo": "{{n}}d پہلے",
+    "secondsAgo": "{{n}}s پہلے",
+    "syncedAgo": "سنک شدہ",
+    "breadcrumbLabel": "Breadcrumb",
+    "breadcrumbs": {
+      "details": "تفصیلات"
+    }
+  },
+  "pages": {
+    "dueDiligence": {
+      "title": "ڈیو ڈِلیجنس ڈیش بورڈ جلد آ رہا ہے",
+      "description": "آپ کی تمام جائیدادوں کی ڈیو ڈِلیجنس کی مجموعی حالت یہاں ظاہر ہوگی۔"
+    },
+    "riskAssessment": {
+      "title": "خطرے کے جائزے کا خلاصہ جلد آ رہا ہے",
+      "description": "پورے پورٹ فولیو کے خطرے کا تجزیہ اور ترجیحی اقدامات یہاں ظاہر ہوں گے۔"
+    },
+    "reports": {
+      "title": "رپورٹس جلد آ رہی ہیں",
+      "description": "پورٹ فولیو رپورٹس، خطرے کے خلاصے، اور ڈیو ڈِلیجنس دستاویزات تیار کریں۔ یہ فیچر ابھی ترقی کے مرحلے میں ہے۔"
+    },
+    "notifications": {
+      "title": "آپ پوری طرح اپ ڈیٹ ہیں",
+      "description": "کوئی نئی اطلاع نہیں۔ جب جائیدادوں کو توجہ کی ضرورت ہوگی یا رپورٹس تیار ہوں گی تو ہم آپ کو مطلع کریں گے۔"
+    },
+    "auditLogs": {
+      "title": "ابھی تک کوئی آڈٹ اندراج نہیں",
+      "description": "پابندی اور سیکیورٹی جائزے کے لیے سسٹم کی کارروائیاں اور صارف کی سرگرمیاں یہاں ٹریک کی جائیں گی۔"
+    }
+  }
 }

@@ -1,10 +1,1400 @@
 {
-  "nav": { "dashboard": "ড্যাশবোর্ড", "propertySearch": "সম্পত্তি অনুসন্ধান", "dueDiligence": "যথাযথ অধ্যবসায়", "riskAssessment": "ঝুঁকি মূল্যায়ন", "propertyComparison": "সম্পত্তি তুলনা", "savedComparisons": "সংরক্ষিত তুলনা", "reports": "রিপোর্ট", "notifications": "বিজ্ঞপ্তি", "auditLogs": "অডিট লগ", "profile": "প্রোফাইল", "support": "সহায়তা", "sections": { "main": "প্রধান", "analysis": "বিশ্লেষণ", "insights": "অন্তর্দৃষ্টি", "account": "অ্যাকাউন্ট" }, "sessionActive": "সেশন সক্রিয়", "version": "v1.0" },
-  "auth": { "login": { "title": "আবার স্বাগতম", "subtitle": "আপনার সম্পত্তি পোর্টফোলিও ঝুঁকি পরিচালনা করতে সাইন ইন করুন।", "emailLabel": "পেশাদার ইমেইল", "emailPlaceholder": "name@company.com", "passwordLabel": "পাসওয়ার্ড", "forgotPassword": "পাসওয়ার্ড ভুলে গেছেন?", "rememberMe": "এই ব্রাউজারে সাইন ইন রাখুন", "signIn": "সাইন ইন করুন", "newToPlatform": "প্ল্যাটফর্মে নতুন?", "createAccount": "বিনামূল্যে অ্যাকাউন্ট তৈরি করুন" } },
-  "dashboard": { "greetings": { "morning": "শুভ সকাল", "afternoon": "নমস্কার", "evening": "শুভ সন্ধ্যা" }, "subtitle": "এক নজরে আপনার পোর্টফোলিও", "stats": { "totalProperties": "মোট সম্পত্তি", "verified": "যাচাইকৃত", "pending": "অপেক্ষমাণ", "platformUsers": "প্ল্যাটফর্ম ব্যবহারকারী" }, "empty": { "title": "এখনও কোনো সম্পত্তি নেই", "addFirst": "আপনার প্রথম সম্পত্তি যোগ করুন" } },
-  "property": { "addProperty": "সম্পত্তি যোগ করুন", "search": { "title": "সম্পত্তি অনুসন্ধান", "noPropertiesFound": "কোনো সম্পত্তি পাওয়া যায়নি" }, "card": { "verified": "যাচাইকৃত", "pending": "অপেক্ষমাণ", "marketValue": "বাজার মূল্য" }, "details": { "backToSearch": "অনুসন্ধানে ফিরুন", "editProperty": "সম্পত্তি সম্পাদনা করুন" } },
-  "profile": { "title": "অ্যাকাউন্ট ম্যানেজমেন্ট", "subtitle": "আপনার পেশাদার পরিচয় এবং অ্যাপ্লিকেশন নিরাপত্তা নিয়ন্ত্রণ করুন।", "fields": { "fullName": "পূর্ণ নাম", "email": "ইমেইল ঠিকানা", "phone": "ফোন" }, "actions": { "editProfile": "প্রোফাইল সম্পাদনা করুন", "cancel": "বাতিল করুন", "saveChanges": "পরিবর্তন সংরক্ষণ করুন", "deleteAccount": "অ্যাকাউন্ট মুছুন" }, "roles": { "BUYER": "ক্রেতা", "REAL_ESTATE_AGENT": "রিয়েল এস্টেট এজেন্ট", "ADMIN": "প্রশাসক" }, "locked": "লক করা" },
-  "settings": { "title": "সেটিংস", "language": { "sectionTitle": "ভাষা", "sectionSubtitle": "ইন্টারফেসের জন্য আপনার পছন্দের ভাষা বেছে নিন।", "label": "ইন্টারফেস ভাষা", "selectPlaceholder": "ভাষা নির্বাচন করুন", "saved": "ভাষা আপডেট করা হয়েছে", "savedDescription": "ইন্টারফেস ভাষা {{language}}-তে পরিবর্তন করা হয়েছে।" } },
-  "common": { "loading": "লোড হচ্ছে...", "error": "কিছু ভুল হয়েছে", "save": "সংরক্ষণ", "cancel": "বাতিল", "back": "পিছনে", "noData": "কোনো ডেটা পাওয়া যায়নি", "justNow": "এইমাত্র" },
-  "pages": { "dueDiligence": { "title": "ডিউ ডিলিজেন্স ড্যাশবোর্ড শীঘ্রই আসছে", "description": "আপনার সব সম্পত্তির অবস্থা এখানে দেখা যাবে।" }, "reports": { "title": "রিপোর্ট শীঘ্রই আসছে", "description": "পোর্টফোলিও রিপোর্ট এবং ঝুঁকি সারসংক্ষেপ তৈরি করুন।" }, "notifications": { "title": "আপনি সব পড়েছেন", "description": "কোনো নতুন বিজ্ঞপ্তি নেই।" }, "auditLogs": { "title": "এখনও কোনো অডিট এন্ট্রি নেই", "description": "সিস্টেম কার্যক্রম এবং ব্যবহারকারীর কার্যকলাপ এখানে ট্র্যাক করা হবে।" }, "riskAssessment": { "title": "ঝুঁকি মূল্যায়ন ওভারভিউ শীঘ্রই আসছে", "description": "পোর্টফোলিও-ব্যাপী ঝুঁকি বিশ্লেষণ এখানে দেখা যাবে।" } }
+  "cookies": {
+    "banner": {
+      "ariaLabel": "কুকি সম্মতি",
+      "title": "এই সাইটে কুকি",
+      "description": "আপনাকে সাইন ইন রাখতে আমরা অপরিহার্য কুকি ব্যবহার করি। বিশ্লেষণ আমাদের উন্নতিতে সাহায্য করে — পছন্দটি আপনার।",
+      "rejectNonEssential": "অপ্রয়োজনীয় প্রত্যাখ্যান করুন",
+      "customize": "কাস্টমাইজ করুন",
+      "acceptAll": "সব গ্রহণ করুন"
+    },
+    "prefs": {
+      "title": "কুকি পছন্দ",
+      "subtitle": "আপনি নিয়ন্ত্রণ করুন কোন ডেটা সংগ্রহ করা হবে।",
+      "essential": {
+        "title": "অপরিহার্য",
+        "description": "প্রমাণীকরণ, সেশন ব্যবস্থাপনা এবং নিরাপত্তার জন্য প্রয়োজনীয়। নিষ্ক্রিয় করা যাবে না।"
+      },
+      "analytics": {
+        "title": "বিশ্লেষণ",
+        "description": "Google Analytics 4 — বেনামী পৃষ্ঠা ভিউ এবং ইভেন্ট। কোন বৈশিষ্ট্যগুলি ব্যবহৃত হয় তা বুঝতে সাহায্য করে। ডিফল্টরূপে বন্ধ।"
+      },
+      "rejectAll": "সব প্রত্যাখ্যান করুন",
+      "acceptAll": "সব গ্রহণ করুন",
+      "saveChoices": "পছন্দ সংরক্ষণ করুন"
+    }
+  },
+  "nav": {
+    "dashboard": "ড্যাশবোর্ড",
+    "propertySearch": "সম্পত্তি অনুসন্ধান",
+    "dueDiligence": "যথাযথ তদন্ত",
+    "riskAssessment": "ঝুঁকি মূল্যায়ন",
+    "propertyComparison": "সম্পত্তি তুলনা",
+    "savedComparisons": "সংরক্ষিত তুলনা",
+    "reports": "প্রতিবেদন",
+    "notifications": "বিজ্ঞপ্তি",
+    "auditLogs": "অডিট লগ",
+    "profile": "প্রোফাইল",
+    "settings": "সেটিংস",
+    "support": "সহায়তা",
+    "sections": {
+      "main": "প্রধান",
+      "analysis": "বিশ্লেষণ",
+      "insights": "অন্তর্দৃষ্টি",
+      "account": "অ্যাকাউন্ট"
+    },
+    "sessionActive": "সেশন সক্রিয়",
+    "version": "v1.0"
+  },
+  "auth": {
+    "login": {
+      "title": "স্বাগতম",
+      "subtitle": "আপনার সম্পত্তি পোর্টফোলিওর ঝুঁকি পরিচালনা করতে সাইন ইন করুন।",
+      "emailLabel": "পেশাদার ইমেইল",
+      "emailPlaceholder": "name@company.com",
+      "passwordLabel": "পাসওয়ার্ড",
+      "forgotPassword": "পাসওয়ার্ড ভুলে গেছেন?",
+      "rememberMe": "এই ব্রাউজারে সাইন ইন রাখুন",
+      "signIn": "সাইন ইন",
+      "contactSupport": "সহায়তায় যোগাযোগ করুন",
+      "orContinueWith": "অথবা চালিয়ে যান",
+      "newToPlatform": "প্ল্যাটফর্মে নতুন?",
+      "createAccount": "বিনামূল্যে অ্যাকাউন্ট তৈরি করুন",
+      "hidePassword": "পাসওয়ার্ড লুকান",
+      "showPassword": "পাসওয়ার্ড দেখান",
+      "redirectingToDashboard": "আপনার ড্যাশবোর্ডে পুনর্নির্দেশ করা হচ্ছে।",
+      "platformDesc": "সম্পত্তি বুদ্ধিমত্তার জন্য একটি যাচাইকরণ-প্রথম প্ল্যাটফর্ম — প্রতিটি তালিকা লাইভ হওয়ার আগে সাতটি ডেটা-গুণমান পরীক্ষায় উত্তীর্ণ হয়।",
+      "verifiedListingsDesc": "সাত-পয়েন্ট ডেটা-গুণমান ইঞ্জিন",
+      "secureByDefaultDesc": "JWT সেশন, হ্যাশড পাসওয়ার্ড",
+      "roleBasedAccessDesc": "ক্রেতা, এজেন্ট, পর্যালোচক, প্রশাসক",
+      "imgAlt": "আধুনিক কাচের গগনচুম্বী",
+      "continueWithGoogle": "Google দিয়ে চালিয়ে যান",
+      "signingIn": "সাইন ইন হচ্ছে…",
+      "almostThere": "প্রায় হয়ে গেল",
+      "finishProfile": "আসুন আপনার প্রোফাইল সেটআপ সম্পন্ন করি।",
+      "unexpectedResponse": "সার্ভার থেকে অপ্রত্যাশিত প্রতিক্রিয়া। অনুগ্রহ করে আবার চেষ্টা করুন।",
+      "googleFailed": "Google সাইন-ইন ব্যর্থ হয়েছে",
+      "features": {
+        "analysis": "ব্যাপক সম্পত্তি বিশ্লেষণ",
+        "auditing": "নিরাপদ যথাযথ তদন্ত অডিটিং",
+        "risk": "স্বয়ংক্রিয় ঝুঁকি মূল্যায়ন"
+      },
+      "secureBy": "নকশায় সুরক্ষিত",
+      "learnHow": "কিভাবে জানুন",
+      "platformOnline": "প্ল্যাটফর্ম অনলাইন",
+      "builtForTrust": "বিশ্বাসের জন্য নির্মিত",
+      "verifiedListings": "শুধুমাত্র যাচাইকৃত তালিকা",
+      "secureByDefault": "ডিফল্টরূপে সুরক্ষিত",
+      "roleBasedAccess": "ভূমিকা-ভিত্তিক অ্যাক্সেস"
+    },
+    "register": {
+      "title": "আপনার অ্যাকাউন্ট তৈরি করুন",
+      "subtitle": "নিরাপদ যথাযথ তদন্ত শুরু করতে প্ল্যাটফর্মে যোগ দিন।",
+      "createAccount": "অ্যাকাউন্ট তৈরি করুন",
+      "pleaseWait": "অনুগ্রহ করে অপেক্ষা করুন…",
+      "welcomeCheck": "স্বাগতম ✓",
+      "alreadyHaveAccount": "ইতিমধ্যে একটি অ্যাকাউন্ট আছে?",
+      "signIn": "সাইন ইন",
+      "secureByDesign": "নকশায় সুরক্ষিত",
+      "securityTagline": "JWT প্রমাণীকরণ · BCrypt হ্যাশিং · ভূমিকা-ভিত্তিক অ্যাক্সেস নিয়ন্ত্রণ",
+      "fields": {
+        "fullName": "পূর্ণ নাম",
+        "email": "ইমেইল",
+        "confirm": "নিশ্চিত করুন",
+        "phoneNumber": "ফোন নম্বর",
+        "role": "ভূমিকা"
+      },
+      "placeholders": {
+        "fullName": "জন স্মিথ",
+        "password": "ন্যূনতম ৮ অক্ষর",
+        "confirm": "পুনরায় লিখুন",
+        "phone": "9876543210",
+        "role": "ভূমিকা বেছে নিন"
+      },
+      "errors": {
+        "fullNameRequired": "পূর্ণ নাম আবশ্যক।",
+        "fullNameShort": "পূর্ণ নাম কমপক্ষে ৩ অক্ষরের হতে হবে।",
+        "fullNameLong": "পূর্ণ নাম ১০০ অক্ষরের বেশি হবে না।",
+        "emailRequired": "পেশাদার ইমেইল আবশ্যক।",
+        "emailInvalid": "একটি বৈধ ইমেইল ঠিকানা লিখুন।",
+        "passwordLong": "পাসওয়ার্ড ২০ অক্ষরের বেশি হবে না।",
+        "confirmRequired": "আপনার পাসওয়ার্ড নিশ্চিত করুন।",
+        "passwordsMismatch": "পাসওয়ার্ড মিলছে না।",
+        "phoneRequired": "ফোন নম্বর আবশ্যক।",
+        "phoneInvalid": "একটি বৈধ ১০-সংখ্যার ভারতীয় মোবাইল নম্বর লিখুন (৬–৯ দিয়ে শুরু)।",
+        "roleRequired": "একটি ভূমিকা বেছে নিন।",
+        "emailExists": "এই ইমেইল দিয়ে ইতিমধ্যে একটি অ্যাকাউন্ট আছে।"
+      },
+      "toasts": {
+        "welcome": "স্বাগতম",
+        "welcomeDesc": "আপনার অ্যাকাউন্ট প্রস্তুত। পুনর্নির্দেশ হচ্ছে…",
+        "emailRegistered": "ইমেইল ইতিমধ্যে নিবন্ধিত",
+        "emailRegisteredDesc": "পরিবর্তে সাইন ইন করুন, অথবা ভিন্ন ইমেইল ব্যবহার করুন।",
+        "failed": "নিবন্ধন ব্যর্থ হয়েছে",
+        "tryAgain": "অনুগ্রহ করে আবার চেষ্টা করুন।"
+      },
+      "whyPlatform": "কেন এই প্ল্যাটফর্ম",
+      "headline": "সম্পত্তি যথাযথ তদন্তের জন্য সৎ সরঞ্জাম",
+      "features": {
+        "verificationFirst": "যাচাইকরণ-প্রথম তালিকা",
+        "verificationFirstDesc": "প্রতিটি সম্পত্তি যাচাইকৃত হিসেবে চিহ্নিত হওয়ার আগে সাত-পয়েন্ট ডেটা-গুণমান ইঞ্জিনের মধ্য দিয়ে যায়।",
+        "secure": "ডিফল্টরূপে সুরক্ষিত",
+        "secureDesc": "JWT সেশন, BCrypt পাসওয়ার্ড হ্যাশিং এবং প্রতিটি এন্ডপয়েন্টে ভূমিকা-ভিত্তিক অ্যাক্সেস।",
+        "teams": "বাস্তব দলের জন্য নির্মিত",
+        "teamsDesc": "পাঁচটি স্বতন্ত্র ভূমিকা — ক্রেতা, এজেন্ট, আইনি পর্যালোচক, আর্থিক প্রতিষ্ঠান এবং প্রশাসক।",
+        "consent": "সম্মতি-প্রথম বিশ্লেষণ",
+        "consentDesc": "আপনি অপ্ট ইন না করা পর্যন্ত কিছুই লোড হয় না। কুকি পছন্দ কঠোরভাবে মান্য করা হয়।"
+      },
+      "platformOnline": "প্ল্যাটফর্ম অনলাইন",
+      "secureBy": "নকশায় সুরক্ষিত",
+      "learnHow": "কিভাবে জানুন"
+    },
+    "forgotPassword": {
+      "step1Title": "আপনার পাসওয়ার্ড রিসেট করুন",
+      "step1Subtitle": "আপনার ইমেইল লিখুন এবং আমরা একটি ৬-সংখ্যার কোড পাঠাব।",
+      "emailLabel": "ইমেইল ঠিকানা",
+      "sendCode": "কোড পাঠান",
+      "alreadyHaveCode": "আমার কাছে ইতিমধ্যে একটি কোড আছে",
+      "step2Title": "কোডটি লিখুন",
+      "step2Subtitle": "পাঠানো হয়েছে",
+      "verifyCode": "কোড যাচাই করুন",
+      "changeEmail": "ইমেইল পরিবর্তন করুন",
+      "resendCode": "কোড পুনরায় পাঠান",
+      "resendIn": "{{n}}সেকেন্ডে পুনরায় পাঠান",
+      "waitBefore": "পুনরায় পাঠানোর আগে {{n}}সেকেন্ড অপেক্ষা করুন",
+      "step3Title": "নতুন পাসওয়ার্ড সেট করুন",
+      "step3Subtitle": "কমপক্ষে ৮টি অক্ষর ব্যবহার করুন, বড় ও ছোট হাতের মিশ্রণ এবং একটি সংখ্যা সহ।",
+      "newPassword": "নতুন পাসওয়ার্ড",
+      "confirmPassword": "পাসওয়ার্ড নিশ্চিত করুন",
+      "resetPassword": "পাসওয়ার্ড রিসেট করুন",
+      "requirements": {
+        "length": "কমপক্ষে ৮টি অক্ষর",
+        "case": "বড় ও ছোট হাতের অক্ষর",
+        "number": "একটি সংখ্যা আছে",
+        "match": "পাসওয়ার্ড মিলছে"
+      },
+      "step4Title": "পাসওয়ার্ড আপডেট হয়েছে",
+      "step4Subtitle": "চালিয়ে যেতে আপনার নতুন পাসওয়ার্ড দিয়ে সাইন ইন করুন।",
+      "backToSignIn": "সাইন ইনে ফিরুন",
+      "redirectingIn": "{{n}}সেকেন্ডে পুনর্নির্দেশ হচ্ছে…",
+      "capsLock": "Caps Lock চালু আছে",
+      "pleaseWait": "অনুগ্রহ করে অপেক্ষা করুন",
+      "cooldownDesc": "{{n}}সেকেন্ডের মধ্যে একটি নতুন কোডের অনুরোধ করতে পারবেন।",
+      "codeSent": "কোড পাঠানো হয়েছে",
+      "checkInbox": "৬-সংখ্যার কোডের জন্য আপনার ইনবক্স দেখুন।",
+      "sendFailed": "কোড পাঠানো যায়নি",
+      "newCodeSent": "নতুন কোড পাঠানো হয়েছে",
+      "resendFailed": "পুনরায় পাঠানো যায়নি",
+      "enterSixDigit": "৬-সংখ্যার কোডটি লিখুন",
+      "invalidCode": "অবৈধ বা মেয়াদ উত্তীর্ণ কোড",
+      "verifyFailed": "যাচাইকরণ ব্যর্থ হয়েছে",
+      "checkCodeAndRetry": "কোডটি পরীক্ষা করুন এবং আবার চেষ্টা করুন।",
+      "enterNewPassword": "একটি নতুন পাসওয়ার্ড লিখুন",
+      "pwdComplexity": "বড় হাতের, ছোট হাতের এবং একটি সংখ্যা অন্তর্ভুক্ত করুন",
+      "confirmYourPassword": "আপনার পাসওয়ার্ড নিশ্চিত করুন",
+      "resetFailed": "পাসওয়ার্ড রিসেট করা যায়নি",
+      "codeAlreadySent": "একটি কোড ইতিমধ্যে পাঠানো হয়েছে। প্রথমে আপনার ইনবক্স দেখুন।",
+      "enterEmailUsed": "আপনি যে ইমেইল ব্যবহার করেছিলেন সেটি লিখুন",
+      "sentTo": "পাঠানো হয়েছে",
+      "digitAria": "সংখ্যা {{n}}"
+    },
+    "errors": {
+      "emailRequired": "আপনার ইমেইল লিখুন",
+      "emailInvalid": "একটি বৈধ ইমেইল ঠিকানা লিখুন",
+      "passwordRequired": "আপনার পাসওয়ার্ড লিখুন",
+      "passwordLength": "কমপক্ষে ৮টি অক্ষর",
+      "fieldErrors": "আপনার বিবরণ পরীক্ষা করুন",
+      "someFieldsNeedAttention": "কিছু ক্ষেত্রে মনোযোগ প্রয়োজন।",
+      "signInFailed": "সাইন ইন ব্যর্থ হয়েছে",
+      "checkCredentials": "অনুগ্রহ করে আপনার পরিচয়পত্র পরীক্ষা করুন এবং আবার চেষ্টা করুন।",
+      "passwordLetter": "একটি অক্ষর থাকতে হবে",
+      "passwordNumber": "একটি সংখ্যা থাকতে হবে"
+    }
+  },
+  "dashboard": {
+    "greetings": {
+      "morning": "সুপ্রভাত",
+      "afternoon": "শুভ অপরাহ্ন",
+      "evening": "শুভ সন্ধ্যা"
+    },
+    "subtitle": "একনজরে আপনার পোর্টফোলিও",
+    "platformOverview": "প্ল্যাটফর্ম ওভারভিউ",
+    "pageTitle": "ড্যাশবোর্ড | Real Estate Due Diligence Agent",
+    "refreshed": "ড্যাশবোর্ড আপডেট হয়েছে",
+    "stats": {
+      "totalProperties": "মোট সম্পত্তি",
+      "verified": "যাচাইকৃত",
+      "pending": "মুলতুবি",
+      "platformUsers": "প্ল্যাটফর্ম ব্যবহারকারী",
+      "plusThisWeek": "+{{count}} এই সপ্তাহে",
+      "ofTotal": "মোটের {{pct}}%",
+      "awaitingVerification": "যাচাইয়ের অপেক্ষায়",
+      "allCaughtUp": "সব আপ টু ডেট",
+      "activeIn30Days": "৩০ দিনে {{n}} সক্রিয়",
+      "noPropertiesAdded": "কোনো সম্পত্তি যোগ করা হয়নি",
+      "nothingToVerify": "এখনও যাচাই করার কিছু নেই"
+    },
+    "empty": {
+      "title": "এখনও কোনো সম্পত্তি নেই",
+      "description": "যাচাইকরণ ফলাফল এবং পোর্টফোলিও অন্তর্দৃষ্টি দেখতে আপনার প্রথম সম্পত্তি যোগ করুন।",
+      "addFirst": "আপনার প্রথম সম্পত্তি যোগ করুন"
+    },
+    "refresh": "রিফ্রেশ করুন",
+    "errors": {
+      "unauthorized": "সেই পৃষ্ঠা অ্যাক্সেস করার অনুমতি আপনার নেই।",
+      "couldntLoad": "ড্যাশবোর্ড লোড করা যায়নি",
+      "pleaseRefresh": "অনুগ্রহ করে পৃষ্ঠাটি রিফ্রেশ করুন বা আবার চেষ্টা করুন।",
+      "unableToLoadStats": "পরিসংখ্যান লোড করতে অক্ষম। অনুগ্রহ করে পৃষ্ঠাটি রিফ্রেশ করুন।"
+    }
+  },
+  "hero": {
+    "portfolio": {
+      "label": "পোর্টফোলিও মূল্য",
+      "citiesCount_one": "{{count}}টি শহর",
+      "citiesCount_other": "{{count}}টি শহর",
+      "acrossProperties_one": "{{count}}টি সম্পত্তি জুড়ে",
+      "acrossProperties_other": "{{count}}টি সম্পত্তি জুড়ে",
+      "topAsset": "শীর্ষ সম্পদ"
+    },
+    "verification": {
+      "label": "যাচাইকরণ",
+      "allVerified": "সব যাচাইকৃত",
+      "noPropertiesYet": "এখনও কোনো সম্পত্তি নেই",
+      "portfolioComplete": "পোর্টফোলিও সম্পূর্ণ",
+      "pendingCount_one": "{{count}}টি মুলতুবি",
+      "pendingCount_other": "{{count}}টি মুলতুবি"
+    },
+    "aqi": {
+      "label": "বায়ু মান",
+      "live": "লাইভ",
+      "fetchingLive": "লাইভ ডেটা আনা হচ্ছে...",
+      "addPropertyToSee": "লাইভ বায়ু মান দেখতে একটি সম্পত্তি যোগ করুন"
+    }
+  },
+  "trend": {
+    "title": "সময়ের সাথে পোর্টফোলিও মূল্য",
+    "dataPointsInWindow_one": "নির্বাচিত উইন্ডোতে {{count}}টি ডেটা পয়েন্ট",
+    "dataPointsInWindow_other": "নির্বাচিত উইন্ডোতে {{count}}টি ডেটা পয়েন্ট",
+    "deltaVsAgo": "{{sign}}{{pct}}% বনাম {{days}}দিন আগে",
+    "noChange": "কোনো পরিবর্তন নেই",
+    "empty": {
+      "title": "ট্র্যাকিং আজ শুরু হচ্ছে",
+      "description": "আপনার পোর্টফোলিও মূল্যের প্রবণতা দেখতে আগামীকাল আসুন।"
+    },
+    "error": {
+      "couldntLoad": "প্রবণতা ডেটা লোড করা যায়নি।"
+    },
+    "tooltip": {
+      "propertiesCount_one": "{{count}}টি সম্পত্তি",
+      "propertiesCount_other": "{{count}}টি সম্পত্তি",
+      "verifiedCount_one": "{{count}}টি যাচাইকৃত",
+      "verifiedCount_other": "{{count}}টি যাচাইকৃত"
+    }
+  },
+  "breakdown": {
+    "title": "পোর্টফোলিও বিভাজন",
+    "subtitle": "সম্পত্তির ধরন অনুযায়ী",
+    "empty": {
+      "title": "এখনও কোনো ডেটা নেই",
+      "description": "বিভাজন দেখতে সম্পত্তি যোগ করুন"
+    },
+    "tooltip": {
+      "propertyCount_one": "{{count}}টি সম্পত্তি",
+      "propertyCount_other": "{{count}}টি সম্পত্তি",
+      "valueLabel": "মূল্য"
+    }
+  },
+  "map": {
+    "title": "পোর্টফোলিও ভূগোল",
+    "status": {
+      "loading": "ম্যাপ লোড হচ্ছে...",
+      "noPropertiesYet": "এখনও কোনো সম্পত্তি নেই",
+      "mappedOfTotal": "{{total}}টির মধ্যে {{mapped}}টি ম্যাপ করা",
+      "pendingCount_one": "{{count}}টি মুলতুবি",
+      "pendingCount_other": "{{count}}টি মুলতুবি"
+    },
+    "zoomHint": "+/− ব্যবহার করে জুম করুন",
+    "retryGeocoding": "জিওকোডিং পুনরায় চেষ্টা করুন",
+    "geocoding": "জিওকোডিং হচ্ছে...",
+    "viewDetails": "বিবরণ দেখুন",
+    "empty": {
+      "noMappedTitle": "এখনও কোনো ম্যাপ করা সম্পত্তি নেই",
+      "noMappedDesc": "ম্যাপে দেখতে ঠিকানার পরামর্শ ব্যবহার করে সম্পত্তি যোগ করুন।",
+      "noCoordsTitle": "এখনও কোনো স্থানাঙ্ক নেওয়া হয়নি",
+      "noCoordsDesc": "সম্পত্তি আছে কিন্তু জিওকোডিং প্রয়োজন। প্রশাসকরা উপরে থেকে এটি শুরু করতে পারেন।"
+    },
+    "error": {
+      "couldntLoad": "ম্যাপ ডেটা লোড করা যায়নি।"
+    },
+    "toasts": {
+      "geocodedCount_one": "{{count}}টি সম্পত্তি জিওকোড করা হয়েছে",
+      "geocodedCount_other": "{{count}}টি সম্পত্তি জিওকোড করা হয়েছে",
+      "reloadingMap": "ম্যাপ পুনরায় লোড হচ্ছে...",
+      "noNewLocations": "কোনো নতুন অবস্থান পাওয়া যায়নি",
+      "tooVague": "অবশিষ্ট ঠিকানাগুলি জিওকোড করার জন্য অনেক অস্পষ্ট হতে পারে।",
+      "geocodingFailed": "জিওকোডিং ব্যর্থ হয়েছে",
+      "tryAgainLater": "পরে আবার চেষ্টা করুন।"
+    }
+  },
+  "recommendations": {
+    "title": "সুপারিশ",
+    "actionsCount_one": "আপনার পোর্টফোলিও উন্নত করতে {{count}}টি পদক্ষেপ",
+    "actionsCount_other": "আপনার পোর্টফোলিও উন্নত করতে {{count}}টি পদক্ষেপ",
+    "urgentCount_one": "{{count}}টি জরুরি",
+    "urgentCount_other": "{{count}}টি জরুরি",
+    "dismiss": "খারিজ করুন",
+    "showLess": "কম দেখান",
+    "showMore_one": "আরও {{count}}টি দেখান",
+    "showMore_other": "আরও {{count}}টি দেখান",
+    "severity": {
+      "urgent": "জরুরি",
+      "action": "পদক্ষেপ",
+      "onTrack": "ঠিক পথে",
+      "tip": "পরামর্শ"
+    }
+  },
+  "activity": {
+    "title": "সাম্প্রতিক কার্যকলাপ",
+    "subtitle": "প্ল্যাটফর্ম জুড়ে সর্বশেষ কার্যক্রম",
+    "live": "লাইভ",
+    "byActor": "{{name}} কর্তৃক",
+    "showAll": "সব দেখান",
+    "viewAllProperties": "সব সম্পত্তি দেখুন",
+    "filters": {
+      "all": "সব",
+      "added": "যোগ করা",
+      "verified": "যাচাইকৃত",
+      "updated": "আপডেট করা"
+    },
+    "types": {
+      "propertyAdded": "সম্পত্তি যোগ করা হয়েছে",
+      "propertyVerified": "সম্পত্তি যাচাইকৃত হয়েছে",
+      "propertyUpdated": "সম্পত্তি আপডেট হয়েছে"
+    },
+    "empty": {
+      "noActivity": "এখনও কোনো কার্যকলাপ নেই",
+      "addProperties": "কার্যকলাপ দেখতে সম্পত্তি যোগ করুন",
+      "noFiltered": "সাম্প্রতিক ঘটনায় কোনো {{filter}} কার্যকলাপ নেই"
+    }
+  },
+  "recentTable": {
+    "title": "সাম্প্রতিক সম্পত্তি",
+    "subtitle": "প্ল্যাটফর্মে সর্বশেষ সংযোজন",
+    "columns": {
+      "address": "ঠিকানা",
+      "type": "ধরন",
+      "status": "অবস্থা",
+      "missingFields": "অনুপস্থিত ক্ষেত্র"
+    },
+    "missingCount_one": "{{count}}টি অনুপস্থিত",
+    "missingCount_other": "{{count}}টি অনুপস্থিত",
+    "noneMissing": "কিছু নেই",
+    "empty": {
+      "title": "কোনো সম্পত্তি পাওয়া যায়নি",
+      "description": "এখানে দেখতে একটি সম্পত্তি যোগ করুন।"
+    },
+    "error": {
+      "title": "সম্পত্তি লোড করা যায়নি",
+      "description": "আবার চেষ্টা করতে পৃষ্ঠাটি রিফ্রেশ করুন।"
+    }
+  },
+  "property": {
+    "addProperty": "সম্পত্তি যোগ করুন",
+    "addFirstProperty": "আপনার প্রথম সম্পত্তি যোগ করুন",
+    "pdf": {
+      "downloadReport": "প্রতিবেদন ডাউনলোড করুন",
+      "generating": "তৈরি হচ্ছে...",
+      "buttonTooltip": "PDF প্রতিবেদন ডাউনলোড করুন",
+      "preparing": "PDF ইঞ্জিন প্রস্তুত হচ্ছে...",
+      "downloaded": "প্রতিবেদন ডাউনলোড হয়েছে",
+      "savedTo": "{{filename}} আপনার ডাউনলোড ফোল্ডারে সংরক্ষিত হয়েছে।",
+      "loadFailed": "সম্পত্তির ডেটা লোড করা যায়নি",
+      "downloadFailed": "ডাউনলোড ব্যর্থ হয়েছে",
+      "generateFailed": "প্রতিবেদন তৈরি করা যায়নি। আবার চেষ্টা করুন।"
+    },
+    "search": {
+      "title": "সম্পত্তি অনুসন্ধান",
+      "placeholder": "পৃষ্ঠা, সম্পত্তি, কার্যক্রম অনুসন্ধান করুন...",
+      "loadingPortfolio": "পোর্টফোলিও লোড হচ্ছে...",
+      "readyToIndex": "আপনার প্রথম সম্পত্তি ইনডেক্স করতে প্রস্তুত",
+      "live": "লাইভ",
+      "propertiesIndexed": "{{n}} {{unit}} ইনডেক্স করা",
+      "propertyUnit": "সম্পত্তি",
+      "propertiesUnit": "সম্পত্তি",
+      "citiesCovered": "{{n}} {{unit}} অন্তর্ভুক্ত",
+      "cityUnit": "শহর",
+      "citiesUnit": "শহর",
+      "synced": "সিঙ্ক করা",
+      "highRisk": "{{n}}টি উচ্চ ঝুঁকি",
+      "noPropertiesFound": "কোনো সম্পত্তি পাওয়া যায়নি",
+      "trySearching": "শহরের নাম, ঠিকানা বা ZIP কোড দিয়ে অনুসন্ধান করুন — অথবা আপনার প্রথম সম্পত্তি যোগ করুন।",
+      "noMatches": "কোনো মিল নেই",
+      "tryDifferent": "ভিন্ন শহর, ঠিকানা বা ZIP কোড চেষ্টা করুন।",
+      "searchFailed": "অনুসন্ধান ব্যর্থ হয়েছে",
+      "tryAgain": "একটু পরে আবার চেষ্টা করুন।",
+      "couldntLoad": "সম্পত্তি লোড করা যায়নি",
+      "pleaseRefresh": "পৃষ্ঠাটি রিফ্রেশ করুন।",
+      "found": "{{n}} {{unit}} পাওয়া গেছে",
+      "ofTotal": "({{n}}টির মধ্যে)",
+      "pageTitle": "সম্পত্তি অনুসন্ধান | Real Estate Due Diligence",
+      "ariaLabel": "সম্পত্তি অনুসন্ধান",
+      "clearSearch": "অনুসন্ধান মুছুন",
+      "searching": "অনুসন্ধান হচ্ছে...",
+      "searchButton": "অনুসন্ধান",
+      "searchingFor": "\"{{query}}\" অনুসন্ধান হচ্ছে...",
+      "noMatchesFor": "\"{{query}}\" এর জন্য কোনো মিল নেই",
+      "tryDifferentHint": "ভিন্ন শহর, ঠিকানা বা ZIP চেষ্টা করুন",
+      "matchCount_one": "{{count}}টি ফলাফল",
+      "matchCount_other": "{{count}}টি ফলাফল",
+      "untitledProperty": "শিরোনামহীন সম্পত্তি",
+      "locationUnknown": "অবস্থান অজানা",
+      "valueLabel": "মূল্য",
+      "seeAllResults_one": "সব {{count}}টি ফলাফল দেখুন",
+      "seeAllResults_other": "সব {{count}}টি ফলাফল দেখুন",
+      "kbNavigate": "নেভিগেট",
+      "kbSelect": "নির্বাচন",
+      "kbClose": "বন্ধ"
+    },
+    "addModal": {
+      "title": "নতুন সম্পত্তি যোগ করুন",
+      "subtitle": "মূল বিষয় দিয়ে শুরু করুন — বাকিটা যেকোনো সময় সম্পূর্ণ করতে পারবেন",
+      "closeAria": "বন্ধ করুন",
+      "verification": "যাচাইকরণ",
+      "optional": "ঐচ্ছিক",
+      "poweredBy": "OpenStreetMap দ্বারা চালিত",
+      "banner": {
+        "requiredPrefix": "শুধুমাত্র",
+        "requiredSuffix": "প্রয়োজনীয়",
+        "address": "ঠিকানা",
+        "city": "শহর",
+        "requiredConnector": "এবং",
+        "hint": "যেকোনো সময় বাকি বিবরণ যোগ করুন — সম্পত্তি তৈরির পরেও সম্পন্ন করা যাবে।"
+      },
+      "sections": {
+        "location": "অবস্থান",
+        "locationSub": "এই সম্পত্তি কোথায়?",
+        "propertyDetails": "সম্পত্তির বিবরণ",
+        "propertyDetailsSub": "শ্রেণীবদ্ধ ও মূল্য নির্ধারণে সাহায্য করুন",
+        "extraDetails": "অতিরিক্ত বিবরণ",
+        "extraDetailsSub": "ঐচ্ছিক — প্রতিবেদন ও তুলনায় সাহায্য করে",
+        "photo": "ছবি",
+        "photoSub": "একটি ছবি যোগ করুন অথবা আমরা একটি স্মার্ট প্লেসহোল্ডার ব্যবহার করব"
+      },
+      "fields": {
+        "streetAddress": "রাস্তার ঠিকানা",
+        "city": "শহর",
+        "state": "রাজ্য",
+        "pinCode": "PIN কোড",
+        "propertyType": "সম্পত্তির ধরন",
+        "area": "আয়তন",
+        "marketValue": "বাজার মূল্য",
+        "yearBuilt": "নির্মাণ সাল",
+        "bedrooms": "শোওয়ার ঘর",
+        "bathrooms": "বাথরুম",
+        "stories": "তলা",
+        "propertyPhoto": "সম্পত্তির ছবি"
+      },
+      "placeholders": {
+        "address": "ঠিকানা টাইপ শুরু করুন...",
+        "city": "শহর নির্বাচন বা টাইপ করুন",
+        "state": "রাজ্য নির্বাচন করুন",
+        "pinCode": "560001",
+        "propertyType": "একটি সম্পত্তির ধরন বেছে নিন",
+        "area": "1800",
+        "marketValue": "15000000",
+        "yearBuilt": "2015",
+        "bedrooms": "3",
+        "bathrooms": "2",
+        "stories": "2"
+      },
+      "hints": {
+        "characters": "{{count}} অক্ষর",
+        "sqft": "বর্গফুট",
+        "inr": "ভারতীয় রুপি",
+        "photoPlaceholder": "এটি এড়িয়ে যান এবং আমরা সম্পত্তির ধরন অনুযায়ী একটি প্লেসহোল্ডার ব্যবহার করব।"
+      },
+      "types": {
+        "residentialLabel": "আবাসিক",
+        "residentialDesc": "বাড়ি, অ্যাপার্টমেন্ট, ভিলা",
+        "commercialLabel": "বাণিজ্যিক",
+        "commercialDesc": "অফিস, খুচরা, হোটেল",
+        "industrialLabel": "শিল্প",
+        "industrialDesc": "গুদাম, কারখানা",
+        "landLabel": "জমি",
+        "landDesc": "প্লট, কৃষি",
+        "mixedUseLabel": "মিশ্র ব্যবহার",
+        "mixedUseDesc": "আবাসিক + বাণিজ্যিক"
+      },
+      "errors": {
+        "addressRequired": "ঠিকানা আবশ্যক",
+        "addressLength": "ঠিকানা কমপক্ষে ৬ অক্ষরের হতে হবে",
+        "cityRequired": "শহর আবশ্যক",
+        "pinInvalid": "PIN ঠিক ৬ সংখ্যার হতে হবে",
+        "areaInvalid": "আয়তন ০ এর বেশি হতে হবে",
+        "valueInvalid": "মূল্য ০ এর বেশি হতে হবে",
+        "yearRange": "সাল ১৮০০ থেকে {{max}} এর মধ্যে হতে হবে",
+        "cannotBeNegative": "নেতিবাচক হতে পারবে না",
+        "storiesRange": "তলা ১ থেকে ২০০ এর মধ্যে হতে হবে",
+        "formHasErrors": "ফর্মে ত্রুটি আছে",
+        "reviewFields": "নিচের হাইলাইট করা ক্ষেত্রগুলি পর্যালোচনা করুন।",
+        "couldntAdd": "সম্পত্তি যোগ করা যায়নি",
+        "tryAgainMoment": "একটু পরে আবার চেষ্টা করুন।"
+      },
+      "toasts": {
+        "addedVerified": "সম্পত্তি যোগ ও সম্পূর্ণ যাচাইকৃত হয়েছে",
+        "addedVerifiedDesc": "সব ৭টি ডেটা গুণমান পরীক্ষায় উত্তীর্ণ হয়েছে।",
+        "added": "সম্পত্তি যোগ হয়েছে",
+        "addedDesc_one": "পরে সম্পূর্ণ যাচাই করতে আরও {{count}}টি ক্ষেত্র সম্পূর্ণ করুন।",
+        "addedDesc_other": "পরে সম্পূর্ণ যাচাই করতে আরও {{count}}টি ক্ষেত্র সম্পূর্ণ করুন।"
+      },
+      "footer": {
+        "willBeVerified": "তাৎক্ষণিকভাবে যাচাইকৃত হবে",
+        "fieldsToVerification_one": "পূর্ণ যাচাইয়ের জন্য {{count}}টি ক্ষেত্র",
+        "fieldsToVerification_other": "পূর্ণ যাচাইয়ের জন্য {{count}}টি ক্ষেত্র",
+        "cancel": "বাতিল",
+        "saving": "সংরক্ষণ হচ্ছে",
+        "addProperty": "সম্পত্তি যোগ করুন"
+      }
+    },
+    "editModal": {
+      "title": "সম্পত্তি সম্পাদনা করুন",
+      "sections": {
+        "photoSub": "একটি সম্পত্তির ছবি আপডেট বা যোগ করুন"
+      },
+      "placeholders": {
+        "address": "742 Evergreen Terrace"
+      },
+      "banner": {
+        "allPassed": "সব ডেটা গুণমান পরীক্ষায় উত্তীর্ণ",
+        "awayFromVerification_one": "পূর্ণ যাচাইয়ের জন্য {{count}}টি ক্ষেত্র বাকি",
+        "awayFromVerification_other": "পূর্ণ যাচাইয়ের জন্য {{count}}টি ক্ষেত্র বাকি",
+        "hint": "এই সম্পত্তিটি যাচাইকৃত হিসেবে চিহ্নিত করতে সব ক্ষেত্র সম্পূর্ণ করুন।"
+      },
+      "toasts": {
+        "verified": "সম্পত্তি যাচাইকৃত",
+        "changesSaved": "পরিবর্তন সংরক্ষিত হয়েছে",
+        "stillNeeded_one": "যাচাইয়ের জন্য এখনও {{count}}টি ক্ষেত্র প্রয়োজন।",
+        "stillNeeded_other": "যাচাইয়ের জন্য এখনও {{count}}টি ক্ষেত্র প্রয়োজন।",
+        "saveFailed": "পরিবর্তন সংরক্ষণ করা যায়নি"
+      },
+      "footer": {
+        "willMarkVerified": "সংরক্ষণ করলে এটি যাচাইকৃত হবে",
+        "saveChanges": "পরিবর্তন সংরক্ষণ করুন",
+        "fieldsToVerification_one": "পূর্ণ যাচাইয়ের জন্য {{count}}টি ক্ষেত্র",
+        "fieldsToVerification_other": "পূর্ণ যাচাইয়ের জন্য {{count}}টি ক্ষেত্র"
+      }
+    },
+    "aggregation": {
+      "enums": {
+        "taxStatus": {
+          "PAID": "পরিশোধিত",
+          "PENDING": "মুলতুবি",
+          "OVERDUE": "মেয়াদোত্তীর্ণ"
+        },
+        "permitType": {
+          "BUILDING": "নির্মাণ",
+          "RENOVATION": "সংস্কার",
+          "OCCUPANCY": "দখলদারিত্ব",
+          "DEMOLITION": "ভাঙন",
+          "ELECTRICAL": "বৈদ্যুতিক",
+          "PLUMBING": "পাইপলাইন"
+        },
+        "permitStatus": {
+          "APPROVED": "অনুমোদিত",
+          "PENDING": "মুলতুবি",
+          "EXPIRED": "মেয়াদোত্তীর্ণ",
+          "REJECTED": "প্রত্যাখ্যাত"
+        }
+      },
+      "completeness": {
+        "title": "ডেটা সম্পূর্ণতা",
+        "subtitle": "৬টি ডেটা উৎস জুড়ে একত্রীকরণের স্বাস্থ্য",
+        "refreshAria": "একত্রীকরণ রিফ্রেশ করুন",
+        "refreshTitle": "সব উৎস রিফ্রেশ করুন",
+        "overallStatus": "সামগ্রিক অবস্থা",
+        "coverage": "কভারেজ",
+        "liveSources_one": "লাইভ উৎস",
+        "liveSources_other": "লাইভ উৎস",
+        "mockSources_one": "নকল উৎস",
+        "mockSources_other": "নকল উৎস",
+        "unavailable": "অনুপলব্ধ",
+        "dataSources": "ডেটা উৎস",
+        "totalCount": "মোট {{n}}টি",
+        "latestFetch": "সর্বশেষ সংগ্রহ:",
+        "oldest": "সবচেয়ে পুরানো:",
+        "duration": "সময়কাল:",
+        "overallOk": "সব উৎস উপলব্ধ",
+        "overallPartial": "আংশিক ডেটা",
+        "overallDegraded": "অবনমিত — কিছু উৎস অকার্যকর",
+        "overallLoading": "লোড হচ্ছে",
+        "statusEmpty": "খালি",
+        "statusDown": "বন্ধ",
+        "sources": {
+          "ownership": "মালিকানা নিবন্ধন",
+          "taxHistory": "পৌর কর রেকর্ড",
+          "zoning": "জোনিং কর্তৃপক্ষ",
+          "floodZone": "বন্যা ঝুঁকি মূল্যায়ন",
+          "permits": "অনুমতি ডেটাবেস",
+          "environmental": "পরিবেশ পর্যবেক্ষণ"
+        }
+      },
+      "environmental": {
+        "title": "পরিবেশগত",
+        "subtitle": "বায়ু মান ও পারিপার্শ্বিক পরিবেশ",
+        "emptyLabel": "পরিবেশগত ডেটা",
+        "aqi": "বায়ু মান সূচক",
+        "mainPollutant": "প্রধান দূষণকারী",
+        "nearestStation": "নিকটতম পর্যবেক্ষণ কেন্দ্র",
+        "measured": "{{ago}} আগে পরিমাপ করা",
+        "greenCover": "সবুজ আচ্ছাদন",
+        "noiseLevel": "শব্দ মাত্রা",
+        "soilType": "মাটির ধরন",
+        "industrialZone": "শিল্প এলাকা",
+        "nearby": "কাছাকাছি",
+        "notNearby": "কাছাকাছি নয়"
+      },
+      "flood": {
+        "title": "বন্যা ঝুঁকি",
+        "subtitle": "বন্যা অঞ্চল শ্রেণীবিভাগ ও ইতিহাস",
+        "emptyLabel": "বন্যা ডেটা",
+        "zone": "অঞ্চল",
+        "insuranceRecommended": "বন্যা বীমা সুপারিশকৃত",
+        "insuranceNotMandatory": "বন্যা বীমা বাধ্যতামূলক নয়",
+        "basedOn": "{{agency}} এর উপর ভিত্তি করে",
+        "regionalHazard": "আঞ্চলিক বিপদ ডেটা",
+        "nearestWater": "নিকটতম জলাশয়",
+        "distance": "দূরত্ব",
+        "lastFlood": "শেষ বড় বন্যা:"
+      },
+      "zoning": {
+        "title": "জোনিং তথ্য",
+        "subtitle": "ভূমি ব্যবহার শ্রেণীবিভাগ ও নির্মাণ বিধিমালা",
+        "emptyLabel": "জোনিং তথ্য",
+        "zoneCode": "জোন কোড",
+        "category": "বিভাগ",
+        "maxFar": "সর্বোচ্চ FAR",
+        "groundCoverage": "ভূমি কভারেজ",
+        "maxHeight": "সর্বোচ্চ উচ্চতা",
+        "allowedUses": "অনুমোদিত ব্যবহার",
+        "restrictedUses": "নিষিদ্ধ ব্যবহার",
+        "referencePlan": "রেফারেন্স পরিকল্পনা"
+      },
+      "section": {
+        "waiting": "ডেটার জন্য অপেক্ষা করছে...",
+        "errorTitle": "বিভাগ সাময়িকভাবে অনুপলব্ধ",
+        "errorReason": "বাহ্যিক ডেটা উৎসে পৌঁছানো যায়নি। শীঘ্রই আবার চেষ্টা করুন।",
+        "emptyTitle": "কোনো {{item}} উপলব্ধ নেই",
+        "emptyReason": "এই সম্পত্তির জন্য এখনও কোনো রেকর্ড নেই।",
+        "dataFallback": "ডেটা"
+      },
+      "badge": {
+        "mock": "নকল"
+      },
+      "ownership": {
+        "title": "মালিকানা",
+        "subtitle": "বর্তমান মালিক ও নিবন্ধন বিবরণ",
+        "emptyLabel": "মালিকানা রেকর্ড",
+        "currentOwner": "বর্তমান মালিক",
+        "coOwners": "সহ-মালিক:",
+        "ownershipType": "মালিকানার ধরন",
+        "registrationNo": "নিবন্ধন নং",
+        "registeredOn": "নিবন্ধিত তারিখ",
+        "subRegistrar": "সাব-রেজিস্ট্রার অফিস",
+        "registeredValue": "নিবন্ধিত মূল্য",
+        "stampDuty": "স্ট্যাম্প ডিউটি পরিশোধিত"
+      },
+      "permits": {
+        "title": "অনুমতি ও অনুমোদন",
+        "subtitle": "নির্মাণ, দখলদারিত্ব ও সংস্কার অনুমতি",
+        "emptyLabel": "অনুমতি",
+        "issued": "জারি করা হয়েছে:",
+        "expires": "মেয়াদ শেষ:",
+        "noRecords": "এই সম্পত্তির জন্য কোনো অনুমতি রেকর্ড নেই।"
+      },
+      "tax": {
+        "title": "সম্পত্তি কর ইতিহাস",
+        "subtitle": "মূল্যায়ন ও পরিশোধ রেকর্ড",
+        "emptyLabel": "কর রেকর্ড",
+        "year": "বছর",
+        "assessedValue": "মূল্যায়িত মূল্য",
+        "taxDue": "প্রদেয় কর",
+        "status": "অবস্থা",
+        "receipt": "রসিদ",
+        "noRecords": "এই সম্পত্তির জন্য কোনো কর রেকর্ড নেই।"
+      }
+    },
+    "quickImage": {
+      "addPhoto": "ছবি যোগ করুন",
+      "updatePhoto": "ছবি আপডেট করুন",
+      "closeAria": "বন্ধ করুন",
+      "cancel": "বাতিল",
+      "saving": "সংরক্ষণ হচ্ছে",
+      "removePhoto": "ছবি সরান",
+      "savePhoto": "ছবি সংরক্ষণ করুন",
+      "saveChanges": "পরিবর্তন সংরক্ষণ করুন",
+      "noChanges": "কোনো পরিবর্তন নেই",
+      "removedTitle": "ছবি সরানো হয়েছে",
+      "removedDesc": "সম্পত্তিটি এখন একটি প্লেসহোল্ডার দেখাবে।",
+      "updatedTitle": "ছবি আপডেট হয়েছে",
+      "updatedDesc": "আপনার সম্পত্তির ছবি সংরক্ষিত হয়েছে।",
+      "updateFailed": "ছবি আপডেট করা যায়নি",
+      "tryAgainMoment": "একটু পরে আবার চেষ্টা করুন।",
+      "stagedWarningTitle": "ছবি সরানোর জন্য প্রস্তুত",
+      "stagedWarningDesc": "নিশ্চিত করতে <1>ছবি সরান</1> ক্লিক করুন, অথবা বর্তমান ছবি রাখতে <3>বাতিল</3> করুন।",
+      "replaceHint": "বর্তমান ছবি প্রতিস্থাপন করুন, অথবা প্লেসহোল্ডার ব্যবহার করতে সরান।",
+      "addHint": "অনুসন্ধান ফলাফলে এই সম্পত্তি সনাক্ত করতে একটি ছবি যোগ করুন।"
+    },
+    "saveComparison": {
+      "closeAria": "বন্ধ করুন",
+      "titleSave": "তুলনা সংরক্ষণ করুন",
+      "titleSaved": "তুলনা সংরক্ষিত!",
+      "subtitleSave_one": "এই {{count}}টি সম্পত্তির তুলনা আপনার অ্যাকাউন্টে সংরক্ষণ করুন।",
+      "subtitleSave_other": "এই {{count}}টি সম্পত্তির তুলনা আপনার অ্যাকাউন্টে সংরক্ষণ করুন।",
+      "subtitleSaved": "আপনি যেকোনো সময় আপনার সংরক্ষিত তালিকা থেকে এই তুলনা লোড করতে পারবেন।",
+      "nameLabel": "নাম",
+      "namePlaceholder": "যেমন মুম্বই বনাম পুনে তুলনা",
+      "nameRequired": "নাম আবশ্যক",
+      "nameMin": "নাম কমপক্ষে ৩ অক্ষরের হতে হবে",
+      "nameMax": "নাম ১০০ অক্ষরের বেশি হবে না",
+      "notesLabel": "নোট",
+      "notesOptional": "(ঐচ্ছিক)",
+      "notesPlaceholder": "এই তুলনা সম্পর্কে যেকোনো নোট যোগ করুন...",
+      "notesMax": "নোট ১০০০ অক্ষরের বেশি হবে না",
+      "propertiesCount_one": "{{count}}টি সম্পত্তি এই তুলনায় সংরক্ষিত হবে",
+      "propertiesCount_other": "{{count}}টি সম্পত্তি এই তুলনায় সংরক্ষিত হবে",
+      "cancel": "বাতিল",
+      "saveButton": "তুলনা সংরক্ষণ করুন",
+      "saving": "সংরক্ষণ হচ্ছে...",
+      "tipEsc": "পরামর্শ: চাপুন",
+      "tipEscSuffix": "বাতিল করতে",
+      "closingAuto": "স্বয়ংক্রিয়ভাবে বন্ধ হচ্ছে..."
+    },
+    "logout": {
+      "closeAria": "বন্ধ করুন",
+      "title": "সাইন আউট করতে প্রস্তুত?",
+      "subtitle": "আপনার ড্যাশবোর্ড ও সম্পত্তি ডেটা অ্যাক্সেস করতে আবার লগ ইন করতে হবে।",
+      "activeBadge": "সক্রিয়",
+      "signedInFallback": "সাইন ইন করা",
+      "fallbackUser": "ব্যবহারকারী",
+      "stayIn": "সাইন ইন থাকুন",
+      "confirm": "হ্যাঁ, লগ আউট করুন",
+      "signingOut": "সাইন আউট হচ্ছে…",
+      "tipEsc": "পরামর্শ: চাপুন",
+      "tipEscSuffix": "বাতিল করতে"
+    },
+    "detailPage": {
+      "pageTitle": "সম্পত্তির বিবরণ | Real Estate Due Diligence Agent",
+      "couldNotLoad": "সম্পত্তির বিবরণ লোড করা যায়নি",
+      "notFound": "সম্পত্তি পাওয়া যায়নি",
+      "mayBeRemoved": "এটি সরানো হয়ে থাকতে পারে।"
+    },
+    "propertyTypes": {
+      "COMMERCIAL": "বাণিজ্যিক",
+      "RESIDENTIAL": "আবাসিক",
+      "INDUSTRIAL": "শিল্প",
+      "LAND": "জমি",
+      "MIXED_USE": "মিশ্র ব্যবহার",
+      "AGRICULTURAL": "কৃষি"
+    },
+    "filter": {
+      "filter": "ফিল্টার",
+      "clearFilters": "ফিল্টার মুছুন",
+      "noMatchFilters": "আপনার ফিল্টারের সাথে কোনো সম্পত্তি মেলে না",
+      "tryRemoving": "কিছু ফিল্টার সরান বা সব মুছুন",
+      "title": "ফিল্টার",
+      "subtitle": "আপনার সম্পত্তির তালিকা পরিমার্জন করুন",
+      "activeCount_one": "{{count}}টি ফিল্টার সক্রিয়",
+      "activeCount_other": "{{count}}টি ফিল্টার সক্রিয়",
+      "resetFilters": "ফিল্টার রিসেট করুন",
+      "matching": "মেলে",
+      "viewProperties_one": "{{count}}টি সম্পত্তি দেখুন",
+      "viewProperties_other": "{{count}}টি সম্পত্তি দেখুন",
+      "sections": {
+        "propertyType": "সম্পত্তির ধরন",
+        "city": "শহর",
+        "priceRange": "মূল্য পরিসীমা",
+        "dataQuality": "ডেটা গুণমান",
+        "sortBy": "সাজান"
+      },
+      "activeLabel": "সক্রিয়",
+      "chipMinPrice": "সর্বনিম্ন: {{value}}",
+      "chipMaxPrice": "সর্বোচ্চ: {{value}}",
+      "chipSort": "সাজান: {{label}}",
+      "chipRemove": "{{label}} সরান",
+      "noTypesYet": "এখনও ডেটায় কোনো ধরন নেই",
+      "noCitiesYet": "এখনও ডেটায় কোনো শহর নেই",
+      "minPrice": "সর্বনিম্ন (₹)",
+      "maxPrice": "সর্বোচ্চ (₹)",
+      "anyPrice": "যেকোনো",
+      "highestInDb": "ডেটাবেসে সর্বোচ্চ: {{amount}}",
+      "verifiedOnly": "শুধুমাত্র যাচাইকৃত",
+      "verifiedOnlyDesc": "সব গুণমান পরীক্ষায় উত্তীর্ণ সম্পত্তি দেখান",
+      "toggleVerified": "শুধুমাত্র যাচাইকৃত ফিল্টার টগল করুন",
+      "highRiskOnly": "শুধুমাত্র উচ্চ ঝুঁকি",
+      "highRiskDesc": "৬৬ এর উপরে ঝুঁকি স্কোর সহ সম্পত্তি দেখান",
+      "toggleHighRisk": "উচ্চ-ঝুঁকি ফিল্টার টগল করুন",
+      "sortOptions": {
+        "recent": "সম্প্রতি যোগ করা",
+        "priceAsc": "মূল্য: কম → বেশি",
+        "priceDesc": "মূল্য: বেশি → কম",
+        "alpha": "বর্ণানুক্রমিক (A–Z)",
+        "riskDesc": "সর্বোচ্চ ঝুঁকি প্রথমে"
+      }
+    },
+    "card": {
+      "verified": "যাচাইকৃত",
+      "pending": "মুলতুবি",
+      "incomplete": "অসম্পূর্ণ",
+      "marketValue": "বাজার মূল্য",
+      "completeToVerify": "যাচাই করতে সম্পূর্ণ করুন",
+      "missing": "অনুপস্থিত:",
+      "addPhoto": "ছবি যোগ করুন",
+      "changePhoto": "ছবি পরিবর্তন করুন",
+      "lowRisk": "কম ঝুঁকি",
+      "mediumRisk": "মাঝারি ঝুঁকি",
+      "highRisk": "উচ্চ ঝুঁকি",
+      "unknownAddress": "অজানা ঠিকানা",
+      "propertyFallback": "সম্পত্তি",
+      "addToCompare": "তুলনায় যোগ করুন",
+      "removeFromCompare": "তুলনা থেকে সরান",
+      "maxCompareReached": "তুলনার জন্য সর্বোচ্চ ৩টি সম্পত্তি",
+      "verifiedTooltip": "যাচাইকৃত — সব {{n}}টি ডেটা গুণমান পরীক্ষায় উত্তীর্ণ",
+      "pendingTooltip": "মুলতুবি — {{total}}টির মধ্যে {{passed}}টি পরীক্ষায় উত্তীর্ণ।\nঅনুপস্থিত: {{missing}}",
+      "bedroomsShort": "{{n}} BR",
+      "bathroomsShort": "{{n}} BA",
+      "riskScoreTooltip": "ঝুঁকি স্কোর: {{score}}/100",
+      "moreItems": "+{{n}} আরও",
+      "photoPending": "ছবি মুলতুবি"
+    },
+    "risk": {
+      "title": "ঝুঁকি মূল্যায়ন",
+      "subtitle": "প্রকৃত একত্রিত ডেটার উপর ভিত্তি করে",
+      "unavailable": "ঝুঁকি স্কোর অনুপলব্ধ",
+      "couldntLoad": "ঝুঁকি স্কোর লোড করা যায়নি",
+      "categoryBreakdown": "বিভাগ বিভাজন",
+      "weight": "ওজন {{pct}}",
+      "factorsCount": "ঝুঁকির কারণ · {{n}}",
+      "incompleteNote": "কিছু ডেটা উৎস নকল বা অনুপলব্ধ ডেটা ফিরিয়েছে। আরও বাস্তব ডেটা পাওয়া গেলে স্কোর উন্নত হতে পারে।",
+      "categories": {
+        "financial": "আর্থিক",
+        "legal": "আইনগত",
+        "environmental": "পরিবেশগত",
+        "structural": "কাঠামোগত"
+      }
+    },
+    "building": {
+      "title": "নির্মাণ তথ্য",
+      "subtitle": "আপনার প্রদত্ত কাঠামোগত বিবরণ",
+      "storiesCount_one": "{{count}}টি তলা",
+      "storiesCount_other": "{{count}}টি তলা",
+      "emptyTitle": "কোনো নির্মাণ বিবরণ যোগ করা হয়নি",
+      "emptyDesc": "ঝুঁকি স্কোরিং নির্ভুলতা উন্নত করতে কাঠামোর ধরন, নির্মাণ সাল, শোওয়ার ঘর ইত্যাদি যোগ করুন।",
+      "addDetails": "নির্মাণ বিবরণ যোগ করুন"
+    },
+    "details": {
+      "verifiedProperty": "যাচাইকৃত সম্পত্তি",
+      "pendingVerification": "যাচাই মুলতুবি",
+      "active": "সক্রিয়",
+      "userProvided": "ব্যবহারকারী প্রদত্ত",
+      "editDetails": "বিবরণ সম্পাদনা করুন",
+      "estimatedMarketValue": "আনুমানিক বাজার মূল্য",
+      "yearBuilt": "নির্মাণ সাল",
+      "stories": "তলা",
+      "lotSize": "জমির আকার",
+      "zoning": "জোনিং",
+      "beds": "বেড",
+      "baths": "বাথ",
+      "sqft": "বর্গফুট",
+      "type": "ধরন",
+      "pricePerSqft": "মূল্য/বর্গফুট",
+      "editProperty": "সম্পত্তি সম্পাদনা করুন",
+      "backToSearch": "অনুসন্ধানে ফিরুন",
+      "monthlyEst": "আনু. {{amount}}/মাস",
+      "getPrequalified": "প্রি-কোয়ালিফাই করুন"
+    },
+    "comparison": {
+      "title": "সম্পত্তি তুলনা",
+      "subtitle": "{{n}}টি {{unit}} এর পাশাপাশি বিশ্লেষণ · শুধুমাত্র বাস্তব ডেটা",
+      "pageTitle": "সম্পত্তি তুলনা | Real Estate Due Diligence Agent",
+      "couldNotLoad": "তুলনা লোড করা যায়নি",
+      "pleaseGoBack": "পিছনে যান এবং আবার চেষ্টা করুন।",
+      "loadFailed": "তুলনা ডেটা লোড করতে ব্যর্থ",
+      "selectHelper": "সম্পত্তি অনুসন্ধানে যান, প্রতিটি কার্ডের তুলনা চেকবক্স ব্যবহার করে ২–৩টি সম্পত্তি নির্বাচন করুন, তারপর \"তুলনা\" ক্লিক করুন।",
+      "backToSearch": "সম্পত্তি অনুসন্ধানে ফিরুন",
+      "metricHeader": "মেট্রিক",
+      "propertyUnit": "সম্পত্তি",
+      "propertiesUnit": "সম্পত্তি",
+      "mySaved": "আমার সংরক্ষিত",
+      "saveComparison": "তুলনা সংরক্ষণ করুন",
+      "goToSearch": "সম্পত্তি অনুসন্ধানে যান",
+      "selectAtLeast2": "তুলনা করতে কমপক্ষে ২টি সম্পত্তি নির্বাচন করুন",
+      "compareLabel": "তুলনা",
+      "selectedCount": "৩টির মধ্যে {{count}}টি নির্বাচিত",
+      "compareCount_one": "{{count}}টি সম্পত্তি তুলনা করুন",
+      "compareCount_other": "{{count}}টি সম্পত্তি তুলনা করুন",
+      "selectMinimum": "— ন্যূনতম ২টি নির্বাচন করুন",
+      "removeProperty": "{{address}} সরান",
+      "sections": {
+        "financial": "আর্থিক",
+        "propertyDetails": "সম্পত্তির বিবরণ",
+        "riskAssessment": "ঝুঁকি মূল্যায়ন",
+        "dataQuality": "ডেটা গুণমান",
+        "integrationSources": "ইন্টিগ্রেশন ডেটা উৎস",
+        "environmental": "পরিবেশগত"
+      },
+      "metrics": {
+        "marketValue": "বাজার মূল্য",
+        "area": "আয়তন",
+        "pricePerSqft": "মূল্য / বর্গফুট",
+        "lotSize": "জমির আকার",
+        "yearBuilt": "নির্মাণ সাল",
+        "type": "ধরন",
+        "bedrooms": "শোওয়ার ঘর",
+        "bathrooms": "বাথরুম",
+        "stories": "তলা",
+        "condition": "অবস্থা",
+        "structureType": "কাঠামোর ধরন",
+        "zoning": "জোনিং",
+        "overallRisk": "সামগ্রিক ঝুঁকি",
+        "financialRisk": "আর্থিক ঝুঁকি",
+        "legalRisk": "আইনগত ঝুঁকি",
+        "environmentalRisk": "পরিবেশগত ঝুঁকি",
+        "structuralRisk": "কাঠামোগত ঝুঁকি",
+        "verification": "যাচাইকরণ",
+        "ownership": "মালিকানা",
+        "taxHistory": "কর ইতিহাস",
+        "floodZone": "বন্যা অঞ্চল",
+        "permits": "অনুমতি",
+        "aqi": "AQI",
+        "floodRisk": "বন্যা ঝুঁকি",
+        "nearIndustrial": "শিল্প এলাকার কাছাকাছি"
+      },
+      "risk": {
+        "low": "কম ঝুঁকি",
+        "medium": "মাঝারি ঝুঁকি",
+        "high": "উচ্চ ঝুঁকি"
+      },
+      "status": {
+        "live": "লাইভ",
+        "cached": "ক্যাশড",
+        "sample": "নমুনা",
+        "unavailable": "অনুপলব্ধ",
+        "timedOut": "সময় শেষ",
+        "error": "ত্রুটি",
+        "noData": "কোনো ডেটা নেই"
+      },
+      "legend": {
+        "title": "কিংবদন্তি",
+        "best": "সর্বোত্তম মূল্য",
+        "worst": "সর্বনিম্ন মূল্য",
+        "middle": "মধ্যম",
+        "note": "তুলনাগুলি আপেক্ষিক — কোনো বাহ্যিক বেঞ্চমার্ক ব্যবহার করা হয়নি"
+      }
+    }
+  },
+  "profile": {
+    "title": "অ্যাকাউন্ট ব্যবস্থাপনা",
+    "subtitle": "আপনার পেশাদার পরিচয় ও অ্যাপ্লিকেশন নিরাপত্তা নিয়ন্ত্রণ করুন।",
+    "pageTitle": "প্রোফাইল | Real Estate Due Diligence Agent",
+    "fallbackUser": "ব্যবহারকারী",
+    "sections": {
+      "accountDetails": "অ্যাকাউন্টের বিবরণ",
+      "accountDetailsSubtitle": "প্রাথমিক যোগাযোগ ও সাংগঠনিক তথ্য।",
+      "security": "নিরাপত্তা ও প্রবেশাধিকার",
+      "securitySubtitle": "আপনার প্রমাণীকরণ পদ্ধতি ও নিরাপত্তা প্রোটোকল পরিচালনা করুন।",
+      "dangerZone": "বিপদ অঞ্চল",
+      "dangerZoneSubtitle": "অপরিবর্তনীয় কার্যক্রম। সতর্কতার সাথে এগিয়ে যান।"
+    },
+    "fields": {
+      "fullName": "পূর্ণ নাম",
+      "email": "ইমেইল ঠিকানা",
+      "phone": "ফোন",
+      "signInMethod": "সাইন-ইন পদ্ধতি",
+      "accessLevel": "প্রবেশাধিকার স্তর",
+      "memberSince": "সদস্যপদ থেকে"
+    },
+    "placeholders": {
+      "fullName": "আপনার পূর্ণ নাম",
+      "phone": "১০-সংখ্যার মোবাইল"
+    },
+    "actions": {
+      "editProfile": "প্রোফাইল সম্পাদনা করুন",
+      "cancel": "বাতিল",
+      "saveChanges": "পরিবর্তন সংরক্ষণ করুন",
+      "saving": "সংরক্ষণ হচ্ছে...",
+      "changePassword": "পাসওয়ার্ড পরিবর্তন করুন",
+      "deleteAccount": "অ্যাকাউন্ট মুছুন"
+    },
+    "password": {
+      "title": "অ্যাকাউন্ট পাসওয়ার্ড",
+      "description": "আপনার অ্যাকাউন্ট সুরক্ষিত রাখতে যেকোনো সময় পাসওয়ার্ড আপডেট করুন।",
+      "googleOnly": "আপনি Google দিয়ে সাইন ইন করেন। কোনো পাসওয়ার্ড সেট নেই।"
+    },
+    "delete": {
+      "title": "এই অ্যাকাউন্ট মুছুন",
+      "description": "আপনার প্রোফাইল, আপনার যোগ করা সব সম্পত্তি এবং সব সেশন ডেটা স্থায়ীভাবে মুছে যাবে। এটি পূর্বাবস্থায় ফেরানো যাবে না।"
+    },
+    "signOutAll": {
+      "title": "সব ডিভাইস থেকে সাইন আউট করুন",
+      "description": "সর্বত্র আপনার সেশন শেষ করুন — ফোন, ট্যাবলেট এবং অন্যান্য ব্রাউজার। আপনি যদি ডিভাইস শেয়ার করেন বা একটিতে অ্যাক্সেস হারান তবে কার্যকর।",
+      "button": "সর্বত্র সাইন আউট করুন"
+    },
+    "roles": {
+      "BUYER": "ক্রেতা",
+      "REAL_ESTATE_AGENT": "রিয়েল এস্টেট এজেন্ট",
+      "LEGAL_REVIEWER": "আইনি পর্যালোচক",
+      "FINANCIAL_INSTITUTION": "আর্থিক প্রতিষ্ঠান",
+      "ADMIN": "প্রশাসক"
+    },
+    "roleTaglines": {
+      "BUYER": "সম্পত্তি ক্রেতা · যথাযথ তদন্ত",
+      "REAL_ESTATE_AGENT": "রিয়েল এস্টেট পেশাদার · বাজার বিশেষজ্ঞ",
+      "LEGAL_REVIEWER": "আইনি উপদেষ্টা · সম্মতি পর্যালোচনা",
+      "FINANCIAL_INSTITUTION": "আর্থিক প্রতিষ্ঠান · সম্পদ মূল্যায়ন",
+      "ADMIN": "সিস্টেম প্রশাসক · সম্পূর্ণ প্রবেশাধিকার"
+    },
+    "authProvider": {
+      "LOCAL": "ইমেইল + পাসওয়ার্ড",
+      "GOOGLE": "Google",
+      "LOCAL_AND_GOOGLE": "ইমেইল + Google"
+    },
+    "locked": "লক করা",
+    "verified": "যাচাইকৃত {{role}}",
+    "errors": {
+      "nameValidation": "৩–১০০ অক্ষর, শুধুমাত্র অক্ষর ও স্থান",
+      "phoneValidation": "১০ সংখ্যা, ৬–৯ দিয়ে শুরু",
+      "couldntLoad": "প্রোফাইল লোড করা যায়নি",
+      "pleaseRefresh": "অনুগ্রহ করে পৃষ্ঠাটি রিফ্রেশ করুন।",
+      "unableToLoad": "প্রোফাইল লোড করতে অক্ষম। অনুগ্রহ করে পৃষ্ঠাটি রিফ্রেশ করুন।",
+      "updateFailed": "আপডেট ব্যর্থ হয়েছে"
+    },
+    "success": {
+      "profileUpdated": "প্রোফাইল আপডেট হয়েছে",
+      "changesSaved": "আপনার পরিবর্তন সংরক্ষিত হয়েছে।"
+    }
+  },
+  "deleteAccount": {
+    "title": "অ্যাকাউন্ট মুছুন",
+    "subtitle": "এই কার্যক্রম পূর্বাবস্থায় ফেরানো যাবে না।",
+    "impactTitle": "নিম্নলিখিতগুলি স্থায়ীভাবে মুছে যাবে:",
+    "impact": {
+      "account": "আপনার অ্যাকাউন্ট ও প্রোফাইল",
+      "properties": "আপনার যোগ করা সব সম্পত্তি",
+      "sessions": "আপনার সব সেশন ডেটা"
+    },
+    "passwordLabel": "আপনার পাসওয়ার্ড লিখুন",
+    "passwordPlaceholder": "বর্তমান পাসওয়ার্ড",
+    "emailLabel": "নিশ্চিত করতে আপনার ইমেইল লিখুন",
+    "typeToConfirmPrefix": "লিখুন",
+    "typeToConfirmSuffix": "নিশ্চিত করতে",
+    "deleteButton": "অ্যাকাউন্ট মুছুন",
+    "toasts": {
+      "confirmRequired": "নিশ্চিতকরণ প্রয়োজন",
+      "typeExactly": "এই কার্যক্রম নিশ্চিত করতে ঠিক DELETE টাইপ করুন।",
+      "passwordRequired": "পাসওয়ার্ড প্রয়োজন",
+      "emailRequired": "ইমেইল প্রয়োজন",
+      "enterPasswordToConfirm": "নিশ্চিত করতে আপনার পাসওয়ার্ড লিখুন।",
+      "enterEmailToConfirm": "নিশ্চিত করতে আপনার ইমেইল লিখুন।",
+      "accountDeleted": "অ্যাকাউন্ট মুছে গেছে",
+      "redirecting": "আপনাকে শীঘ্রই পুনর্নির্দেশ করা হবে।",
+      "couldNotDelete": "অ্যাকাউন্ট মুছতে পারেনি",
+      "tryAgainMoment": "একটু পরে আবার চেষ্টা করুন।",
+      "tryAgain": "অনুগ্রহ করে আবার চেষ্টা করুন।"
+    }
+  },
+  "changePassword": {
+    "title": "পাসওয়ার্ড পরিবর্তন করুন",
+    "subtitle": "আপনার অ্যাকাউন্ট পাসওয়ার্ড আপডেট করুন",
+    "currentLabel": "বর্তমান পাসওয়ার্ড",
+    "currentPlaceholder": "বর্তমান পাসওয়ার্ড লিখুন",
+    "newLabel": "নতুন পাসওয়ার্ড",
+    "newPlaceholder": "কমপক্ষে ৮ অক্ষর",
+    "confirmLabel": "নতুন পাসওয়ার্ড নিশ্চিত করুন",
+    "confirmPlaceholder": "নতুন পাসওয়ার্ড পুনরায় লিখুন",
+    "submit": "পাসওয়ার্ড পরিবর্তন করুন",
+    "saving": "সংরক্ষণ হচ্ছে...",
+    "errors": {
+      "currentRequired": "বর্তমান পাসওয়ার্ড আবশ্যক",
+      "newRequired": "নতুন পাসওয়ার্ড আবশ্যক"
+    },
+    "toasts": {
+      "samePassword": "একই পাসওয়ার্ড",
+      "samePasswordDesc": "নতুন পাসওয়ার্ড আপনার বর্তমান পাসওয়ার্ড থেকে আলাদা হতে হবে।",
+      "success": "পাসওয়ার্ড পরিবর্তিত হয়েছে",
+      "successDesc": "আপনি আপনার নতুন পাসওয়ার্ড দিয়ে সাইন ইন করতে পারবেন।",
+      "failed": "পরিবর্তন ব্যর্থ হয়েছে"
+    }
+  },
+  "signOutAll": {
+    "title": "সব ডিভাইস থেকে সাইন আউট করবেন?",
+    "subtitle": "এটি এই অ্যাকাউন্টে বর্তমানে সাইন ইন করা প্রতিটি ডিভাইসে আপনার সেশন শেষ করবে।",
+    "confirmButton": "হ্যাঁ, সর্বত্র সাইন আউট করুন",
+    "processing": "সর্বত্র সাইন আউট হচ্ছে…",
+    "tipEsc": "পরামর্শ: চাপুন",
+    "tipEscSuffix": "বাতিল করতে",
+    "useIfPrefix": "এটি ব্যবহার করুন যদি:",
+    "useIfBody": "আপনার অ্যাকাউন্ট আপোস হতে পারে, আপনি ডিভাইস শেয়ার করেছেন, বা কোথাও লগ আউট করতে ভুলেছেন।",
+    "impact": {
+      "endSessions": {
+        "title": "সব সক্রিয় সেশন শেষ হবে",
+        "description": "ফোন, ট্যাবলেট, অন্যান্য ব্রাউজার — যেখানে সাইন ইন করা আছে সর্বত্র"
+      },
+      "logoutHere": {
+        "title": "আপনি এখান থেকেও লগ আউট হবেন",
+        "description": "চালিয়ে যেতে আবার সাইন ইন করতে হবে"
+      }
+    },
+    "toasts": {
+      "signedOutTitle": "সর্বত্র সাইন আউট হয়েছে",
+      "signedOutDesc": "আপনার সব সক্রিয় সেশন শেষ করা হয়েছে।",
+      "failedTitle": "সাইন আউট করা যায়নি"
+    }
+  },
+  "avatar": {
+    "aria": {
+      "changePhoto": "প্রোফাইল ছবি পরিবর্তন করুন",
+      "photoOptions": "ছবির বিকল্প"
+    },
+    "menu": {
+      "upload": "ছবি আপলোড করুন",
+      "change": "ছবি পরিবর্তন করুন",
+      "remove": "ছবি সরান",
+      "fileHint": "JPG, PNG, WebP · সর্বোচ্চ ৫ MB"
+    },
+    "preview": {
+      "title": "প্রিভিউ ও আপলোড",
+      "alt": "প্রিভিউ",
+      "fileSizeKB": "{{size}} KB",
+      "upload": "ছবি আপলোড করুন",
+      "uploading": "আপলোড হচ্ছে..."
+    },
+    "toasts": {
+      "invalidFile": "অবৈধ ফাইল",
+      "photoUpdated": "প্রোফাইল ছবি আপডেট হয়েছে",
+      "uploadFailed": "আপলোড ব্যর্থ হয়েছে",
+      "photoRemoved": "প্রোফাইল ছবি সরানো হয়েছে",
+      "removeFailed": "ছবি সরাতে ব্যর্থ হয়েছে"
+    }
+  },
+  "settings": {
+    "title": "সেটিংস",
+    "language": {
+      "sectionTitle": "ভাষা",
+      "sectionSubtitle": "ইন্টারফেসের জন্য আপনার পছন্দের ভাষা বেছে নিন।",
+      "label": "ইন্টারফেস ভাষা",
+      "selectPlaceholder": "ভাষা নির্বাচন করুন",
+      "saved": "ভাষা আপডেট হয়েছে",
+      "savedDescription": "ইন্টারফেসের ভাষা {{language}} তে পরিবর্তিত হয়েছে।"
+    }
+  },
+  "commandPalette": {
+    "searchPlaceholder": "পৃষ্ঠা, সম্পত্তি বা কার্যক্রম অনুসন্ধান করুন...",
+    "ariaLabel": "কমান্ড প্যালেট অনুসন্ধান",
+    "searchingProperties": "সম্পত্তি অনুসন্ধান হচ্ছে...",
+    "clear": "মুছুন",
+    "recentSearchLabel": "সাম্প্রতিক অনুসন্ধান",
+    "sections": {
+      "recent": "সাম্প্রতিক",
+      "pages": "পৃষ্ঠা",
+      "properties": "সম্পত্তি",
+      "propertiesSubtitle": "ডেটাবেস থেকে লাইভ",
+      "actions": "কার্যক্রম"
+    },
+    "empty": {
+      "title": "\u201C{{query}}\u201D এর জন্য কোনো ফলাফল নেই",
+      "hint": "একটি পৃষ্ঠার নাম, সম্পত্তির ঠিকানা বা কার্যক্রম অনুসন্ধান করুন"
+    },
+    "kbd": {
+      "navigate": "নেভিগেট",
+      "select": "নির্বাচন",
+      "close": "বন্ধ",
+      "esc": "esc"
+    },
+    "pages": {
+      "dashboard": { "label": "ড্যাশবোর্ড", "description": "পোর্টফোলিও ওভারভিউ ও KPI" },
+      "search": { "label": "সম্পত্তি অনুসন্ধান", "description": "সম্পত্তি খুঁজুন ও যাচাই করুন" },
+      "diligence": { "label": "যথাযথ তদন্ত", "description": "গভীর যাচাইকরণ কার্যপ্রবাহ" },
+      "risk": { "label": "ঝুঁকি মূল্যায়ন", "description": "ঝুঁকি স্কোর ও লাল পতাকা" },
+      "compare": { "label": "সম্পত্তি তুলনা", "description": "পাশাপাশি বিশ্লেষণ" },
+      "reports": { "label": "প্রতিবেদন", "description": "তৈরিকৃত PDF প্রতিবেদন" },
+      "notifications": { "label": "বিজ্ঞপ্তি", "description": "সতর্কতা ও কার্যকলাপ ফিড" },
+      "audit": { "label": "অডিট লগ", "description": "প্রতিটি কার্যক্রম, টাইমস্ট্যাম্প সহ" },
+      "profile": { "label": "আমার প্রোফাইল", "description": "অ্যাকাউন্ট ও পছন্দ" }
+    },
+    "actions": {
+      "addProperty": { "label": "নতুন সম্পত্তি যোগ করুন", "description": "একটি নতুন তালিকা নিবন্ধন করুন" },
+      "logout": { "label": "লগ আউট", "description": "আপনার সেশন শেষ করুন" }
+    }
+  },
+  "navbar": {
+    "toggleSidebar": "সাইডবার টগল করুন",
+    "openCommandPalette": "কমান্ড প্যালেট খুলুন",
+    "userMenu": "ব্যবহারকারী মেনু",
+    "signedIn": "সাইন ইন করা",
+    "myProfile": "আমার প্রোফাইল",
+    "logOut": "লগ আউট"
+  },
+  "emptyState": {
+    "defaultTitle": "এখনও কিছু নেই",
+    "defaultDescription": "আপনার প্রথম আইটেম যোগ করে শুরু করুন।"
+  },
+  "support": {
+    "hero": {
+      "title": "আমরা কীভাবে সাহায্য করতে পারি?",
+      "subtitle": "সাধারণ প্রশ্নের উত্তর এবং আমাদের সাথে যোগাযোগের সরাসরি উপায়। আপনার প্রয়োজনীয় জিনিস খুঁজে না পেলে, ইমেইল করুন এবং আমরা ব্যবসায়িক দিনে ৪৮ ঘণ্টার মধ্যে উত্তর দেব।",
+      "searchPlaceholder": "নিবন্ধ, প্রশ্ন, বৈশিষ্ট্য অনুসন্ধান করুন...",
+      "statusOperational": "সব সিস্টেম সচল"
+    },
+    "contact": {
+      "eyebrow": "যোগাযোগ করুন",
+      "title": "সরাসরি আমাদের সাথে যোগাযোগ করুন",
+      "subtitle": "সবচেয়ে উপযুক্ত বিকল্পটি বেছে নিন — ক্লিক করলে একটি পূর্ব-পূরণ করা বিষয় লাইন সহ আপনার ইমেইল ক্লায়েন্ট খুলবে।",
+      "openEmail": "ইমেইল খুলুন",
+      "general": {
+        "title": "সাধারণ প্রশ্ন",
+        "description": "পণ্য সহায়তা, অ্যাকাউন্ট প্রশ্ন বা জরুরি নয় এমন যেকোনো বিষয়।",
+        "subject": "সহায়তার অনুরোধ — Due Diligence Platform",
+        "body": "হ্যালো টিম,\n\nআমার একটি প্রশ্ন আছে:\n\n"
+      },
+      "bug": {
+        "title": "বাগ রিপোর্ট করুন",
+        "description": "কিছু প্রত্যাশামতো কাজ করছে না? আপনি কী দেখেছেন এবং কী আশা করেছিলেন তা জানান।",
+        "subject": "বাগ রিপোর্ট — Due Diligence Platform",
+        "body": "আমি যা করেছি:\n\nআমি যা আশা করেছিলাম:\n\nআসলে যা হয়েছে:\n\nব্রাউজার ও সংস্করণ:\n\n"
+      },
+      "feature": {
+        "title": "ফিচারের অনুরোধ করুন",
+        "description": "প্ল্যাটফর্মকে আরও ভালো করার কোনো ধারণা আছে? আমরা প্রতিটি বার্তা পড়ি।",
+        "subject": "ফিচার অনুরোধ — Due Diligence Platform",
+        "body": "আমি দেখতে চাই:\n\nএটি কেন সাহায্য করবে:\n\n"
+      }
+    },
+    "faq": {
+      "eyebrow": "জ্ঞানভাণ্ডার",
+      "title": "প্রায়শই জিজ্ঞাসিত প্রশ্ন",
+      "allCategory": "সব",
+      "articleCount_one": "{{count}}টি নিবন্ধ",
+      "articleCount_other": "{{count}}টি নিবন্ধ",
+      "noResults": {
+        "title": "আপনার অনুসন্ধানের সাথে কোনো নিবন্ধ মেলে না",
+        "hint": "ভিন্ন কীওয়ার্ড চেষ্টা করুন বা সব নিবন্ধ দেখতে ফিল্টার মুছুন।",
+        "emailButton": "এই প্রশ্নটি আমাদের ইমেইল করুন",
+        "emailSubjectPrefix": "সহায়তা:",
+        "emailSubjectFallback": "FAQ তে নেই এমন প্রশ্ন"
+      }
+    },
+    "response": {
+      "eyebrow": "প্রতিক্রিয়া সময়",
+      "headline": "৪৮ ঘণ্টার মধ্যে",
+      "description": "আমরা ব্যবসায়িক দিনে (সোম–শুক্র) ইমেইলের উত্তর দিই। জটিল সমস্যায় বেশি সময় লাগতে পারে — আমরা সবসময় প্রথমে প্রাপ্তি স্বীকার করব।"
+    },
+    "direct": {
+      "eyebrow": "সরাসরি ইমেইল",
+      "headline": "টিমের সাথে যোগাযোগ করুন"
+    },
+    "related": {
+      "eyebrow": "সম্পর্কিত",
+      "title": "আরও রিসোর্স",
+      "security": {
+        "title": "নিরাপত্তা",
+        "description": "আমরা কীভাবে আপনার ডেটা সুরক্ষিত রাখি — নির্মিত ও পরিকল্পিত বিষয়গুলির সম্পূর্ণ প্রকাশ।"
+      },
+      "source": {
+        "title": "সোর্স কোড",
+        "description": "GitHub এ ওপেন-সোর্স। সমস্যা রিপোর্ট করুন, কোড পড়ুন, বা অবদান রাখুন।"
+      }
+    },
+    "footer": {
+      "note": "এই সহায়তা পৃষ্ঠাটি লাইভ চ্যাট, টিকেট সিস্টেম বা স্বয়ংক্রিয় হেল্পডেস্ক নয়। এটি প্ল্যাটফর্ম তৈরিকারী দলের সাথে সরাসরি যোগাযোগের মাধ্যম। আমরা প্রতিটি ইমেইল পড়ি এবং ব্যক্তিগতভাবে উত্তর দিই।"
+    }
+  },
+  "savedComparisons": {
+    "pageTitle": "সংরক্ষিত তুলনা | Real Estate Due Diligence Agent",
+    "title": "সংরক্ষিত তুলনা",
+    "countLabel_one": "{{count}}টি সংরক্ষিত তুলনা",
+    "countLabel_other": "{{count}}টি সংরক্ষিত তুলনা",
+    "searchPlaceholder": "নাম বা নোট দিয়ে অনুসন্ধান করুন...",
+    "emptyTitle": "এখনও কোনো সংরক্ষিত তুলনা নেই",
+    "emptyDesc": "সম্পত্তি তুলনায় যান, ২–৩টি সম্পত্তি নির্বাচন করুন এবং \"তুলনা সংরক্ষণ করুন\" ক্লিক করুন।",
+    "startComparing": "সম্পত্তি তুলনা শুরু করুন",
+    "noResults": "\"{{query}}\" এর জন্য কোনো ফলাফল নেই",
+    "propertyCount_one": "{{count}}টি সম্পত্তি",
+    "propertyCount_other": "{{count}}টি সম্পত্তি",
+    "savedOn": "{{date}} এ সংরক্ষিত",
+    "updatedOn": "{{date}} এ আপডেট হয়েছে",
+    "deleteAria": "{{name}} মুছুন",
+    "loadComparison": "তুলনা লোড করুন"
+  },
+  "savedSheet": {
+    "ariaLabel": "সংরক্ষিত তুলনা",
+    "savedCount_one": "{{count}}টি সংরক্ষিত",
+    "savedCount_other": "{{count}}টি সংরক্ষিত",
+    "loading": "সংরক্ষিত তুলনা লোড হচ্ছে...",
+    "emptyHint": "সম্পত্তি তুলনা করুন এবং এখানে রাখতে \"তুলনা সংরক্ষণ করুন\" ক্লিক করুন।",
+    "load": "লোড করুন",
+    "viewAll": "সব সংরক্ষিত তুলনা দেখুন →"
+  },
+  "marketChart": {
+    "title": "বাজার মূল্যের প্রবণতা",
+    "subtitle": "৬ মাসের আনুমানিক প্রবণতা · শুধুমাত্র নির্দেশমূলক",
+    "estimatedBadge": "আনুমানিক ডেটা",
+    "propertyLabel": "সম্পত্তি {{letter}}"
+  },
+  "common": {
+    "loading": "লোড হচ্ছে...",
+    "error": "কিছু একটা ভুল হয়েছে",
+    "retry": "আবার চেষ্টা করুন",
+    "save": "সংরক্ষণ করুন",
+    "cancel": "বাতিল",
+    "delete": "মুছুন",
+    "edit": "সম্পাদনা করুন",
+    "close": "বন্ধ করুন",
+    "back": "পেছনে",
+    "next": "পরবর্তী",
+    "confirm": "নিশ্চিত করুন",
+    "yes": "হ্যাঁ",
+    "no": "না",
+    "search": "অনুসন্ধান",
+    "filter": "ফিল্টার",
+    "clear": "মুছুন",
+    "clearAll": "সব মুছুন",
+    "apply": "প্রয়োগ করুন",
+    "refresh": "রিফ্রেশ করুন",
+    "download": "ডাউনলোড করুন",
+    "upload": "আপলোড করুন",
+    "submit": "জমা দিন",
+    "noData": "কোনো ডেটা নেই",
+    "justNow": "এইমাত্র",
+    "minutesAgo": "{{n}} মিনিট আগে",
+    "hoursAgo": "{{n}} ঘণ্টা আগে",
+    "daysAgo": "{{n}} দিন আগে",
+    "secondsAgo": "{{n}} সেকেন্ড আগে",
+    "syncedAgo": "সিঙ্ক করা",
+    "breadcrumbLabel": "ব্রেডক্রাম্ব",
+    "breadcrumbs": {
+      "details": "বিবরণ"
+    }
+  },
+  "pages": {
+    "dueDiligence": {
+      "title": "Due Diligence ড্যাশবোর্ড শীঘ্রই আসছে",
+      "description": "আপনার সব সম্পত্তির যথাযথ তদন্তের অবস্থার একত্রিত দৃশ্য এখানে প্রদর্শিত হবে।"
+    },
+    "riskAssessment": {
+      "title": "ঝুঁকি মূল্যায়ন ওভারভিউ শীঘ্রই আসছে",
+      "description": "পোর্টফোলিও-ব্যাপী ঝুঁকি বিশ্লেষণ ও অগ্রাধিকারমূলক কার্যক্রমের আইটেম এখানে প্রদর্শিত হবে।"
+    },
+    "reports": {
+      "title": "প্রতিবেদন শীঘ্রই আসছে",
+      "description": "পোর্টফোলিও প্রতিবেদন, ঝুঁকি সারসংক্ষেপ এবং যথাযথ তদন্তের নথি তৈরি করুন। এই বৈশিষ্ট্যটি উন্নয়নাধীন।"
+    },
+    "notifications": {
+      "title": "আপনি সব আপ টু ডেট",
+      "description": "কোনো নতুন বিজ্ঞপ্তি নেই। সম্পত্তিতে মনোযোগ প্রয়োজন হলে বা প্রতিবেদন প্রস্তুত হলে আমরা আপনাকে সতর্ক করব।"
+    },
+    "auditLogs": {
+      "title": "এখনও কোনো অডিট এন্ট্রি নেই",
+      "description": "সম্মতি ও নিরাপত্তা পর্যালোচনার জন্য সিস্টেম কার্যক্রম ও ব্যবহারকারীর কার্যকলাপ এখানে ট্র্যাক করা হবে।"
+    }
+  }
 }
