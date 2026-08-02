@@ -47,10 +47,10 @@ function canAccess(href, role) {
 // MAIN section is always expanded (no collapse control shown).
 // Other sections are collapsible.
 const MENU_SECTION_CONFIGS = [
-  {
+    {
     id: "main",
     sectionKey: "nav.sections.main",
-    collapsible: false,
+    collapsible: true,
     items: [
       { titleKey: "nav.dashboard",      href: "/dashboard",                  icon: LayoutDashboard, badge: null },
       { titleKey: "nav.propertySearch", href: "/dashboard/property-search",  icon: Search,          badge: null },
