@@ -22,8 +22,9 @@ import { getPasswordStrength } from "@/utils/helpers";
 import { ROLES } from "@/constants/roles";
 import { APP_NAME } from "@/constants/appConstants";
 import GoogleSignInButton from "@/components/auth/GoogleSignInButton";
+import OtpVerificationModal from "@/components/auth/OtpVerificationModal";
 
-// ── Inline SVG icons (unchanged) ─────────────────────────────────────────────
+// ── Inline SVG icons ──
 const UserIcon = () => (
   <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24"
     fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
@@ -77,7 +78,6 @@ const ArrowRight = () => (
   </svg>
 );
 
-// ── Field wrapper ─────────────────────────────────────────────────────────────
 function Field({ label, htmlFor, error, required, children, t }) {
   return (
     <div className="flex flex-col gap-1">
@@ -97,9 +97,8 @@ function Field({ label, htmlFor, error, required, children, t }) {
   );
 }
 
-function StrengthBar({ strength, t }) {
+function StrengthBar({ strength }) {
   if (!strength || !strength.labelKey) return null;
-
   const colors = {
     "passwordStrength.weak":   "bg-red-500",
     "passwordStrength.fair":   "bg-yellow-400",
@@ -112,20 +111,17 @@ function StrengthBar({ strength, t }) {
     "passwordStrength.good":   "w-3/4",
     "passwordStrength.strong": "w-full",
   };
-
   return (
     <div className="mt-1">
       <div className="h-0.5 w-full rounded-full bg-gray-100 dark:bg-[#30363d] overflow-hidden">
-        <div
-          className={`h-full rounded-full transition-all duration-300 ${colors[strength.labelKey]} ${widths[strength.labelKey]}`}
-        />
+        <div className={`h-full rounded-full transition-all duration-300 ${colors[strength.labelKey]} ${widths[strength.labelKey]}`} />
       </div>
     </div>
   );
 }
-// ── Main Component ────────────────────────────────────────────────────────────
+
 export default function RegisterForm() {
-  const { loading, register } = useAuth();
+  const { loading, startRegistration, verifyOtpAndRegister, resendOtp } = useAuth();
   const { t } = useTranslation();
 
   const [form, setForm] = useState({
@@ -135,9 +131,15 @@ export default function RegisterForm() {
   const [fieldErrors, setFieldErrors] = useState({});
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
-  const [justRegistered, setJustRegistered] = useState(false);
   const [capsLockOn, setCapsLockOn] = useState(false);
   const [passwordFocused, setPasswordFocused] = useState(false);
+
+  // ── OTP modal state ──
+  const [otpModalOpen, setOtpModalOpen] = useState(false);
+  const [otpMeta, setOtpMeta] = useState({
+    maskedEmail: "",
+    initialCooldown: 60,
+  });
 
   const refs = {
     fullName:        useRef(null),
@@ -147,7 +149,6 @@ export default function RegisterForm() {
     phoneNumber:     useRef(null),
   };
 
-  // ── inline field validator (needs t()) ────────────────────────────────────
   const validateField = (field, value) => {
     const trimmed = String(value ?? "").trim();
     switch (field) {
@@ -209,25 +210,23 @@ export default function RegisterForm() {
     const errors = validateRegisterForm(form);
     if (Object.keys(errors).length > 0) { setFieldErrors(errors); return; }
     setFieldErrors({});
-    const minDuration = new Promise((resolve) => setTimeout(resolve, 400));
     try {
-      await Promise.all([
-        register({
-          fullName:    form.fullName.trim(),
-          email:       form.email.trim().toLowerCase(),
-          password:    form.password,
-          phoneNumber: form.phoneNumber.trim(),
-          role:        form.role,
-        }),
-        minDuration,
-      ]);
-      setJustRegistered(true);
-      toast.success(t("auth.register.toasts.welcome"), {
-        description: t("auth.register.toasts.welcomeDesc"),
+      const data = await startRegistration({
+        fullName:    form.fullName.trim(),
+        email:       form.email.trim().toLowerCase(),
+        password:    form.password,
+        phoneNumber: form.phoneNumber.trim(),
+        role:        form.role,
       });
-      setTimeout(() => { window.location.href = "/dashboard"; }, 800);
+      setOtpMeta({
+        maskedEmail:     data?.maskedEmail || form.email.trim().toLowerCase(),
+        initialCooldown: data?.resendCooldownSeconds ?? 60,
+      });
+      setOtpModalOpen(true);
+      toast.success(t("otpVerification.toasts.sentTitle"), {
+        description: t("otpVerification.toasts.sentDesc"),
+      });
     } catch (err) {
-      await minDuration;
       const backendMsg = err?.message || "";
       if (backendMsg.toLowerCase().includes("email") && backendMsg.toLowerCase().includes("exist")) {
         setFieldErrors({ email: t("auth.register.errors.emailExists") });
@@ -247,6 +246,30 @@ export default function RegisterForm() {
     }
   };
 
+  // ── OTP modal callbacks ──
+  const handleVerifyOtp = async (otp) => {
+    await verifyOtpAndRegister({
+      email:    form.email.trim().toLowerCase(),
+      otp,
+      fullName: form.fullName.trim(),
+      role:     form.role,
+    });
+  };
+
+  const handleResendOtp = async () => {
+    const data = await resendOtp(form.email.trim().toLowerCase());
+    return data;
+  };
+
+  const handleOtpSuccess = () => {
+    window.location.href = "/dashboard";
+  };
+
+  const handleChangeEmail = () => {
+    setOtpModalOpen(false);
+    setTimeout(() => refs.email.current?.focus(), 200);
+  };
+
   const passwordStrength = getPasswordStrength(form.password);
 
   const getInputClasses = (hasError) =>
@@ -261,8 +284,6 @@ export default function RegisterForm() {
 
   return (
     <div className="w-full">
-
-      {/* Brand Header — APP_NAME stays English per rule #7 */}
       <div className="flex items-center gap-3 mb-4">
         <div className="flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-full bg-[#22C55E] shadow-md">
           <ShieldCheck className="h-5 w-5 text-white" strokeWidth={2.5} />
@@ -272,7 +293,6 @@ export default function RegisterForm() {
         </h1>
       </div>
 
-      {/* Title */}
       <h2 className="mt-5 text-[36px] font-black leading-[40px] tracking-tight text-[#111827] dark:text-[#e6edf3]">
         {t("auth.register.title")}
       </h2>
@@ -280,11 +300,9 @@ export default function RegisterForm() {
         {t("auth.register.subtitle")}
       </p>
 
-      {/* Form Card */}
       <div className="mt-4 w-full rounded-[24px] border border-white dark:border-[#30363d] bg-white dark:bg-[#161b22] p-5 shadow-[0_20px_60px_rgba(0,0,0,0.08)] dark:shadow-[0_20px_60px_rgba(0,0,0,0.4)]">
         <form onSubmit={handleSubmit} noValidate className="space-y-3">
 
-          {/* Row 1: Full Name + Email */}
           <div className="grid grid-cols-2 gap-3">
             <Field label={t("auth.register.fields.fullName")} htmlFor="fullName" error={fieldErrors.fullName} required t={t}>
               <div className="relative">
@@ -298,7 +316,7 @@ export default function RegisterForm() {
                   placeholder={t("auth.register.placeholders.fullName")}
                   value={form.fullName}
                   onChange={handleChange("fullName")}
-                  disabled={loading || justRegistered}
+                  disabled={loading || otpModalOpen}
                   aria-invalid={!!fieldErrors.fullName}
                   autoComplete="name"
                   className={getInputClasses(!!fieldErrors.fullName)}
@@ -306,8 +324,7 @@ export default function RegisterForm() {
               </div>
             </Field>
 
-<Field label={t("auth.register.fields.email")} htmlFor="email" error={fieldErrors.email} required t={t}>
-
+            <Field label={t("auth.register.fields.email")} htmlFor="email" error={fieldErrors.email} required t={t}>
               <div className="relative">
                 <span className="absolute inset-y-0 left-3 flex items-center text-gray-400 dark:text-[#6e7681] pointer-events-none z-10">
                   <MailIcon />
@@ -319,7 +336,7 @@ export default function RegisterForm() {
                   placeholder={t("auth.login.emailPlaceholder")}
                   value={form.email}
                   onChange={handleChange("email")}
-                  disabled={loading || justRegistered}
+                  disabled={loading || otpModalOpen}
                   aria-invalid={!!fieldErrors.email}
                   autoComplete="email"
                   className={getInputClasses(!!fieldErrors.email)}
@@ -328,10 +345,8 @@ export default function RegisterForm() {
             </Field>
           </div>
 
-          {/* Row 2: Password + Confirm */}
           <div className="grid grid-cols-2 gap-3">
             <Field label={t("auth.login.passwordLabel")} htmlFor="password" error={fieldErrors.password} required t={t}>
-
               <div className="relative">
                 <span className="absolute inset-y-0 left-3 flex items-center text-gray-400 dark:text-[#6e7681] pointer-events-none z-10">
                   <LockIcon />
@@ -347,7 +362,7 @@ export default function RegisterForm() {
                   onKeyUp={handlePasswordKeyEvent}
                   onFocus={() => setPasswordFocused(true)}
                   onBlur={() => setPasswordFocused(false)}
-                  disabled={loading || justRegistered}
+                  disabled={loading || otpModalOpen}
                   aria-invalid={!!fieldErrors.password}
                   autoComplete="new-password"
                   className={`${getInputClasses(!!fieldErrors.password)} pr-9`}
@@ -362,7 +377,7 @@ export default function RegisterForm() {
                   {showPassword ? <EyeOffIcon /> : <EyeIcon />}
                 </button>
               </div>
-             {form.password && <StrengthBar strength={passwordStrength} t={t} />}
+              {form.password && <StrengthBar strength={passwordStrength} />}
               {capsLockOn && passwordFocused && !fieldErrors.password && (
                 <p className="flex items-center gap-1 text-[10px] text-amber-600 dark:text-amber-400 leading-tight mt-1">
                   <AlertCircle className="h-3 w-3" strokeWidth={2.5} />
@@ -371,7 +386,7 @@ export default function RegisterForm() {
               )}
             </Field>
 
-               <Field label={t("auth.register.fields.confirm")} htmlFor="confirmPassword" error={fieldErrors.confirmPassword} required t={t}>
+            <Field label={t("auth.register.fields.confirm")} htmlFor="confirmPassword" error={fieldErrors.confirmPassword} required t={t}>
               <div className="relative">
                 <span className="absolute inset-y-0 left-3 flex items-center text-gray-400 dark:text-[#6e7681] pointer-events-none z-10">
                   <LockIcon />
@@ -383,7 +398,7 @@ export default function RegisterForm() {
                   placeholder={t("auth.register.placeholders.confirm")}
                   value={form.confirmPassword}
                   onChange={handleChange("confirmPassword")}
-                  disabled={loading || justRegistered}
+                  disabled={loading || otpModalOpen}
                   aria-invalid={!!fieldErrors.confirmPassword}
                   autoComplete="new-password"
                   className={`${getInputClasses(!!fieldErrors.confirmPassword)} pr-9`}
@@ -401,7 +416,6 @@ export default function RegisterForm() {
             </Field>
           </div>
 
-          {/* Row 3: Phone + Role */}
           <div className="grid grid-cols-2 gap-3">
             <Field label={t("auth.register.fields.phoneNumber")} htmlFor="phoneNumber" error={fieldErrors.phoneNumber} required t={t}>
               <div className="relative flex">
@@ -435,7 +449,7 @@ export default function RegisterForm() {
                     setForm((prev) => ({ ...prev, phoneNumber: digitsOnly }));
                     setFieldErrors((prev) => ({ ...prev, phoneNumber: validateField("phoneNumber", digitsOnly) }));
                   }}
-                  disabled={loading || justRegistered}
+                  disabled={loading || otpModalOpen}
                   aria-invalid={!!fieldErrors.phoneNumber}
                   autoComplete="tel-national"
                   className={`
@@ -461,7 +475,7 @@ export default function RegisterForm() {
                 <Select
                   value={form.role}
                   onValueChange={handleRoleChange}
-                  disabled={loading || justRegistered}
+                  disabled={loading || otpModalOpen}
                 >
                   <SelectTrigger
                     hideIcon
@@ -478,11 +492,11 @@ export default function RegisterForm() {
                     aria-invalid={!!fieldErrors.role}
                   >
                     <div className="flex w-full items-center justify-between gap-2">
-                     <span className="truncate text-left">
-  {form.role
-    ? t(ROLES.find((r) => r.value === form.role)?.labelKey)
-    : t("auth.register.placeholders.role")}
-</span>
+                      <span className="truncate text-left">
+                        {form.role
+                          ? t(ROLES.find((r) => r.value === form.role)?.labelKey)
+                          : t("auth.register.placeholders.role")}
+                      </span>
                       <svg
                         xmlns="http://www.w3.org/2000/svg"
                         className="h-4 w-4 flex-shrink-0 text-gray-400 dark:text-[#6e7681]"
@@ -507,47 +521,46 @@ export default function RegisterForm() {
                     sideOffset={6}
                   >
                     {ROLES.map((role) => {
-  const RoleIcon = role.icon;
-  return (
-    <SelectItem
-      key={role.value}
-      value={role.value}
-      className="relative flex w-full cursor-pointer select-none items-center rounded-lg py-3 pl-3 pr-9 text-sm outline-none
-        text-gray-900 dark:text-[#e6edf3]
-        focus:bg-green-50 dark:focus:bg-[#0d2818]
-        focus:text-green-700 dark:focus:text-green-400
-        data-[state=checked]:bg-green-50 dark:data-[state=checked]:bg-[#0d2818]
-        data-[state=checked]:text-green-700 dark:data-[state=checked]:text-green-400
-        data-[disabled]:pointer-events-none data-[disabled]:opacity-50"
-    >
-      <div className="flex items-start gap-3">
-        <div className="flex-shrink-0 mt-0.5 w-8 h-8 rounded-lg bg-gray-100 dark:bg-[#0d1117] flex items-center justify-center">
-          <RoleIcon className="h-4 w-4 text-gray-600 dark:text-[#7d8590]" strokeWidth={2} />
-        </div>
-        <div className="flex flex-col gap-0.5 min-w-0">
-          <span className="text-sm font-semibold leading-tight">
-            {t(role.labelKey)}
-          </span>
-          {role.description && (
-            <span className="text-[11px] text-gray-500 dark:text-[#7d8590] font-normal leading-snug">
-              {role.description}
-            </span>
-          )}
-        </div>
-      </div>
-    </SelectItem>
-  );
-})}
+                      const RoleIcon = role.icon;
+                      return (
+                        <SelectItem
+                          key={role.value}
+                          value={role.value}
+                          className="relative flex w-full cursor-pointer select-none items-center rounded-lg py-3 pl-3 pr-9 text-sm outline-none
+                            text-gray-900 dark:text-[#e6edf3]
+                            focus:bg-green-50 dark:focus:bg-[#0d2818]
+                            focus:text-green-700 dark:focus:text-green-400
+                            data-[state=checked]:bg-green-50 dark:data-[state=checked]:bg-[#0d2818]
+                            data-[state=checked]:text-green-700 dark:data-[state=checked]:text-green-400
+                            data-[disabled]:pointer-events-none data-[disabled]:opacity-50"
+                        >
+                          <div className="flex items-start gap-3">
+                            <div className="flex-shrink-0 mt-0.5 w-8 h-8 rounded-lg bg-gray-100 dark:bg-[#0d1117] flex items-center justify-center">
+                              <RoleIcon className="h-4 w-4 text-gray-600 dark:text-[#7d8590]" strokeWidth={2} />
+                            </div>
+                            <div className="flex flex-col gap-0.5 min-w-0">
+                              <span className="text-sm font-semibold leading-tight">
+                                {t(role.labelKey)}
+                              </span>
+                              {role.description && (
+                                <span className="text-[11px] text-gray-500 dark:text-[#7d8590] font-normal leading-snug">
+                                  {role.description}
+                                </span>
+                              )}
+                            </div>
+                          </div>
+                        </SelectItem>
+                      );
+                    })}
                   </SelectContent>
                 </Select>
               </div>
             </Field>
           </div>
 
-          {/* Submit */}
           <Button
             type="submit"
-            disabled={loading || justRegistered}
+            disabled={loading || otpModalOpen}
             className="mt-2 flex h-10 w-full items-center justify-center rounded-xl bg-[#22C55E] text-sm font-bold shadow-[0_12px_30px_rgba(34,197,94,0.35)] transition-all hover:scale-[1.02] hover:bg-[#16a34a] disabled:opacity-70 disabled:hover:scale-100"
           >
             {loading ? (
@@ -558,8 +571,6 @@ export default function RegisterForm() {
                 </svg>
                 {t("auth.register.pleaseWait")}
               </span>
-            ) : justRegistered ? (
-              <span>{t("auth.register.welcomeCheck")}</span>
             ) : (
               <>
                 {t("auth.register.createAccount")}
@@ -568,7 +579,6 @@ export default function RegisterForm() {
             )}
           </Button>
 
-          {/* Divider */}
           <div className="my-4 flex items-center">
             <div className="h-px flex-1 bg-gray-200 dark:bg-[#30363d]" />
             <span className="mx-3 text-[10px] text-gray-500 dark:text-[#6e7681]">
@@ -581,18 +591,13 @@ export default function RegisterForm() {
         </form>
       </div>
 
-      {/* Sign in link */}
       <p className="mt-3 text-center text-xs text-gray-600 dark:text-[#7d8590]">
         {t("auth.register.alreadyHaveAccount")}{" "}
-        <Link
-          href="/login"
-          className="font-semibold text-green-600 hover:text-green-700 hover:underline transition-colors"
-        >
+        <Link href="/login" className="font-semibold text-green-600 hover:text-green-700 hover:underline transition-colors">
           {t("auth.register.signIn")}
         </Link>
       </p>
 
-      {/* Security footer */}
       <div className="mt-4 border-t border-gray-200 dark:border-[#30363d] pt-3 text-center">
         <p className="text-[10px] uppercase tracking-widest text-gray-400 dark:text-[#6e7681]">
           {t("auth.register.secureByDesign")}
@@ -601,6 +606,20 @@ export default function RegisterForm() {
           {t("auth.register.securityTagline")}
         </p>
       </div>
+
+      {/* ── OTP verification modal ── */}
+      <OtpVerificationModal
+        isOpen={otpModalOpen}
+        email={form.email.trim().toLowerCase()}
+        maskedEmail={otpMeta.maskedEmail}
+        fullName={form.fullName.trim()}
+        role={form.role}
+        initialCooldown={otpMeta.initialCooldown}
+        onVerify={handleVerifyOtp}
+        onResend={handleResendOtp}
+        onChangeEmail={handleChangeEmail}
+        onSuccess={handleOtpSuccess}
+      />
     </div>
   );
 }

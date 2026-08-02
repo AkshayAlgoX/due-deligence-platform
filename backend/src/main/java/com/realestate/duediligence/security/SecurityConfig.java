@@ -79,7 +79,7 @@ public class SecurityConfig {
             .authorizeHttpRequests(auth -> auth
                 // ── Public endpoints (auth flow) ──────────────────────
                 .requestMatchers(
-    "/api/auth/register",
+    "/api/auth/register/**",
     "/api/auth/login",
     "/api/auth/google",
     "/api/auth/complete-google-signup",

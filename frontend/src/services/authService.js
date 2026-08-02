@@ -22,52 +22,75 @@ import { API_ROUTES } from "@/constants/apiRoutes";
 import { saveToken, saveUser, removeToken } from "@/utils/helpers";
 
 /**
- * Register a new user.
- * Backend now returns AuthResponse { token } and logs the user in immediately.
+ * Step 1 of registration: send a 6-digit OTP to the user's email.
+ * Does NOT create the account yet.
  *
  * @param {{ fullName, email, password, phoneNumber, role }} payload
- * @returns {Promise<{ token: string }>}
+ * @returns {Promise<{ success, message, maskedEmail, resendCooldownSeconds, expiresInSeconds }>}
  */
-export const registerUser = async ({
+export const sendRegistrationOtp = async ({
   fullName,
   email,
   password,
   phoneNumber,
   role,
 }) => {
-  const payload = {
+  const response = await api.post(API_ROUTES.REGISTER_SEND_OTP, {
     fullName,
     email,
     password,
     phoneNumber,
     role,
-  };
+  });
+  return response.data;
+};
 
-  const response = await api.post(API_ROUTES.REGISTER, payload);
+/**
+ * Step 2 of registration: verify OTP, create real account, auto-login.
+ *
+ * @param {{ email, otp, fullName, role }} payload
+ *   fullName + role are only used locally to populate saveUser cache
+ *   (backend uses whatever was stored in PendingRegistration)
+ * @returns {Promise<{ token: string }>}
+ */
+export const verifyRegistrationOtp = async ({ email, otp, fullName, role }) => {
+  const response = await api.post(API_ROUTES.REGISTER_VERIFY_OTP, {
+    email,
+    otp,
+  });
   const { token } = response.data;
 
-  // Auto-login: save token immediately so user goes straight to dashboard
   if (token) {
-  saveToken(token, true);
-  // Fetch fresh profile to get role (needed by middleware for RBAC)
-  try {
-    const profile = await getCurrentUser();
-    saveUser(
-      {
-        email,
-        fullName,
-        role: profile.role,
-        profilePicture: profile.profilePicture || null,
-      },
-      true
-    );
-  } catch {
-    // Fallback if profile fetch fails — save role from payload
-    saveUser({ email, fullName, role, profilePicture: null }, true);
+    saveToken(token, true);
+    try {
+      const profile = await getCurrentUser();
+      saveUser(
+        {
+          email,
+          fullName: profile.fullName || fullName,
+          role: profile.role || role,
+          profilePicture: profile.profilePicture || null,
+        },
+        true
+      );
+    } catch {
+      saveUser({ email, fullName, role, profilePicture: null }, true);
+    }
   }
-}
 
-return response.data;
+  return response.data;
+};
+
+/**
+ * Step 3 (optional): request a fresh OTP for an existing pending registration.
+ * Rate-limited server-side (60s cooldown, 3 per hour).
+ *
+ * @param {string} email
+ * @returns {Promise<{ success, message, maskedEmail, resendCooldownSeconds, expiresInSeconds }>}
+ */
+export const resendRegistrationOtp = async (email) => {
+  const response = await api.post(API_ROUTES.REGISTER_RESEND_OTP, { email });
+  return response.data;
 };
 
 /**

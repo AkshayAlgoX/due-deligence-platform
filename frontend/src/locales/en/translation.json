@@ -180,11 +180,12 @@
     "settings": "Settings",
     "support": "Support",
     "sections": {
-      "main": "Main",
-      "analysis": "Analysis",
-      "insights": "Insights",
-      "account": "Account"
-    },
+  "main": "Main",
+  "analysis": "Analysis",
+  "insights": "Insights",
+  "activity": "Activity",
+  "account": "Account"
+},
     "sessionActive": "Session active",
     "version": "v1.0"
   },
@@ -1066,6 +1067,26 @@
       "loadFailed": "Failed to load comparison data",
       "selectHelper": "Go to property search, select 2–3 properties using the compare checkbox on each card, then click \"Compare\".",
       "backToSearch": "Back to property search",
+      "empty": {
+  "heroTitle": "Compare properties side by side",
+  "heroSubtitle": "See financials, risk scores, verification status, and environmental data — all lined up in one place. Pick 2 or 3 properties to get started.",
+  "browseAndSelect": "Browse & select properties",
+  "pickUpTitle": "Pick up where you left off",
+  "pickUpSubtitle": "Your most recent saved comparisons",
+  "viewAll": "View all saved",
+  "untitled": "Untitled comparison",
+  "propCount_one": "{{count}} property",
+  "propCount_other": "{{count}} properties",
+  "savedInvalid": "This saved comparison has fewer than 2 properties",
+  "howItWorksTitle": "How it works",
+  "howItWorksSubtitle": "Three steps to a full side-by-side breakdown",
+  "step1Title": "Browse properties",
+  "step1Desc": "Go to Property Search to see everything in your portfolio.",
+  "step2Title": "Tick the compare box",
+  "step2Desc": "Select 2 or 3 properties using the checkbox on each card.",
+  "step3Title": "Compare instantly",
+  "step3Desc": "Click Compare in the bottom bar — see the full breakdown here."
+},
       "metricHeader": "Metric",
       "propertyUnit": "property",
       "propertiesUnit": "properties",
@@ -1542,5 +1563,102 @@
       "title": "No audit entries yet",
       "description": "System actions and user activity will be tracked here for compliance and security review."
     }
+  },
+  "completeProfile": {
+  "title": "One more step",
+  "subtitle": "Tell us a bit about yourself to personalize your experience.",
+  "signedInAs": "Signed in as {{name}}",
+  "roleLabel": "I am a...",
+  "phoneLabel": "Phone Number",
+  "phonePlaceholder": "98765 43210",
+  "phoneHelp": "We'll use this for important account notifications only.",
+  "submit": "Complete Setup",
+  "creating": "Creating your account…",
+  "terms": "By continuing, you agree to our Terms of Service & Privacy Policy.",
+  "notYou": "Not you?",
+  "signOut": "Sign out",
+  "signOutAria": "Sign out and close",
+  "signOutTitle": "Sign out",
+  "confirmSignOut": "Sign out and go back? Your progress will be lost.",
+  "defaultName": "there",
+  "roles": {
+    "buyer": {
+      "label": "Buyer / Individual",
+      "description": "Looking to purchase properties"
+    },
+    "agent": {
+      "label": "Real Estate Agent",
+      "description": "Managing property listings"
+    },
+    "legal": {
+      "label": "Legal Reviewer",
+      "description": "Reviewing legal documents"
+    },
+    "financial": {
+      "label": "Financial Institution",
+      "description": "Bank / Lending partner"
+    }
+  },
+  "toasts": {
+    "sessionExpired": {
+      "title": "Session expired",
+      "description": "Please sign in again to continue."
+    },
+    "signedOut": {
+      "title": "You're signed out",
+      "description": "Sign in again anytime."
+    },
+    "roleRequired": {
+      "title": "Role required",
+      "description": "Please pick a role to continue."
+    },
+    "invalidPhone": {
+      "title": "Invalid phone number",
+      "description": "Enter a 10-digit Indian mobile starting with 6-9."
+    },
+    "welcome": {
+      "title": "Welcome to the platform, {{name}}",
+      "description": "Your account is ready. Redirecting to your dashboard."
+    },
+    "signupFailed": {
+      "title": "Signup couldn't be completed",
+      "description": "Please try again in a moment."
+    }
   }
+},
+"searchableSelect": {
+  "searchPlaceholder": "Type to search...",
+  "noMatches": "No matches for \"{{query}}\"",
+  "usePrefix": "Use"
+},
+"otpVerification": {
+  "title": "Verify your email",
+  "subtitle": "We sent a 6-digit code to",
+  "verifyAndCreate": "Verify & create account",
+  "verifying": "Verifying…",
+  "changeEmail": "← Change email",
+  "resendCode": "Resend code",
+  "resendIn": "Resend in {{n}}s",
+  "resending": "Resending…",
+  "successTitle": "Email verified!",
+  "successSubtitle": "Setting up your account…",
+  "close": "Close",
+  "digitAria": "Digit {{n}}",
+  "securityNote": "Never share this code. Our team will never ask for it.",
+  "errors": {
+    "enterAllDigits": "Please enter all 6 digits",
+    "invalidCode": "Invalid or expired code",
+    "tryAgainMoment": "Please try again in a moment."
+  },
+  "toasts": {
+    "sentTitle": "Verification code sent",
+    "sentDesc": "Check your inbox for the 6-digit code.",
+    "verifiedTitle": "Verified!",
+    "verifiedDesc": "Your account has been created.",
+    "verifyFailed": "Verification failed",
+    "resentTitle": "New code sent",
+    "resentDesc": "A fresh 6-digit code is on the way.",
+    "resendFailed": "Could not resend code"
+  }
+}
 }

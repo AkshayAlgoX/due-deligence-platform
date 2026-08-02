@@ -103,12 +103,13 @@ function PropertySearchInner() {
     activeCount,
   } = usePropertyFilters(results, riskScores);
 
-  const {
+   const {
     compareList,
     toggleCompare,
     clearCompare,
     isSelected: isInCompare,
     canAddMore: canAddToCompare,
+    refreshSnapshot,
   } = useCompareSelection();
 
   useEffect(() => {
@@ -248,9 +249,11 @@ function PropertySearchInner() {
     setQuickPhotoModalOpen(true);
   }, []);
 
-  const handleUpdateSuccess = useCallback((updated) => {
+   const handleUpdateSuccess = useCallback((updated) => {
     setResults((prev) => prev.map((p) => (p.id === updated.id ? updated : p)));
     setAllProperties((prev) => prev.map((p) => (p.id === updated.id ? updated : p)));
+    // Refresh compare bar snapshot if this property is currently selected
+    refreshSnapshot(updated);
     getPropertyRisk(updated.id)
       .then((risk) => {
         setRiskScores((prev) => {
@@ -261,7 +264,7 @@ function PropertySearchInner() {
       })
       .catch(() => {});
     setLastSyncedAt(new Date());
-  }, []);
+  }, [refreshSnapshot]);
 
   const stats = useMemo(() => {
     const total = allProperties.length;

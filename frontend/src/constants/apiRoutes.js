@@ -9,8 +9,10 @@
  */
 
 export const API_ROUTES = {
-  // ── Auth ──────────────────────────────────────────────────────────────────
-  REGISTER: "/api/auth/register",
+   // ── Auth ──────────────────────────────────────────────────────────────────
+  REGISTER_SEND_OTP:   "/api/auth/register/send-otp",
+  REGISTER_VERIFY_OTP: "/api/auth/register/verify-otp",
+  REGISTER_RESEND_OTP: "/api/auth/register/resend-otp",
   LOGIN:    "/api/auth/login",
   GOOGLE_LOGIN: "/api/auth/google",
   COMPLETE_GOOGLE_SIGNUP: "/api/auth/complete-google-signup",

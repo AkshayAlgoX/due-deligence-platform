@@ -17,6 +17,7 @@ import {
   LifeBuoy,
   Bookmark,
   Settings,
+  ChevronDown,
 } from "lucide-react";
 
 import { getUser } from "@/utils/helpers";
@@ -43,17 +44,22 @@ function canAccess(href, role) {
   return allowed.includes(role);
 }
 
-// ─── Key-based config (no hardcoded strings — resolved via t() inside component) ───
+// MAIN section is always expanded (no collapse control shown).
+// Other sections are collapsible.
 const MENU_SECTION_CONFIGS = [
   {
+    id: "main",
     sectionKey: "nav.sections.main",
+    collapsible: false,
     items: [
       { titleKey: "nav.dashboard",      href: "/dashboard",                  icon: LayoutDashboard, badge: null },
       { titleKey: "nav.propertySearch", href: "/dashboard/property-search",  icon: Search,          badge: null },
     ],
   },
   {
+    id: "analysis",
     sectionKey: "nav.sections.analysis",
+    collapsible: true,
     items: [
       { titleKey: "nav.dueDiligence",       href: "/dashboard/due-diligence",       icon: ShieldCheck,   badge: null },
       { titleKey: "nav.riskAssessment",     href: "/dashboard/risk-assessment",     icon: AlertTriangle, badge: null },
@@ -62,7 +68,9 @@ const MENU_SECTION_CONFIGS = [
     ],
   },
   {
-    sectionKey: "nav.sections.insights",
+    id: "activity",
+    sectionKey: "nav.sections.activity",
+    collapsible: true,
     items: [
       { titleKey: "nav.reports",       href: "/dashboard/reports",       icon: FileText,      badge: null },
       { titleKey: "nav.notifications", href: "/dashboard/notifications", icon: Bell,          badge: null },
@@ -70,7 +78,9 @@ const MENU_SECTION_CONFIGS = [
     ],
   },
   {
+    id: "account",
     sectionKey: "nav.sections.account",
+    collapsible: true,
     items: [
       { titleKey: "nav.profile",  href: "/dashboard/profile",  icon: User,     badge: null },
       { titleKey: "nav.settings", href: "/dashboard/settings", icon: Settings, badge: null },
@@ -78,6 +88,8 @@ const MENU_SECTION_CONFIGS = [
     ],
   },
 ];
+
+const STORAGE_KEY = "dd_sidebar_sections";
 
 function timeAgo(date, t) {
   const seconds = Math.floor((Date.now() - date.getTime()) / 1000);
@@ -89,12 +101,16 @@ function timeAgo(date, t) {
   return date.toLocaleDateString();
 }
 
-export default function Sidebar({ isOpen = true, onClose }) {
+export default function Sidebar({ isOpen = true, onClose, isDesktopRail = false }) {
   const pathname = usePathname();
   const { t } = useTranslation();
   const [sessionStart] = useState(() => new Date());
   const [, tick] = useState(0);
   const [userRole, setUserRole] = useState("");
+
+  // Collapsed sections state — persisted to localStorage
+  // Default: all sections expanded
+  const [collapsedSections, setCollapsedSections] = useState({});
 
   useEffect(() => {
     const user = getUser();
@@ -106,9 +122,59 @@ export default function Sidebar({ isOpen = true, onClose }) {
     return () => clearInterval(interval);
   }, []);
 
+  // Load collapsed state from localStorage on mount
+  useEffect(() => {
+    try {
+      const saved = localStorage.getItem(STORAGE_KEY);
+      if (saved) {
+        setCollapsedSections(JSON.parse(saved));
+      }
+    } catch {
+      // silently ignore
+    }
+  }, []);
+
+  // Auto-expand section that contains the active route
+  useEffect(() => {
+    if (!pathname) return;
+    for (const section of MENU_SECTION_CONFIGS) {
+      if (!section.collapsible) continue;
+      const hasActive = section.items.some((item) =>
+        item.href === "/dashboard"
+          ? pathname === "/dashboard"
+          : item.href === "/support"
+          ? pathname === "/support"
+          : pathname.startsWith(item.href)
+      );
+      if (hasActive && collapsedSections[section.id]) {
+        setCollapsedSections((prev) => {
+          const next = { ...prev, [section.id]: false };
+          try {
+            localStorage.setItem(STORAGE_KEY, JSON.stringify(next));
+          } catch {
+            // silently ignore
+          }
+          return next;
+        });
+      }
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [pathname]);
+
+  const toggleSection = (id) => {
+    setCollapsedSections((prev) => {
+      const next = { ...prev, [id]: !prev[id] };
+      try {
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(next));
+      } catch {
+        // silently ignore
+      }
+      return next;
+    });
+  };
+
   return (
     <>
-      {/* Mobile backdrop (stays dark in both themes) */}
       {isOpen && (
         <div
           className="fixed inset-0 z-30 bg-black/40 lg:hidden"
@@ -118,10 +184,18 @@ export default function Sidebar({ isOpen = true, onClose }) {
       )}
 
       <aside
-        className={`w-64 fixed lg:relative inset-y-0 left-0 z-40 lg:z-auto bg-white dark:bg-[#161b22] border-r border-gray-100 dark:border-[#30363d] flex flex-col h-full transition-transform duration-300 ease-in-out ${
+  className={`
+    w-64 flex flex-col h-full
+    bg-white dark:bg-[#161b22]
+    border-r border-gray-100 dark:border-[#30363d]
+    ${isDesktopRail
+      ? "relative"
+      : `fixed inset-y-0 left-0 z-40 transition-transform duration-300 ease-in-out ${
           isOpen ? "translate-x-0" : "-translate-x-full"
-        }`}
-      >
+        }`
+    }
+  `}
+>
         <nav className="flex-1 overflow-y-auto px-3 py-5">
           {MENU_SECTION_CONFIGS.map((section) => {
             const visibleItems = section.items.filter((item) =>
@@ -130,79 +204,109 @@ export default function Sidebar({ isOpen = true, onClose }) {
 
             if (visibleItems.length === 0) return null;
 
+            const isCollapsed = section.collapsible && collapsedSections[section.id];
+
             return (
-              <div key={section.sectionKey} className="mb-5">
-                <p className="mb-2 px-4 text-[10px] font-bold uppercase tracking-widest text-gray-400 dark:text-[#6e7681]">
-                  {t(section.sectionKey)}
-                </p>
+              <div key={section.id} className="mb-5">
+                {/* Section header */}
+                {section.collapsible ? (
+                  <button
+                    type="button"
+                    onClick={() => toggleSection(section.id)}
+                    aria-expanded={!isCollapsed}
+                    className="mb-2 flex w-full items-center justify-between px-4 py-1 rounded-md transition group hover:bg-gray-50 dark:hover:bg-[#1c2128]"
+                  >
+                    <span className="text-[10px] font-bold uppercase tracking-widest text-gray-400 dark:text-[#6e7681] group-hover:text-gray-600 dark:group-hover:text-[#7d8590]">
+                      {t(section.sectionKey)}
+                    </span>
+                    <ChevronDown
+                      size={12}
+                      strokeWidth={2.5}
+                      className={`text-gray-400 dark:text-[#6e7681] transition-transform duration-200 ${
+                        isCollapsed ? "-rotate-90" : "rotate-0"
+                      }`}
+                    />
+                  </button>
+                ) : (
+                  <p className="mb-2 px-4 text-[10px] font-bold uppercase tracking-widest text-gray-400 dark:text-[#6e7681]">
+                    {t(section.sectionKey)}
+                  </p>
+                )}
 
-                {visibleItems.map((item) => {
-                  const Icon = item.icon;
-                  const isActive =
-                    item.href === "/dashboard"
-                      ? pathname === "/dashboard"
-                      : item.href === "/support"
-                      ? pathname === "/support"
-                      : pathname?.startsWith(item.href);
+                {/* Items */}
+                <div
+                  className={`overflow-hidden transition-all duration-300 ease-in-out ${
+                    isCollapsed ? "max-h-0 opacity-0" : "max-h-[500px] opacity-100"
+                  }`}
+                >
+                  {visibleItems.map((item) => {
+                    const Icon = item.icon;
+                    const isActive =
+                      item.href === "/dashboard"
+                        ? pathname === "/dashboard"
+                        : item.href === "/support"
+                        ? pathname === "/support"
+                        : pathname?.startsWith(item.href);
 
-                  return (
-                    <Link
-                      key={item.titleKey}
-                      href={item.href}
-                      onClick={() => {
-                        if (typeof window !== "undefined" && window.innerWidth < 1024) {
-                          onClose?.();
-                        }
-                      }}
-                      className={`
-                        group relative mb-1 flex items-center gap-3
-                        rounded-lg px-3 py-2.5
-                        text-sm font-semibold transition
-                        ${isActive
-                          ? "bg-gradient-to-r from-[#22C55E] to-[#16a34a] text-white shadow-[0_4px_12px_rgba(34,197,94,0.3)]"
-                          : "text-gray-600 hover:bg-gray-50 hover:text-gray-900 dark:text-[#7d8590] dark:hover:bg-[#1c2128] dark:hover:text-[#e6edf3]"
-                        }
-                      `}
-                    >
-                      <div
+                    return (
+                      <Link
+                        key={item.titleKey}
+                        href={item.href}
+                        onClick={() => {
+                          if (typeof window !== "undefined" && window.innerWidth < 1024) {
+                            onClose?.();
+                          }
+                        }}
                         className={`
-                          flex h-7 w-7 flex-shrink-0 items-center justify-center rounded-md
-                          transition-colors
+                          group relative mb-1 flex items-center gap-3
+                          rounded-lg px-3 py-2.5
+                          text-sm font-semibold transition
                           ${isActive
-                            ? "bg-white/20"
-                            : "bg-gray-100 group-hover:bg-white dark:bg-[#1c2128] dark:group-hover:bg-[#30363d]"
+                            ? "bg-gradient-to-r from-[#22C55E] to-[#16a34a] text-white shadow-[0_4px_12px_rgba(34,197,94,0.3)]"
+                            : "text-gray-600 hover:bg-gray-50 hover:text-gray-900 dark:text-[#7d8590] dark:hover:bg-[#1c2128] dark:hover:text-[#e6edf3]"
                           }
                         `}
                       >
-                        <Icon
-                          size={15}
-                          strokeWidth={isActive ? 2.5 : 2}
-                          className={
-                            isActive
-                              ? "text-white"
-                              : "text-gray-500 group-hover:text-[#22C55E] dark:text-[#7d8590] dark:group-hover:text-[#22C55E]"
-                          }
-                        />
-                      </div>
-
-                      <span className="flex-1 truncate">{t(item.titleKey)}</span>
-
-                      {item.badge && (
-                        <span
+                        <div
                           className={`
-                            rounded-full px-2 py-0.5 text-[10px] font-bold tabular-nums
+                            flex h-7 w-7 flex-shrink-0 items-center justify-center rounded-md
+                            transition-colors
                             ${isActive
-                              ? "bg-white/25 text-white"
-                              : "bg-red-50 text-red-600 dark:bg-[#2d1214] dark:text-red-400"
+                              ? "bg-white/20"
+                              : "bg-gray-100 group-hover:bg-white dark:bg-[#1c2128] dark:group-hover:bg-[#30363d]"
                             }
                           `}
                         >
-                          {item.badge}
-                        </span>
-                      )}
-                    </Link>
-                  );
-                })}
+                          <Icon
+                            size={15}
+                            strokeWidth={isActive ? 2.5 : 2}
+                            className={
+                              isActive
+                                ? "text-white"
+                                : "text-gray-500 group-hover:text-[#22C55E] dark:text-[#7d8590] dark:group-hover:text-[#22C55E]"
+                            }
+                          />
+                        </div>
+
+                        <span className="flex-1 truncate">{t(item.titleKey)}</span>
+
+                        {item.badge && (
+                          <span
+                            className={`
+                              rounded-full px-2 py-0.5 text-[10px] font-bold tabular-nums
+                              ${isActive
+                                ? "bg-white/25 text-white"
+                                : "bg-red-50 text-red-600 dark:bg-[#2d1214] dark:text-red-400"
+                              }
+                            `}
+                          >
+                            {item.badge}
+                          </span>
+                        )}
+                      </Link>
+                    );
+                  })}
+                </div>
               </div>
             );
           })}

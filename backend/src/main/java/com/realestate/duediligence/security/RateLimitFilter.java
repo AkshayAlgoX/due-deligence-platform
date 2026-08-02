@@ -5,12 +5,12 @@ import java.io.IOException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
+import org.springframework.web.filter.OncePerRequestFilter;
 
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-import org.springframework.web.filter.OncePerRequestFilter;
 
 /**
  * Rate-limit filter for authentication endpoints.
@@ -77,13 +77,20 @@ public class RateLimitFilter extends OncePerRequestFilter {
 
     // ── Endpoint classifier ───────────────────────────────────────
 
-    private String classify(String path) {
+       private String classify(String path) {
         if (path.equals("/api/auth/login")) return "login";
-        if (path.equals("/api/auth/register")) return "register";
-        if (path.equals("/api/auth/forgot-password")) return "forgot";
-        if (path.equals("/api/auth/verify-otp")) return "otp";
-        if (path.equals("/api/auth/reset-password")) return "otp";
         if (path.equals("/api/auth/google")) return "login";
+
+        // Registration OTP flow — all 3 endpoints share the "register" bucket
+        if (path.equals("/api/auth/register/send-otp"))   return "register";
+        if (path.equals("/api/auth/register/verify-otp")) return "otp";
+        if (path.equals("/api/auth/register/resend-otp")) return "register";
+
+        // Password reset flow
+        if (path.equals("/api/auth/forgot-password")) return "forgot";
+        if (path.equals("/api/auth/verify-otp"))      return "otp";
+        if (path.equals("/api/auth/reset-password"))  return "otp";
+
         return null;
     }
 

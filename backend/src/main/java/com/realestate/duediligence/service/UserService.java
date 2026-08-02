@@ -9,16 +9,24 @@ import com.realestate.duediligence.dto.ForgotPasswordRequest;
 import com.realestate.duediligence.dto.GoogleAuthResponse;
 import com.realestate.duediligence.dto.GoogleLoginRequest;
 import com.realestate.duediligence.dto.LoginRequest;
-import com.realestate.duediligence.dto.RegisterRequest;
+import com.realestate.duediligence.dto.ResendRegistrationOtpRequest;
 import com.realestate.duediligence.dto.ResetPasswordRequest;
+import com.realestate.duediligence.dto.SendOtpResponse;
+import com.realestate.duediligence.dto.SendRegistrationOtpRequest;
 import com.realestate.duediligence.dto.UpdateProfileRequest;
 import com.realestate.duediligence.dto.UserProfileResponse;
 import com.realestate.duediligence.dto.VerifyOtpRequest;
+import com.realestate.duediligence.dto.VerifyRegistrationOtpRequest;
 
 
 public interface UserService {
 
-    AuthResponse register(RegisterRequest request);
+        // ── Registration OTP flow (replaces direct register) ──
+    SendOtpResponse sendRegistrationOtp(SendRegistrationOtpRequest request);
+
+    AuthResponse verifyRegistrationOtp(VerifyRegistrationOtpRequest request);
+
+    SendOtpResponse resendRegistrationOtp(ResendRegistrationOtpRequest request);
 
     AuthResponse login(LoginRequest request);
 

@@ -18,22 +18,54 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
+import { useTranslation } from "react-i18next";
 
-import { registerUser, loginUser, logoutUser } from "@/services/authService";
+import {
+  loginUser,
+  logoutUser,
+  sendRegistrationOtp,
+  verifyRegistrationOtp,
+  resendRegistrationOtp,
+} from "@/services/authService";
 
 export function useAuth() {
   const router = useRouter();
+  const { t } = useTranslation();
   const [loading, setLoading] = useState(false);
 
   /**
-   * Register a new user.
-   * @returns {Promise<{success, message}>} backend response on success
-   * @throws {Error} enriched error from api.js (has .status, .errors, .data)
+   * Step 1 of registration: send OTP.
+   * Does NOT create the account. Returns metadata for OTP modal.
    */
-  const register = async (formData) => {
+  const startRegistration = async (formData) => {
     setLoading(true);
     try {
-      const data = await registerUser(formData);
+      const data = await sendRegistrationOtp(formData);
+      return data;
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  /**
+   * Step 2 of registration: verify OTP → creates account + auto-login.
+   * Returns { token } on success.
+   */
+  const verifyOtpAndRegister = async (payload) => {
+    setLoading(true);
+    try {
+      const data = await verifyRegistrationOtp(payload);
+      return data;
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  /** Step 3: resend OTP (rate-limited server-side). */
+  const resendOtp = async (email) => {
+    setLoading(true);
+    try {
+      const data = await resendRegistrationOtp(email);
       return data;
     } finally {
       setLoading(false);
@@ -56,13 +88,19 @@ export function useAuth() {
   };
 
   /** Logout — clears session and redirects to /login. */
-  const logout = () => {
+    const logout = () => {
     logoutUser();
-    toast.success("You're signed out", {
-      description: "You've been logged out successfully.",
+    toast.success(t("completeProfile.toasts.signedOut.title"), {
+      description: t("completeProfile.toasts.signedOut.description"),
     });
     router.push("/login");
   };
-
-  return { loading, register, login, logout };
+  return {
+    loading,
+    startRegistration,
+    verifyOtpAndRegister,
+    resendOtp,
+    login,
+    logout,
+  };
 }

@@ -6,6 +6,7 @@ import { useSearchParams, useRouter } from "next/navigation";
 import { useTranslation } from "react-i18next";
 import {
   ArrowLeft,
+  ArrowRight,
   GitCompare,
   TrendingUp,
   TrendingDown,
@@ -16,9 +17,13 @@ import {
   ShieldCheck,
   Shield,
   Loader2,
-  SearchX,
   Bookmark,
   BookmarkCheck,
+  MousePointerClick,
+  Search,
+  Route,
+  ChevronRight,
+  Building2,
 } from "lucide-react";
 import { toast } from "sonner";
 import Link from "next/link";
@@ -27,6 +32,7 @@ import Breadcrumbs from "@/components/ui/Breadcrumbs";
 
 import { getPropertyById, getPropertyRisk } from "@/services/propertyService";
 import { getAggregatedProperty } from "@/services/aggregationService";
+import { getMyComparisons } from "@/services/savedComparisonService";
 import { formatINR } from "@/utils/currency";
 import { useSavedComparisons } from "@/hooks/useSavedComparisons";
 import { translatePropertyType, translateEnum } from "@/utils/enumTranslations";
@@ -50,7 +56,6 @@ function fmt(val) {
   return `${val}`;
 }
 
-// Now accepts t() so "sqft" translates
 function fmtArea(val, t) {
   if (val == null) return "—";
   return `${val.toLocaleString()} ${t("property.details.sqft")}`;
@@ -60,8 +65,6 @@ function fmtRaw(val) {
   if (val == null) return null;
   return Number(val);
 }
-
-// ── Delta logic ───────────────────────────────────────────────────────────────
 
 function computeDeltas(values, direction) {
   const nums = values.map(fmtRaw);
@@ -125,8 +128,6 @@ function DeltaCell({ value, delta, displayValue }) {
   );
 }
 
-// ── Risk display ──────────────────────────────────────────────────────────────
-
 const RISK_ICON = {
   LOW:    ShieldCheck,
   MEDIUM: Shield,
@@ -138,7 +139,6 @@ const RISK_COLOR = {
   HIGH:   "text-red-700 dark:text-red-400 bg-red-50 dark:bg-[#2d1214]",
 };
 
-// Maps backend risk label → translation key inside property.comparison.risk
 const RISK_LABEL_KEY = {
   LOW:    "low",
   MEDIUM: "medium",
@@ -191,8 +191,6 @@ function RiskCell({ risk, t }) {
   );
 }
 
-// ── Section status cell ───────────────────────────────────────────────────────
-
 const STATUS_COLORS = {
   LIVE:        "bg-green-100 dark:bg-[#0d2818] text-green-700 dark:text-green-400",
   CACHED:      "bg-green-100 dark:bg-[#0d2818] text-green-700 dark:text-green-400",
@@ -203,7 +201,6 @@ const STATUS_COLORS = {
   NO_DATA:     "bg-gray-100 dark:bg-[#1c2128] text-gray-500 dark:text-[#7d8590]",
 };
 
-// Backend status enum → translation key inside property.comparison.status
 const STATUS_KEY = {
   LIVE:        "live",
   CACHED:      "cached",
@@ -226,7 +223,7 @@ function StatusCell({ section, t }) {
   const key = STATUS_KEY[status];
   const label = key
     ? t(`property.comparison.status.${key}`)
-    : status; // fallback to raw enum if unknown
+    : status;
 
   return (
     <td className="px-4 py-3 text-center border-r border-gray-100 dark:border-[#30363d] last:border-r-0">
@@ -241,8 +238,6 @@ function StatusCell({ section, t }) {
     </td>
   );
 }
-
-// ── Row components ────────────────────────────────────────────────────────────
 
 function SectionHeader({ label, colCount }) {
   return (
@@ -293,8 +288,6 @@ function PlainRow({ label, values }) {
     </tr>
   );
 }
-
-// ── Property header column (table thead) ──────────────────────────────────────
 
 function PropertyHeader({ property, index, t }) {
   if (!property) {
@@ -356,8 +349,6 @@ function PropertyHeader({ property, index, t }) {
   );
 }
 
-// ── Loading skeleton ──────────────────────────────────────────────────────────
-
 function CompareSkeleton({ count }) {
   return (
     <div className="rounded-2xl border border-gray-100 dark:border-[#30363d] bg-white dark:bg-[#161b22] shadow-sm overflow-hidden animate-pulse">
@@ -393,6 +384,222 @@ function CompareSkeleton({ count }) {
           ))}
         </div>
       ))}
+    </div>
+  );
+}
+
+// ────────────────────────────────────────────────────────────────────────────
+// NEW: Professional Empty State (Zillow/Redfin-style)
+// ────────────────────────────────────────────────────────────────────────────
+
+function EmptyComparisonState({ t, router }) {
+  const [savedComparisons, setSavedComparisons] = useState([]);
+  const [savedLoading, setSavedLoading] = useState(true);
+  const [sheetOpen, setSheetOpen] = useState(false);
+
+  useEffect(() => {
+    let cancelled = false;
+    getMyComparisons()
+      .then((list) => {
+        if (!cancelled) setSavedComparisons(Array.isArray(list) ? list.slice(0, 3) : []);
+      })
+      .catch(() => {
+        if (!cancelled) setSavedComparisons([]);
+      })
+      .finally(() => {
+        if (!cancelled) setSavedLoading(false);
+      });
+    return () => {
+      cancelled = true;
+    };
+  }, []);
+
+  const handleLoadSaved = (comparison) => {
+    const ids = comparison.propertyIds || comparison.properties?.map((p) => p.id) || [];
+    if (ids.length < 2) {
+      toast.error(t("property.comparison.empty.savedInvalid"));
+      return;
+    }
+    router.push(`/dashboard/property-comparison?ids=${ids.join(",")}`);
+  };
+
+  return (
+    <>
+      <div className="w-full max-w-[1400px] mx-auto space-y-6">
+        <Breadcrumbs />
+
+        {/* Hero header */}
+        <div className="rounded-2xl border border-gray-100 dark:border-[#30363d] bg-gradient-to-br from-white to-green-50/40 dark:from-[#161b22] dark:to-[#0d2818]/40 p-10 shadow-sm overflow-hidden relative">
+          <div
+            className="absolute inset-0 opacity-[0.03] dark:opacity-[0.05] pointer-events-none"
+            style={{
+              backgroundImage:
+                "linear-gradient(#22C55E 1px, transparent 1px), linear-gradient(90deg, #22C55E 1px, transparent 1px)",
+              backgroundSize: "24px 24px",
+            }}
+          />
+          <div className="relative flex flex-col items-center text-center max-w-2xl mx-auto">
+            <div className="flex h-16 w-16 items-center justify-center rounded-2xl bg-gradient-to-br from-[#22C55E] to-[#16a34a] shadow-[0_10px_30px_rgba(34,197,94,0.35)] mb-5">
+              <GitCompare className="h-7 w-7 text-white" strokeWidth={2.2} />
+            </div>
+            <h1 className="text-3xl md:text-4xl font-black text-gray-900 dark:text-[#e6edf3] tracking-tight">
+              {t("property.comparison.empty.heroTitle")}
+            </h1>
+            <p className="mt-3 text-base text-gray-600 dark:text-[#7d8590] max-w-lg">
+              {t("property.comparison.empty.heroSubtitle")}
+            </p>
+
+            <Link
+              href="/dashboard/property-search"
+              className="group mt-8 flex items-center gap-2 rounded-xl bg-gradient-to-br from-[#22C55E] to-[#16a34a] px-7 py-3.5 text-sm font-bold text-white shadow-[0_10px_30px_rgba(34,197,94,0.35)] transition-all hover:shadow-[0_15px_40px_rgba(34,197,94,0.5)] hover:scale-[1.02]"
+            >
+              <Search className="h-4 w-4" strokeWidth={2.5} />
+              {t("property.comparison.empty.browseAndSelect")}
+              <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-0.5" strokeWidth={2.5} />
+            </Link>
+          </div>
+        </div>
+
+        {/* Saved comparisons quick load */}
+        {(savedLoading || savedComparisons.length > 0) && (
+          <div className="rounded-2xl border border-gray-100 dark:border-[#30363d] bg-white dark:bg-[#161b22] p-6 shadow-sm">
+            <div className="flex items-center justify-between mb-4">
+              <div className="flex items-center gap-2.5">
+                <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-green-50 dark:bg-[#0d2818]">
+                  <BookmarkCheck className="h-4 w-4 text-[#16a34a] dark:text-green-400" strokeWidth={2} />
+                </div>
+                <div>
+                  <h2 className="text-sm font-black text-gray-900 dark:text-[#e6edf3] tracking-tight">
+                    {t("property.comparison.empty.pickUpTitle")}
+                  </h2>
+                  <p className="text-[11px] text-gray-500 dark:text-[#7d8590] mt-0.5">
+                    {t("property.comparison.empty.pickUpSubtitle")}
+                  </p>
+                </div>
+              </div>
+              <button
+                type="button"
+                onClick={() => setSheetOpen(true)}
+                className="text-xs font-bold text-[#16a34a] dark:text-green-400 hover:text-[#15803d] dark:hover:text-green-300 transition"
+              >
+                {t("property.comparison.empty.viewAll")} →
+              </button>
+            </div>
+
+            {savedLoading ? (
+              <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
+                {[1, 2, 3].map((i) => (
+                  <div
+                    key={i}
+                    className="h-24 rounded-xl bg-gray-50 dark:bg-[#1c2128] border border-gray-100 dark:border-[#30363d] animate-pulse"
+                  />
+                ))}
+              </div>
+            ) : (
+              <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
+                {savedComparisons.map((c) => {
+                  const propCount = c.propertyIds?.length || c.properties?.length || 0;
+                  return (
+                    <button
+                      key={c.id}
+                      type="button"
+                      onClick={() => handleLoadSaved(c)}
+                      className="group text-left rounded-xl border border-gray-200 dark:border-[#30363d] bg-white dark:bg-[#0d1117] p-4 transition hover:border-[#22C55E] hover:shadow-[0_8px_24px_rgba(34,197,94,0.15)] dark:hover:shadow-[0_8px_24px_rgba(34,197,94,0.25)] hover:scale-[1.01]"
+                    >
+                      <div className="flex items-start justify-between gap-2 mb-2">
+                        <p className="text-sm font-bold text-gray-900 dark:text-[#e6edf3] truncate flex-1">
+                          {c.name || t("property.comparison.empty.untitled")}
+                        </p>
+                        <ChevronRight
+                          className="h-4 w-4 flex-shrink-0 text-gray-300 dark:text-[#484f58] transition-transform group-hover:translate-x-0.5 group-hover:text-[#22C55E]"
+                          strokeWidth={2.5}
+                        />
+                      </div>
+                      <div className="flex items-center gap-2 text-[11px] text-gray-500 dark:text-[#7d8590]">
+                        <Building2 className="h-3 w-3" />
+                        <span className="font-semibold">
+                          {t("property.comparison.empty.propCount", {
+                            count: propCount,
+                          })}
+                        </span>
+                        {c.updatedAt && (
+                          <>
+                            <span className="text-gray-300 dark:text-[#30363d]">•</span>
+                            <span>{new Date(c.updatedAt).toLocaleDateString()}</span>
+                          </>
+                        )}
+                      </div>
+                    </button>
+                  );
+                })}
+              </div>
+            )}
+          </div>
+        )}
+
+        {/* How it works — 3 step guide */}
+        <div className="rounded-2xl border border-gray-100 dark:border-[#30363d] bg-white dark:bg-[#161b22] p-6 shadow-sm">
+          <div className="flex items-center gap-2.5 mb-5">
+            <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-gray-100 dark:bg-[#1c2128] ring-1 ring-gray-200 dark:ring-[#30363d]">
+              <Route className="h-4 w-4 text-gray-700 dark:text-[#e6edf3]" strokeWidth={2} />
+            </div>
+            <div>
+              <h2 className="text-sm font-black text-gray-900 dark:text-[#e6edf3] tracking-tight">
+                {t("property.comparison.empty.howItWorksTitle")}
+              </h2>
+              <p className="text-[11px] text-gray-500 dark:text-[#7d8590] mt-0.5">
+                {t("property.comparison.empty.howItWorksSubtitle")}
+              </p>
+            </div>
+          </div>
+
+          <div className="grid gap-4 md:grid-cols-3">
+            <HowStep
+              stepNum={1}
+              icon={Search}
+              title={t("property.comparison.empty.step1Title")}
+              description={t("property.comparison.empty.step1Desc")}
+            />
+            <HowStep
+              stepNum={2}
+              icon={MousePointerClick}
+              title={t("property.comparison.empty.step2Title")}
+              description={t("property.comparison.empty.step2Desc")}
+            />
+            <HowStep
+              stepNum={3}
+              icon={GitCompare}
+              title={t("property.comparison.empty.step3Title")}
+              description={t("property.comparison.empty.step3Desc")}
+            />
+          </div>
+        </div>
+      </div>
+
+      {/* Saved comparisons sheet — reusable from empty state too */}
+      <SavedComparisonsSheet
+        isOpen={sheetOpen}
+        onClose={() => setSheetOpen(false)}
+      />
+    </>
+  );
+}
+
+function HowStep({ stepNum, icon: Icon, title, description }) {
+  return (
+    <div className="relative rounded-xl border border-gray-100 dark:border-[#30363d] bg-gray-50/50 dark:bg-[#1c2128] p-5">
+      <div className="absolute -top-2 -left-2 flex h-6 w-6 items-center justify-center rounded-full bg-gradient-to-br from-[#22C55E] to-[#16a34a] shadow-[0_4px_10px_rgba(34,197,94,0.35)]">
+        <span className="text-[11px] font-black text-white">{stepNum}</span>
+      </div>
+      <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-white dark:bg-[#0d1117] ring-1 ring-gray-200 dark:ring-[#30363d] mb-3">
+        <Icon className="h-4.5 w-4.5 text-gray-600 dark:text-[#e6edf3]" strokeWidth={2} />
+      </div>
+      <h3 className="text-sm font-black text-gray-900 dark:text-[#e6edf3] mb-1 tracking-tight">
+        {title}
+      </h3>
+      <p className="text-[12px] text-gray-500 dark:text-[#7d8590] leading-relaxed">
+        {description}
+      </p>
     </div>
   );
 }
@@ -465,28 +672,13 @@ function PropertyComparisonInner() {
     loadAll();
   }, [loadAll]);
 
-  // ── Empty / error state ────────────────────────────────────────────────────
+  // ── NEW Empty state — professional big-website design ────────────────────
   if (!loading && (ids.length < 2 || error)) {
-    return (
-      <div className="flex flex-col items-center justify-center rounded-2xl border border-gray-100 dark:border-[#30363d] bg-white dark:bg-[#161b22] py-24 text-center shadow-sm">
-        <div className="flex h-16 w-16 items-center justify-center rounded-2xl bg-gray-50 dark:bg-[#1c2128] border border-gray-100 dark:border-[#30363d] mb-4">
-          <SearchX className="h-7 w-7 text-gray-300 dark:text-[#484f58]" />
-        </div>
-        <p className="text-lg font-bold text-gray-800 dark:text-[#e6edf3]">
-          {error ?? t("property.comparison.selectAtLeast2")}
-        </p>
-        <p className="mt-1.5 text-sm text-gray-500 dark:text-[#7d8590] max-w-xs">
-          {t("property.comparison.selectHelper")}
-        </p>
-        <Link
-          href="/dashboard/property-search"
-          className="mt-6 flex items-center gap-2 rounded-xl bg-[#22C55E] px-5 py-2.5 text-sm font-bold text-white shadow-[0_8px_20px_rgba(34,197,94,0.3)] transition hover:bg-[#16a34a]"
-        >
-          <ArrowLeft className="h-4 w-4" />
-          {t("property.comparison.goToSearch")}
-        </Link>
-      </div>
-    );
+    // Show error toast if there was a load failure (not just missing ids)
+    if (error) {
+      // toast already fired in loadAll — no need to duplicate
+    }
+    return <EmptyComparisonState t={t} router={router} />;
   }
 
   const colCount = ids.length;
@@ -503,7 +695,6 @@ function PropertyComparisonInner() {
     .filter(Boolean)
     .join(" vs ");
 
-  // Property unit label with pluralization
   const unitLabel =
     colCount === 1
       ? t("property.comparison.propertyUnit")
@@ -545,9 +736,7 @@ function PropertyComparisonInner() {
             </div>
           </div>
 
-          {/* Action buttons */}
           <div className="flex items-center gap-2 flex-wrap">
-            {/* My Saved */}
             <button
               type="button"
               onClick={() => setSheetOpen(true)}
@@ -557,7 +746,6 @@ function PropertyComparisonInner() {
               {t("property.comparison.mySaved")}
             </button>
 
-            {/* Save Comparison */}
             {!loading && properties.filter(Boolean).length >= 2 && (
               <button
                 type="button"
@@ -574,7 +762,6 @@ function PropertyComparisonInner() {
               </button>
             )}
 
-            {/* PDF download */}
             {!loading && properties.filter(Boolean).length > 0 && (
               <DownloadComparisonPDFButton
                 properties={properties}
@@ -704,17 +891,17 @@ function PropertyComparisonInner() {
                   values={P.map((p) => fmt(p?.stories))}
                 />
                 <PlainRow
-  label={t("property.comparison.metrics.condition")}
-  values={P.map((p) =>
-    p?.condition ? translateEnum(t, p.condition) : null
-  )}
-/>
-<PlainRow
-  label={t("property.comparison.metrics.structureType")}
-  values={P.map((p) =>
-    p?.structureType ? translateEnum(t, p.structureType) : null
-  )}
-/>
+                  label={t("property.comparison.metrics.condition")}
+                  values={P.map((p) =>
+                    p?.condition ? translateEnum(t, p.condition) : null
+                  )}
+                />
+                <PlainRow
+                  label={t("property.comparison.metrics.structureType")}
+                  values={P.map((p) =>
+                    p?.structureType ? translateEnum(t, p.structureType) : null
+                  )}
+                />
                 <PlainRow
                   label={t("property.comparison.metrics.zoning")}
                   values={P.map((p) => p?.zoning ?? null)}
@@ -812,9 +999,9 @@ function PropertyComparisonInner() {
                   ["zoning",        (a) => a?.zoning],
                   ["floodZone",     (a) => a?.floodZone],
                   ["permits",       (a) => a?.permits],
-                  ["nearIndustrial",(a) => a?.environmental], // reuses environmental row group visually
+                  ["nearIndustrial",(a) => a?.environmental],
                 ]
-                  .filter(([key]) => key !== "nearIndustrial") // exclude — handled separately below
+                  .filter(([key]) => key !== "nearIndustrial")
                   .map(([metricKey, getter]) => (
                     <tr
                       key={metricKey}
@@ -828,7 +1015,6 @@ function PropertyComparisonInner() {
                       ))}
                     </tr>
                   ))}
-                {/* Environmental integration status */}
                 <tr className="border-b border-gray-100 dark:border-[#30363d] hover:bg-gray-50/50 dark:hover:bg-[#1c2128]/50 transition-colors">
                   <td className="px-4 py-3 text-xs font-semibold text-gray-500 dark:text-[#7d8590] border-r border-gray-200 dark:border-[#30363d] bg-gray-50/30 dark:bg-[#161b22]">
                     {t("property.comparison.sections.environmental")}
@@ -844,17 +1030,17 @@ function PropertyComparisonInner() {
                   colCount={colCount}
                 />
                 <MetricRow
-  label={t("property.comparison.metrics.aqi")}
-  values={A.map((a) => a?.environmental?.data?.airQualityIndex)}
-  displayValues={A.map((a) => {
-    const aqi = a?.environmental?.data?.airQualityIndex;
-    if (aqi == null) return null;
-    const info = getAqiInfo(aqi);
-    const label = info?.labelKey ? t(info.labelKey) : (a?.environmental?.data?.aqiCategory ?? "");
-    return `${aqi} · ${label}`;
-  })}
-  direction="lower-better"
-/>
+                  label={t("property.comparison.metrics.aqi")}
+                  values={A.map((a) => a?.environmental?.data?.airQualityIndex)}
+                  displayValues={A.map((a) => {
+                    const aqi = a?.environmental?.data?.airQualityIndex;
+                    if (aqi == null) return null;
+                    const info = getAqiInfo(aqi);
+                    const label = info?.labelKey ? t(info.labelKey) : (a?.environmental?.data?.aqiCategory ?? "");
+                    return `${aqi} · ${label}`;
+                  })}
+                  direction="lower-better"
+                />
                 <PlainRow
                   label={t("property.comparison.metrics.floodRisk")}
                   values={A.map((a) => a?.floodZone?.data?.riskLevel ?? null)}
@@ -895,7 +1081,7 @@ function PropertyComparisonInner() {
             </table>
           </div>
 
-          {/* ── Table legend ── */}
+          {/* Legend */}
           <div className="flex items-center gap-6 border-t border-gray-100 dark:border-[#30363d] bg-gray-50/50 dark:bg-[#1c2128] px-6 py-3 flex-wrap">
             <p className="text-[10px] font-black uppercase tracking-widest text-gray-400 dark:text-[#6e7681]">
               {t("property.comparison.legend.title")}
@@ -934,12 +1120,10 @@ function PropertyComparisonInner() {
         </div>
       )}
 
-      {/* ── Market value chart ── */}
       {!loading && properties.filter(Boolean).length >= 2 && (
         <MarketValueChart properties={properties} />
       )}
 
-      {/* ── Save modal ── */}
       <SaveComparisonModal
         isOpen={saveModalOpen}
         onClose={() => setSaveModalOpen(false)}
@@ -949,7 +1133,6 @@ function PropertyComparisonInner() {
         defaultName={defaultName}
       />
 
-      {/* ── Saved comparisons sheet ── */}
       <SavedComparisonsSheet
         isOpen={sheetOpen}
         onClose={() => setSheetOpen(false)}

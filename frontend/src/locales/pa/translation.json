@@ -92,7 +92,8 @@
       "main": "ਮੁੱਖ",
       "analysis": "ਵਿਸ਼ਲੇਸ਼ਣ",
       "insights": "ਸੂਝਾਂ",
-      "account": "ਖਾਤਾ"
+      "account": "ਖਾਤਾ",
+      "activity": "ਗਤੀਵਿਧੀ"
     },
     "sessionActive": "ਸੈਸ਼ਨ ਸਰਗਰਮ",
     "version": "v1.0"
@@ -388,6 +389,38 @@
     }
   },
   "recommendations": {
+    "items": {
+  "incompleteData": {
+    "title": "{{address}} 'ਤੇ {{fieldCount}} ਖੇਤਰ ਗੁੰਮ ਹਨ",
+    "description": "verification score ਅਤੇ risk assessment ਬਿਹਤਰ ਕਰਨ ਲਈ ਗੁੰਮ ਖੇਤਰ ਭਰੋ।",
+    "actionLabel": "ਜਾਇਦਾਦ ਦੇਖੋ"
+  },
+  "missingPhoto": {
+    "title": "{{count}} ਜਾਇਦਾਦਾਂ ਵਿੱਚ ਫ਼ੋਟੋ ਨਹੀਂ",
+    "description": "ਫ਼ੋਟੋ ਜੋੜਨ ਨਾਲ search results ਅਤੇ PDF ਰਿਪੋਰਟਾਂ ਵਿੱਚ ਜਾਇਦਾਦ ਪਛਾਣਨਾ ਆਸਾਨ ਹੋ ਜਾਂਦਾ ਹੈ।",
+    "actionLabel": "ਫ਼ੋਟੋ ਜੋੜੋ"
+  },
+  "missingArea": {
+    "title": "{{count}} ਜਾਇਦਾਦਾਂ ਵਿੱਚ area ਡੇਟਾ ਨਹੀਂ",
+    "description": "ਸਹੀ risk scoring ਅਤੇ price-per-sqft ਲਈ area (sqft) ਜ਼ਰੂਰੀ ਹੈ।",
+    "actionLabel": "ਵੇਰਵੇ ਜੋੜੋ"
+  },
+  "diversePortfolio": {
+    "title": "ਪੋਰਟਫੋਲੀਓ {{count}} ਸ਼ਹਿਰਾਂ ਵਿੱਚ ਫੈਲਿਆ ਹੋਇਆ ਹੈ",
+    "description": "ਤੁਹਾਡੀਆਂ ਜਾਇਦਾਦਾਂ ਕਈ ਸ਼ਹਿਰਾਂ ਵਿੱਚ ਹਨ। location-specific risk ਕਾਰਕਾਂ ਦੀ ਸਮੀਖਿਆ ਕਰੋ।",
+    "actionLabel": "ਸਭ ਦੇਖੋ"
+  },
+  "allVerified": {
+    "title": "ਸਾਰੀਆਂ ਜਾਇਦਾਦਾਂ ਤਸਦੀਕਸ਼ੁਦਾ",
+    "description": "ਤੁਹਾਡੇ ਪੋਰਟਫੋਲੀਓ ਦੀ ਹਰ ਜਾਇਦਾਦ ਸਾਰੇ verification checks ਪਾਸ ਕਰ ਚੁੱਕੀ ਹੈ। ਡੇਟਾ ਮੁਕੰਮਲ ਹੈ।",
+    "actionLabel": "ਪੋਰਟਫੋਲੀਓ ਦੇਖੋ"
+  },
+  "pendingVerification": {
+    "title": "{{count}} ਜਾਇਦਾਦਾਂ ਤਸਦੀਕ ਦੀ ਉਡੀਕ ਵਿੱਚ ਹਨ",
+    "description": "pending ਜਾਇਦਾਦਾਂ 'ਤੇ ਗੁੰਮ ਖੇਤਰ ਭਰੋ ਅਤੇ ਉਨ੍ਹਾਂ ਨੂੰ verified ਕਰੋ।",
+    "actionLabel": "pending ਦੇਖੋ"
+  }
+},
     "title": "ਸਿਫਾਰਿਸ਼ਾਂ",
     "actionsCount_one": "ਤੁਹਾਡਾ ਪੋਰਟਫੋਲੀਓ ਸੁਧਾਰਨ ਲਈ {{count}} ਕਦਮ",
     "actionsCount_other": "ਤੁਹਾਡਾ ਪੋਰਟਫੋਲੀਓ ਸੁਧਾਰਨ ਲਈ {{count}} ਕਦਮ",
@@ -992,6 +1025,26 @@
       "loadFailed": "ਤੁਲਨਾ ਡੇਟਾ ਲੋਡ ਕਰਨ ਵਿੱਚ ਅਸਫਲ",
       "selectHelper": "ਜਾਇਦਾਦ ਖੋਜ 'ਤੇ ਜਾਓ, ਹਰ ਕਾਰਡ 'ਤੇ ਤੁਲਨਾ ਚੈੱਕਬਾਕਸ ਵਰਤ ਕੇ 2–3 ਜਾਇਦਾਦਾਂ ਚੁਣੋ, ਫਿਰ \"ਤੁਲਨਾ ਕਰੋ\" ਕਲਿੱਕ ਕਰੋ।",
       "backToSearch": "ਜਾਇਦਾਦ ਖੋਜ 'ਤੇ ਵਾਪਸ",
+      "empty": {
+        "heroTitle": "ਜਾਇਦਾਦਾਂ ਦੀ ਨਾਲ-ਨਾਲ ਤੁਲਨਾ ਕਰੋ",
+        "heroSubtitle": "ਵਿੱਤੀ, ਜੋਖਮ ਸਕੋਰ, ਤਸਦੀਕ ਸਥਿਤੀ ਅਤੇ ਵਾਤਾਵਰਣ ਡਾਟਾ — ਸਭ ਇੱਕ ਥਾਂ 'ਤੇ ਲਾਈਨ ਵਿੱਚ। ਸ਼ੁਰੂ ਕਰਨ ਲਈ 2 ਜਾਂ 3 ਜਾਇਦਾਦਾਂ ਚੁਣੋ।",
+        "browseAndSelect": "ਜਾਇਦਾਦਾਂ ਬ੍ਰਾਊਜ਼ ਕਰੋ ਅਤੇ ਚੁਣੋ",
+        "pickUpTitle": "ਜਿੱਥੇ ਛੱਡਿਆ ਸੀ ਉੱਥੋਂ ਜਾਰੀ ਰੱਖੋ",
+        "pickUpSubtitle": "ਤੁਹਾਡੀਆਂ ਸਭ ਤੋਂ ਹਾਲੀਆ ਸੁਰੱਖਿਅਤ ਤੁਲਨਾਵਾਂ",
+        "viewAll": "ਸਾਰੀਆਂ ਸੁਰੱਖਿਅਤ ਵੇਖੋ",
+        "untitled": "ਬਿਨਾਂ ਸਿਰਲੇਖ ਵਾਲੀ ਤੁਲਨਾ",
+        "propCount_one": "{{count}} ਜਾਇਦਾਦ",
+        "propCount_other": "{{count}} ਜਾਇਦਾਦਾਂ",
+        "savedInvalid": "ਇਸ ਸੁਰੱਖਿਅਤ ਤੁਲਨਾ ਵਿੱਚ 2 ਤੋਂ ਘੱਟ ਜਾਇਦਾਦਾਂ ਹਨ",
+        "howItWorksTitle": "ਇਹ ਕਿਵੇਂ ਕੰਮ ਕਰਦਾ ਹੈ",
+        "howItWorksSubtitle": "ਪੂਰੇ ਨਾਲ-ਨਾਲ ਵਿਸ਼ਲੇਸ਼ਣ ਲਈ ਤਿੰਨ ਕਦਮ",
+        "step1Title": "ਜਾਇਦਾਦਾਂ ਬ੍ਰਾਊਜ਼ ਕਰੋ",
+        "step1Desc": "ਆਪਣੇ ਪੋਰਟਫੋਲੀਓ ਵਿੱਚ ਸਭ ਕੁਝ ਵੇਖਣ ਲਈ ਜਾਇਦਾਦ ਖੋਜ 'ਤੇ ਜਾਓ।",
+        "step2Title": "ਤੁਲਨਾ ਬਾਕਸ 'ਤੇ ਟਿਕ ਕਰੋ",
+        "step2Desc": "ਹਰੇਕ ਕਾਰਡ 'ਤੇ ਚੈਕਬਾਕਸ ਵਰਤ ਕੇ 2 ਜਾਂ 3 ਜਾਇਦਾਦਾਂ ਚੁਣੋ।",
+        "step3Title": "ਤੁਰੰਤ ਤੁਲਨਾ ਕਰੋ",
+        "step3Desc": "ਹੇਠਲੀ ਬਾਰ ਵਿੱਚ ਤੁਲਨਾ 'ਤੇ ਕਲਿੱਕ ਕਰੋ — ਪੂਰਾ ਵਿਸ਼ਲੇਸ਼ਣ ਇੱਥੇ ਵੇਖੋ।"
+      },
       "metricHeader": "ਮਾਪਦੰਡ",
       "propertyUnit": "ਜਾਇਦਾਦ",
       "propertiesUnit": "ਜਾਇਦਾਦਾਂ",
@@ -1499,6 +1552,103 @@
     "auditLogs": {
       "title": "ਹੁਣੇ ਕੋਈ ਆਡਿਟ ਐਂਟਰੀ ਨਹੀਂ",
       "description": "ਪਾਲਣਾ ਅਤੇ ਸੁਰੱਖਿਆ ਸਮੀਖਿਆ ਲਈ ਸਿਸਟਮ ਕਾਰਵਾਈਆਂ ਅਤੇ ਉਪਯੋਗਕਰਤਾ ਗਤੀਵਿਧੀ ਇੱਥੇ ਟ੍ਰੈਕ ਕੀਤੀ ਜਾਵੇਗੀ।"
+    }
+  },
+  "completeProfile": {
+  "title": "ਇੱਕ ਹੋਰ ਕਦਮ",
+  "subtitle": "ਆਪਣੇ ਅਨੁਭਵ ਨੂੰ ਵਿਅਕਤੀਗਤ ਬਣਾਉਣ ਲਈ ਸਾਨੂੰ ਆਪਣੇ ਬਾਰੇ ਥੋੜ੍ਹਾ ਦੱਸੋ।",
+  "signedInAs": "{{name}} ਵਜੋਂ ਸਾਈਨ ਇਨ ਕੀਤਾ",
+  "roleLabel": "ਮੈਂ ਇੱਕ ਹਾਂ...",
+  "phoneLabel": "ਫੋਨ ਨੰਬਰ",
+  "phonePlaceholder": "98765 43210",
+  "phoneHelp": "ਅਸੀਂ ਇਸਨੂੰ ਸਿਰਫ਼ ਮਹੱਤਵਪੂਰਨ ਖਾਤਾ ਸੂਚਨਾਵਾਂ ਲਈ ਵਰਤਾਂਗੇ।",
+  "submit": "ਸੈਟਅੱਪ ਪੂਰਾ ਕਰੋ",
+  "creating": "ਤੁਹਾਡਾ ਖਾਤਾ ਬਣਾਇਆ ਜਾ ਰਿਹਾ ਹੈ…",
+  "terms": "ਜਾਰੀ ਰੱਖ ਕੇ, ਤੁਸੀਂ ਸਾਡੀ ਸੇਵਾ ਦੀਆਂ ਸ਼ਰਤਾਂ ਅਤੇ ਗੋਪਨੀਯਤਾ ਨੀਤੀ ਨਾਲ ਸਹਿਮਤ ਹੁੰਦੇ ਹੋ।",
+  "notYou": "ਤੁਸੀਂ ਨਹੀਂ?",
+  "signOut": "ਸਾਈਨ ਆਊਟ",
+  "signOutAria": "ਸਾਈਨ ਆਊਟ ਕਰੋ ਅਤੇ ਬੰਦ ਕਰੋ",
+  "signOutTitle": "ਸਾਈਨ ਆਊਟ",
+  "confirmSignOut": "ਸਾਈਨ ਆਊਟ ਕਰਕੇ ਵਾਪਸ ਜਾਣਾ ਹੈ? ਤੁਹਾਡੀ ਪ੍ਰਗਤੀ ਗੁਆਚ ਜਾਵੇਗੀ।",
+  "defaultName": "ਦੋਸਤ",
+  "roles": {
+    "buyer": {
+      "label": "ਖਰੀਦਦਾਰ / ਵਿਅਕਤੀ",
+      "description": "ਜਾਇਦਾਦਾਂ ਖਰੀਦਣ ਦੀ ਭਾਲ ਵਿੱਚ"
+    },
+    "agent": {
+      "label": "ਰੀਅਲ ਅਸਟੇਟ ਏਜੰਟ",
+      "description": "ਜਾਇਦਾਦ ਸੂਚੀਆਂ ਦਾ ਪ੍ਰਬੰਧਨ"
+    },
+    "legal": {
+      "label": "ਕਾਨੂੰਨੀ ਸਮੀਖਿਅਕ",
+      "description": "ਕਾਨੂੰਨੀ ਦਸਤਾਵੇਜ਼ਾਂ ਦੀ ਸਮੀਖਿਆ"
+    },
+    "financial": {
+      "label": "ਵਿੱਤੀ ਸੰਸਥਾ",
+      "description": "ਬੈਂਕ / ਕਰਜ਼ਾ ਭਾਗੀਦਾਰ"
+    }
+  },
+  "toasts": {
+    "sessionExpired": {
+      "title": "ਸੈਸ਼ਨ ਦੀ ਮਿਆਦ ਖਤਮ ਹੋ ਗਈ",
+      "description": "ਜਾਰੀ ਰੱਖਣ ਲਈ ਕਿਰਪਾ ਕਰਕੇ ਦੁਬਾਰਾ ਸਾਈਨ ਇਨ ਕਰੋ।"
+    },
+    "signedOut": {
+      "title": "ਤੁਸੀਂ ਸਾਈਨ ਆਊਟ ਹੋ ਗਏ ਹੋ",
+      "description": "ਕਿਸੇ ਵੀ ਸਮੇਂ ਦੁਬਾਰਾ ਸਾਈਨ ਇਨ ਕਰੋ।"
+    },
+    "roleRequired": {
+      "title": "ਭੂਮਿਕਾ ਦੀ ਲੋੜ ਹੈ",
+      "description": "ਜਾਰੀ ਰੱਖਣ ਲਈ ਕਿਰਪਾ ਕਰਕੇ ਇੱਕ ਭੂਮਿਕਾ ਚੁਣੋ।"
+    },
+    "invalidPhone": {
+      "title": "ਅਵੈਧ ਫੋਨ ਨੰਬਰ",
+      "description": "6-9 ਨਾਲ ਸ਼ੁਰੂ ਹੋਣ ਵਾਲਾ 10-ਅੰਕ ਦਾ ਭਾਰਤੀ ਮੋਬਾਈਲ ਦਾਖਲ ਕਰੋ।"
+    },
+    "welcome": {
+      "title": "ਪਲੇਟਫਾਰਮ ਵਿੱਚ ਤੁਹਾਡਾ ਸੁਆਗਤ ਹੈ, {{name}}",
+      "description": "ਤੁਹਾਡਾ ਖਾਤਾ ਤਿਆਰ ਹੈ। ਤੁਹਾਡੇ ਡੈਸ਼ਬੋਰਡ 'ਤੇ ਰੀਡਾਇਰੈਕਟ ਕੀਤਾ ਜਾ ਰਿਹਾ ਹੈ।"
+    },
+    "signupFailed": {
+      "title": "ਸਾਈਨਅੱਪ ਪੂਰਾ ਨਹੀਂ ਹੋ ਸਕਿਆ",
+      "description": "ਕੁਝ ਦੇਰ ਵਿੱਚ ਦੁਬਾਰਾ ਕੋਸ਼ਿਸ਼ ਕਰੋ।"
+    }
+  }
+},
+"searchableSelect": {
+  "searchPlaceholder": "ਖੋਜਣ ਲਈ ਟਾਈਪ ਕਰੋ...",
+  "noMatches": "\"{{query}}\" ਲਈ ਕੋਈ ਮੇਲ ਨਹੀਂ",
+  "usePrefix": "ਵਰਤੋ"
+},
+  "otpVerification": {
+    "title": "ਆਪਣੀ ਈਮੇਲ ਦੀ ਪੁਸ਼ਟੀ ਕਰੋ",
+    "subtitle": "ਅਸੀਂ 6-ਅੰਕਾਂ ਦਾ ਕੋਡ ਭੇਜਿਆ ਹੈ",
+    "verifyAndCreate": "ਪੁਸ਼ਟੀ ਕਰੋ ਅਤੇ ਖਾਤਾ ਬਣਾਓ",
+    "verifying": "ਪੁਸ਼ਟੀ ਕੀਤੀ ਜਾ ਰਹੀ ਹੈ…",
+    "changeEmail": "← ਈਮੇਲ ਬਦਲੋ",
+    "resendCode": "ਕੋਡ ਦੁਬਾਰਾ ਭੇਜੋ",
+    "resendIn": "{{n}}s ਵਿੱਚ ਦੁਬਾਰਾ ਭੇਜੋ",
+    "resending": "ਦੁਬਾਰਾ ਭੇਜਿਆ ਜਾ ਰਿਹਾ ਹੈ…",
+    "successTitle": "ਈਮੇਲ ਦੀ ਪੁਸ਼ਟੀ ਹੋਈ!",
+    "successSubtitle": "ਤੁਹਾਡਾ ਖਾਤਾ ਸੈੱਟ ਅੱਪ ਕੀਤਾ ਜਾ ਰਿਹਾ ਹੈ…",
+    "close": "ਬੰਦ ਕਰੋ",
+    "digitAria": "ਅੰਕ {{n}}",
+    "securityNote": "ਇਹ ਕੋਡ ਕਦੇ ਵੀ ਸਾਂਝਾ ਨਾ ਕਰੋ। ਸਾਡੀ ਟੀਮ ਇਹ ਕਦੇ ਨਹੀਂ ਮੰਗੇਗੀ।",
+    "errors": {
+      "enterAllDigits": "ਕਿਰਪਾ ਕਰਕੇ ਸਾਰੇ 6 ਅੰਕ ਦਾਖਲ ਕਰੋ",
+      "invalidCode": "ਅਵੈਧ ਜਾਂ ਮਿਆਦ ਪੁੱਗਿਆ ਕੋਡ",
+      "tryAgainMoment": "ਕੁਝ ਦੇਰ ਵਿੱਚ ਦੁਬਾਰਾ ਕੋਸ਼ਿਸ਼ ਕਰੋ।"
+    },
+    "toasts": {
+      "sentTitle": "ਪੁਸ਼ਟੀ ਕੋਡ ਭੇਜਿਆ ਗਿਆ",
+      "sentDesc": "6-ਅੰਕਾਂ ਦੇ ਕੋਡ ਲਈ ਆਪਣਾ ਇਨਬਾਕਸ ਦੇਖੋ।",
+      "verifiedTitle": "ਪੁਸ਼ਟੀ ਹੋਈ!",
+      "verifiedDesc": "ਤੁਹਾਡਾ ਖਾਤਾ ਬਣਾਇਆ ਗਿਆ ਹੈ।",
+      "verifyFailed": "ਪੁਸ਼ਟੀ ਅਸਫਲ",
+      "resentTitle": "ਨਵਾਂ ਕੋਡ ਭੇਜਿਆ ਗਿਆ",
+      "resentDesc": "ਇੱਕ ਤਾਜ਼ਾ 6-ਅੰਕਾਂ ਦਾ ਕੋਡ ਰਾਹ ਵਿੱਚ ਹੈ।",
+      "resendFailed": "ਕੋਡ ਦੁਬਾਰਾ ਨਹੀਂ ਭੇਜਿਆ ਜਾ ਸਕਿਆ"
     }
   }
 }

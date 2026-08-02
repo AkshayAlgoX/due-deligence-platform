@@ -2,6 +2,7 @@
 "use client";
 
 import { useState, useRef, useEffect, useMemo } from "react";
+import { useTranslation } from "react-i18next";
 import { ChevronDown, Search, Check, Plus } from "lucide-react";
 
 /**
@@ -29,6 +30,7 @@ export default function SearchableSelect({
   icon: Icon,
   maxHeight = 240,
 }) {
+  const { t } = useTranslation();
   const [open, setOpen] = useState(false);
   const [query, setQuery] = useState("");
   const [activeIdx, setActiveIdx] = useState(0);
@@ -132,28 +134,28 @@ export default function SearchableSelect({
         onClick={() => !disabled && setOpen((prev) => !prev)}
         disabled={disabled}
         className={`
-          h-11 w-full rounded-xl border bg-white pr-3 text-left text-sm
+          h-11 w-full rounded-xl border bg-white dark:bg-[#0d1117] pr-3 text-left text-sm
           outline-none transition flex items-center justify-between gap-2
           ${Icon ? "pl-10" : "pl-3"}
           ${open
-            ? "border-[#22C55E] ring-2 ring-green-100"
+            ? "border-[#22C55E] ring-2 ring-green-100 dark:ring-green-900/40"
             : error
-              ? "border-red-300 focus:border-red-500 focus:ring-2 focus:ring-red-100"
-              : "border-gray-200 hover:border-gray-300"
+              ? "border-red-300 dark:border-red-800 focus:border-red-500 focus:ring-2 focus:ring-red-100 dark:focus:ring-red-900/30"
+              : "border-gray-200 dark:border-[#30363d] hover:border-gray-300 dark:hover:border-[#484f58]"
           }
-          disabled:bg-gray-50 disabled:cursor-not-allowed
+          disabled:bg-gray-50 dark:disabled:bg-[#1c2128] disabled:cursor-not-allowed
         `}
       >
         {Icon && (
-          <Icon className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-gray-400" />
+          <Icon className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-gray-400 dark:text-[#6e7681]" />
         )}
 
-        <span className={`truncate ${value ? "text-gray-800" : "text-gray-400"}`}>
+        <span className={`truncate ${value ? "text-gray-800 dark:text-[#e6edf3]" : "text-gray-400 dark:text-[#6e7681]"}`}>
           {value || placeholder}
         </span>
 
         <ChevronDown
-          className={`h-4 w-4 flex-shrink-0 text-gray-400 transition-transform ${
+          className={`h-4 w-4 flex-shrink-0 text-gray-400 dark:text-[#6e7681] transition-transform ${
             open ? "rotate-180" : ""
           }`}
         />
@@ -163,22 +165,22 @@ export default function SearchableSelect({
       {open && (
         <div className="
           absolute z-30 top-full mt-2 left-0 right-0
-          rounded-xl border border-gray-100 bg-white
-          shadow-[0_20px_50px_rgba(0,0,0,0.15)]
+          rounded-xl border border-gray-100 dark:border-[#30363d] bg-white dark:bg-[#1c2128]
+          shadow-[0_20px_50px_rgba(0,0,0,0.15)] dark:shadow-[0_20px_50px_rgba(0,0,0,0.5)]
           overflow-hidden
           animate-in fade-in slide-in-from-top-2 duration-150
         ">
           {/* Search input */}
-          <div className="flex items-center gap-2 border-b border-gray-100 px-3 py-2.5">
-            <Search className="h-4 w-4 flex-shrink-0 text-gray-400" />
+          <div className="flex items-center gap-2 border-b border-gray-100 dark:border-[#30363d] px-3 py-2.5">
+            <Search className="h-4 w-4 flex-shrink-0 text-gray-400 dark:text-[#6e7681]" />
             <input
               ref={searchInputRef}
               type="text"
               value={query}
               onChange={(e) => setQuery(e.target.value)}
               onKeyDown={handleKeyDown}
-              placeholder="Type to search..."
-              className="w-full bg-transparent text-sm text-gray-800 outline-none placeholder:text-gray-400"
+              placeholder={t("searchableSelect.searchPlaceholder")}
+              className="w-full bg-transparent text-sm text-gray-800 dark:text-[#e6edf3] outline-none placeholder:text-gray-400 dark:placeholder:text-[#6e7681]"
             />
           </div>
 
@@ -189,8 +191,8 @@ export default function SearchableSelect({
             style={{ maxHeight: `${maxHeight}px` }}
           >
             {filtered.length === 0 && !showCustomOption && (
-              <div className="px-3 py-6 text-center text-xs text-gray-500">
-                No matches for "{trimmedQuery}"
+              <div className="px-3 py-6 text-center text-xs text-gray-500 dark:text-[#7d8590]">
+                {t("searchableSelect.noMatches", { query: trimmedQuery })}
               </div>
             )}
 
@@ -207,11 +209,16 @@ export default function SearchableSelect({
                   className={`
                     w-full flex items-center justify-between gap-3 px-3 py-2
                     text-left text-sm transition-colors
-                    ${isActive ? "bg-green-50" : "hover:bg-gray-50"}
+                    ${isActive
+                      ? "bg-green-50 dark:bg-[#0d2818]"
+                      : "hover:bg-gray-50 dark:hover:bg-[#161b22]"
+                    }
                   `}
                 >
                   <span className={`truncate ${
-                    isSelected ? "font-bold text-[#16a34a]" : "text-gray-800"
+                    isSelected
+                      ? "font-bold text-[#16a34a] dark:text-[#22C55E]"
+                      : "text-gray-800 dark:text-[#e6edf3]"
                   }`}>
                     {opt.label}
                   </span>
@@ -231,13 +238,19 @@ export default function SearchableSelect({
                 onMouseEnter={() => setActiveIdx(filtered.length)}
                 className={`
                   w-full flex items-center gap-2 px-3 py-2.5
-                  text-left text-sm transition-colors border-t border-gray-100
-                  ${activeIdx === filtered.length ? "bg-green-50" : "hover:bg-gray-50"}
+                  text-left text-sm transition-colors border-t border-gray-100 dark:border-[#30363d]
+                  ${activeIdx === filtered.length
+                    ? "bg-green-50 dark:bg-[#0d2818]"
+                    : "hover:bg-gray-50 dark:hover:bg-[#161b22]"
+                  }
                 `}
               >
-                <Plus className="h-4 w-4 flex-shrink-0 text-gray-500" strokeWidth={2.2} />
-                <span className="text-gray-700">
-                  Use <span className="font-bold text-gray-900">"{trimmedQuery}"</span>
+                <Plus className="h-4 w-4 flex-shrink-0 text-gray-500 dark:text-[#7d8590]" strokeWidth={2.2} />
+                <span className="text-gray-700 dark:text-[#e6edf3]">
+                  {t("searchableSelect.usePrefix")}{" "}
+                  <span className="font-bold text-gray-900 dark:text-[#e6edf3]">
+                    &quot;{trimmedQuery}&quot;
+                  </span>
                 </span>
               </button>
             )}

@@ -97,6 +97,19 @@ public class EmailService {
     // ══════════════════════════════════════════════════════════════
     //  CORE SENDER (reusable)
     // ══════════════════════════════════════════════════════════════
+        // ══════════════════════════════════════════════════════════════
+    //  5. REGISTRATION OTP (NEW)
+    // ══════════════════════════════════════════════════════════════
+
+    @Async
+    public void sendRegistrationOtp(String toEmail, String otp, String userName) {
+        sendEmail(
+                toEmail,
+                "Verify your email: " + otp,
+                buildRegistrationEmailHtml(otp, userName),
+                "registration OTP"
+        );
+    }
 
     private void sendEmail(String toEmail, String subject, String htmlBody, String label) {
         try {
@@ -118,6 +131,41 @@ public class EmailService {
     // ══════════════════════════════════════════════════════════════
     //  EMAIL TEMPLATES
     // ══════════════════════════════════════════════════════════════
+        private String buildRegistrationEmailHtml(String otp, String userName) {
+        String displayName = (userName != null && !userName.isBlank()) ? userName : "there";
+        return emailWrapper("Verify your email", """
+            <h2 style="margin: 0 0 16px; color: #111827; font-size: 24px; font-weight: 800;">
+                Welcome, %s
+            </h2>
+            <p style="margin: 0 0 24px; color: #4b5563; font-size: 15px; line-height: 1.6;">
+                You're just one step away from creating your account. Enter the verification code below to confirm your email address:
+            </p>
+
+            <div style="background: linear-gradient(135deg, #f0fdf4 0%%, #dcfce7 100%%); border: 2px dashed #22C55E; border-radius: 16px; padding: 32px; text-align: center; margin: 24px 0;">
+                <p style="margin: 0 0 12px; color: #16a34a; font-size: 11px; font-weight: 700; letter-spacing: 2px; text-transform: uppercase;">
+                    Your verification code
+                </p>
+                <p style="margin: 0; color: #111827; font-size: 42px; font-weight: 900; letter-spacing: 12px; font-family: 'Courier New', monospace;">
+                    %s
+                </p>
+                <p style="margin: 12px 0 0; color: #6b7280; font-size: 12px;">
+                    Expires in 10 minutes
+                </p>
+            </div>
+
+            <div style="background: #fef3c7; border-left: 4px solid #f59e0b; border-radius: 8px; padding: 16px; margin: 24px 0;">
+                <p style="margin: 0; color: #92400e; font-size: 13px; line-height: 1.6;">
+                    <strong>Never share this code.</strong><br>
+                    Our team will never ask you for this code. If someone is asking, it's a scam.
+                </p>
+            </div>
+
+            <p style="margin: 24px 0 0; color: #6b7280; font-size: 13px; line-height: 1.6;">
+                <strong style="color: #374151;">Didn't create an account?</strong><br>
+                You can safely ignore this email — no account will be created without this code.
+            </p>
+            """.formatted(displayName, otp));
+    }
 
     private String buildResetEmailHtml(String otp, String userName) {
         String displayName = (userName != null && !userName.isBlank()) ? userName : "there";

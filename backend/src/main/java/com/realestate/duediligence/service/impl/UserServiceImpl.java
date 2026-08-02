@@ -31,14 +31,24 @@ import com.realestate.duediligence.service.EmailService;
 import com.realestate.duediligence.service.GoogleTokenVerifier;
 import com.realestate.duediligence.service.UserService;
 import com.realestate.duediligence.util.JwtService;
+import com.realestate.duediligence.dto.ResendRegistrationOtpRequest;
+import com.realestate.duediligence.dto.SendOtpResponse;
+import com.realestate.duediligence.dto.SendRegistrationOtpRequest;
+import com.realestate.duediligence.dto.VerifyRegistrationOtpRequest;
+import com.realestate.duediligence.entity.PendingRegistration;
+import com.realestate.duediligence.repository.PendingRegistrationRepository;
 
 @Service
 public class UserServiceImpl implements UserService {
 
     private static final int OTP_EXPIRY_MINUTES = 10;
+        private static final int OTP_RESEND_COOLDOWN_SECONDS = 60;
+    private static final int OTP_MAX_RESENDS_PER_HOUR = 3;
+    private static final int OTP_MAX_VERIFY_ATTEMPTS = 5;
     private static final SecureRandom RANDOM = new SecureRandom();
 
     private final UserRepository userRepository;
+    private final PendingRegistrationRepository pendingRegistrationRepository;
     private final RoleRepository roleRepository;
     private final PasswordEncoder passwordEncoder;
     private final AuthenticationManager authenticationManager;
@@ -46,8 +56,9 @@ public class UserServiceImpl implements UserService {
     private final EmailService emailService;
     private final GoogleTokenVerifier googleTokenVerifier;
 
-    public UserServiceImpl(
+        public UserServiceImpl(
             UserRepository userRepository,
+            PendingRegistrationRepository pendingRegistrationRepository,
             RoleRepository roleRepository,
             PasswordEncoder passwordEncoder,
             AuthenticationManager authenticationManager,
@@ -56,6 +67,7 @@ public class UserServiceImpl implements UserService {
             GoogleTokenVerifier googleTokenVerifier) {
 
         this.userRepository = userRepository;
+        this.pendingRegistrationRepository = pendingRegistrationRepository;
         this.roleRepository = roleRepository;
         this.passwordEncoder = passwordEncoder;
         this.authenticationManager = authenticationManager;
@@ -68,33 +80,225 @@ public class UserServiceImpl implements UserService {
     //  REGISTER
     // ══════════════════════════════════════════════════════════════
 
+       // ══════════════════════════════════════════════════════════════
+    //  REGISTER — OTP FLOW (STEP 1: send OTP + create pending row)
+    // ══════════════════════════════════════════════════════════════
+
     @Override
-    public AuthResponse register(RegisterRequest request) {
-        if (userRepository.existsByEmail(request.getEmail())) {
-            throw new IllegalArgumentException("Email already exists");
+    public SendOtpResponse sendRegistrationOtp(SendRegistrationOtpRequest request) {
+        String email = request.getEmail().trim().toLowerCase();
+
+        // 1. Reject if a verified account already exists
+        if (userRepository.existsByEmail(email)) {
+            throw new IllegalArgumentException(
+                    "An account with this email already exists. Please sign in instead.");
         }
 
+        // 2. Validate role exists
         Role role = roleRepository.findByRoleName(request.getRole())
-                .orElseThrow(() -> new RuntimeException("Role not found"));
+                .orElseThrow(() -> new RuntimeException("Invalid role selected"));
+
+        // 3. Look up existing pending row (if user is re-submitting the form)
+        PendingRegistration pending = pendingRegistrationRepository
+                .findByEmail(email)
+                .orElse(null);
+
+        LocalDateTime now = LocalDateTime.now();
+
+        if (pending != null) {
+            // Enforce hourly resend cap on the pending row itself
+            if (pending.getLastResendAt() != null
+                    && pending.getLastResendAt().isAfter(now.minusHours(1))
+                    && pending.getResendCount() >= OTP_MAX_RESENDS_PER_HOUR) {
+                throw new IllegalArgumentException(
+                        "Too many verification attempts. Please try again in an hour.");
+            }
+            // Enforce cooldown between resends
+            if (pending.getLastResendAt() != null
+                    && pending.getLastResendAt().isAfter(now.minusSeconds(OTP_RESEND_COOLDOWN_SECONDS))) {
+                long wait = OTP_RESEND_COOLDOWN_SECONDS -
+                        java.time.Duration.between(pending.getLastResendAt(), now).getSeconds();
+                throw new IllegalArgumentException(
+                        "Please wait " + Math.max(wait, 1) + " seconds before requesting a new code.");
+            }
+        }
+
+        // 4. Generate + hash the OTP (never store plain)
+        String otp = generateOtp();
+        String otpHash = passwordEncoder.encode(otp);
+
+        // 5. Hash the password (never store plain even in pending row)
+        String passwordHash = passwordEncoder.encode(request.getPassword());
+
+        if (pending == null) {
+            pending = PendingRegistration.builder()
+                    .email(email)
+                    .fullName(request.getFullName().trim())
+                    .passwordHash(passwordHash)
+                    .phoneNumber(request.getPhoneNumber())
+                    .role(request.getRole())
+                    .otpHash(otpHash)
+                    .otpExpiresAt(now.plusMinutes(OTP_EXPIRY_MINUTES))
+                    .verifyAttempts(0)
+                    .resendCount(1)
+                    .lastResendAt(now)
+                    .createdAt(now)
+                    .build();
+        } else {
+            // Update existing row with fresh data + fresh OTP
+            pending.setFullName(request.getFullName().trim());
+            pending.setPasswordHash(passwordHash);
+            pending.setPhoneNumber(request.getPhoneNumber());
+            pending.setRole(request.getRole());
+            pending.setOtpHash(otpHash);
+            pending.setOtpExpiresAt(now.plusMinutes(OTP_EXPIRY_MINUTES));
+            pending.setVerifyAttempts(0);
+            pending.setResendCount(pending.getResendCount() + 1);
+            pending.setLastResendAt(now);
+        }
+
+        pendingRegistrationRepository.save(pending);
+
+        // 6. Send OTP email (async — non-blocking)
+        emailService.sendRegistrationOtp(email, otp, pending.getFullName());
+
+        return new SendOtpResponse(
+                true,
+                "Verification code sent. Please check your email.",
+                maskEmail(email),
+                OTP_RESEND_COOLDOWN_SECONDS,
+                OTP_EXPIRY_MINUTES * 60
+        );
+    }
+
+    // ══════════════════════════════════════════════════════════════
+    //  REGISTER — OTP FLOW (STEP 2: verify OTP + create real user + auto-login)
+    // ══════════════════════════════════════════════════════════════
+
+    @Override
+    public AuthResponse verifyRegistrationOtp(VerifyRegistrationOtpRequest request) {
+        String email = request.getEmail().trim().toLowerCase();
+
+        PendingRegistration pending = pendingRegistrationRepository
+                .findByEmail(email)
+                .orElseThrow(() -> new IllegalArgumentException(
+                        "No pending registration found. Please start over."));
+
+        // Expiry check
+        if (LocalDateTime.now().isAfter(pending.getOtpExpiresAt())) {
+            pendingRegistrationRepository.delete(pending);
+            throw new IllegalArgumentException(
+                    "Verification code has expired. Please request a new one.");
+        }
+
+        // Attempt-cap check
+        if (pending.getVerifyAttempts() >= OTP_MAX_VERIFY_ATTEMPTS) {
+            pendingRegistrationRepository.delete(pending);
+            throw new IllegalArgumentException(
+                    "Too many failed attempts. Please start the registration again.");
+        }
+
+        // OTP match — BCrypt.matches is constant-time
+        if (!passwordEncoder.matches(request.getOtp(), pending.getOtpHash())) {
+            pending.setVerifyAttempts(pending.getVerifyAttempts() + 1);
+            pendingRegistrationRepository.save(pending);
+            int remaining = OTP_MAX_VERIFY_ATTEMPTS - pending.getVerifyAttempts();
+            throw new IllegalArgumentException(
+                    "Invalid code. " + remaining + " attempt(s) remaining.");
+        }
+
+        // ── Success — promote pending to real User ──
+        // Double-check race condition: someone else may have registered this
+        // email in the window between sendOtp and verifyOtp
+        if (userRepository.existsByEmail(email)) {
+            pendingRegistrationRepository.delete(pending);
+            throw new IllegalArgumentException(
+                    "An account with this email already exists. Please sign in.");
+        }
+
+        Role role = roleRepository.findByRoleName(pending.getRole())
+                .orElseThrow(() -> new RuntimeException("Role no longer exists"));
 
         User user = new User();
-        user.setFullName(request.getFullName());
-        user.setEmail(request.getEmail());
-        user.setPassword(passwordEncoder.encode(request.getPassword()));
-        user.setPhoneNumber(request.getPhoneNumber());
+        user.setFullName(pending.getFullName());
+        user.setEmail(pending.getEmail());
+        // password already BCrypt-hashed on pending — do NOT re-hash
+        user.setPassword(pending.getPasswordHash());
+        user.setPhoneNumber(pending.getPhoneNumber());
         user.setRole(role);
         user.setAuthProvider("LOCAL");
         user.setCreatedAt(LocalDateTime.now());
         user.setUpdatedAt(LocalDateTime.now());
-
         userRepository.save(user);
 
+        // Clean up the pending row
+        pendingRegistrationRepository.delete(pending);
+
+        // Fire-and-forget welcome + login-alert emails
         emailService.sendWelcomeEmail(user.getEmail(), user.getFullName());
+        emailService.sendLoginAlert(user.getEmail(), user.getFullName(),
+                getClientIp(), getUserAgent());
 
         String token = jwtService.generateToken(user.getEmail());
         return new AuthResponse(token);
     }
 
+    // ══════════════════════════════════════════════════════════════
+    //  REGISTER — OTP FLOW (STEP 3: resend OTP)
+    // ══════════════════════════════════════════════════════════════
+
+    @Override
+    public SendOtpResponse resendRegistrationOtp(ResendRegistrationOtpRequest request) {
+        String email = request.getEmail().trim().toLowerCase();
+
+        PendingRegistration pending = pendingRegistrationRepository
+                .findByEmail(email)
+                .orElseThrow(() -> new IllegalArgumentException(
+                        "No pending registration found. Please start over."));
+
+        LocalDateTime now = LocalDateTime.now();
+
+        // Hourly cap
+        if (pending.getLastResendAt() != null
+                && pending.getLastResendAt().isAfter(now.minusHours(1))
+                && pending.getResendCount() >= OTP_MAX_RESENDS_PER_HOUR) {
+            throw new IllegalArgumentException(
+                    "Too many verification attempts. Please try again in an hour.");
+        }
+
+        // Cooldown
+        if (pending.getLastResendAt() != null
+                && pending.getLastResendAt().isAfter(now.minusSeconds(OTP_RESEND_COOLDOWN_SECONDS))) {
+            long wait = OTP_RESEND_COOLDOWN_SECONDS -
+                    java.time.Duration.between(pending.getLastResendAt(), now).getSeconds();
+            throw new IllegalArgumentException(
+                    "Please wait " + Math.max(wait, 1) + " seconds before requesting a new code.");
+        }
+
+        // Reset resend counter if last resend was over an hour ago
+        if (pending.getLastResendAt() == null
+                || pending.getLastResendAt().isBefore(now.minusHours(1))) {
+            pending.setResendCount(0);
+        }
+
+        String otp = generateOtp();
+        pending.setOtpHash(passwordEncoder.encode(otp));
+        pending.setOtpExpiresAt(now.plusMinutes(OTP_EXPIRY_MINUTES));
+        pending.setVerifyAttempts(0);
+        pending.setResendCount(pending.getResendCount() + 1);
+        pending.setLastResendAt(now);
+        pendingRegistrationRepository.save(pending);
+
+        emailService.sendRegistrationOtp(email, otp, pending.getFullName());
+
+        return new SendOtpResponse(
+                true,
+                "A new verification code has been sent to your email.",
+                maskEmail(email),
+                OTP_RESEND_COOLDOWN_SECONDS,
+                OTP_EXPIRY_MINUTES * 60
+        );
+    }
     // ══════════════════════════════════════════════════════════════
     //  LOGIN
     // ══════════════════════════════════════════════════════════════
@@ -354,6 +558,19 @@ public class UserServiceImpl implements UserService {
     private String generateOtp() {
         int otp = 100000 + RANDOM.nextInt(900000);
         return String.valueOf(otp);
+    }
+        /**
+     * Masks an email like "john.doe@gmail.com" → "j***@gmail.com".
+     * Used in OTP responses so the frontend can display where the code was sent
+     * without revealing the full address in URLs or logs.
+     */
+    private String maskEmail(String email) {
+        if (email == null || !email.contains("@")) return "***";
+        int at = email.indexOf('@');
+        String local = email.substring(0, at);
+        String domain = email.substring(at);
+        if (local.length() <= 1) return local + "***" + domain;
+        return local.charAt(0) + "***" + domain;
     }
 
     private String getClientIp() {

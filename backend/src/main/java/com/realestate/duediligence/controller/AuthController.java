@@ -19,11 +19,14 @@ import com.realestate.duediligence.dto.ForgotPasswordRequest;
 import com.realestate.duediligence.dto.GoogleAuthResponse;
 import com.realestate.duediligence.dto.GoogleLoginRequest;
 import com.realestate.duediligence.dto.LoginRequest;
-import com.realestate.duediligence.dto.RegisterRequest;
+import com.realestate.duediligence.dto.ResendRegistrationOtpRequest;
 import com.realestate.duediligence.dto.ResetPasswordRequest;
+import com.realestate.duediligence.dto.SendOtpResponse;
+import com.realestate.duediligence.dto.SendRegistrationOtpRequest;
 import com.realestate.duediligence.dto.UpdateProfileRequest;
 import com.realestate.duediligence.dto.UserProfileResponse;
 import com.realestate.duediligence.dto.VerifyOtpRequest;
+import com.realestate.duediligence.dto.VerifyRegistrationOtpRequest;
 import com.realestate.duediligence.service.UserService;
 
 import jakarta.validation.Valid;
@@ -38,9 +41,39 @@ public class AuthController {
         this.userService = userService;
     }
 
-    @PostMapping("/register")
-    public AuthResponse register(@Valid @RequestBody RegisterRequest request) {
-        return userService.register(request);
+        // ── Registration with Email OTP (3-step flow) ──
+
+    /**
+     * POST /api/auth/register/send-otp
+     * Step 1: user submits register form. We validate, create a pending row,
+     * and email a 6-digit OTP. The real User is NOT created here.
+     */
+    @PostMapping("/register/send-otp")
+    public SendOtpResponse sendRegistrationOtp(
+            @Valid @RequestBody SendRegistrationOtpRequest request) {
+        return userService.sendRegistrationOtp(request);
+    }
+
+    /**
+     * POST /api/auth/register/verify-otp
+     * Step 2: user submits the 6-digit OTP. On success the real User account
+     * is created, a JWT is issued, and the pending row is deleted.
+     */
+    @PostMapping("/register/verify-otp")
+    public AuthResponse verifyRegistrationOtp(
+            @Valid @RequestBody VerifyRegistrationOtpRequest request) {
+        return userService.verifyRegistrationOtp(request);
+    }
+
+    /**
+     * POST /api/auth/register/resend-otp
+     * Step 3 (optional): user requests a new OTP. Rate-limited: 60s cooldown,
+     * max 3 resends per hour per email.
+     */
+    @PostMapping("/register/resend-otp")
+    public SendOtpResponse resendRegistrationOtp(
+            @Valid @RequestBody ResendRegistrationOtpRequest request) {
+        return userService.resendRegistrationOtp(request);
     }
 
     @PostMapping("/login")
