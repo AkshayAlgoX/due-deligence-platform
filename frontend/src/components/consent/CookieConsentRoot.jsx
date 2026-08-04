@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import i18n from "@/i18n";
 import CookieConsentBanner from "./CookieConsentBanner";
 import CookiePreferencesModal from "./CookiePreferencesModal";
 import TrackingScripts from "./TrackingScripts";
@@ -43,16 +44,34 @@ function saveConsent(consent) {
 }
 
 export default function CookieConsentRoot() {
+  const [mounted, setMounted] = useState(false);
+  const [i18nReady, setI18nReady] = useState(false);
   const [consent, setConsent] = useState(null);
-  const [ready, setReady] = useState(false);
+  const [consentReady, setConsentReady] = useState(false);
   const [prefsOpen, setPrefsOpen] = useState(false);
 
   useEffect(() => {
+    setMounted(true);
     setConsent(readConsent());
-    setReady(true);
-  }, []);
+    setConsentReady(true);
 
-  const shouldShowBanner = ready && !consent && !prefsOpen;
+    // Wait for i18n to be initialised — don't call useTranslation here
+    // (this component renders above I18nProvider on first paint).
+    if (i18n?.isInitialized) {
+      setI18nReady(true);
+      return;
+    }
+
+    const onInit = () => setI18nReady(true);
+    i18n?.on?.("initialized", onInit);
+    // Language change also implies i18n is up
+    i18n?.on?.("languageChanged", onInit);
+
+    return () => {
+      i18n?.off?.("initialized", onInit);
+      i18n?.off?.("languageChanged", onInit);
+    };
+  }, []);
 
   const handleAcceptAll = () => {
     const c = buildConsent({ analytics: true });
@@ -74,9 +93,22 @@ export default function CookieConsentRoot() {
     setPrefsOpen(false);
   };
 
+  // Tracking scripts can load as soon as we know consent — no i18n needed.
+  const trackingScripts = consent?.categories
+    ? <TrackingScripts categories={consent.categories} />
+    : null;
+
+  // Consent UI (banner + modal) BOTH need i18n. Hold them until:
+  //   1. Client hydration finished
+  //   2. i18n instance is ready
+  //   3. Consent snapshot has been read from localStorage
+  const canRenderConsentUi = mounted && i18nReady && consentReady;
+
+  const shouldShowBanner = canRenderConsentUi && !consent && !prefsOpen;
+
   return (
     <>
-      {consent?.categories && <TrackingScripts categories={consent.categories} />}
+      {trackingScripts}
 
       {shouldShowBanner && (
         <CookieConsentBanner
@@ -86,14 +118,16 @@ export default function CookieConsentRoot() {
         />
       )}
 
-      <CookiePreferencesModal
-        open={prefsOpen}
-        initialAnalytics={consent?.categories?.analytics ?? false}
-        onClose={() => setPrefsOpen(false)}
-        onSave={handleSavePreferences}
-        onAcceptAll={handleAcceptAll}
-        onRejectAll={handleRejectAll}
-      />
+      {canRenderConsentUi && (
+        <CookiePreferencesModal
+          open={prefsOpen}
+          initialAnalytics={consent?.categories?.analytics ?? false}
+          onClose={() => setPrefsOpen(false)}
+          onSave={handleSavePreferences}
+          onAcceptAll={handleAcceptAll}
+          onRejectAll={handleRejectAll}
+        />
+      )}
     </>
   );
 }

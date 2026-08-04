@@ -4,7 +4,7 @@ import { Cookie } from "lucide-react";
 import { useTranslation } from "react-i18next";
 
 export default function CookieConsentBanner({ onAcceptAll, onRejectAll, onManage }) {
-  const { t, ready } = useTranslation(undefined, { useSuspense: false });
+  const { t, ready } = useTranslation("translation", { useSuspense: false });
   if (!ready) return null;
 
   return (

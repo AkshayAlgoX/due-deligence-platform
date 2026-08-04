@@ -41,9 +41,9 @@ export default function CookiePreferencesModal({
   onRejectAll,
   initialAnalytics = false,
 }) {
-  // useSuspense:false → doesn't crash if i18n isn't ready yet
-  // ready flag → we hold render until i18n is loaded
-  const { t, ready } = useTranslation(undefined, { useSuspense: false });
+  // Pass namespace as string (never undefined) + disable Suspense
+  // so the hook never touches `.length` on an undefined namespace list.
+  const { t, ready } = useTranslation("translation", { useSuspense: false });
 
   const [analytics, setAnalytics] = useState(initialAnalytics);
 
