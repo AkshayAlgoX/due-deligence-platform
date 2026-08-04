@@ -210,12 +210,12 @@ export default function Navbar({ toggleSidebar }) {
                   />
                 ) : null}
                 <div
-                  className={`${
-                    user?.profilePicture ? "hidden" : "flex"
-                  } h-10 w-10 rounded-full bg-gradient-to-br from-[#22C55E] to-[#16a34a] items-center justify-center text-white text-sm font-black shadow-lg shadow-green-500/30`}
-                >
-                  {initials}
-                </div>
+  className={`${
+    user?.profilePicture ? "hidden" : "flex"
+  } h-10 w-10 rounded-full bg-gradient-to-br from-[#22C55E] to-[#16a34a] items-center justify-center text-white text-sm font-black leading-none shadow-lg shadow-green-500/30 select-none`}
+>
+  <span className="translate-y-[0.5px]">{initials}</span>
+</div>
                 <span className="absolute bottom-0 right-0 w-2.5 h-2.5 bg-green-500 rounded-full border-2 border-white dark:border-[#161b22] animate-pulse" />
               </div>
 
@@ -243,12 +243,12 @@ export default function Navbar({ toggleSidebar }) {
                       />
                     ) : null}
                     <div
-                      className={`${
-                        user?.profilePicture ? "hidden" : "flex"
-                      } h-11 w-11 rounded-full bg-gradient-to-br from-[#22C55E] to-[#16a34a] items-center justify-center text-white text-sm font-black shadow-lg shadow-green-500/30 flex-shrink-0`}
-                    >
-                      {initials}
-                    </div>
+  className={`${
+    user?.profilePicture ? "hidden" : "flex"
+  } h-11 w-11 rounded-full bg-gradient-to-br from-[#22C55E] to-[#16a34a] items-center justify-center text-white text-sm font-black leading-none shadow-lg shadow-green-500/30 flex-shrink-0 select-none`}
+>
+  <span className="translate-y-[0.5px]">{initials}</span>
+</div>
                     <div className="min-w-0 flex-1">
                       <p className="text-sm font-bold text-gray-900 dark:text-[#e6edf3] truncate">
                         {fullName}

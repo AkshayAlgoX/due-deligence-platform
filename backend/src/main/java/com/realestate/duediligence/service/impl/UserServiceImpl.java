@@ -37,6 +37,7 @@ import com.realestate.duediligence.dto.SendRegistrationOtpRequest;
 import com.realestate.duediligence.dto.VerifyRegistrationOtpRequest;
 import com.realestate.duediligence.entity.PendingRegistration;
 import com.realestate.duediligence.repository.PendingRegistrationRepository;
+import com.realestate.duediligence.entity.RoleType;
 
 @Service
 public class UserServiceImpl implements UserService {
@@ -93,10 +94,19 @@ public class UserServiceImpl implements UserService {
             throw new IllegalArgumentException(
                     "An account with this email already exists. Please sign in instead.");
         }
+        
+    // ⭐ SECURITY: Never allow ADMIN role via public registration
+    if (request.getRole() != null && "ADMIN".equals(request.getRole().name())) {
+        throw new IllegalArgumentException(
+                "Invalid role selected. Please choose a valid account type.");
+    }
 
-        // 2. Validate role exists
-        Role role = roleRepository.findByRoleName(request.getRole())
-                .orElseThrow(() -> new RuntimeException("Invalid role selected"));
+    // 2. Validate role exists
+    Role role = roleRepository.findByRoleName(request.getRole())
+            .orElseThrow(() -> new RuntimeException("Invalid role selected"));
+    
+
+
 
         // 3. Look up existing pending row (if user is re-submitting the form)
         PendingRegistration pending = pendingRegistrationRepository
@@ -390,8 +400,15 @@ public class UserServiceImpl implements UserService {
                     "An account with this email already exists. Please sign in.");
         }
 
-        Role role = roleRepository.findByRoleName(request.getRole())
-                .orElseThrow(() -> new RuntimeException("Invalid role selected"));
+         // ⭐ SECURITY: Never allow ADMIN role via public registration
+    if (request.getRole() != null && "ADMIN".equals(request.getRole().name())) {
+        throw new IllegalArgumentException(
+                "Invalid role selected. Please choose a valid account type.");
+    }
+
+    Role role = roleRepository.findByRoleName(request.getRole())
+            .orElseThrow(() -> new RuntimeException("Invalid role selected"));
+
 
         User user = new User();
         user.setEmail(email);

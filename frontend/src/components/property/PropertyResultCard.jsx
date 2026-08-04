@@ -20,23 +20,28 @@ import {
 import { formatINR } from "@/utils/currency";
 import { getPropertyImage } from "@/constants/propertyImages";
 import PropertyImagePlaceholder from "./PropertyImagePlaceholder";
+import { usePropertyLabels } from "@/hooks/usePropertyLabels";
+import PropertyLabel from "./PropertyLabel";
 
 // Risk config now stores translation keys instead of raw labels
 const RISK_CONFIG = {
   LOW: {
     labelKey: "property.card.lowRisk",
     icon: ShieldCheck,
-    className: "bg-green-50 dark:bg-[#0d2818] text-green-700 dark:text-green-400 ring-green-200 dark:ring-green-900",
+    className:
+      "bg-green-50 dark:bg-[#0d2818] text-green-700 dark:text-green-400 ring-green-200 dark:ring-green-900",
   },
   MEDIUM: {
     labelKey: "property.card.mediumRisk",
     icon: Shield,
-    className: "bg-amber-50 dark:bg-[#282a10] text-amber-700 dark:text-amber-400 ring-amber-200 dark:ring-amber-900",
+    className:
+      "bg-amber-50 dark:bg-[#282a10] text-amber-700 dark:text-amber-400 ring-amber-200 dark:ring-amber-900",
   },
   HIGH: {
     labelKey: "property.card.highRisk",
     icon: ShieldAlert,
-    className: "bg-red-50 dark:bg-[#2d1214] text-red-700 dark:text-red-400 ring-red-200 dark:ring-red-900",
+    className:
+      "bg-red-50 dark:bg-[#2d1214] text-red-700 dark:text-red-400 ring-red-200 dark:ring-red-900",
   },
 };
 
@@ -53,6 +58,9 @@ export default function PropertyResultCard({
 }) {
   const { t } = useTranslation();
   const router = useRouter();
+
+  // ── Labels ────────────────────────────────────────────────────────
+  const { labels } = usePropertyLabels(property?.id ?? null);
 
   if (!property) return null;
 
@@ -213,7 +221,10 @@ export default function PropertyResultCard({
           ) : (
             <>
               <div className="flex h-4 w-4 items-center justify-center rounded-full bg-gray-300">
-                <AlertTriangle className="h-2.5 w-2.5 text-white" strokeWidth={3} />
+                <AlertTriangle
+                  className="h-2.5 w-2.5 text-white"
+                  strokeWidth={3}
+                />
               </div>
               <span className="text-[10px] font-semibold uppercase tracking-wider text-amber-800 dark:text-amber-300">
                 {t("property.card.incomplete")} · {passedChecks}/{totalChecks}
@@ -222,7 +233,7 @@ export default function PropertyResultCard({
           )}
         </div>
 
-        {/* TOP RIGHT */}
+        {/* TOP RIGHT — PROPERTY TYPE + CAMERA */}
         <div className="absolute right-3 top-3 flex items-center gap-1.5">
           {hasRealImage && onQuickPhoto && (
             <div
@@ -239,12 +250,13 @@ export default function PropertyResultCard({
           )}
 
           <div className="rounded-full bg-gradient-to-r from-[#22C55E] to-[#16a34a] px-3 py-1.5 shadow-xl shadow-green-500/50 ring-1 ring-white/30">
-  <span className="text-[10px] font-black uppercase tracking-wider text-white">
-    {translatePropertyType(t, propertyType)}
-  </span>
-</div>
+            <span className="text-[10px] font-black uppercase tracking-wider text-white">
+              {translatePropertyType(t, propertyType)}
+            </span>
+          </div>
         </div>
 
+       
         {/* ADD PHOTO */}
         {!hasRealImage && onQuickPhoto && (
           <div
@@ -256,7 +268,10 @@ export default function PropertyResultCard({
             title={t("property.card.addPhoto")}
             aria-label={t("property.card.addPhoto")}
           >
-            <ImagePlus className="h-4 w-4 text-[#16a34a] dark:text-white" strokeWidth={2.5} />
+            <ImagePlus
+              className="h-4 w-4 text-[#16a34a] dark:text-white"
+              strokeWidth={2.5}
+            />
             <span className="text-xs font-black uppercase tracking-wider text-gray-900 dark:text-white">
               {t("property.card.addPhoto")}
             </span>
@@ -288,17 +303,37 @@ export default function PropertyResultCard({
         )}
       </div>
 
-      {/* CARD BODY */}
-      <div className="flex flex-1 min-h-0 flex-col p-5">
-        <div className="flex items-start gap-2">
-          <div className="mt-0.5 flex h-5 w-5 flex-shrink-0 items-center justify-center rounded-md bg-green-50 dark:bg-[#0d2818]">
-            <Home className="h-3 w-3 text-[#22C55E]" strokeWidth={2.5} />
-          </div>
-          <h3 className="line-clamp-1 text-[15px] font-black leading-tight tracking-tight text-gray-900 dark:text-[#e6edf3]">
-            {address}
-          </h3>
+     {/* CARD BODY */}
+<div className="flex flex-1 min-h-0 flex-col p-5">
+  {/* Labels row — Zillow style, above address */}
+  {labels && labels.length > 0 && (
+    <div
+      className="mb-3 flex flex-wrap items-center gap-1.5"
+      onClick={(e) => e.stopPropagation()}
+    >
+      {labels.slice(0, 3).map((label) => (
+        <PropertyLabel
+          key={label.id ?? label.type}
+          type={label.type}
+          size="sm"
+        />
+      ))}
+      {labels.length > 3 && (
+        <div className="rounded-full bg-gray-100 dark:bg-[#1c2128] px-2 py-0.5 text-[10px] font-bold text-gray-700 dark:text-[#7d8590] ring-1 ring-gray-200 dark:ring-[#30363d]">
+          +{labels.length - 3}
         </div>
+      )}
+    </div>
+  )}
 
+  <div className="flex items-start gap-2">
+    <div className="mt-0.5 flex h-5 w-5 flex-shrink-0 items-center justify-center rounded-md bg-green-50 dark:bg-[#0d2818]">
+      <Home className="h-3 w-3 text-[#22C55E]" strokeWidth={2.5} />
+    </div>
+    <h3 className="line-clamp-1 text-[15px] font-black leading-tight tracking-tight text-gray-900 dark:text-[#e6edf3]">
+      {address}
+    </h3>
+  </div>
         <div className="mt-2 flex items-center gap-1.5 pl-7 text-xs text-gray-500 dark:text-[#7d8590]">
           <MapPin className="h-3 w-3 flex-shrink-0 text-gray-400 dark:text-[#6e7681]" />
           <span className="truncate font-semibold">
@@ -313,7 +348,10 @@ export default function PropertyResultCard({
         <div className="flex flex-wrap items-center gap-1.5">
           {area && (
             <div className="flex items-center gap-1 rounded-full bg-gray-50 dark:bg-[#1c2128] py-1 pl-2 pr-2.5 ring-1 ring-gray-100 dark:ring-[#30363d]">
-              <Maximize className="h-3 w-3 text-gray-500 dark:text-[#7d8590]" strokeWidth={2.5} />
+              <Maximize
+                className="h-3 w-3 text-gray-500 dark:text-[#7d8590]"
+                strokeWidth={2.5}
+              />
               <span className="text-[11px] font-bold text-gray-700 dark:text-[#e6edf3]">
                 {area.toLocaleString()} {t("property.details.sqft")}
               </span>
@@ -339,10 +377,14 @@ export default function PropertyResultCard({
           {riskConfig && (
             <div
               className={`flex items-center gap-1 rounded-full px-2.5 py-1 ring-1 ${riskConfig.className}`}
-              title={t("property.card.riskScoreTooltip", { score: riskScore.overallScore })}
+              title={t("property.card.riskScoreTooltip", {
+                score: riskScore.overallScore,
+              })}
             >
               <riskConfig.icon className="h-3 w-3" strokeWidth={2.5} />
-              <span className="text-[11px] font-bold">{t(riskConfig.labelKey)}</span>
+              <span className="text-[11px] font-bold">
+                {t(riskConfig.labelKey)}
+              </span>
             </div>
           )}
         </div>
@@ -351,9 +393,12 @@ export default function PropertyResultCard({
           {!verified ? (
             <div className="min-h-[76px] rounded-xl border border-amber-200 dark:border-amber-900 bg-amber-50/50 dark:bg-[#282a10] p-3">
               <p className="text-[11px] font-semibold leading-tight text-amber-800 dark:text-amber-300">
-                {t("property.card.missing")} {missingFields.slice(0, 2).join(", ")}
+                {t("property.card.missing")}{" "}
+                {missingFields.slice(0, 2).join(", ")}
                 {missingFields.length > 2 &&
-                  ` ${t("property.card.moreItems", { n: missingFields.length - 2 })}`}
+                  ` ${t("property.card.moreItems", {
+                    n: missingFields.length - 2,
+                  })}`}
               </p>
               <span
                 role="button"

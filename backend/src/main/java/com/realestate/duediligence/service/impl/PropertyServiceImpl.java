@@ -32,7 +32,7 @@ public class PropertyServiceImpl implements PropertyService {
     private final PropertyVerificationService   verificationService;
     private final UserRepository                userRepository;
     private final PortfolioSnapshotService      portfolioSnapshotService;
-    private final com.realestate.duediligence.service.GeocodingService geocodingService;  // ← NEW
+    private final com.realestate.duediligence.service.GeocodingService geocodingService;
 
     // ── Add property ──────────────────────────────────────────────
     @Override
@@ -64,10 +64,11 @@ public class PropertyServiceImpl implements PropertyService {
             portfolioSnapshotService.refreshSnapshotForUser(
                     saved.getCreatedBy().getId());
         }
-        // ── NEW: auto-geocode in background if coords missing ──
-if (saved.getLatitude() == null || saved.getLongitude() == null) {
-    geocodingService.geocodePropertyAsync(saved.getId());
-}
+
+        // Auto-geocode in background if coords missing
+        if (saved.getLatitude() == null || saved.getLongitude() == null) {
+            geocodingService.geocodePropertyAsync(saved.getId());
+        }
 
         return mapToResponse(saved);
     }
@@ -76,21 +77,19 @@ if (saved.getLatitude() == null || saved.getLongitude() == null) {
     @Override
     @Transactional
     public PropertyResponse updateProperty(Long id, PropertyRequest request) {
-                Property property = propertyRepository.findById(id)
+        Property property = propertyRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Property not found"));
 
         // Ownership check — admin bypasses, others must own it
         User currentUser = resolveCurrentUser();
-        boolean isAdmin = currentUser != null && 
-                "ADMIN".equals(currentUser.getRole().getRoleName().name());
-        if (!isAdmin && (currentUser == null || property.getCreatedBy() == null ||
+        if (!isAdmin(currentUser) && (currentUser == null || property.getCreatedBy() == null ||
                 !property.getCreatedBy().getId().equals(currentUser.getId()))) {
             throw new RuntimeException("Property not found");
         }
 
         applyRequestToEntity(request, property);
 
-        // Re-verify with updated data — powers the "Pending → Edit → Verified" flow
+        // Re-verify with updated data
         verificationService.verify(property);
 
         property.setUpdatedAt(LocalDateTime.now());
@@ -102,57 +101,110 @@ if (saved.getLatitude() == null || saved.getLongitude() == null) {
             portfolioSnapshotService.refreshSnapshotForUser(
                     saved.getCreatedBy().getId());
         }
-        // ── NEW: auto-geocode in background if coords missing ──
-if (saved.getLatitude() == null || saved.getLongitude() == null) {
-    geocodingService.geocodePropertyAsync(saved.getId());
-}
 
-        
+        // Auto-geocode in background if coords missing
+        if (saved.getLatitude() == null || saved.getLongitude() == null) {
+            geocodingService.geocodePropertyAsync(saved.getId());
+        }
+
         return mapToResponse(saved);
     }
 
-    // ── Read operations (unchanged) ───────────────────────────────
-        @Override
+    // ══════════════════════════════════════════════════════════════
+    // ── READ OPERATIONS (ADMIN sees ALL, others see OWN only) ─────
+    // ══════════════════════════════════════════════════════════════
+
+    @Override
     public List<PropertyResponse> getAllProperties() {
         User currentUser = resolveCurrentUser();
         if (currentUser == null) return List.of();
+
+        // ⭐ ADMIN sees ALL properties from ALL users (god mode)
+        if (isAdmin(currentUser)) {
+            return propertyRepository.findAll()
+                    .stream()
+                    .map(this::mapToResponse)
+                    .collect(Collectors.toList());
+        }
+
+        // Regular users see only their own
         return propertyRepository.findByCreatedById(currentUser.getId())
                 .stream()
                 .map(this::mapToResponse)
                 .collect(Collectors.toList());
     }
 
-        @Override
+    @Override
     public PropertyResponse getPropertyById(Long id) {
         User currentUser = resolveCurrentUser();
         Property property = propertyRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Property not found"));
-        if (currentUser == null || 
-             property.getCreatedBy() == null || 
-             !property.getCreatedBy().getId().equals(currentUser.getId())) {
+
+        // ⭐ ADMIN can view ANY property
+        if (isAdmin(currentUser)) {
+            return mapToResponse(property);
+        }
+
+        // Regular users can only view their own
+        if (currentUser == null ||
+                property.getCreatedBy() == null ||
+                !property.getCreatedBy().getId().equals(currentUser.getId())) {
             throw new RuntimeException("Property not found");
         }
+
         return mapToResponse(property);
     }
 
-        @Override
+    @Override
     public List<PropertyResponse> searchProperties(String query) {
         User currentUser = resolveCurrentUser();
         if (currentUser == null) return List.of();
+
         if (query == null || query.trim().isEmpty()) {
             return getAllProperties();
         }
+
         String q = query.toLowerCase().trim();
+
+        // ⭐ ADMIN searches across ALL properties
+        if (isAdmin(currentUser)) {
+            return propertyRepository.findAll()
+                    .stream()
+                    .filter(p -> matchesQuery(p, q))
+                    .map(this::mapToResponse)
+                    .collect(Collectors.toList());
+        }
+
+        // Regular users search only their own
         return propertyRepository.searchByKeywordAndUser(q, currentUser.getId())
                 .stream()
                 .map(this::mapToResponse)
                 .collect(Collectors.toList());
     }
 
-        @Override
+    @Override
     public List<PropertyResponse> getRecentProperties() {
         User currentUser = resolveCurrentUser();
         if (currentUser == null) return List.of();
+
+        // ⭐ ADMIN sees 5 most recent across ALL users
+        if (isAdmin(currentUser)) {
+            return propertyRepository.findAll()
+                    .stream()
+                    .sorted((a, b) -> {
+                        LocalDateTime aTime = a.getCreatedAt();
+                        LocalDateTime bTime = b.getCreatedAt();
+                        if (aTime == null && bTime == null) return 0;
+                        if (aTime == null) return 1;
+                        if (bTime == null) return -1;
+                        return bTime.compareTo(aTime);
+                    })
+                    .limit(5)
+                    .map(this::mapToResponse)
+                    .collect(Collectors.toList());
+        }
+
+        // Regular users see only their own recent
         return propertyRepository.findTop5ByCreatedByIdOrderByCreatedAtDesc(currentUser.getId())
                 .stream()
                 .map(this::mapToResponse)
@@ -175,11 +227,13 @@ if (saved.getLatitude() == null || saved.getLongitude() == null) {
         return verifiedCount;
     }
 
-    // ── Helper: resolve current user from JWT ─────────────────────
+    // ══════════════════════════════════════════════════════════════
+    // ── HELPERS ───────────────────────────────────────────────────
+    // ══════════════════════════════════════════════════════════════
+
     /**
      * Reads the email from the JWT principal (set by JwtAuthFilter)
-     * and loads the User entity. Returns null if unauthenticated —
-     * callers check before using.
+     * and loads the User entity. Returns null if unauthenticated.
      */
     private User resolveCurrentUser() {
         try {
@@ -187,11 +241,35 @@ if (saved.getLatitude() == null || saved.getLongitude() == null) {
                     SecurityContextHolder.getContext().getAuthentication();
             if (auth == null || !auth.isAuthenticated()) return null;
 
-            String email = auth.getName(); // JWT subject = email
+            String email = auth.getName();
             return userRepository.findByEmail(email).orElse(null);
         } catch (Exception e) {
-            return null; // Never crash on this
+            return null;
         }
+    }
+
+    /**
+     * Check if the current user has ADMIN role.
+     * Centralized so we don't repeat the check in 6 places.
+     */
+    private boolean isAdmin(User user) {
+        if (user == null || user.getRole() == null || user.getRole().getRoleName() == null) {
+            return false;
+        }
+        return "ADMIN".equals(user.getRole().getRoleName().name());
+    }
+
+    /**
+     * In-memory match for admin search across all properties.
+     * Matches query against address, city, state, zipCode, propertyType.
+     */
+    private boolean matchesQuery(Property p, String query) {
+        if (query == null || query.isEmpty()) return true;
+        return (p.getAddress() != null && p.getAddress().toLowerCase().contains(query))
+                || (p.getCity() != null && p.getCity().toLowerCase().contains(query))
+                || (p.getState() != null && p.getState().toLowerCase().contains(query))
+                || (p.getZipCode() != null && p.getZipCode().toLowerCase().contains(query))
+                || (p.getPropertyType() != null && p.getPropertyType().toLowerCase().contains(query));
     }
 
     // ── Helper: Request → Entity ──────────────────────────────────
@@ -212,7 +290,6 @@ if (saved.getLatitude() == null || saved.getLongitude() == null) {
         property.setStories(request.getStories());
         property.setStructureType(request.getStructureType());
         property.setCondition(request.getCondition());
-        // verified is set by verificationService — never copied from request
         property.setLatitude(request.getLatitude());
         property.setLongitude(request.getLongitude());
     }
@@ -246,13 +323,29 @@ if (saved.getLatitude() == null || saved.getLongitude() == null) {
     }
 
     // ── Geo endpoint ─────────────────────────────────────────────
-@Override
-public List<GeoPropertyResponse> getGeoProperties() {
-User currentUser = resolveCurrentUser();
-if (currentUser == null) return List.of();
-return propertyRepository.findAllWithCoordinatesByUser(currentUser.getId())
-        .stream()
-        .map(p -> GeoPropertyResponse.builder()
+    @Override
+    public List<GeoPropertyResponse> getGeoProperties() {
+        User currentUser = resolveCurrentUser();
+        if (currentUser == null) return List.of();
+
+        // ⭐ ADMIN sees ALL properties on map
+        if (isAdmin(currentUser)) {
+            return propertyRepository.findAll()
+                    .stream()
+                    .filter(p -> p.getLatitude() != null && p.getLongitude() != null)
+                    .map(this::mapToGeoResponse)
+                    .collect(Collectors.toList());
+        }
+
+        // Regular users see only their own on map
+        return propertyRepository.findAllWithCoordinatesByUser(currentUser.getId())
+                .stream()
+                .map(this::mapToGeoResponse)
+                .collect(Collectors.toList());
+    }
+
+    private GeoPropertyResponse mapToGeoResponse(Property p) {
+        return GeoPropertyResponse.builder()
                 .id(p.getId())
                 .address(p.getAddress())
                 .city(p.getCity())
@@ -262,9 +355,8 @@ return propertyRepository.findAllWithCoordinatesByUser(currentUser.getId())
                 .marketValue(p.getMarketValue())
                 .verified(p.getVerified())
                 .propertyType(p.getPropertyType())
-                .build())
-        .collect(Collectors.toList());
-}
+                .build();
+    }
 
     // ── Delete property ────────────────────────────────────────────
     @Override
@@ -274,9 +366,7 @@ return propertyRepository.findAllWithCoordinatesByUser(currentUser.getId())
                 .orElseThrow(() -> new RuntimeException("Property not found"));
 
         User currentUser = resolveCurrentUser();
-        boolean isAdmin = currentUser != null && 
-                "ADMIN".equals(currentUser.getRole().getRoleName().name());
-        if (!isAdmin && (currentUser == null || property.getCreatedBy() == null ||
+        if (!isAdmin(currentUser) && (currentUser == null || property.getCreatedBy() == null ||
                 !property.getCreatedBy().getId().equals(currentUser.getId()))) {
             throw new RuntimeException("Property not found");
         }
@@ -290,46 +380,32 @@ return propertyRepository.findAllWithCoordinatesByUser(currentUser.getId())
         propertyRepository.delete(property);
     }
 
-// ── Admin backfill (one-time geocode of legacy properties) ──
-// ── Admin backfill (batch geocode of legacy properties) ──
-@Override
-@Transactional
-public int backfillCoordinates() {
-    List<Property> needsGeo = propertyRepository.findAll().stream()
-            .filter(p -> p.getLatitude() == null || p.getLongitude() == null)
-            .collect(Collectors.toList());
+    // ── Admin backfill (batch geocode of legacy properties) ──
+    @Override
+    @Transactional
+    public int backfillCoordinates() {
+        List<Property> needsGeo = propertyRepository.findAll().stream()
+                .filter(p -> p.getLatitude() == null || p.getLongitude() == null)
+                .collect(Collectors.toList());
 
-    if (needsGeo.isEmpty()) return 0;
+        if (needsGeo.isEmpty()) return 0;
 
-    int geocoded = 0;
-    for (Property p : needsGeo) {
-        try {
-            if (geocodingService.geocodeProperty(p)) {
-                propertyRepository.save(p);
-                geocoded++;
+        int geocoded = 0;
+        for (Property p : needsGeo) {
+            try {
+                if (geocodingService.geocodeProperty(p)) {
+                    propertyRepository.save(p);
+                    geocoded++;
+                }
+                // Respect Nominatim rate limit: 1 req/sec
+                Thread.sleep(1100);
+            } catch (InterruptedException e) {
+                Thread.currentThread().interrupt();
+                break;
+            } catch (Exception e) {
+                // Continue with next property
             }
-            // Respect Nominatim rate limit: 1 req/sec
-            Thread.sleep(1100);
-        } catch (InterruptedException e) {
-            Thread.currentThread().interrupt();
-            break;
-        } catch (Exception e) {
-            // Continue with next property
         }
+        return geocoded;
     }
-    return geocoded;
-}
-/** Extract a numeric value from JSON string after a given key marker. */
-private Double extractJsonNumber(String json, String marker) {
-    int idx = json.indexOf(marker);
-    if (idx < 0) return null;
-    int start = idx + marker.length();
-    int end = json.indexOf("\"", start);
-    if (end < 0) return null;
-    try {
-        return Double.parseDouble(json.substring(start, end));
-    } catch (NumberFormatException e) {
-        return null;
-    }
-}
 }

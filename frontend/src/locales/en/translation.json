@@ -1,4 +1,48 @@
 {
+  "logoutModal": {
+  "title": "Ready to sign out?",
+  "description": "You'll need to log in again to access your dashboard and property data.",
+  "staySignedIn": "Stay signed in",
+  "confirm": "Yes, log out",
+  "signingOut": "Signing out…",
+  "close": "Close",
+  "signedIn": "Signed in",
+  "active": "Active",
+  "fallbackUser": "User",
+  "tip": "Tip: Press",
+  "tipCancel": "to cancel"
+},
+  "labels": {
+  "NEW": "New",
+  "HOT": "Hot",
+  "PRICE_DROP": "Price Drop",
+  "FEATURED": "Featured",
+  "VERIFIED": "Verified",
+  "SOLD": "Sold",
+  "UNDER_OFFER": "Under Offer",
+  "PREMIUM": "Premium",
+  "moreCount": "+{{count}} more",
+  "admin": {
+    "title": "Property Labels",
+    "subtitle": "Manage labels shown on this property",
+    "current": "Current Labels",
+    "empty": "No labels applied yet",
+    "loading": "Loading labels...",
+    "addNew": "Add New Label",
+    "selectType": "Label Type",
+    "selectPlaceholder": "Choose a label...",
+    "expiresInDays": "Expires in (days)",
+    "expiresPlaceholder": "e.g., 30",
+    "optional": "optional",
+    "addButton": "Add Label",
+    "adding": "Adding...",
+    "remove": "Remove label",
+    "added": "Label added successfully",
+    "removed": "Label removed",
+    "addError": "Failed to add label",
+    "removeError": "Failed to remove label"
+  }
+},
   "passwordStrength": {
   "weak": "Weak",
   "fair": "Fair",
@@ -360,6 +404,11 @@
       "afternoon": "Good afternoon",
       "evening": "Good evening"
     },
+     "adminBanner": {
+  "title": "Admin Mode — Platform Overview",
+  "description": "You are viewing all properties and users across the platform. A dedicated admin dashboard is coming in the next update.",
+  "badge": "Admin"
+},
     "subtitle": "Your portfolio at a glance",
     "platformOverview": "Platform overview",
     "pageTitle": "Dashboard | Real Estate Due Diligence Agent",

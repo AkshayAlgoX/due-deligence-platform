@@ -48,4 +48,13 @@ export const API_ROUTES = {
     // ── Comparisons ──────────────────────────────────────────────────────────────
   COMPARISONS:         "/api/comparisons",
   COMPARISON_BY_ID:    (id) => `/api/comparisons/${id}`,
+
+  // Property Labels
+GET_PROPERTY_LABELS: (propertyId) => `/api/properties/${propertyId}/labels`,
+ADD_PROPERTY_LABEL: (propertyId) => `/api/properties/${propertyId}/labels`,
+REMOVE_PROPERTY_LABEL: (propertyId, labelId) =>
+  `/api/properties/${propertyId}/labels/${labelId}`,
+RECALCULATE_ALL_LABELS: "/api/labels/recalculate-all",
+BULK_PROPERTY_LABELS: "/api/labels/bulk",
 };
+
