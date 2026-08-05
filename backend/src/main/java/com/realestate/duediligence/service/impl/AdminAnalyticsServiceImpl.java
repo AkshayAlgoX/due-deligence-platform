@@ -94,7 +94,16 @@ public class AdminAnalyticsServiceImpl implements AdminAnalyticsService {
 
     @Override
     public List<UserActivityDto> getUserActivityHeatmap() {
-        return List.of();
+        List<Object[]> rows = userRepository.getUserActivityHeatmapRaw();
+        List<UserActivityDto> result = new ArrayList<>();
+
+        for (Object[] row : rows) {
+            int dayOfWeek = ((Number) row[0]).intValue();
+            int hourOfDay = ((Number) row[1]).intValue();
+            long count = ((Number) row[2]).longValue();
+            result.add(new UserActivityDto(dayOfWeek, hourOfDay, count));
+        }
+        return result;
     }
 
     private double calculateTrendPercent(long previous, long current) {
