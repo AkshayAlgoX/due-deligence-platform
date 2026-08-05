@@ -41,4 +41,15 @@ public interface UserRepository extends JpaRepository<User, Long> {
             "GROUP BY day_of_week, hour_of_day " +
             "ORDER BY day_of_week, hour_of_day", nativeQuery = true)
     List<Object[]> getUserActivityHeatmapRaw();
+    // ────────────────────────────────────────────────────────────────
+    // NEW — Admin Dashboard: user management search/filter
+    // ────────────────────────────────────────────────────────────────
+
+    @Query("SELECT u FROM User u WHERE " +
+            "(:search IS NULL OR LOWER(u.fullName) LIKE %:search% OR LOWER(u.email) LIKE %:search%) AND " +
+            "(:roleName IS NULL OR u.role.roleName = :roleName)")
+    org.springframework.data.domain.Page<User> searchUsers(
+            @Param("search") String search,
+            @Param("roleName") com.realestate.duediligence.enums.RoleType roleName,
+            org.springframework.data.domain.Pageable pageable);
 }

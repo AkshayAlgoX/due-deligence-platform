@@ -12,6 +12,7 @@ import com.realestate.duediligence.dto.DashboardStatsDto;
 import com.realestate.duediligence.dto.MonthlyTrendDto;
 import com.realestate.duediligence.dto.RiskDistributionDto;
 import com.realestate.duediligence.dto.UserActivityDto;
+import com.realestate.duediligence.dto.UserManagementDto;
 import com.realestate.duediligence.repository.PropertyRepository;
 import com.realestate.duediligence.repository.UserRepository;
 import com.realestate.duediligence.service.AdminAnalyticsService;
@@ -21,12 +22,82 @@ public class AdminAnalyticsServiceImpl implements AdminAnalyticsService {
 
     private final UserRepository userRepository;
     private final PropertyRepository propertyRepository;
+    private final com.realestate.duediligence.repository.RoleRepository roleRepository;
 
     @Autowired
     public AdminAnalyticsServiceImpl(UserRepository userRepository,
-            PropertyRepository propertyRepository) {
+            PropertyRepository propertyRepository,
+            com.realestate.duediligence.repository.RoleRepository roleRepository) {
         this.userRepository = userRepository;
         this.propertyRepository = propertyRepository;
+        this.roleRepository = roleRepository;
+    }
+
+    @Override
+    public org.springframework.data.domain.Page<UserManagementDto> listUsers(String search, String role, int page,
+            int size) {
+        String normalizedSearch = (search == null || search.isBlank()) ? null : search.toLowerCase();
+        com.realestate.duediligence.enums.RoleType roleType = null;
+        if (role != null && !role.isBlank()) {
+            roleType = com.realestate.duediligence.enums.RoleType.valueOf(role.toUpperCase());
+        }
+
+        org.springframework.data.domain.Pageable pageable = org.springframework.data.domain.PageRequest.of(page, size);
+
+        return userRepository.searchUsers(normalizedSearch, roleType, pageable)
+                .map(this::toUserManagementDto);
+    }
+
+    @Override
+    public UserManagementDto getUserById(Long userId) {
+        com.realestate.duediligence.entity.User user = userRepository.findById(userId)
+                .orElseThrow(() -> new RuntimeException("User not found: " + userId));
+        return toUserManagementDto(user);
+    }
+
+    @Override
+    public UserManagementDto updateUserRole(Long userId, String newRole) {
+        com.realestate.duediligence.entity.User user = userRepository.findById(userId)
+                .orElseThrow(() -> new RuntimeException("User not found: " + userId));
+
+        com.realestate.duediligence.enums.RoleType roleType = com.realestate.duediligence.enums.RoleType
+                .valueOf(newRole.toUpperCase());
+
+        com.realestate.duediligence.entity.Role role = roleRepository.findByRoleName(roleType)
+                .orElseThrow(() -> new RuntimeException("Role not found: " + newRole));
+
+        user.setRole(role);
+        userRepository.save(user);
+        return toUserManagementDto(user);
+    }
+
+    @Override
+    public UserManagementDto banUser(Long userId) {
+        com.realestate.duediligence.entity.User user = userRepository.findById(userId)
+                .orElseThrow(() -> new RuntimeException("User not found: " + userId));
+        user.setIsBanned(true);
+        userRepository.save(user);
+        return toUserManagementDto(user);
+    }
+
+    @Override
+    public UserManagementDto unbanUser(Long userId) {
+        com.realestate.duediligence.entity.User user = userRepository.findById(userId)
+                .orElseThrow(() -> new RuntimeException("User not found: " + userId));
+        user.setIsBanned(false);
+        userRepository.save(user);
+        return toUserManagementDto(user);
+    }
+
+    private UserManagementDto toUserManagementDto(com.realestate.duediligence.entity.User user) {
+        return new UserManagementDto(
+                user.getId(),
+                user.getFullName(),
+                user.getEmail(),
+                user.getRole() != null ? user.getRole().getRoleName().name() : null,
+                user.getIsActive(),
+                user.getIsBanned(),
+                user.getCreatedAt());
     }
 
     @Override
