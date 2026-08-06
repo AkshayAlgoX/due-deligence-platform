@@ -29,7 +29,7 @@ const ROUTE_ROLES = {
   "/dashboard/risk-assessment":     ["BUYER", "REAL_ESTATE_AGENT", "LEGAL_REVIEWER", "FINANCIAL_INSTITUTION", "ADMIN"],
   "/dashboard/property-comparison": ["BUYER", "REAL_ESTATE_AGENT", "LEGAL_REVIEWER", "FINANCIAL_INSTITUTION", "ADMIN"],
   "/dashboard/saved-comparisons":   ["BUYER", "REAL_ESTATE_AGENT", "LEGAL_REVIEWER", "FINANCIAL_INSTITUTION", "ADMIN"],
-  "/dashboard/reports":             ["REAL_ESTATE_AGENT", "LEGAL_REVIEWER", "FINANCIAL_INSTITUTION", "ADMIN"],
+  "/reports": ["BUYER", "REAL_ESTATE_AGENT", "LEGAL_REVIEWER", "FINANCIAL_INSTITUTION", "ADMIN"],
   "/dashboard/notifications":       ["BUYER", "REAL_ESTATE_AGENT", "LEGAL_REVIEWER", "FINANCIAL_INSTITUTION", "ADMIN"],
   "/dashboard/audit-logs":          ["ADMIN"],
   "/dashboard/profile":             ["BUYER", "REAL_ESTATE_AGENT", "LEGAL_REVIEWER", "FINANCIAL_INSTITUTION", "ADMIN"],
@@ -72,7 +72,7 @@ const MENU_SECTION_CONFIGS = [
     sectionKey: "nav.sections.activity",
     collapsible: true,
     items: [
-      { titleKey: "nav.reports",       href: "/dashboard/reports",       icon: FileText,      badge: null },
+      { titleKey: "nav.reports",       href: "/reports",       icon: FileText,      badge: null },
       { titleKey: "nav.notifications", href: "/dashboard/notifications", icon: Bell,          badge: null },
       { titleKey: "nav.auditLogs",     href: "/dashboard/audit-logs",    icon: ClipboardList, badge: null },
     ],

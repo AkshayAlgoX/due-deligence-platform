@@ -1,4 +1,406 @@
 {
+  "report": {
+  "status": {
+    "pending": "Pending",
+    "generating": "Generating",
+    "completed": "Completed",
+    "failed": "Failed",
+    "unknown": "Unknown"
+  },
+  "modal": {
+    "pendingTitle": "Preparing your report",
+    "generatingTitle": "Generating report",
+    "completedTitle": "Report ready",
+    "failedTitle": "Generation failed",
+    "pendingBody": "Setting up your due diligence report…",
+    "generatingBody": "Analyzing property data and generating sections. This usually takes 10-30 seconds.",
+    "completedBody": "Your report has been generated successfully.",
+    "failedBody": "We couldn't generate your report. Please try again.",
+    "dismiss": "Dismiss",
+    "retry": "Try again",
+    "redirecting": "Opening report…"
+  },
+  "generate": {
+    "back": "Back to property",
+    "title": "Generate Due Diligence Report",
+    "heading": "Generate a new report",
+    "subheading": "We'll analyze this property across 6 risk categories and produce a comprehensive due diligence report.",
+    "reportingOn": "Reporting on",
+    "titleLabel": "Report title",
+    "titlePlaceholder": "e.g. Due Diligence: 456 Avenue Road",
+    "defaultTitle": "Due Diligence: {{address}}",
+    "forceRecalcLabel": "Force fresh recalculation",
+    "forceRecalcHint": "Ignore cached data and fetch everything fresh from all sources.",
+    "infoNote": "Generation takes 10-30 seconds. You'll be redirected to the report as soon as it's ready.",
+    "cancel": "Cancel",
+    "cta": "Generate Report",
+    "starting": "Starting…"
+  },
+  "list": {
+    "title": "My Reports",
+    "heading": "Due Diligence Reports",
+    "subheading": "All reports you've generated across your properties.",
+    "backToDashboard": "Back to dashboard",
+    "refresh": "Refresh",
+    "generateNew": "Generate new report",
+    "stat": {
+      "total": "Total",
+      "completed": "Completed",
+      "inProgress": "In progress",
+      "failed": "Failed"
+    },
+    "searchPlaceholder": "Search reports…",
+    "filter": {
+      "all": "All"
+    },
+    "errorTitle": "Failed to load reports",
+    "tryAgain": "Try again",
+    "empty": {
+      "title": "No reports yet",
+      "body": "Generate your first due diligence report from any property page.",
+      "cta": "Browse properties"
+    },
+    "filtered": {
+      "title": "No matching reports",
+      "body": "Try adjusting your search or filter.",
+      "clear": "Clear filters"
+    },
+    "pagination": {
+      "showing": "Showing {{from}}–{{to}} of {{total}}",
+      "prev": "Previous",
+      "next": "Next"
+    },
+    "deleted": "Report deleted",
+    "deleteFailed": "Failed to delete report",
+    "deleteModal": {
+      "title": "Delete report?",
+      "body": "You're about to permanently delete the report for {{address}}. This action cannot be undone.",
+      "confirmPrompt": "Type DELETE to confirm",
+      "confirm": "Delete report"
+    }
+  },
+  "card": {
+    "untitled": "Untitled report",
+    "risk": "Risk",
+    "sections": "sections",
+    "sections_one": "{{count}} section",
+    "sections_other": "{{count}} sections",
+    "view": "View",
+    "openReport": "Open report",
+    "delete": "Delete",
+    "moreActions": "More actions"
+  },
+  "sections": {
+    "cover": "Cover Page",
+    "executiveSummary": "Executive Summary",
+    "propertyOverview": "Property Overview",
+    "riskAnalysis": "Risk Analysis",
+    "comparable": "Comparable Properties",
+    "financial": "Financial Analysis",
+    "recommendations": "Recommendations",
+    "appendix": "Appendix"
+  },
+  "viewer": {
+    "back": "Reports",
+    "toc": "Contents",
+    "actions": {
+      "regenerate": "Regenerate",
+      "regenerating": "Regenerating…",
+      "print": "Print",
+      "printShortcut": "Print (⌘P)",
+      "share": "Share",
+      "shareShortcut": "Copy link (⌘K)",
+      "download": "Download PDF",
+      "downloadSoon": "PDF export · coming soon",
+      "downloadToast": "PDF export is coming soon",
+      "downloadToastHint": "Use the Print button for now.",
+      "linkCopied": "Link copied to clipboard",
+      "linkCopyFailed": "Failed to copy link",
+      "moreOptions": "More options"
+    },
+    "kebab": {
+      "versionHistory": "Version history",
+      "duplicate": "Duplicate (new version)",
+      "delete": "Delete report"
+    },
+    "meta": {
+      "generated": "Generated {{date}}"
+    },
+    "footer": "Report #{{id}} · Version {{version}} · {{email}} · Real Estate Due Diligence Agent",
+    "loading": "Loading report…",
+    "notFound": "Report not found",
+    "notFoundBody": "The report could not be loaded. Please check the URL or try again.",
+    "goBack": "Go back",
+    "inProgress": {
+      "title": "Report is generating…",
+      "body": "{{address}} is being prepared.",
+      "hint": "This page will refresh automatically when ready."
+    },
+    "failed": {
+      "title": "Report generation failed",
+      "retry": "Regenerate"
+    }
+  },
+  "regenerate": {
+    "title": "Regenerate Report?",
+    "body": "This will create <strong>Version {{next}}</strong> of this report using the latest available data. The current version (v{{current}}) will remain accessible in version history.",
+    "warning": "Regeneration fetches fresh data from all providers and recalculates risk scores. This may take 10-30 seconds.",
+    "cancel": "Cancel",
+    "confirm": "Create v{{next}}",
+    "creating": "Creating v{{next}}…",
+    "success": "Version {{version}} is being generated",
+    "error": "Failed to regenerate report"
+  },
+  "versionHistory": {
+    "title": "Version History",
+    "subtitle": "{{address}}",
+    "loading": "Loading versions…",
+    "error": "Failed to load version history.",
+    "empty": "No versions found for this property.",
+    "current": "Current",
+    "view": "View"
+  },
+  "cover": {
+    "brand": "Real Estate Due Diligence Agent",
+    "reportTag": "Due Diligence Report",
+    "verified": "Verified Property",
+    "version": "Version {{n}}",
+    "preparedFor": "Prepared For",
+    "generatedOn": "Generated",
+    "reportId": "Report ID",
+    "disclaimer": "This report is generated for informational purposes only and does not constitute legal, financial, or investment advice. Always consult qualified professionals before making property transaction decisions."
+  },
+  "executive": {
+    "eyebrow": "Executive Summary",
+    "title": "At-a-Glance Assessment",
+    "riskScore": "Risk Score",
+    "categories": "Categories",
+    "dataQuality": "Data Quality",
+    "dataComplete": "Complete",
+    "dataPartial": "Partial",
+    "categoryBreakdown": "Category Breakdown",
+    "keyFindings": "Key Risk Findings",
+    "riskSuffix": "RISK"
+  },
+  "property": {
+    "eyebrow": "Property Overview",
+    "unavailable": "Property overview data unavailable.",
+    "marketValue": "Market Value",
+    "pricePerSqFt": "₹{{value}}/sq ft",
+    "details": "Property Details",
+    "specs": "Specifications",
+    "labels": {
+      "type": "Type",
+      "area": "Area",
+      "yearBuilt": "Year Built",
+      "stories": "Stories",
+      "structure": "Structure",
+      "condition": "Condition",
+      "bedrooms": "Bedrooms",
+      "bathrooms": "Bathrooms",
+      "zipCode": "ZIP Code",
+      "verified": "Verified",
+      "lotSize": "Lot Size",
+      "zoning": "Zoning",
+      "yes": "Yes",
+      "no": "No"
+    }
+  },
+  "riskAnalysis": {
+    "eyebrow": "Risk Analysis",
+    "title": "6-Category Risk Breakdown",
+    "overallPill": "Overall: {{score}}/100 · {{level}}",
+    "unavailable": "Risk analysis data unavailable.",
+    "dataIncomplete": "Some data sources were unavailable. Uncertainty penalties have been applied.",
+    "unavailableProviders_one": "({{count}} provider unavailable)",
+    "unavailableProviders_other": "({{count}} providers unavailable)",
+    "empty": "No risk factor data available.",
+    "weight": "Weight: {{pct}}%",
+    "recommendationLabel": "Recommendation: ",
+    "uncertain": "(uncertain)",
+    "categories": {
+      "flood": "Flood Risk",
+      "legal": "Legal Risk",
+      "tax": "Tax Compliance",
+      "zoning": "Zoning Compliance",
+      "environmental": "Environmental Risk",
+      "market": "Market Risk"
+    }
+  },
+  "comparable": {
+    "eyebrow": "Comparable Properties",
+    "title": "Comparable Property Analysis",
+    "placeholderTitle": "Coming in a Future Version",
+    "placeholderBody": "Comparable property analysis is under active development and will be included in an upcoming report version.",
+    "features": {
+      "recentSales": "Recent sales within 2 km",
+      "pricePerSqFt": "Price per sq ft benchmarking",
+      "trends": "12-month market trends",
+      "confidence": "Valuation confidence band"
+    }
+  },
+  "financial": {
+    "eyebrow": "Financial Analysis",
+    "title": "Valuation, Ownership & Tax Records",
+    "unavailable": "Financial data unavailable.",
+    "marketValue": "Market Value",
+    "pricePerSqFt": "Price / sq ft",
+    "registeredValue": "Registered Value",
+    "ownership": {
+      "title": "Ownership",
+      "currentOwner": "Current Owner",
+      "ownershipType": "Ownership Type",
+      "registrationDate": "Registration Date",
+      "registrationNumber": "Registration No.",
+      "stampDutyPaid": "Stamp Duty Paid"
+    },
+    "tax": {
+      "title": "Tax Records",
+      "paid": "{{n}} Paid",
+      "pending": "{{n}} Pending",
+      "overdue": "{{n}} Overdue",
+      "fy": "FY {{year}}",
+      "status": {
+        "paid": "Paid",
+        "pending": "Pending",
+        "overdue": "Overdue"
+      }
+    },
+    "permits": {
+      "title": "Permits"
+    },
+    "environmental": {
+      "title": "Environmental Snapshot",
+      "aqi": "AQI",
+      "soilType": "Soil Type",
+      "noiseLevel": "Noise Level",
+      "greenCover": "Green Cover"
+    },
+    "source": {
+      "live": "Live",
+      "mock": "Mock"
+    }
+  },
+  "recommendations": {
+    "general1": "Always engage a qualified property lawyer for legal review.",
+"general2": "Obtain an official encumbrance certificate from the Sub-Registrar office.",
+"general3": "Verify property tax clearance with the local municipal body.",
+"general4": "Conduct a physical inspection with a certified structural surveyor.",
+"general5": "Cross-verify all documentation with original records at government offices.",
+    "eyebrow": "Recommendations",
+    "title": "Prioritized Action Items",
+    "unavailable": "Recommendation data unavailable.",
+    "actionRequired": "Action Required",
+    "minorObservations": "Minor Observations",
+    "standardVerification": "Standard Verification",
+    "priorityPill": "{{level}} Priority",
+    "scoreLabel": "Score: {{score}}/100",
+    "generalTitle": "General Due Diligence Guidance",
+    "priority": {
+      "low": "Low",
+      "medium": "Medium",
+      "high": "High",
+      "critical": "Critical"
+    }
+  },
+  "appendix": {
+    "eyebrow": "Appendix",
+    "title": "Data Sources & Methodology",
+    "dataSources": "Data Sources",
+    "fetchedIn": "Fetched in {{ms}}ms",
+    "methodology": "Risk Scoring Methodology",
+    "methodologyIntro": "This report uses a weighted composite risk score (0-100) derived from six data categories. Each category is scored independently and combined using the weights below.",
+    "categoryWeights": "Category Weights",
+    "thresholds": "Risk Level Thresholds",
+    "uncertaintyNote": "When data sources are unavailable, an uncertainty penalty is applied rather than assuming zero risk — reflecting that missing information is itself a risk factor.",
+    "disclaimer": "Disclaimer",
+    "disclaimerBody": "This report is generated from third-party data sources and property records. It is provided for informational purposes only and does not constitute legal, financial, or investment advice. Always consult qualified professionals before making a property transaction decision.",
+    "categoryLabels": {
+      "flood": "Flood",
+      "legal": "Legal",
+      "tax": "Tax",
+      "zoning": "Zoning",
+      "environmental": "Environmental",
+      "market": "Market"
+    }
+  }
+},
+  "risk": {
+  "badge": {
+    "ariaLabel": "Risk level: {{level}}"
+  },
+  "levels": {
+    "LOW": "Low",
+    "MEDIUM": "Medium",
+    "HIGH": "High",
+    "CRITICAL": "Critical",
+    "UNKNOWN": "Unknown"
+  },
+  "categories": {
+    "FLOOD": "Flood",
+    "LEGAL": "Legal",
+    "TAX": "Tax",
+    "ZONING": "Zoning",
+    "ENVIRONMENTAL": "Environmental",
+    "MARKET": "Market"
+  },
+  "gauge": {
+    "outOf": "out of 100",
+    "ariaLabel": "Risk score: {{score}} out of 100, {{level}}",
+    "deltaWorse": "vs. baseline",
+    "deltaBetter": "vs. baseline",
+    "recalculate": "Recalculate",
+    "recalculating": "Recalculating...",
+    "recalculateAria": "Recalculate risk with latest data"
+  },
+  "radar": {
+    "seriesName": "Risk Score",
+    "helperText": "Each axis shows a category score (0–100). Lower is better.",
+    "tooltipScore": "Score",
+    "tooltipWeight": "Weight"
+  },
+  "factor": {
+    "weight": "Weight: {{weight}}",
+    "explanation": "Analysis",
+    "recommendation": "Recommendation",
+    "dataSource": "Data source",
+    "dataUncertain": "Score reflects data uncertainty penalty",
+    "toggleAria": "Toggle {{category}} details"
+  },
+  "explain": {
+    "title": "How Risk Scoring Works",
+    "subtitle": "Transparent, rule-based scoring — no black-box AI",
+    "howItWorks": "How the Overall Score Is Calculated",
+    "description": "Each property is analyzed across 6 categories. Each category gets a score from 0–100 (higher = more risk). The overall score is a weighted sum — categories with more weight (like Flood at 25%) impact the final score more.",
+    "categoryWeights": "Category Weights",
+    "levelThresholds": "Risk Levels",
+    "dataHonesty": {
+      "title": "About Data Sources",
+      "body": "When a data source is unavailable, we apply an uncertainty penalty rather than assume zero risk. Missing information is itself a risk factor — we won't hide that from you."
+    }
+  },
+  "page": {
+    "title": "Risk Analysis",
+    "loading": "Analyzing property risk...",
+    "errorTitle": "Unable to load risk analysis",
+    "goBack": "Go back",
+    "backAria": "Go back to previous page",
+    "overallScore": "Overall Risk Score",
+    "categoryBreakdown": "Category Breakdown",
+    "categoryBreakdownDesc": "All 6 risk factors visualized. Larger area = higher overall risk.",
+    "factorsTitle": "Risk Factors",
+    "factorsSubtitle": "Ordered by risk contribution. Click any card to see full analysis.",
+    "generateReport": "Generate Report",
+    "dataWarningTitle": "Some data sources are unavailable",
+    "dataWarningBody": "{{count}} of 6 data provider(s) could not be reached. Scores reflect conservative estimates where data was missing.",
+    "backToProperty": "Back to property",
+"bedShort": "BR",
+"topRisksTitle": "Top Risk Contributors",
+"topRisksDesc": "Highest scoring factors driving overall risk",
+"methodology": "Methodology",
+"footerDisclaimer": "Risk scoring is based on 6 categories with transparent weightings. This is a decision support tool, not financial advice."
+  }
+},
   "logoutModal": {
   "title": "Ready to sign out?",
   "description": "You'll need to log in again to access your dashboard and property data.",
@@ -1059,7 +1461,12 @@
       "bathroomsShort": "{{n}} BA",
       "riskScoreTooltip": "Risk score: {{score}}/100",
       "moreItems": "+{{n}} more",
-      "photoPending": "Photo pending"
+      "photoPending": "Photo pending",
+      "criticalRisk": "Critical Risk",
+"riskScoreTooltipFull": "Risk: {{level}} ({{score}}/100) — click for full analysis",
+"riskScoreClickTooltip": "Click for full risk analysis",
+"riskBadgeAria": "View full risk analysis: {{level}}",
+"riskAnalyzeTooltip": "Click for full risk analysis"
     },
     "risk": {
       "title": "Risk assessment",
@@ -1075,7 +1482,13 @@
         "legal": "Legal",
         "environmental": "Environmental",
         "structural": "Structural"
-      }
+      },
+      "spectrum": {
+  "risk": "risk",
+  "outOf": "out of 100",
+  "recalculate": "Recalculate",
+  "recalculating": "Recalculating…"
+}
     },
     "building": {
       "title": "Building information",
@@ -1105,7 +1518,11 @@
       "editProperty": "Edit property",
       "backToSearch": "Back to search",
       "monthlyEst": "Est. {{amount}}/mo",
-      "getPrequalified": "Get pre-qualified"
+      "getPrequalified": "Get pre-qualified",
+      "generateReport": "Generate Report",
+"generateReportTooltip": "Generate a full due diligence report for this property",
+"quickPdf": "Quick PDF",
+"quickPdfTooltip": "Download a quick client-side PDF summary"
     },
     "comparison": {
       "title": "Property comparison",

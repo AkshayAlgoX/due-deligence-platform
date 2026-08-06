@@ -15,6 +15,7 @@ import {
   ShieldAlert,
   ShieldCheck,
   Shield,
+  ShieldX,
   GitCompare,
 } from "lucide-react";
 import { formatINR } from "@/utils/currency";
@@ -23,27 +24,47 @@ import PropertyImagePlaceholder from "./PropertyImagePlaceholder";
 import { usePropertyLabels } from "@/hooks/usePropertyLabels";
 import PropertyLabel from "./PropertyLabel";
 
-// Risk config now stores translation keys instead of raw labels
+// Risk config — supports all 4 levels (LOW/MEDIUM/HIGH/CRITICAL)
+// Translation keys are stored, not raw labels.
 const RISK_CONFIG = {
   LOW: {
     labelKey: "property.card.lowRisk",
     icon: ShieldCheck,
     className:
-      "bg-green-50 dark:bg-[#0d2818] text-green-700 dark:text-green-400 ring-green-200 dark:ring-green-900",
+      "bg-green-50 dark:bg-[#0d2818] text-green-700 dark:text-green-400 ring-green-200 dark:ring-green-900 hover:bg-green-100 dark:hover:bg-[#0d2818]/80",
   },
   MEDIUM: {
     labelKey: "property.card.mediumRisk",
     icon: Shield,
     className:
-      "bg-amber-50 dark:bg-[#282a10] text-amber-700 dark:text-amber-400 ring-amber-200 dark:ring-amber-900",
+      "bg-amber-50 dark:bg-[#282a10] text-amber-700 dark:text-amber-400 ring-amber-200 dark:ring-amber-900 hover:bg-amber-100 dark:hover:bg-[#282a10]/80",
   },
   HIGH: {
     labelKey: "property.card.highRisk",
     icon: ShieldAlert,
     className:
-      "bg-red-50 dark:bg-[#2d1214] text-red-700 dark:text-red-400 ring-red-200 dark:ring-red-900",
+      "bg-orange-50 dark:bg-[#2d1e10] text-orange-700 dark:text-orange-400 ring-orange-200 dark:ring-orange-900 hover:bg-orange-100 dark:hover:bg-[#2d1e10]/80",
+  },
+  CRITICAL: {
+    labelKey: "property.card.criticalRisk",
+    icon: ShieldX,
+    className:
+      "bg-red-50 dark:bg-[#2d1214] text-red-700 dark:text-red-400 ring-red-200 dark:ring-red-900 hover:bg-red-100 dark:hover:bg-[#2d1214]/80",
   },
 };
+
+/**
+ * Normalizes risk data from either the old or new API shape.
+ *   Old: { riskLabel: "LOW" | "MEDIUM" | "HIGH", overallScore: number }
+ *   New: { overallLevel: "LOW" | "MEDIUM" | "HIGH" | "CRITICAL", overallScore: number }
+ */
+function normalizeRisk(riskScore) {
+  if (!riskScore) return null;
+  const level = riskScore.overallLevel || riskScore.riskLabel;
+  const score = riskScore.overallScore;
+  if (!level) return null;
+  return { level: String(level).toUpperCase(), score };
+}
 
 export default function PropertyResultCard({
   property,
@@ -83,9 +104,10 @@ export default function PropertyResultCard({
   const thumbnail = getPropertyImage(property);
   const passedChecks = totalChecks - missingFields.length;
   const hasRealImage = Boolean(imageUrl);
-  const riskConfig = riskScore?.riskLabel
-    ? RISK_CONFIG[riskScore.riskLabel] ?? null
-    : null;
+
+  // Normalize risk (supports old + new API shapes)
+  const risk = normalizeRisk(riskScore);
+  const riskConfig = risk ? RISK_CONFIG[risk.level] ?? null : null;
 
   const goToDetails = () => {
     onClick?.();
@@ -106,6 +128,12 @@ export default function PropertyResultCard({
     e.stopPropagation();
     if (!isInCompare && !canAddToCompare) return;
     onCompare?.(property);
+  };
+
+  // NEW: Click risk badge → jump straight to Risk Analysis page
+  const handleRiskBadgeClick = (e) => {
+    e.stopPropagation();
+    router.push(`/properties/${property.id}/risk-analysis`);
   };
 
   const handleKeyActivate = (fn) => (e) => {
@@ -256,7 +284,6 @@ export default function PropertyResultCard({
           </div>
         </div>
 
-       
         {/* ADD PHOTO */}
         {!hasRealImage && onQuickPhoto && (
           <div
@@ -303,37 +330,37 @@ export default function PropertyResultCard({
         )}
       </div>
 
-     {/* CARD BODY */}
-<div className="flex flex-1 min-h-0 flex-col p-5">
-  {/* Labels row — Zillow style, above address */}
-  {labels && labels.length > 0 && (
-    <div
-      className="mb-3 flex flex-wrap items-center gap-1.5"
-      onClick={(e) => e.stopPropagation()}
-    >
-      {labels.slice(0, 3).map((label) => (
-        <PropertyLabel
-          key={label.id ?? label.type}
-          type={label.type}
-          size="sm"
-        />
-      ))}
-      {labels.length > 3 && (
-        <div className="rounded-full bg-gray-100 dark:bg-[#1c2128] px-2 py-0.5 text-[10px] font-bold text-gray-700 dark:text-[#7d8590] ring-1 ring-gray-200 dark:ring-[#30363d]">
-          +{labels.length - 3}
-        </div>
-      )}
-    </div>
-  )}
+      {/* CARD BODY */}
+      <div className="flex flex-1 min-h-0 flex-col p-5">
+        {/* Labels row — Zillow style, above address */}
+        {labels && labels.length > 0 && (
+          <div
+            className="mb-3 flex flex-wrap items-center gap-1.5"
+            onClick={(e) => e.stopPropagation()}
+          >
+            {labels.slice(0, 3).map((label) => (
+              <PropertyLabel
+                key={label.id ?? label.type}
+                type={label.type}
+                size="sm"
+              />
+            ))}
+            {labels.length > 3 && (
+              <div className="rounded-full bg-gray-100 dark:bg-[#1c2128] px-2 py-0.5 text-[10px] font-bold text-gray-700 dark:text-[#7d8590] ring-1 ring-gray-200 dark:ring-[#30363d]">
+                +{labels.length - 3}
+              </div>
+            )}
+          </div>
+        )}
 
-  <div className="flex items-start gap-2">
-    <div className="mt-0.5 flex h-5 w-5 flex-shrink-0 items-center justify-center rounded-md bg-green-50 dark:bg-[#0d2818]">
-      <Home className="h-3 w-3 text-[#22C55E]" strokeWidth={2.5} />
-    </div>
-    <h3 className="line-clamp-1 text-[15px] font-black leading-tight tracking-tight text-gray-900 dark:text-[#e6edf3]">
-      {address}
-    </h3>
-  </div>
+        <div className="flex items-start gap-2">
+          <div className="mt-0.5 flex h-5 w-5 flex-shrink-0 items-center justify-center rounded-md bg-green-50 dark:bg-[#0d2818]">
+            <Home className="h-3 w-3 text-[#22C55E]" strokeWidth={2.5} />
+          </div>
+          <h3 className="line-clamp-1 text-[15px] font-black leading-tight tracking-tight text-gray-900 dark:text-[#e6edf3]">
+            {address}
+          </h3>
+        </div>
         <div className="mt-2 flex items-center gap-1.5 pl-7 text-xs text-gray-500 dark:text-[#7d8590]">
           <MapPin className="h-3 w-3 flex-shrink-0 text-gray-400 dark:text-[#6e7681]" />
           <span className="truncate font-semibold">
@@ -374,18 +401,44 @@ export default function PropertyResultCard({
             </div>
           )}
 
-          {riskConfig && (
-            <div
-              className={`flex items-center gap-1 rounded-full px-2.5 py-1 ring-1 ${riskConfig.className}`}
-              title={t("property.card.riskScoreTooltip", {
-                score: riskScore.overallScore,
+                    {/* RISK BADGE — clickable → jumps to full risk analysis */}
+          {riskConfig && risk && (
+            <button
+              type="button"
+              onClick={handleRiskBadgeClick}
+              onKeyDown={handleKeyActivate(handleRiskBadgeClick)}
+              className={`group/risk flex items-center gap-1 rounded-full px-2.5 py-1 ring-1 transition-all duration-200 cursor-pointer ${riskConfig.className}`}
+              title={
+                risk.score != null
+                  ? t("property.card.riskScoreTooltipFull", {
+                      defaultValue:
+                        "Risk: {{level}} ({{score}}/100) — click for full analysis",
+                      level: t(riskConfig.labelKey),
+                      score: Math.round(risk.score),
+                    })
+                  : t("property.card.riskScoreClickTooltip", {
+                      defaultValue: "Click for full risk analysis",
+                    })
+              }
+              aria-label={t("property.card.riskBadgeAria", {
+                defaultValue: "View full risk analysis: {{level}}",
+                level: t(riskConfig.labelKey),
               })}
             >
               <riskConfig.icon className="h-3 w-3" strokeWidth={2.5} />
               <span className="text-[11px] font-bold">
                 {t(riskConfig.labelKey)}
               </span>
-            </div>
+              {risk.score != null && (
+                <span className="text-[10px] font-bold tabular-nums opacity-75">
+                  · {Math.round(risk.score)}
+                </span>
+              )}
+              <ArrowUpRight
+                className="h-2.5 w-2.5 opacity-40 transition-all duration-200 group-hover/risk:opacity-100 group-hover/risk:translate-x-px group-hover/risk:-translate-y-px"
+                strokeWidth={2.5}
+              />
+            </button>
           )}
         </div>
 
@@ -412,7 +465,7 @@ export default function PropertyResultCard({
               </span>
             </div>
           ) : (
-            <div className="min-h-[76px]" />
+            <div className="min-h-[76px] " />
           )}
         </div>
       </div>

@@ -56,5 +56,26 @@ REMOVE_PROPERTY_LABEL: (propertyId, labelId) =>
   `/api/properties/${propertyId}/labels/${labelId}`,
 RECALCULATE_ALL_LABELS: "/api/labels/recalculate-all",
 BULK_PROPERTY_LABELS: "/api/labels/bulk",
+
+RISK: {
+    GET:         (propertyId) => `/api/properties/${propertyId}/risk`,
+    BREAKDOWN:   (propertyId) => `/api/properties/${propertyId}/risk/breakdown`,
+    HISTORY:     (propertyId) => `/api/properties/${propertyId}/risk/history`,
+    RECALCULATE: (propertyId) => `/api/properties/${propertyId}/risk/recalculate`,
+  },
+
+  // ── Due Diligence Reports (for Day 7-8) ─────────────────────
+  REPORTS: {
+    GENERATE:      '/api/reports/generate',
+    STATUS:        (reportId) => `/api/reports/${reportId}/status`,
+    GET:           (reportId) => `/api/reports/${reportId}`,
+    LIST:          '/api/reports',
+    DELETE:        (reportId) => `/api/reports/${reportId}`,
+    BY_PROPERTY:   (propertyId) => `/api/reports/property/${propertyId}`,
+    REGENERATE:    (reportId) => `/api/reports/${reportId}/regenerate`,
+  }
+
 };
+
+
 
