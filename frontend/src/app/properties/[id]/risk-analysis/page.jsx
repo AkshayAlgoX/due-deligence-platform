@@ -1,4 +1,3 @@
-// frontend/src/app/properties/[id]/risk-analysis/page.jsx
 "use client";
 
 import { motion } from "framer-motion";
@@ -30,6 +29,7 @@ import PropertyImagePlaceholder from "@/components/property/PropertyImagePlaceho
 import RiskBreakdownRadar from "@/components/risk/RiskBreakdownRadar";
 import RiskExplainability from "@/components/risk/RiskExplainability";
 import RiskFactorCard from "@/components/risk/RiskFactorCard";
+import RiskHistorySection from "@/components/risk/RiskHistorySection";
 import RiskSpectrum from "@/components/risk/RiskSpectrum";
 
 export default function RiskAnalysisPage() {
@@ -38,8 +38,17 @@ export default function RiskAnalysisPage() {
   const router = useRouter();
   const propertyId = params?.id;
 
-  const { breakdown, loading, error, recalculating, recalculate } =
-    useRiskAssessment(propertyId, { autoFetch: true });
+  const {
+    breakdown,
+    history,
+    loading,
+    error,
+    recalculating,
+    recalculate,
+  } = useRiskAssessment(propertyId, {
+    autoFetch: true,
+    loadHistory: true,
+  });
 
   const [propertyInfo, setPropertyInfo] = useState(null);
   const [showMethodology, setShowMethodology] = useState(false);
@@ -109,7 +118,7 @@ export default function RiskAnalysisPage() {
   return (
     <div className="min-h-screen bg-white dark:bg-[#0d1117]">
       {/* ════════════════════════════════════════════════════════
-          BREADCRUMB HEADER — FIX #1: py-3 → py-2 (tighter)
+          BREADCRUMB HEADER
       ════════════════════════════════════════════════════════ */}
       <div className="border-b border-gray-200 dark:border-[#30363d]">
         <div className="max-w-5xl mx-auto px-6 py-3 flex items-center gap-2 text-sm">
@@ -130,8 +139,6 @@ export default function RiskAnalysisPage() {
       <div className="max-w-5xl mx-auto px-6 py-8">
         {/* ════════════════════════════════════════════════════════
             PROPERTY CONTEXT STRIP
-            FIX #2: Image w-20 h-20 → w-32 h-32
-            FIX #3: Only ONE Generate Report CTA here (header)
         ════════════════════════════════════════════════════════ */}
         {propertyInfo && (
           <motion.div
@@ -139,7 +146,6 @@ export default function RiskAnalysisPage() {
             animate={{ opacity: 1, y: 0 }}
             className="mb-8 flex gap-4 items-center"
           >
-            {/* Property image — FIX #2: 128px × 128px */}
             <div className="w-32 h-32 rounded-xl overflow-hidden flex-shrink-0 bg-gray-100 dark:bg-[#161b22] border border-gray-200 dark:border-[#30363d]">
               {propertyThumbnail ? (
                 <img
@@ -154,7 +160,6 @@ export default function RiskAnalysisPage() {
               )}
             </div>
 
-            {/* Details */}
             <div className="flex-1 min-w-0">
               <h1 className="text-xl font-bold text-gray-900 dark:text-[#e6edf3] tracking-tight truncate">
                 {propertyInfo.address}
@@ -168,7 +173,6 @@ export default function RiskAnalysisPage() {
                 </span>
               </div>
 
-              {/* Quick facts row */}
               <div className="flex items-center gap-4 mt-2 text-sm">
                 {propertyInfo.marketValue != null && (
                   <span className="font-bold text-gray-900 dark:text-[#e6edf3]">
@@ -197,7 +201,6 @@ export default function RiskAnalysisPage() {
               </div>
             </div>
 
-            {/* FIX #3: ONE Generate Report CTA — header only */}
             <Link
               href={`/properties/${propertyId}/generate-report`}
               className="hidden sm:inline-flex items-center gap-2 px-4 py-2.5 rounded-lg bg-gray-900 dark:bg-white text-white dark:text-gray-900 text-sm font-semibold hover:opacity-90 transition-opacity flex-shrink-0"
@@ -209,9 +212,7 @@ export default function RiskAnalysisPage() {
         )}
 
         {/* ════════════════════════════════════════════════════════
-            HERO — Severity Spectrum (dominant)
-            FIX #4: Pass recalculating prop so RiskSpectrum
-            can reset animation on recalculate complete
+            HERO — Severity Spectrum
         ════════════════════════════════════════════════════════ */}
         <motion.div
           initial={{ opacity: 0, y: 12 }}
@@ -228,7 +229,7 @@ export default function RiskAnalysisPage() {
         </motion.div>
 
         {/* ════════════════════════════════════════════════════════
-            DATA QUALITY WARNING — subtle, only if incomplete
+            DATA QUALITY WARNING
         ════════════════════════════════════════════════════════ */}
         {breakdown.dataIncomplete && (
           <motion.div
@@ -260,10 +261,9 @@ export default function RiskAnalysisPage() {
         )}
 
         {/* ════════════════════════════════════════════════════════
-            2-COLUMN: Radar (supporting) + Top Risks (list)
+            2-COLUMN: Radar + Top Risks
         ════════════════════════════════════════════════════════ */}
         <div className="grid grid-cols-1 md:grid-cols-[1fr_1.2fr] gap-6 mb-8">
-          {/* Radar — smaller, supporting */}
           <div className="rounded-2xl border border-gray-200 dark:border-[#30363d] p-6 bg-white dark:bg-[#0d1117]">
             <h2 className="text-sm font-semibold text-gray-900 dark:text-[#e6edf3] mb-1">
               {t("risk.page.categoryBreakdown", "Category Breakdown")}
@@ -277,7 +277,6 @@ export default function RiskAnalysisPage() {
             <RiskBreakdownRadar breakdown={breakdown} height={260} />
           </div>
 
-          {/* Top 3 risks list — actionable summary */}
           <div className="rounded-2xl border border-gray-200 dark:border-[#30363d] p-6 bg-white dark:bg-[#0d1117]">
             <h2 className="text-sm font-semibold text-gray-900 dark:text-[#e6edf3] mb-1">
               {t("risk.page.topRisksTitle", "Top Risk Contributors")}
@@ -330,7 +329,7 @@ export default function RiskAnalysisPage() {
         </div>
 
         {/* ════════════════════════════════════════════════════════
-            FULL FACTOR LIST — dense rows
+            FULL FACTOR LIST
         ════════════════════════════════════════════════════════ */}
         <div className="rounded-2xl border border-gray-200 dark:border-[#30363d] bg-white dark:bg-[#0d1117] overflow-hidden mb-8">
           <div className="px-6 py-4 border-b border-gray-100 dark:border-[#21262d] flex items-center justify-between">
@@ -367,7 +366,20 @@ export default function RiskAnalysisPage() {
         </div>
 
         {/* ════════════════════════════════════════════════════════
-            METHODOLOGY — collapsible, footnote-style
+            🆕 RISK HISTORY SECTION — Session 18 addition
+            Placed AFTER factor list, BEFORE methodology.
+            Rationale: users see current state first, then historical
+            context, then technical methodology at the bottom.
+        ════════════════════════════════════════════════════════ */}
+        <RiskHistorySection
+          history={history}
+          loading={loading}
+          onRecalculate={recalculate}
+          recalculating={recalculating}
+        />
+
+        {/* ════════════════════════════════════════════════════════
+            METHODOLOGY — collapsible
         ════════════════════════════════════════════════════════ */}
         {showMethodology && (
           <motion.div
@@ -380,7 +392,7 @@ export default function RiskAnalysisPage() {
         )}
 
         {/* ════════════════════════════════════════════════════════
-            FOOTER — FIX #3: disclaimer text ONLY, no duplicate CTA
+            FOOTER
         ════════════════════════════════════════════════════════ */}
         <div className="border-t border-gray-200 dark:border-[#30363d] pt-6">
           <p className="text-xs text-gray-500 dark:text-[#7d8590] max-w-lg">
