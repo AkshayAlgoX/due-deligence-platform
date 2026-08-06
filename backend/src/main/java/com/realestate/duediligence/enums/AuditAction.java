@@ -1,0 +1,24 @@
+package com.realestate.duediligence.enums;
+
+public enum AuditAction {
+
+    LOGIN,
+    LOGOUT,
+
+    PROPERTY_VIEW,
+    PROPERTY_CREATED,
+    PROPERTY_UPDATED,
+    PROPERTY_DELETED,
+
+    REPORT_GENERATED,
+    REPORT_DOWNLOADED,
+
+    RISK_ASSESSED,
+
+    EXPORT_PDF,
+    EXPORT_EXCEL,
+
+    USER_REGISTERED,
+    PROFILE_UPDATED,
+    PASSWORD_CHANGED
+}

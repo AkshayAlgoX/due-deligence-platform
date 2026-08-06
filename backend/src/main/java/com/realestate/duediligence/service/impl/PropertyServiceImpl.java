@@ -14,12 +14,16 @@ import com.realestate.duediligence.dto.PropertyRequest;
 import com.realestate.duediligence.dto.PropertyResponse;
 import com.realestate.duediligence.entity.Property;
 import com.realestate.duediligence.entity.User;
+import com.realestate.duediligence.entity.AuditLog;
+import com.realestate.duediligence.enums.AuditAction;
 import com.realestate.duediligence.integration.AddressValidationService;
 import com.realestate.duediligence.repository.PropertyRepository;
 import com.realestate.duediligence.repository.UserRepository;
+import com.realestate.duediligence.service.AuditLogService;
 import com.realestate.duediligence.service.PortfolioSnapshotService;
 import com.realestate.duediligence.service.PropertyService;
 import com.realestate.duediligence.service.PropertyVerificationService;
+import com.realestate.duediligence.service.AuditLogService;
 
 import lombok.RequiredArgsConstructor;
 
@@ -32,8 +36,9 @@ public class PropertyServiceImpl implements PropertyService {
     private final PropertyVerificationService   verificationService;
     private final UserRepository                userRepository;
     private final PortfolioSnapshotService      portfolioSnapshotService;
+    private final AuditLogService               auditLogService;
     private final com.realestate.duediligence.service.GeocodingService geocodingService;
-
+    
     // ── Add property ──────────────────────────────────────────────
     @Override
     @Transactional
@@ -58,6 +63,13 @@ public class PropertyServiceImpl implements PropertyService {
         property.setUpdatedAt(LocalDateTime.now());
 
         Property saved = propertyRepository.save(property);
+
+        saveAuditLog(
+                currentUser,
+                AuditAction.PROPERTY_CREATED,
+                "PROPERTY",
+                 saved.getId(),
+                 "Property created");
 
         // Trigger real-time snapshot so chart updates immediately
         if (saved.getCreatedBy() != null) {
@@ -95,6 +107,13 @@ public class PropertyServiceImpl implements PropertyService {
         property.setUpdatedAt(LocalDateTime.now());
 
         Property saved = propertyRepository.save(property);
+
+        saveAuditLog(
+                 currentUser,
+                 AuditAction.PROPERTY_UPDATED,
+                 "PROPERTY",
+                  saved.getId(),
+                 "Property updated");
 
         // Trigger real-time snapshot
         if (saved.getCreatedBy() != null) {
@@ -142,8 +161,16 @@ public class PropertyServiceImpl implements PropertyService {
 
         // ⭐ ADMIN can view ANY property
         if (isAdmin(currentUser)) {
-            return mapToResponse(property);
-        }
+
+             saveAuditLog(
+                      currentUser,
+                      AuditAction.PROPERTY_VIEW,
+                      "PROPERTY",
+                      property.getId(),
+                      "Viewed property");
+
+             return mapToResponse(property);
+}
 
         // Regular users can only view their own
         if (currentUser == null ||
@@ -151,6 +178,13 @@ public class PropertyServiceImpl implements PropertyService {
                 !property.getCreatedBy().getId().equals(currentUser.getId())) {
             throw new RuntimeException("Property not found");
         }
+
+        saveAuditLog(
+                 currentUser,
+                 AuditAction.PROPERTY_VIEW,
+                 "PROPERTY",
+                 property.getId(),
+                 "Viewed property");
 
         return mapToResponse(property);
     }
@@ -377,6 +411,13 @@ public class PropertyServiceImpl implements PropertyService {
                     property.getCreatedBy().getId());
         }
 
+        saveAuditLog(
+                currentUser,
+                AuditAction.PROPERTY_DELETED,
+                "PROPERTY",
+                property.getId(),
+                "Property deleted");
+
         propertyRepository.delete(property);
     }
 
@@ -408,4 +449,28 @@ public class PropertyServiceImpl implements PropertyService {
         }
         return geocoded;
     }
-}
+
+    private void saveAuditLog(
+        User user,
+        AuditAction action,
+        String resourceType,
+        Long resourceId,
+        String details) {
+
+    if (user == null) {
+        return;
+    }
+
+    AuditLog log = new AuditLog();
+
+    log.setUser(user);
+    log.setAction(action);
+    log.setResourceType(resourceType);
+    log.setResourceId(resourceId);
+    log.setDetailsJson(details);
+    log.setIpAddress("127.0.0.1");
+    log.setUserAgent("Property Service");
+    log.setCreatedAt(LocalDateTime.now());
+
+    auditLogService.save(log);
+}}
