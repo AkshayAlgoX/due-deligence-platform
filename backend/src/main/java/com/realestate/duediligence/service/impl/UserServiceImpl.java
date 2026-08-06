@@ -18,26 +18,24 @@ import com.realestate.duediligence.dto.ForgotPasswordRequest;
 import com.realestate.duediligence.dto.GoogleAuthResponse;
 import com.realestate.duediligence.dto.GoogleLoginRequest;
 import com.realestate.duediligence.dto.LoginRequest;
-import com.realestate.duediligence.dto.RegisterRequest;
+import com.realestate.duediligence.dto.ResendRegistrationOtpRequest;
 import com.realestate.duediligence.dto.ResetPasswordRequest;
+import com.realestate.duediligence.dto.SendOtpResponse;
+import com.realestate.duediligence.dto.SendRegistrationOtpRequest;
 import com.realestate.duediligence.dto.UpdateProfileRequest;
 import com.realestate.duediligence.dto.UserProfileResponse;
 import com.realestate.duediligence.dto.VerifyOtpRequest;
+import com.realestate.duediligence.dto.VerifyRegistrationOtpRequest;
+import com.realestate.duediligence.entity.PendingRegistration;
 import com.realestate.duediligence.entity.Role;
 import com.realestate.duediligence.entity.User;
+import com.realestate.duediligence.repository.PendingRegistrationRepository;
 import com.realestate.duediligence.repository.RoleRepository;
 import com.realestate.duediligence.repository.UserRepository;
 import com.realestate.duediligence.service.EmailService;
 import com.realestate.duediligence.service.GoogleTokenVerifier;
 import com.realestate.duediligence.service.UserService;
 import com.realestate.duediligence.util.JwtService;
-import com.realestate.duediligence.dto.ResendRegistrationOtpRequest;
-import com.realestate.duediligence.dto.SendOtpResponse;
-import com.realestate.duediligence.dto.SendRegistrationOtpRequest;
-import com.realestate.duediligence.dto.VerifyRegistrationOtpRequest;
-import com.realestate.duediligence.entity.PendingRegistration;
-import com.realestate.duediligence.repository.PendingRegistrationRepository;
-import com.realestate.duediligence.entity.RoleType;
 
 @Service
 public class UserServiceImpl implements UserService {
@@ -105,7 +103,6 @@ public class UserServiceImpl implements UserService {
     Role role = roleRepository.findByRoleName(request.getRole())
             .orElseThrow(() -> new RuntimeException("Invalid role selected"));
     
-
 
 
         // 3. Look up existing pending row (if user is re-submitting the form)
