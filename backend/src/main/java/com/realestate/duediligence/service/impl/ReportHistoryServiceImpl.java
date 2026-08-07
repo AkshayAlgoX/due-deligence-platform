@@ -34,19 +34,8 @@ public class ReportHistoryServiceImpl implements ReportHistoryService {
 
     @Override
     public ReportHistory save(ReportHistory reportHistory) {
-
-    ReportHistory saved = repository.save(reportHistory);
-
-    saveAuditLog(
-            resolveCurrentUser(),
-            AuditAction.REPORT_GENERATED,
-            "REPORT",
-            saved.getId(),
-            "Report generated"
-    );
-
-    return saved;
-}
+        return repository.save(reportHistory);
+    }
 
     @Override
     public List<ReportHistoryDto> getAllReports() {
@@ -96,14 +85,6 @@ public class ReportHistoryServiceImpl implements ReportHistoryService {
         report.setIsArchived(true);
 
         repository.save(report);
-
-        saveAuditLog(
-        resolveCurrentUser(),
-        AuditAction.REPORT_GENERATED,   // or REPORT_ARCHIVED if available
-        "REPORT",
-        report.getId(),
-        "Report archived"
-       );
     }
 
     @Override
@@ -116,14 +97,6 @@ public class ReportHistoryServiceImpl implements ReportHistoryService {
                 email,
                 "Report " + report.getReportId()
         );
-
-        saveAuditLog(
-        resolveCurrentUser(),
-        AuditAction.REPORT_GENERATED,   // or REPORT_SHARED if available
-        "REPORT",
-        report.getId(),
-        "Report shared to " + email
-    );
     }
 
     private ReportHistoryDto toDto(ReportHistory report) {
@@ -172,10 +145,6 @@ public class ReportHistoryServiceImpl implements ReportHistoryService {
         Long resourceId,
         String details) {
 
-    if (user == null) {
-        return;
-    }
-
     AuditLog log = new AuditLog();
 
     log.setUser(user);
@@ -186,4 +155,6 @@ public class ReportHistoryServiceImpl implements ReportHistoryService {
     log.setCreatedAt(LocalDateTime.now());
 
     auditLogService.save(log);
-}}
+}
+
+}

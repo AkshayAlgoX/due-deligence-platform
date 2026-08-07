@@ -457,13 +457,6 @@ public class UserServiceImpl implements UserService {
 
         userRepository.save(user);
 
-        saveAuditLog(
-                 user,
-                 AuditAction.USER_REGISTERED,
-                 "USER",
-                 user.getId(),
-                 "Google user registered");
-
         emailService.sendWelcomeEmail(user.getEmail(), user.getFullName());
 
         String token = jwtService.generateToken(email);
@@ -558,13 +551,6 @@ public class UserServiceImpl implements UserService {
         user.setUpdatedAt(LocalDateTime.now());
         userRepository.save(user);
 
-        saveAuditLog(
-                 user,
-                 AuditAction.PASSWORD_CHANGED,
-                 "USER",
-                 user.getId(),
-                 "Password reset");
-
         return new ApiResponse(true, "Password reset successfully. You can now sign in.");
     }
 
@@ -605,13 +591,6 @@ public class UserServiceImpl implements UserService {
 
         // 4. Delete (cascade removes their properties via @OnDelete)
         userRepository.delete(user);
-
-        saveAuditLog(
-                 user,
-                 AuditAction.PROFILE_UPDATED,
-                 "USER",
-                 user.getId(),
-                 "Account deleted");
 
         // 5. Send farewell email (best effort)
         try {
