@@ -9,16 +9,16 @@
  *   - Throw on error (so forms can handle field-level UX)
  *   - Return data on success (so forms can decide what to do next)
  *
- * NOT responsible for:
- *   - Toasts (forms handle their own — allows per-form messaging)
- *   - Navigation (forms handle their own — allows different post-auth flows)
- *
- * This keeps the hook reusable across login page, register page, modals, etc.
+ * Language behavior on logout (professional — like Zillow/Netflix):
+ *   - Current browser language is preserved in localStorage
+ *   - Next user sees the LAST browser choice (not previous user's choice)
+ *   - Language stays with the BROWSER, not with individual user accounts
  */
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
 import { useTranslation } from "react-i18next";
+import i18n from "@/i18n";
 
 import {
   loginUser,
@@ -35,7 +35,6 @@ export function useAuth() {
 
   /**
    * Step 1 of registration: send OTP.
-   * Does NOT create the account. Returns metadata for OTP modal.
    */
   const startRegistration = async (formData) => {
     setLoading(true);
@@ -49,7 +48,6 @@ export function useAuth() {
 
   /**
    * Step 2 of registration: verify OTP → creates account + auto-login.
-   * Returns { token } on success.
    */
   const verifyOtpAndRegister = async (payload) => {
     setLoading(true);
@@ -74,8 +72,6 @@ export function useAuth() {
 
   /**
    * Login an existing user.
-   * @returns {Promise<{token}>} auth response on success
-   * @throws {Error} enriched error from api.js
    */
   const login = async (formData) => {
     setLoading(true);
@@ -87,14 +83,42 @@ export function useAuth() {
     }
   };
 
-  /** Logout — clears session and redirects to /login. */
-    const logout = () => {
+  /**
+   * Logout — clears session, preserves language, redirects to /login.
+   *
+   * IMPORTANT: We explicitly persist the current i18n language BEFORE
+   * clearing session storage. This way:
+   *  - Admin (Hindi) logs out → language stays Hindi
+   *  - Next user opens login → sees Hindi (browser preference)
+   *  - Language follows the BROWSER, not the user account
+   *  - Matches behavior of Zillow, Netflix, Airbnb
+   */
+  const logout = () => {
+    // 1. Capture current language before ANY storage is cleared
+    const currentLang = i18n.language || "en";
+
+    // 2. Clear auth session (removes token + user + cookies)
     logoutUser();
+
+    // 3. Explicitly re-persist language in localStorage
+    //    (i18next-browser-languagedetector reads this on next load)
+    if (typeof window !== "undefined") {
+      try {
+        window.localStorage.setItem("i18nextLng", currentLang);
+      } catch {
+        /* localStorage disabled — ignore */
+      }
+    }
+
+    // 4. Show localized farewell toast
     toast.success(t("completeProfile.toasts.signedOut.title"), {
       description: t("completeProfile.toasts.signedOut.description"),
     });
+
+    // 5. Redirect to login
     router.push("/login");
   };
+
   return {
     loading,
     startRegistration,

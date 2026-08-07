@@ -48,4 +48,50 @@ export const API_ROUTES = {
     // ── Comparisons ──────────────────────────────────────────────────────────────
   COMPARISONS:         "/api/comparisons",
   COMPARISON_BY_ID:    (id) => `/api/comparisons/${id}`,
+
+  // Property Labels
+GET_PROPERTY_LABELS: (propertyId) => `/api/properties/${propertyId}/labels`,
+ADD_PROPERTY_LABEL: (propertyId) => `/api/properties/${propertyId}/labels`,
+REMOVE_PROPERTY_LABEL: (propertyId, labelId) =>
+  `/api/properties/${propertyId}/labels/${labelId}`,
+RECALCULATE_ALL_LABELS: "/api/labels/recalculate-all",
+BULK_PROPERTY_LABELS: "/api/labels/bulk",
+
+RISK: {
+    GET:         (propertyId) => `/api/properties/${propertyId}/risk`,
+    BREAKDOWN:   (propertyId) => `/api/properties/${propertyId}/risk/breakdown`,
+    HISTORY:     (propertyId) => `/api/properties/${propertyId}/risk/history`,
+    RECALCULATE: (propertyId) => `/api/properties/${propertyId}/risk/recalculate`,
+  },
+
+  // ── Due Diligence Reports (for Day 7-8) ─────────────────────
+  REPORTS: {
+    GENERATE:      '/api/reports/generate',
+    STATUS:        (reportId) => `/api/reports/${reportId}/status`,
+    GET:           (reportId) => `/api/reports/${reportId}`,
+    LIST:          '/api/reports',
+    DELETE:        (reportId) => `/api/reports/${reportId}`,
+    BY_PROPERTY:   (propertyId) => `/api/reports/property/${propertyId}`,
+    REGENERATE:    (reportId) => `/api/reports/${reportId}/regenerate`,
+  },
+
+  // ── Notifications ─────────────────────────────────────────────────────────
+  NOTIFICATIONS: {
+    LIST:          '/api/notifications',
+    UNREAD_COUNT:  '/api/notifications/unread-count',
+    MARK_READ:     (id) => `/api/notifications/${id}/read`,
+    MARK_ALL_READ: '/api/notifications/mark-all-read',
+    DELETE:        (id) => `/api/notifications/${id}`,
+    CLEAR_ALL:     '/api/notifications/clear-all',
+    PREFERENCES:   '/api/notifications/preferences',
+    TEST:          '/api/notifications/test',
+    SEND_BULK:     '/api/notifications/send-bulk',
+  },
+
+  // ── SSE ───────────────────────────────────────────────────────────────────
+  SSE_NOTIFICATIONS: '/api/sse/notifications',
+
 };
+
+
+

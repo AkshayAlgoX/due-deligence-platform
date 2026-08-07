@@ -13,7 +13,9 @@ import {
   Layers,
   UserRound,
   Pencil,
+  FileText,
 } from "lucide-react";
+import Link from "next/link";
 import { formatINRFull } from "@/utils/currency";
 import { getPropertyHeroImage } from "@/constants/propertyImages";
 import PropertyImagePlaceholder from "./PropertyImagePlaceholder";
@@ -143,18 +145,44 @@ export default function PropertyDetails({ property, onEdit }) {
           <div className="flex items-center justify-between gap-2 flex-wrap">
             <div className="flex items-center gap-2 flex-wrap">
               {propertyType && (
-  <p className="text-xs font-bold uppercase tracking-widest text-[#22C55E] dark:text-green-400">
-    {translatePropertyType(t, propertyType)}
-  </p>
-)}
+                <p className="text-xs font-bold uppercase tracking-widest text-[#22C55E] dark:text-green-400">
+                  {translatePropertyType(t, propertyType)}
+                </p>
+              )}
               <span className="inline-flex items-center gap-1 rounded-full bg-gray-50 dark:bg-[#1c2128] px-2 py-0.5 text-[10px] font-semibold text-gray-500 dark:text-[#7d8590] ring-1 ring-gray-200 dark:ring-[#30363d]">
                 <UserRound className="h-2.5 w-2.5" strokeWidth={2.5} />
                 {t("property.details.userProvided")}
               </span>
             </div>
 
-            <div className="flex items-center gap-2">
-              <DownloadPDFButton property={property} />
+            {/* ── Action buttons row ── */}
+            <div className="flex items-center gap-2 flex-wrap">
+
+              {/* Generate Report — primary green CTA */}
+              <Link
+                href={`/properties/${id}/generate-report`}
+                onClick={(e) => e.stopPropagation()}
+                title={t("property.details.generateReportTooltip", {
+                  defaultValue: "Generate a full due diligence report for this property",
+                })}
+                className="flex items-center gap-1.5 rounded-lg bg-[#22C55E] px-3 py-1.5 text-xs font-semibold text-white shadow-sm shadow-green-500/20 transition-all duration-150 hover:bg-[#16a34a] hover:shadow-green-500/30 active:scale-95"
+              >
+                <FileText className="h-3.5 w-3.5" strokeWidth={2.4} />
+                {t("property.details.generateReport", {
+                  defaultValue: "Generate Report",
+                })}
+              </Link>
+
+              {/* Quick PDF — existing DownloadPDFButton, unchanged */}
+              <div
+                title={t("property.details.quickPdfTooltip", {
+                  defaultValue: "Download a quick client-side PDF summary",
+                })}
+              >
+                <DownloadPDFButton property={property} />
+              </div>
+
+              {/* Edit Details — admin/agent only, unchanged */}
               {canEdit && (
                 <button
                   type="button"

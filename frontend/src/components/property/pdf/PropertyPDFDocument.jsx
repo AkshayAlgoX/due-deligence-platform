@@ -90,9 +90,10 @@ function statusLabel(status) {
 }
 
 function riskColor(label) {
-  if (label === "HIGH")   return "#dc2626"; // red-600
-  if (label === "MEDIUM") return "#d97706"; // amber-600
-  return "#16a34a"; // green-700
+  if (label === "CRITICAL") return "#dc2626"; // red-600
+  if (label === "HIGH")     return "#ea580c"; // orange-600
+  if (label === "MEDIUM")   return "#d97706"; // amber-600
+  return "#16a34a"; // green-700 (LOW or unknown)
 }
 
 // ── Styles ─────────────────────────────────────────────────────────────────
@@ -860,13 +861,78 @@ function RiskSection({ risk }) {
     );
   }
 
-  const color = riskColor(risk.riskLabel);
-  const categories = [
-    { label: "Financial",     key: "financialScore",     weight: "30%" },
-    { label: "Legal",         key: "legalScore",         weight: "30%" },
-    { label: "Environmental", key: "environmentalScore", weight: "25%" },
-    { label: "Structural",    key: "structuralScore",    weight: "15%" },
-  ];
+  // ── COMPATIBILITY LAYER ──
+  // Handles BOTH old API shape (financialScore, riskLabel) AND
+  // new API shape (breakdown.factors[], overallLevel) from Session 15.
+  // Falls back gracefully if any field is missing.
+
+  const overallScore = risk.overallScore ?? risk.score ?? 0;
+  const overallLevel =
+    risk.overallLevel ?? risk.riskLabel ?? risk.level ?? "LOW";
+  const color = riskColor(overallLevel);
+
+  // Build categories from whichever shape is available
+  let categories = [];
+
+  if (Array.isArray(risk.factors) && risk.factors.length > 0) {
+    // NEW API shape (from RiskAssessmentController)
+    const categoryLabels = {
+      FLOOD:         "Flood",
+      LEGAL:         "Legal",
+      TAX:           "Tax",
+      ZONING:        "Zoning",
+      ENVIRONMENTAL: "Environmental",
+      MARKET:        "Market",
+    };
+    const categoryWeights = {
+      FLOOD:         "25%",
+      LEGAL:         "20%",
+      TAX:           "15%",
+      ZONING:        "15%",
+      ENVIRONMENTAL: "15%",
+      MARKET:        "10%",
+    };
+    categories = risk.factors.map((f) => ({
+      label:  categoryLabels[f.category] ?? f.category ?? "—",
+      score:  Math.max(0, Math.min(100, Number(f.score) || 0)),
+      weight: categoryWeights[f.category] ?? "—",
+    }));
+  } else {
+    // OLD API shape (kept for backward compat)
+    const legacyMap = [
+      { label: "Financial",     score: risk.financialScore,     weight: "30%" },
+      { label: "Legal",         score: risk.legalScore,         weight: "30%" },
+      { label: "Environmental", score: risk.environmentalScore, weight: "25%" },
+      { label: "Structural",    score: risk.structuralScore,    weight: "15%" },
+    ];
+    categories = legacyMap.map((c) => ({
+      label:  c.label,
+      score:  Math.max(0, Math.min(100, Number(c.score) || 0)),
+      weight: c.weight,
+    }));
+  }
+
+  // Normalize risk flags — try multiple sources
+  let riskFlags = [];
+  if (Array.isArray(risk.riskFlags) && risk.riskFlags.length > 0) {
+    riskFlags = risk.riskFlags;
+  } else if (Array.isArray(risk.factors)) {
+    // Extract explanations from new API factors as flags
+    riskFlags = risk.factors
+      .filter((f) => f.explanation)
+      .map((f) => f.explanation);
+  }
+
+  const levelLabel =
+    overallLevel === "LOW"
+      ? "Low risk"
+      : overallLevel === "MEDIUM"
+      ? "Medium risk"
+      : overallLevel === "HIGH"
+      ? "High risk"
+      : overallLevel === "CRITICAL"
+      ? "Critical risk"
+      : "Unknown risk";
 
   return (
     <View style={[s.riskBox, { borderColor: color + "40", backgroundColor: color + "08" }]}>
@@ -874,24 +940,18 @@ function RiskSection({ risk }) {
       <View style={s.riskHeader}>
         <View>
           <Text style={[s.riskScoreBig, { color }]}>
-            {risk.overallScore}
+            {overallScore.toFixed ? overallScore.toFixed(0) : overallScore}
             <Text style={{ fontSize: 12, color: C.gray400 }}>/100</Text>
           </Text>
-          <Text style={[s.riskLabel, { color }]}>
-            {risk.riskLabel === "LOW"
-              ? "Low risk"
-              : risk.riskLabel === "MEDIUM"
-              ? "Medium risk"
-              : "High risk"}
-          </Text>
+          <Text style={[s.riskLabel, { color }]}>{levelLabel}</Text>
           <Text style={s.riskSubLabel}>Rule-based · real aggregated data</Text>
         </View>
         <View style={{ alignItems: "flex-end" }}>
           <Text style={{ fontSize: 8, color: C.gray500, marginBottom: 4 }}>
             Category breakdown
           </Text>
-          {categories.map((cat) => (
-            <View key={cat.key} style={[s.categoryRow, { width: 200 }]}>
+          {categories.map((cat, i) => (
+            <View key={`${cat.label}-${i}`} style={[s.categoryRow, { width: 200 }]}>
               <Text style={s.categoryLabel}>{cat.label}</Text>
               <Text style={s.categoryWeight}>{cat.weight}</Text>
               <View style={s.barBg}>
@@ -899,20 +959,22 @@ function RiskSection({ risk }) {
                   style={[
                     s.barFill,
                     {
-                      width:           `${risk[cat.key]}%`,
+                      width:           `${cat.score}%`,
                       backgroundColor: color,
                     },
                   ]}
                 />
               </View>
-              <Text style={s.categoryScore}>{risk[cat.key]}</Text>
+              <Text style={s.categoryScore}>
+                {cat.score.toFixed ? cat.score.toFixed(0) : cat.score}
+              </Text>
             </View>
           ))}
         </View>
       </View>
 
       {/* Risk flags */}
-      {risk.riskFlags?.length > 0 && (
+      {riskFlags.length > 0 && (
         <View
           style={{
             borderTopWidth: 0.5,
@@ -930,9 +992,9 @@ function RiskSection({ risk }) {
               letterSpacing: 0.5,
             }}
           >
-            Risk factors · {risk.riskFlags.length}
+            Risk factors · {riskFlags.length}
           </Text>
-          {risk.riskFlags.map((flag, i) => (
+          {riskFlags.map((flag, i) => (
             <View key={i} style={s.flagRow}>
               <View style={s.flagDot} />
               <Text style={s.flagText}>{flag}</Text>

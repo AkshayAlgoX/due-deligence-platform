@@ -1,4 +1,146 @@
 {
+  "risk": {
+  "badge": { "ariaLabel": "خطرے کی سطح: {{level}}" },
+  "levels": {
+    "LOW": "کم", "MEDIUM": "درمیانہ", "HIGH": "زیادہ", "CRITICAL": "سنگین", "UNKNOWN": "نامعلوم"
+  },
+  "categories": {
+    "FLOOD": "سیلاب", "LEGAL": "قانونی", "TAX": "ٹیکس", "ZONING": "زوننگ",
+    "ENVIRONMENTAL": "ماحولیاتی", "MARKET": "مارکیٹ"
+  },
+  "gauge": {
+    "outOf": "100 میں سے",
+    "ariaLabel": "خطرے کا سکور: 100 میں سے {{score}}، {{level}}",
+    "deltaWorse": "بیس لائن کے مقابلے میں",
+    "deltaBetter": "بیس لائن کے مقابلے میں",
+    "recalculate": "دوبارہ حساب لگائیں",
+    "recalculating": "دوبارہ حساب ہو رہا ہے...",
+    "recalculateAria": "تازہ ترین ڈیٹا کے ساتھ خطرے کا دوبارہ حساب لگائیں"
+  },
+  "radar": {
+    "seriesName": "خطرے کا سکور",
+    "helperText": "ہر محور ایک زمرہ سکور دکھاتا ہے (0–100)۔ کم بہتر ہے۔",
+    "tooltipScore": "سکور", "tooltipWeight": "وزن"
+  },
+  "factor": {
+    "weight": "وزن: {{weight}}",
+    "explanation": "تجزیہ",
+    "recommendation": "سفارش",
+    "dataSource": "ڈیٹا کا ذریعہ",
+    "dataUncertain": "سکور ڈیٹا کی غیر یقینی کی جرمانہ کی عکاسی کرتا ہے",
+    "toggleAria": "{{category}} تفصیلات ٹوگل کریں"
+  },
+  "explain": {
+    "title": "خطرے کی سکورنگ کیسے کام کرتی ہے",
+    "subtitle": "شفاف، اصول پر مبنی سکورنگ — کوئی بلیک باکس AI نہیں",
+    "howItWorks": "مجموعی سکور کا حساب کیسے لگایا جاتا ہے",
+    "description": "ہر جائیداد کا 6 زمروں میں تجزیہ کیا جاتا ہے۔ ہر زمرے کو 0–100 سکور ملتا ہے (زیادہ = زیادہ خطرہ)۔ مجموعی سکور ایک وزنی مجموعہ ہے — زیادہ وزن والے زمرے (سیلاب 25% کی طرح) حتمی سکور پر زیادہ اثر ڈالتے ہیں۔",
+    "categoryWeights": "زمرہ وزن",
+    "levelThresholds": "خطرے کی سطحیں",
+    "dataHonesty": {
+      "title": "ڈیٹا کے ذرائع کے بارے میں",
+      "body": "جب ڈیٹا کا ذریعہ دستیاب نہ ہو تو ہم صفر خطرے کو فرض کرنے کے بجائے غیر یقینی کی جرمانہ لاگو کرتے ہیں۔ گمشدہ معلومات خود ایک خطرے کا عنصر ہے — ہم اسے آپ سے چھپائیں گے نہیں۔"
+    }
+  },
+  "page": {
+    "backToProperty": "پراپرٹی پر واپس جائیں",
+"bedShort": "BR",
+"topRisksTitle": "اہم رسک عوامل",
+"topRisksDesc": "وہ عوامل جو مجموعی رسک اسکور پر سب سے زیادہ اثر ڈالتے ہیں",
+"methodology": "طریقۂ کار",
+"footerDisclaimer": "رسک اسکور 6 زمروں میں شفاف وزن کی بنیاد پر شمار کیا جاتا ہے۔ یہ فیصلہ سازی میں مدد دینے والا آلہ ہے، مالی مشورہ نہیں۔",
+    "title": "خطرے کا تجزیہ",
+    "loading": "جائیداد کے خطرے کا تجزیہ کیا جا رہا ہے...",
+    "errorTitle": "خطرے کا تجزیہ لوڈ کرنے سے قاصر",
+    "goBack": "واپس جائیں",
+    "backAria": "پچھلے صفحے پر واپس جائیں",
+    "overallScore": "مجموعی خطرے کا سکور",
+    "categoryBreakdown": "زمرہ تقسیم",
+    "categoryBreakdownDesc": "تمام 6 خطرے کے عوامل بصری۔ بڑا علاقہ = زیادہ مجموعی خطرہ۔",
+    "factorsTitle": "خطرے کے عوامل",
+    "factorsSubtitle": "خطرے کے تعاون کے مطابق ترتیب دیا گیا۔ مکمل تجزیہ دیکھنے کے لیے کسی بھی کارڈ پر کلک کریں۔",
+    "generateReport": "رپورٹ بنائیں",
+    "dataWarningTitle": "کچھ ڈیٹا ذرائع دستیاب نہیں ہیں",
+    "dataWarningBody": "6 میں سے {{count}} ڈیٹا فراہم کنندگان تک نہیں پہنچا جا سکا۔ جہاں ڈیٹا غائب تھا، سکورز محتاط تخمینے کی عکاسی کرتے ہیں۔"
+  },
+    "history": {
+      "sectionTitle": "خطرے کی تاریخ",
+      "sectionSubtitle": "دیکھیں کہ اس جائیداد کا خطرے کا پروفائل کیسے تبدیل ہوا ہے",
+      "chartTitle": "خطرے کے اسکور کا رجحان",
+      "chartSubtitle": "تمام تشخیصات میں مجموعی خطرے کا اسکور",
+      "timelineTitle": "تشخیصی ٹائم لائن",
+      "timelineSubtitle": "ہر دوبارہ حساب، تازہ ترین پہلے",
+      "metaCurrent": "موجودہ",
+      "metaDelta": "تبدیلی",
+      "metaAssessments": "تشخیصات",
+      "metaTimespan": "مدت",
+      "metaLatest": "تازہ ترین",
+      "metaNoChange": "کوئی تبدیلی نہیں",
+      "metaFromBaseline": "بنیاد سے",
+      "metaTotalRuns": "کل حساب",
+      "emptyTitle": "ابھی تک کوئی تاریخ نہیں",
+      "emptyDescription": "متعدد تشخیصات کے بعد خطرے کی تاریخ یہاں ظاہر ہوگی۔ وقت کے ساتھ اسکور کی تبدیلیوں کو ٹریک کرنے کے لیے دوبارہ حساب کریں۔",
+      "recalculateCta": "خطرے کا دوبارہ حساب کریں",
+      "recalculating": "دوبارہ حساب ہو رہا ہے…",
+      "tooltipAssessment": "تشخیص",
+      "tooltipLatest": "تازہ ترین",
+      "badgeLatest": "تازہ ترین",
+      "assessmentId": "تشخیص",
+      "expand": "پھیلائیں",
+      "collapse": "سکیڑیں",
+      "deltaImproved": "پچھلے کے مقابلے میں خطرہ کم ہوا",
+      "deltaWorsened": "پچھلے کے مقابلے میں خطرہ بڑھا",
+      "deltaFlat": "پچھلے کے مقابلے میں کوئی تبدیلی نہیں",
+      "timeJustNow": "ابھی ابھی",
+      "timeMinutesAgo": "{{count}} منٹ پہلے",
+      "timeHoursAgo": "{{count}} گھنٹے پہلے",
+      "timeDaysAgo": "{{count}} دن پہلے"
+    }
+},
+  "logoutModal": {
+  "title": "سائن آؤٹ کرنے کے لیے تیار؟",
+  "description": "اپنے ڈیش بورڈ اور پراپرٹی ڈیٹا تک رسائی کے لیے آپ کو دوبارہ لاگ ان کرنا ہوگا۔",
+  "staySignedIn": "سائن ان رہیں",
+  "confirm": "ہاں، لاگ آؤٹ کریں",
+  "signingOut": "سائن آؤٹ ہو رہا ہے…",
+  "close": "بند کریں",
+  "signedIn": "سائن ان",
+  "active": "فعال",
+  "fallbackUser": "صارف",
+  "tip": "ٹپ: دبائیں",
+  "tipCancel": "منسوخ کرنے کے لیے"
+},
+  "labels": {
+  "NEW": "نیا",
+  "HOT": "ہاٹ",
+  "PRICE_DROP": "قیمت میں کمی",
+  "FEATURED": "فیچرڈ",
+  "VERIFIED": "تصدیق شدہ",
+  "SOLD": "فروخت ہو گیا",
+  "UNDER_OFFER": "آفر پر",
+  "PREMIUM": "پریمیم",
+  "moreCount": "+{{count}} مزید",
+  "admin": {
+    "title": "پراپرٹی لیبلز",
+    "subtitle": "اس پراپرٹی پر دکھائے جانے والے لیبلز کا نظم کریں",
+    "current": "موجودہ لیبلز",
+    "empty": "ابھی تک کوئی لیبل لاگو نہیں",
+    "loading": "لیبلز لوڈ ہو رہے ہیں...",
+    "addNew": "نیا لیبل شامل کریں",
+    "selectType": "لیبل کی قسم",
+    "selectPlaceholder": "ایک لیبل منتخب کریں...",
+    "expiresInDays": "میعاد (دنوں میں)",
+    "expiresPlaceholder": "مثلاً، 30",
+    "optional": "اختیاری",
+    "addButton": "لیبل شامل کریں",
+    "adding": "شامل کیا جا رہا ہے...",
+    "remove": "لیبل ہٹائیں",
+    "added": "لیبل کامیابی سے شامل ہو گیا",
+    "removed": "لیبل ہٹا دیا گیا",
+    "addError": "لیبل شامل کرنے میں ناکامی",
+    "removeError": "لیبل ہٹانے میں ناکامی"
+  }
+},
   "passwordStrength": {
   "weak": "کمزور",
   "fair": "ٹھیک",
@@ -311,6 +453,11 @@
       "afternoon": "دوپہر بخیر",
       "evening": "شام بخیر"
     },
+    "adminBanner": {
+  "title": "ایڈمن موڈ — پلیٹ فارم کا جائزہ",
+  "description": "آپ پلیٹ فارم پر تمام پراپرٹیز اور صارفین دیکھ رہے ہیں۔ اگلے اپ ڈیٹ میں ایک مخصوص ایڈمن ڈیش بورڈ آئے گا۔",
+  "badge": "Admin"
+},
     "subtitle": "ایک نظر میں آپ کا پورٹ فولیو",
     "platformOverview": "پلیٹ فارم کا جائزہ",
     "pageTitle": "ڈیش بورڈ | Real Estate Due Diligence Agent",
@@ -401,6 +548,7 @@
   "map": {
     "title": "پورٹ فولیو جغرافیہ",
     "status": {
+      "unknown": "نامعلوم",
       "loading": "نقشہ لوڈ ہو رہا ہے...",
       "noPropertiesYet": "ابھی تک کوئی جائیداد نہیں",
       "mappedOfTotal": "{{total}} میں سے {{mapped}} نقشے پر موجود",
@@ -431,6 +579,11 @@
     }
   },
   "recommendations": {
+    "general1": "قانونی جانچ کے لیے ہمیشہ کسی مستند رئیل اسٹیٹ وکیل سے مشورہ کریں۔",
+"general2": "سب رجسٹرار کے دفتر سے سرکاری Encumbrance Certificate حاصل کریں۔",
+"general3": "مقامی میونسپل اتھارٹی سے پراپرٹی ٹیکس کی ادائیگی کی تصدیق کریں۔",
+"general4": "مصدقہ اسٹرکچرل سروےر سے سائٹ کا معائنہ کروائیں۔",
+"general5": "تمام دستاویزات کو متعلقہ سرکاری دفاتر کے اصل ریکارڈ سے ملا کر تصدیق کریں۔",
     "items": {
   "incompleteData": {
     "title": "{{address}} پر {{fieldCount}} خانے غائب ہیں",
@@ -988,6 +1141,7 @@
       }
     },
     "card": {
+      "riskAnalyzeTooltip": "مکمل رسک تجزیہ دیکھنے کے لیے کلک کریں",
       "verified": "تصدیق شدہ",
       "pending": "زیرِ التواء",
       "incomplete": "نامکمل",
@@ -1010,9 +1164,19 @@
       "bathroomsShort": "{{n}} BA",
       "riskScoreTooltip": "خطرے کا اسکور: {{score}}/100",
       "moreItems": "+{{n}} مزید",
-      "photoPending": "تصویر زیرِ التواء"
+      "photoPending": "تصویر زیرِ التواء",
+      "criticalRisk": "سنگین خطرہ",
+"riskScoreTooltipFull": "خطرہ: {{level}} ({{score}}/100) — مکمل تجزیہ کے لیے کلک کریں",
+"riskScoreClickTooltip": "مکمل خطرہ تجزیہ کے لیے کلک کریں",
+"riskBadgeAria": "مکمل خطرہ تجزیہ دیکھیں: {{level}}"
     },
     "risk": {
+      "spectrum": {
+  "risk": "رسک",
+  "outOf": "/100",
+  "recalculate": "دوبارہ حساب کریں",
+  "recalculating": "دوبارہ حساب کیا جا رہا ہے..."
+},
       "title": "خطرے کا جائزہ",
       "subtitle": "حقیقی aggregated data کی بنیاد پر",
       "unavailable": "خطرے کا اسکور دستیاب نہیں",
@@ -1038,6 +1202,10 @@
       "addDetails": "عمارت کی تفصیلات شامل کریں"
     },
     "details": {
+      "generateReport": "رپورٹ تیار کریں",
+"generateReportTooltip": "اس پراپرٹی کے لیے مکمل ڈیو ڈلیجنس رپورٹ تیار کریں",
+"quickPdf": "فوری PDF",
+"quickPdfTooltip": "مختصر کلائنٹ سائیڈ PDF خلاصہ ڈاؤن لوڈ کریں",
       "verifiedProperty": "تصدیق شدہ جائیداد",
       "pendingVerification": "تصدیق زیرِ التواء",
       "active": "فعال",
@@ -1692,5 +1860,157 @@
       "resentDesc": "ایک تازہ 6 ہندسوں کا کوڈ راستے میں ہے۔",
       "resendFailed": "کوڈ دوبارہ نہیں بھیجا جا سکا"
     }
+  },
+  
+"notification": {
+  "title": "اطلاعات",
+  "subtitle": "{{count}} اطلاعات",
+  "subtitleEmpty": "ابھی تک کوئی اطلاع نہیں",
+  "unread": "غیر پڑھا",
+  "markAllRead": "سب کو پڑھا ہوا نشان کریں",
+  "clearAll": "سب صاف کریں",
+  "delete": "اطلاع حذف کریں",
+  "bell": "اطلاعات",
+  "filter": {
+    "all": "سب",
+    "unread": "غیر پڑھا",
+    "reportReady": "رپورٹس",
+    "riskAlert": "الرٹ",
+    "system": "سسٹم"
+  },
+  "group": {
+    "today": "آج",
+    "yesterday": "کل",
+    "earlier": "اس ہفتے",
+    "older": "پرانا"
+  },
+  "empty": {
+    "title": "کوئی اطلاع نہیں",
+    "description": "آپ نے سب دیکھ لیا۔ جب رپورٹس مکمل ہوں یا الرٹ آئیں تو یہاں دکھے گا۔",
+    "filteredTitle": "ملتی جلتی اطلاعات نہیں",
+    "filteredDescription": "دیگر اطلاعات دیکھنے کے لیے مختلف فلٹر آزمائیں۔"
+  },
+  "clearAllConfirm": {
+    "title": "تمام اطلاعات صاف کریں؟",
+    "description": "یہ آپ کی تمام اطلاعات مستقل طور پر حذف کر دے گا۔ یہ عمل واپس نہیں کیا جا سکتا۔",
+    "confirm": "سب صاف کریں"
+  },
+  "pagination": {
+    "showing": "{{total}} میں سے {{from}}–{{to}} دکھا رہا ہے",
+    "prev": "پچھلا",
+    "next": "اگلا"
+  },
+  "toast": {
+    "view": "دیکھیں",
+    "markReadFailed": "پڑھا ہوا نشان کرنے میں ناکامی",
+    "markAllReadFailed": "سب پڑھا ہوا نشان کرنے میں ناکامی",
+    "markedAllRead": "تمام اطلاعات پڑھی ہوئی نشان کر دی گئیں",
+    "deleteFailed": "اطلاع حذف کرنے میں ناکامی",
+    "cleared": "تمام اطلاعات صاف ہو گئیں",
+    "clearFailed": "اطلاعات صاف کرنے میں ناکامی"
+  },
+  "preferences": {
+    "title": "اطلاع کی ترجیحات",
+    "description": "چنیں کہ آپ کب اور کیسے اطلاعات حاصل کرتے ہیں۔",
+    "type": "قسم",
+    "email": "ای میل",
+    "inApp": "ایپ میں",
+    "push": "پش",
+    "reportReady": "رپورٹ تیار",
+    "riskAlert": "خطرے کا الرٹ",
+    "priceChange": "قیمت تبدیلی",
+    "system": "سسٹم",
+    "save": "ترجیحات محفوظ کریں",
+    "saving": "محفوظ ہو رہا ہے…",
+    "saved": "ترجیحات محفوظ ہو گئیں",
+    "saveFailed": "ترجیحات محفوظ کرنے میں ناکامی"
+  },
+  "types": {
+    "REPORT_READY": "رپورٹ تیار",
+    "RISK_ALERT": "خطرے کا الرٹ",
+    "PRICE_CHANGE": "قیمت تبدیلی",
+    "SYSTEM": "سسٹم"
   }
+,
+  "report": {
+  "card": {
+    "untitled": "ڈیو ڈیلیجنس رپورٹ",
+    "moreActions": "مزید کارروائیاں",
+    "delete": "رپورٹ حذف کریں",
+    "risk": "خطرہ",
+    "sections": "{{count}} حصے",
+    "copyLink": "لنک کاپی کریں",
+    "copyId": "رپورٹ ID کاپی کریں",
+    "linkCopied": "لنک کلپ بورڈ پر کاپی ہو گیا",
+    "idCopied": "رپورٹ ID کاپی ہو گیا",
+    "copyFailed": "کاپی ناکام"
+  },
+  "status": {
+    "pending": "زیر التوا",
+    "generating": "بنائی جا رہی ہے",
+    "completed": "مکمل",
+    "failed": "ناکام"
+  },
+  "print": {
+    "loading": "پرنٹ ویو تیار کیا جا رہا ہے…",
+    "loadFailed": "رپورٹ لوڈ کرنے میں ناکام",
+    "notFound": "رپورٹ نہیں ملی",
+    "screenHeader": "رپورٹ #{{id}} کے لیے پرنٹ پیش نظارہ",
+    "printNow": "ابھی پرنٹ کریں",
+    "footer": "رپورٹ #{{id}} · ورژن {{version}} · Real Estate Due Diligence Agent کے ذریعے تیار · {{email}}"
+  },
+  "list": {
+    "title": "میری رپورٹس",
+    "heading": "ڈیو ڈیلیجنس رپورٹس",
+    "subheading": "آپ کی تمام جائیدادوں میں تیار کردہ رپورٹس۔",
+    "backToDashboard": "ڈیش بورڈ",
+    "refresh": "ریفریش کریں",
+    "generateNew": "نئی بنائیں",
+    "searchPlaceholder": "عنوان یا پتے سے تلاش کریں…",
+    "deleted": "رپورٹ حذف کر دی گئی",
+    "deleteFailed": "رپورٹ حذف کرنے میں ناکامی",
+    "errorTitle": "رپورٹس لوڈ کرنے میں ناکامی",
+    "tryAgain": "دوبارہ کوشش کریں",
+    "stat": {
+      "total": "کل",
+      "completed": "مکمل",
+      "inProgress": "پیش رفت میں",
+      "failed": "ناکام"
+    },
+    "filter": {
+      "all": "تمام"
+    },
+    "empty": {
+      "title": "ابھی تک کوئی رپورٹ نہیں",
+      "body": "یہاں دیکھنے کے لیے اپنی پہلی ڈیو ڈیلیجنس رپورٹ بنائیں۔ رپورٹس جائیداد کے ڈیٹا، خطرے کے تجزیے، مالیات اور سفارشات کو یکجا کرتی ہیں۔",
+      "cta": "جائیدادیں براؤز کریں"
+    },
+    "filtered": {
+      "title": "آپ کے فلٹرز سے کوئی رپورٹ میل نہیں کھاتی",
+      "body": "اپنی تلاش یا حیثیت کے فلٹر کو ایڈجسٹ کرنے کی کوشش کریں۔",
+      "clear": "فلٹرز صاف کریں"
+    },
+    "pagination": {
+      "showing": "{{total}} میں سے {{from}}–{{to}} دکھا رہا ہے",
+      "prev": "پچھلا",
+      "next": "اگلا"
+    },
+    "deleteModal": {
+      "title": "یہ رپورٹ حذف کریں؟",
+      "body": "یہ مستقل طور پر \"{{title}}\" اور اس کے تمام حصوں کو حذف کر دے گا۔ اس عمل کو واپس نہیں لیا جا سکتا۔",
+      "confirmPrompt": "تصدیق کے لیے DELETE ٹائپ کریں",
+      "confirm": "رپورٹ حذف کریں"
+    }
+  },
+  "versionHistory": {
+  "title": "ورژن کی تاریخ",
+  "subtitle": "{{address}}",
+  "loading": "ورژنز لوڈ ہو رہے ہیں…",
+  "error": "ورژن کی تاریخ لوڈ کرنے میں ناکامی۔",
+  "empty": "اس جائیداد کے لیے کوئی ورژن نہیں ملا۔",
+  "current": "موجودہ",
+  "view": "دیکھیں"
+}
+}
+}
 }

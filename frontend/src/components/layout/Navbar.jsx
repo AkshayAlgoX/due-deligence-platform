@@ -14,12 +14,15 @@ import {
 } from "lucide-react";
 
 import { useAuth } from "@/hooks/useAuth";
+import { useUnreadCount } from "@/hooks/useUnreadCount";
+import { useSse } from "@/hooks/useSse";
 import { getUser } from "@/utils/helpers";
 import LogoutConfirmModal from "@/components/LogoutConfirmModal";
 import CommandPalette from "@/components/CommandPalette";
 import { useCommandPalette } from "@/hooks/useCommandPalette";
 import ThemeToggle from "@/components/ThemeToggle";
 import LanguageTrigger from "@/components/language/LanguageTrigger";
+import UnreadBadge from "@/components/notifications/UnreadBadge";
 
 export default function Navbar({ toggleSidebar }) {
   const router = useRouter();
@@ -32,6 +35,10 @@ export default function Navbar({ toggleSidebar }) {
   const [logoutModalOpen, setLogoutModalOpen] = useState(false);
   const [isMac, setIsMac] = useState(false);
   const menuRef = useRef(null);
+
+  // Real-time notification bell
+  const { unreadCount, refresh: refreshCount, incrementUnread } = useUnreadCount();
+  useSse({ onUnreadIncrement: incrementUnread });
 
   useEffect(() => {
     setUser(getUser());
@@ -159,10 +166,13 @@ export default function Navbar({ toggleSidebar }) {
         {/* Right side: bell → ThemeToggle → divider → user menu */}
         <div className="flex items-center gap-3">
 
-          {/* ── Notification bell — now navigates ── */}
+          {/* ── Notification bell — shows real-time unread count ── */}
           <button
             type="button"
-            onClick={() => router.push("/dashboard/notifications")}
+            onClick={() => {
+              refreshCount();
+              router.push("/dashboard/notifications");
+            }}
             className="relative cursor-pointer group flex h-9 w-9 items-center justify-center rounded-lg transition hover:bg-gray-50 dark:hover:bg-[#1c2128]"
             aria-label={t("nav.notifications")}
             title={t("nav.notifications")}
@@ -171,6 +181,7 @@ export default function Navbar({ toggleSidebar }) {
               className="text-gray-600 dark:text-[#7d8590] group-hover:text-[#22C55E] transition"
               size={20}
             />
+            <UnreadBadge count={unreadCount} />
           </button>
 
                     {/* Language Trigger — opens Airbnb-style modal */}
@@ -210,12 +221,12 @@ export default function Navbar({ toggleSidebar }) {
                   />
                 ) : null}
                 <div
-                  className={`${
-                    user?.profilePicture ? "hidden" : "flex"
-                  } h-10 w-10 rounded-full bg-gradient-to-br from-[#22C55E] to-[#16a34a] items-center justify-center text-white text-sm font-black shadow-lg shadow-green-500/30`}
-                >
-                  {initials}
-                </div>
+  className={`${
+    user?.profilePicture ? "hidden" : "flex"
+  } h-10 w-10 rounded-full bg-gradient-to-br from-[#22C55E] to-[#16a34a] items-center justify-center text-white text-sm font-black leading-none shadow-lg shadow-green-500/30 select-none`}
+>
+  <span className="translate-y-[0.5px]">{initials}</span>
+</div>
                 <span className="absolute bottom-0 right-0 w-2.5 h-2.5 bg-green-500 rounded-full border-2 border-white dark:border-[#161b22] animate-pulse" />
               </div>
 
@@ -243,12 +254,12 @@ export default function Navbar({ toggleSidebar }) {
                       />
                     ) : null}
                     <div
-                      className={`${
-                        user?.profilePicture ? "hidden" : "flex"
-                      } h-11 w-11 rounded-full bg-gradient-to-br from-[#22C55E] to-[#16a34a] items-center justify-center text-white text-sm font-black shadow-lg shadow-green-500/30 flex-shrink-0`}
-                    >
-                      {initials}
-                    </div>
+  className={`${
+    user?.profilePicture ? "hidden" : "flex"
+  } h-11 w-11 rounded-full bg-gradient-to-br from-[#22C55E] to-[#16a34a] items-center justify-center text-white text-sm font-black leading-none shadow-lg shadow-green-500/30 flex-shrink-0 select-none`}
+>
+  <span className="translate-y-[0.5px]">{initials}</span>
+</div>
                     <div className="min-w-0 flex-1">
                       <p className="text-sm font-bold text-gray-900 dark:text-[#e6edf3] truncate">
                         {fullName}

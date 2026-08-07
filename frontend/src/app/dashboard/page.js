@@ -12,6 +12,7 @@ import {
   Plus,
   RefreshCw,
   Users,
+  ShieldAlert,
 } from "lucide-react";
 import { fadeInUp } from "@/utils/animations";
 
@@ -125,6 +126,32 @@ export default function DashboardPage() {
 
   return (
     <div className="mx-auto w-full max-w-[1400px] space-y-8">
+
+      {/* ── ADMIN MODE BANNER ───────────────────────────────────────── */}
+      {isAdmin && (
+        <div className="flex items-center gap-3 rounded-2xl border border-amber-200 dark:border-amber-800/60 bg-gradient-to-r from-amber-50 to-orange-50 dark:from-[#1f1a0e] dark:to-[#1c1608] px-5 py-3.5 shadow-sm">
+          <div className="flex h-8 w-8 flex-shrink-0 items-center justify-center rounded-xl bg-amber-500/15 dark:bg-amber-500/20">
+            <ShieldAlert
+              className="h-4 w-4 text-amber-600 dark:text-amber-400"
+              strokeWidth={2.5}
+            />
+          </div>
+          <div className="flex-1 min-w-0">
+            <p className="text-sm font-bold text-amber-800 dark:text-amber-300">
+              {t("dashboard.adminBanner.title")}
+            </p>
+            <p className="text-xs text-amber-700/70 dark:text-amber-400/70 leading-relaxed">
+              {t("dashboard.adminBanner.description")}
+            </p>
+          </div>
+          <div className="flex-shrink-0 rounded-full bg-amber-500 px-3 py-1">
+            <span className="text-[10px] font-black uppercase tracking-widest text-white">
+              {t("dashboard.adminBanner.badge")}
+            </span>
+          </div>
+        </div>
+      )}
+
       {/* ── Header ─────────────────────────────────────────────────── */}
       <div className="flex flex-wrap items-end justify-between gap-4">
         <div>
@@ -344,7 +371,7 @@ export default function DashboardPage() {
   );
 }
 
-// ─── Empty state (uses hook via prop) ────────────────────────────────
+// ─── Empty state ─────────────────────────────────────────────────────
 function EmptyState({ onAddClick }) {
   const { t } = useTranslation();
   return (

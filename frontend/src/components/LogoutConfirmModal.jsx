@@ -2,9 +2,11 @@
 
 import { useEffect, useRef, useState } from "react";
 import { LogOut, X, ShieldCheck } from "lucide-react";
+import { useTranslation } from "react-i18next";
 import { getUser } from "@/utils/helpers";
 
 export default function LogoutConfirmModal({ isOpen, onClose, onConfirm }) {
+  const { t } = useTranslation();
   const modalRef = useRef(null);
   const cancelBtnRef = useRef(null);
   const [user, setUser] = useState(null);
@@ -45,7 +47,7 @@ export default function LogoutConfirmModal({ isOpen, onClose, onConfirm }) {
   if (!isOpen) return null;
 
   const email = user?.email || "";
-  const fullName = user?.fullName || email.split("@")[0] || "User";
+  const fullName = user?.fullName || email.split("@")[0] || t("logoutModal.fallbackUser");
   const initials = (fullName || "U")
     .split(" ")
     .map((w) => w[0])
@@ -65,18 +67,18 @@ export default function LogoutConfirmModal({ isOpen, onClose, onConfirm }) {
         ref={modalRef}
         className="relative w-full max-w-md overflow-hidden rounded-3xl bg-white dark:bg-[#161b22] shadow-[0_25px_80px_rgba(0,0,0,0.25)] dark:shadow-[0_25px_80px_rgba(0,0,0,0.6)] animate-in zoom-in-95 slide-in-from-bottom-4 duration-300 ring-1 ring-black/5 dark:ring-[#30363d]"
       >
-        {/* ── Close button ── */}
+        {/* Close button */}
         <button
           type="button"
           onClick={onClose}
           disabled={loggingOut}
           className="absolute right-4 top-4 z-10 rounded-full bg-white/80 dark:bg-[#1c2128] p-1.5 text-gray-500 dark:text-[#7d8590] shadow-sm ring-1 ring-black/5 dark:ring-[#30363d] backdrop-blur-sm transition hover:bg-white dark:hover:bg-[#30363d] hover:text-gray-700 dark:hover:text-[#e6edf3] disabled:opacity-50"
-          aria-label="Close"
+          aria-label={t("logoutModal.close")}
         >
           <X className="h-4 w-4" />
         </button>
 
-        {/* ── Red hero section ── */}
+        {/* Red hero section */}
         <div className="relative overflow-hidden bg-gradient-to-br from-red-50 via-rose-50 to-red-50 dark:from-[#2d1214] dark:via-[#3a0a0a] dark:to-[#2d1214] px-6 pt-10 pb-8">
           <div
             className="absolute inset-0 opacity-[0.4]"
@@ -98,40 +100,42 @@ export default function LogoutConfirmModal({ isOpen, onClose, onConfirm }) {
             id="logout-title"
             className="mt-5 text-center text-[22px] font-black tracking-tight text-gray-900 dark:text-[#e6edf3]"
           >
-            Ready to sign out?
+            {t("logoutModal.title")}
           </h2>
           <p className="mx-auto mt-2 max-w-xs text-center text-[13px] leading-relaxed text-gray-600 dark:text-[#7d8590]">
-            You&apos;ll need to log in again to access your dashboard and property data.
+            {t("logoutModal.description")}
           </p>
         </div>
 
-        {/* ── User info card ── */}
+        {/* User info card */}
         {user && (
           <div className="border-y border-gray-100 dark:border-[#30363d] bg-gradient-to-b from-white dark:from-[#161b22] to-gray-50/50 dark:to-[#1c2128]/50 px-6 py-4">
             <div className="flex items-center gap-3 rounded-2xl bg-white dark:bg-[#0d1117] p-3 ring-1 ring-gray-100 dark:ring-[#30363d]">
               <div className="relative flex-shrink-0">
-                <div className="flex h-11 w-11 items-center justify-center rounded-xl bg-gradient-to-br from-[#22C55E] to-[#16a34a] text-sm font-black text-white shadow-lg shadow-green-500/30">
-                  {initials}
+                <div className="flex h-11 w-11 items-center justify-center rounded-xl bg-gradient-to-br from-[#22C55E] to-[#16a34a] text-sm font-black leading-none text-white shadow-lg shadow-green-500/30 select-none">
+                  <span className="translate-y-[0.5px]">{initials}</span>
                 </div>
                 <span className="absolute -bottom-0.5 -right-0.5 h-3 w-3 rounded-full border-2 border-white dark:border-[#0d1117] bg-green-500" />
               </div>
 
               <div className="min-w-0 flex-1">
                 <p className="truncate text-sm font-bold text-gray-900 dark:text-[#e6edf3]">{fullName}</p>
-                <p className="truncate text-[11px] font-medium text-gray-500 dark:text-[#7d8590]">{email || "Signed in"}</p>
+                <p className="truncate text-[11px] font-medium text-gray-500 dark:text-[#7d8590]">
+                  {email || t("logoutModal.signedIn")}
+                </p>
               </div>
 
               <div className="flex items-center gap-1 rounded-full bg-green-50 dark:bg-[#0d2818] px-2 py-1 ring-1 ring-green-100 dark:ring-green-900/50">
                 <ShieldCheck className="h-3 w-3 text-[#22C55E]" strokeWidth={2.5} />
                 <span className="text-[9px] font-black uppercase tracking-wider text-green-700 dark:text-green-400">
-                  Active
+                  {t("logoutModal.active")}
                 </span>
               </div>
             </div>
           </div>
         )}
 
-        {/* ── Actions ── */}
+        {/* Actions */}
         <div className="flex gap-3 bg-white dark:bg-[#161b22] p-5">
           <button
             ref={cancelBtnRef}
@@ -140,7 +144,7 @@ export default function LogoutConfirmModal({ isOpen, onClose, onConfirm }) {
             disabled={loggingOut}
             className="flex-1 rounded-xl border-2 border-gray-200 dark:border-[#30363d] bg-white dark:bg-[#0d1117] px-5 py-3 text-sm font-bold text-gray-700 dark:text-[#e6edf3] transition hover:border-gray-300 dark:hover:border-[#484f58] hover:bg-gray-50 dark:hover:bg-[#1c2128] focus:outline-none focus:ring-4 focus:ring-gray-100 dark:focus:ring-[#30363d] disabled:cursor-not-allowed disabled:opacity-50"
           >
-            Stay signed in
+            {t("logoutModal.staySignedIn")}
           </button>
 
           <button
@@ -153,25 +157,25 @@ export default function LogoutConfirmModal({ isOpen, onClose, onConfirm }) {
             {loggingOut ? (
               <>
                 <span className="relative z-10 h-4 w-4 animate-spin rounded-full border-2 border-white/40 border-t-white" />
-                <span className="relative z-10">Signing out…</span>
+                <span className="relative z-10">{t("logoutModal.signingOut")}</span>
               </>
             ) : (
               <>
                 <LogOut size={16} className="relative z-10" strokeWidth={2.5} />
-                <span className="relative z-10">Yes, log out</span>
+                <span className="relative z-10">{t("logoutModal.confirm")}</span>
               </>
             )}
           </button>
         </div>
 
-        {/* ── Footer hint ── */}
+        {/* Footer hint */}
         <div className="border-t border-gray-100 dark:border-[#30363d] bg-gray-50/50 dark:bg-[#0d1117] px-6 py-2.5">
           <p className="text-center text-[10px] font-medium text-gray-400 dark:text-[#6e7681]">
-            Tip: Press{" "}
+            {t("logoutModal.tip")}{" "}
             <kbd className="rounded border border-gray-200 dark:border-[#30363d] bg-white dark:bg-[#1c2128] px-1.5 py-0.5 font-mono text-[9px] font-bold text-gray-600 dark:text-[#e6edf3] shadow-sm">
               Esc
             </kbd>{" "}
-            to cancel
+            {t("logoutModal.tipCancel")}
           </p>
         </div>
       </div>
