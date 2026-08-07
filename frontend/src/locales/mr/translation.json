@@ -62,7 +62,40 @@
     "generateReport": "अहवाल तयार करा",
     "dataWarningTitle": "काही डेटा स्रोत उपलब्ध नाहीत",
     "dataWarningBody": "6 पैकी {{count}} डेटा प्रदात्यांशी संपर्क साधता आला नाही. जेथे डेटा गहाळ होता, स्कोअर पुराणमतवादी अंदाज दर्शवतात."
-  }
+  },
+    "history": {
+      "sectionTitle": "जोखीम इतिहास",
+      "sectionSubtitle": "या मालमत्तेचे जोखीम प्रोफाइल कसे विकसित झाले आहे ते पहा",
+      "chartTitle": "जोखीम स्कोअर कल",
+      "chartSubtitle": "सर्व मूल्यांकनांमधील एकूण जोखीम स्कोअर",
+      "timelineTitle": "मूल्यांकन कालक्रम",
+      "timelineSubtitle": "प्रत्येक पुनर्गणना, नवीनतम प्रथम",
+      "metaCurrent": "सद्य",
+      "metaDelta": "बदल",
+      "metaAssessments": "मूल्यांकने",
+      "metaTimespan": "कालावधी",
+      "metaLatest": "नवीनतम",
+      "metaNoChange": "बदल नाही",
+      "metaFromBaseline": "आधारभूत पासून",
+      "metaTotalRuns": "एकूण गणना",
+      "emptyTitle": "अद्याप इतिहास नाही",
+      "emptyDescription": "एकाधिक मूल्यांकनांनंतर जोखीम इतिहास येथे दिसेल. वेळेनुसार स्कोअर बदल ट्रॅक करण्यासाठी पुनर्गणना करा.",
+      "recalculateCta": "जोखीम पुनर्गणना करा",
+      "recalculating": "पुनर्गणना होत आहे…",
+      "tooltipAssessment": "मूल्यांकन",
+      "tooltipLatest": "नवीनतम",
+      "badgeLatest": "नवीनतम",
+      "assessmentId": "मूल्यांकन",
+      "expand": "विस्तृत करा",
+      "collapse": "संक्षिप्त करा",
+      "deltaImproved": "मागील तुलनेत जोखीम कमी झाली",
+      "deltaWorsened": "मागील तुलनेत जोखीम वाढली",
+      "deltaFlat": "मागील तुलनेत बदल नाही",
+      "timeJustNow": "आत्ताच",
+      "timeMinutesAgo": "{{count}} मिनिटांपूर्वी",
+      "timeHoursAgo": "{{count}} तासांपूर्वी",
+      "timeDaysAgo": "{{count}} दिवसांपूर्वी"
+    }
 },
   "logoutModal": {
   "title": "साइन आऊट करण्यास तयार आहात?",
@@ -515,6 +548,7 @@
   "map": {
     "title": "पोर्टफोलिओ भूगोल",
     "status": {
+      "unknown": "अज्ञात",
       "loading": "नकाशा लोड होत आहे...",
       "noPropertiesYet": "अद्याप मालमत्ता नाही",
       "mappedOfTotal": "{{total}} पैकी {{mapped}} नकाशावर",
@@ -1794,7 +1828,6 @@
       "resendFailed": "कोड पुन्हा पाठवता आला नाही"
     }
   },
-
 "notification": {
   "title": "सूचना",
   "subtitle": "{{count}} सूचना",
@@ -1864,5 +1897,86 @@
     "PRICE_CHANGE": "किंमत बदल",
     "SYSTEM": "सिस्टम"
   }
+,
+  "report": {
+  "card": {
+    "untitled": "ड्यू डिलिजन्स अहवाल",
+    "moreActions": "अधिक क्रिया",
+    "delete": "अहवाल हटवा",
+    "risk": "जोखीम",
+    "sections": "{{count}} विभाग",
+    "copyLink": "लिंक कॉपी करा",
+    "copyId": "अहवाल ID कॉपी करा",
+    "linkCopied": "लिंक क्लिपबोर्डवर कॉपी झाली",
+    "idCopied": "अहवाल ID कॉपी झाला",
+    "copyFailed": "कॉपी अयशस्वी"
+  },
+  "status": {
+    "pending": "प्रलंबित",
+    "generating": "तयार होत आहे",
+    "completed": "पूर्ण झाले",
+    "failed": "अयशस्वी"
+  },
+  "print": {
+    "loading": "प्रिंट दृश्य तयार होत आहे…",
+    "loadFailed": "अहवाल लोड करण्यात अयशस्वी",
+    "notFound": "अहवाल सापडला नाही",
+    "screenHeader": "अहवाल #{{id}} साठी प्रिंट पूर्वावलोकन",
+    "printNow": "आता प्रिंट करा",
+    "footer": "अहवाल #{{id}} · आवृत्ती {{version}} · Real Estate Due Diligence Agent द्वारे तयार · {{email}}"
+  },
+  "list": {
+    "title": "माझे अहवाल",
+    "heading": "ड्यू डिलिजन्स अहवाल",
+    "subheading": "तुमच्या सर्व मालमत्तांमध्ये तयार केलेले अहवाल.",
+    "backToDashboard": "डॅशबोर्ड",
+    "refresh": "रिफ्रेश करा",
+    "generateNew": "नवीन तयार करा",
+    "searchPlaceholder": "शीर्षक किंवा पत्त्याने शोधा…",
+    "deleted": "अहवाल हटवला",
+    "deleteFailed": "अहवाल हटवण्यात अयशस्वी",
+    "errorTitle": "अहवाल लोड करण्यात अयशस्वी",
+    "tryAgain": "पुन्हा प्रयत्न करा",
+    "stat": {
+      "total": "एकूण",
+      "completed": "पूर्ण",
+      "inProgress": "प्रगतीत",
+      "failed": "अयशस्वी"
+    },
+    "filter": {
+      "all": "सर्व"
+    },
+    "empty": {
+      "title": "अद्याप कोणतेही अहवाल नाहीत",
+      "body": "येथे पाहण्यासाठी तुमचा पहिला ड्यू डिलिजन्स अहवाल तयार करा. अहवाल मालमत्तेचा डेटा, जोखीम विश्लेषण, आर्थिक आणि शिफारसी एकत्र करतात.",
+      "cta": "मालमत्ता ब्राउझ करा"
+    },
+    "filtered": {
+      "title": "तुमच्या फिल्टरशी कोणतेही अहवाल जुळत नाहीत",
+      "body": "तुमचा शोध किंवा स्थिती फिल्टर समायोजित करून पहा.",
+      "clear": "फिल्टर साफ करा"
+    },
+    "pagination": {
+      "showing": "पृष्ठ {{page}} पैकी {{total}}",
+      "prev": "मागील",
+      "next": "पुढील"
+    },
+    "deleteModal": {
+      "title": "हा अहवाल हटवायचा?",
+      "body": "हे कायमचे \"{{title}}\" आणि त्याचे सर्व विभाग हटवेल. ही क्रिया पूर्ववत करता येणार नाही.",
+      "confirmPrompt": "पुष्टी करण्यासाठी DELETE टाइप करा",
+      "confirm": "अहवाल हटवा"
+    }
+  },
+  "versionHistory": {
+  "title": "आवृत्ती इतिहास",
+  "subtitle": "{{address}}",
+  "loading": "आवृत्त्या लोड होत आहेत…",
+  "error": "आवृत्ती इतिहास लोड करण्यात अयशस्वी.",
+  "empty": "या मालमत्तेसाठी कोणत्याही आवृत्त्या सापडल्या नाहीत.",
+  "current": "सध्याची",
+  "view": "पहा"
+}
+}
 }
 }

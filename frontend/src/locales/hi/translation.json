@@ -79,6 +79,39 @@
       "generateReport": "रिपोर्ट जनरेट करें",
       "dataWarningTitle": "कुछ डेटा स्रोत उपलब्ध नहीं हैं",
       "dataWarningBody": "6 में से {{count}} डेटा प्रदाता तक नहीं पहुंचा जा सका। जहां डेटा गुम था, स्कोर रूढ़िवादी अनुमान दर्शाते हैं।"
+    },
+    "history": {
+      "sectionTitle": "जोखिम इतिहास",
+      "sectionSubtitle": "जानें इस संपत्ति का जोखिम प्रोफ़ाइल कैसे बदला है",
+      "chartTitle": "जोखिम स्कोर प्रवृत्ति",
+      "chartSubtitle": "सभी मूल्यांकनों में कुल जोखिम स्कोर",
+      "timelineTitle": "मूल्यांकन समयरेखा",
+      "timelineSubtitle": "हर पुनर्गणना, नवीनतम पहले",
+      "metaCurrent": "वर्तमान",
+      "metaDelta": "परिवर्तन",
+      "metaAssessments": "मूल्यांकन",
+      "metaTimespan": "समयावधि",
+      "metaLatest": "नवीनतम",
+      "metaNoChange": "कोई परिवर्तन नहीं",
+      "metaFromBaseline": "आधार रेखा से",
+      "metaTotalRuns": "कुल गणनाएँ",
+      "emptyTitle": "अभी तक कोई इतिहास नहीं",
+      "emptyDescription": "एक से अधिक मूल्यांकन के बाद जोखिम इतिहास यहाँ दिखाई देगा। समय के साथ स्कोर परिवर्तन ट्रैक करने के लिए पुनर्गणना करें।",
+      "recalculateCta": "जोखिम की पुनर्गणना करें",
+      "recalculating": "पुनर्गणना हो रही है…",
+      "tooltipAssessment": "मूल्यांकन",
+      "tooltipLatest": "नवीनतम",
+      "badgeLatest": "नवीनतम",
+      "assessmentId": "मूल्यांकन",
+      "expand": "विस्तृत करें",
+      "collapse": "संक्षिप्त करें",
+      "deltaImproved": "पिछले की तुलना में जोखिम कम हुआ",
+      "deltaWorsened": "पिछले की तुलना में जोखिम बढ़ा",
+      "deltaFlat": "पिछले की तुलना में कोई परिवर्तन नहीं",
+      "timeJustNow": "अभी अभी",
+      "timeMinutesAgo": "{{count}} मिनट पहले",
+      "timeHoursAgo": "{{count}} घंटे पहले",
+      "timeDaysAgo": "{{count}} दिन पहले"
     }
   },
   "report": {
@@ -170,7 +203,12 @@
       "view": "देखें",
       "openReport": "रिपोर्ट खोलें",
       "delete": "हटाएं",
-      "moreActions": "और विकल्प"
+      "moreActions": "और विकल्प",
+      "copyLink": "लिंक कॉपी करें",
+"copyId": "रिपोर्ट ID कॉपी करें",
+"linkCopied": "लिंक क्लिपबोर्ड पर कॉपी हो गया",
+"idCopied": "रिपोर्ट ID कॉपी हो गया",
+"copyFailed": "कॉपी विफल"
     },
     "sections": {
       "cover": "कवर पेज",
@@ -216,12 +254,21 @@
       "inProgress": {
         "title": "रिपोर्ट जनरेट हो रही है…",
         "body": "{{address}} तैयार की जा रही है।",
-        "hint": "तैयार होने पर यह पेज स्वचालित रूप से रीफ्रेश हो जाएगा।"
+        "hint": "तैयार होने पर यह पेज स्वचालित रूप से रीफ्रेश हो जाएगा।",
+        "fallbackAddress": "आपकी रिपोर्ट"
       },
       "failed": {
         "title": "रिपोर्ट जनरेशन विफल",
         "retry": "पुनः जनरेट करें"
       }
+    },
+    "print": {
+      "loading": "प्रिंट व्यू तैयार किया जा रहा है…",
+      "loadFailed": "रिपोर्ट लोड करने में विफल",
+      "notFound": "रिपोर्ट नहीं मिली",
+      "screenHeader": "रिपोर्ट #{{id}} के लिए प्रिंट पूर्वावलोकन",
+      "printNow": "अभी प्रिंट करें",
+      "footer": "रिपोर्ट #{{id}} · संस्करण {{version}} · Real Estate Due Diligence Agent द्वारा तैयार · {{email}}"
     },
     "regenerate": {
       "title": "रिपोर्ट पुनः जनरेट करें?",

@@ -62,6 +62,7 @@ public class ReportGenerationExecutor {
     @Async("reportTaskExecutor")
     @Transactional(propagation = Propagation.REQUIRES_NEW)
     public void execute(Long reportId, boolean forceRiskRecalculation) {
+
         log.info("[async] Starting report generation for report {}", reportId);
         long start = System.currentTimeMillis();
 

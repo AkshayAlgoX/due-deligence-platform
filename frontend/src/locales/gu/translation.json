@@ -62,7 +62,40 @@
     "generateReport": "અહેવાલ બનાવો",
     "dataWarningTitle": "કેટલાક ડેટા સ્રોત ઉપલબ્ધ નથી",
     "dataWarningBody": "6 માંથી {{count}} ડેટા પ્રદાતાઓનો સંપર્ક કરી શકાયો નથી. જ્યાં ડેટા ગુમ હતો, સ્કોર રૂઢિચુસ્ત અંદાજો પ્રતિબિંબિત કરે છે."
-  }
+  },
+    "history": {
+      "sectionTitle": "જોખમ ઇતિહાસ",
+      "sectionSubtitle": "આ મિલકતની જોખમ પ્રોફાઇલ કેવી રીતે વિકસિત થઈ છે તે ટ્રેક કરો",
+      "chartTitle": "જોખમ સ્કોર વલણ",
+      "chartSubtitle": "તમામ મૂલ્યાંકનોમાં એકંદર જોખમ સ્કોર",
+      "timelineTitle": "મૂલ્યાંકન સમયરેખા",
+      "timelineSubtitle": "દરેક પુનર્ગણતરી, નવીનતમ પ્રથમ",
+      "metaCurrent": "વર્તમાન",
+      "metaDelta": "ફેરફાર",
+      "metaAssessments": "મૂલ્યાંકનો",
+      "metaTimespan": "સમયગાળો",
+      "metaLatest": "નવીનતમ",
+      "metaNoChange": "કોઈ ફેરફાર નથી",
+      "metaFromBaseline": "આધારરેખાથી",
+      "metaTotalRuns": "કુલ ગણતરીઓ",
+      "emptyTitle": "હજી કોઈ ઇતિહાસ નથી",
+      "emptyDescription": "બહુવિધ મૂલ્યાંકનો પછી જોખમ ઇતિહાસ અહીં દેખાશે. સમય જતાં સ્કોર ફેરફારો ટ્રેક કરવા માટે પુનર્ગણતરી કરો.",
+      "recalculateCta": "જોખમની પુનર્ગણતરી કરો",
+      "recalculating": "પુનર્ગણતરી થઈ રહી છે…",
+      "tooltipAssessment": "મૂલ્યાંકન",
+      "tooltipLatest": "નવીનતમ",
+      "badgeLatest": "નવીનતમ",
+      "assessmentId": "મૂલ્યાંકન",
+      "expand": "વિસ્તૃત કરો",
+      "collapse": "સંક્ષિપ્ત કરો",
+      "deltaImproved": "પાછલા કરતાં જોખમ ઘટ્યું",
+      "deltaWorsened": "પાછલા કરતાં જોખમ વધ્યું",
+      "deltaFlat": "પાછલા કરતાં કોઈ ફેરફાર નથી",
+      "timeJustNow": "હમણાં જ",
+      "timeMinutesAgo": "{{count}} મિનિટ પહેલા",
+      "timeHoursAgo": "{{count}} કલાક પહેલા",
+      "timeDaysAgo": "{{count}} દિવસ પહેલા"
+    }
 },
   "logoutModal": {
   "title": "સાઇન આઉટ કરવા તૈયાર છો?",
@@ -515,6 +548,7 @@
   "map": {
     "title": "पोर्टफोलियो भूगोळ",
     "status": {
+      "unknown": "અજ્ઞાત",
       "loading": "नकशो लोड थई रह्यो छे...",
       "noPropertiesYet": "हजु कोई मिलकत नथी",
       "mappedOfTotal": "{{total}} मांथी {{mapped}} मेप थयेली",
@@ -1794,7 +1828,6 @@
       "resendFailed": "કોડ ફરી મોકલી શકાયો નથી"
     }
   },
-
 "notification": {
   "title": "સૂચનાઓ",
   "subtitle": "{{count}} સૂચનાઓ",
@@ -1864,5 +1897,86 @@
     "PRICE_CHANGE": "ભાવ ફેરફાર",
     "SYSTEM": "સિસ્ટમ"
   }
+,
+  "report": {
+  "card": {
+    "untitled": "ડ્યુ ડિલિજન્સ રિપોર્ટ",
+    "moreActions": "વધુ ક્રિયાઓ",
+    "delete": "રિપોર્ટ કાઢી નાખો",
+    "risk": "જોખમ",
+    "sections": "{{count}} વિભાગો",
+    "copyLink": "લિંક કૉપિ કરો",
+    "copyId": "રિપોર્ટ ID કૉપિ કરો",
+    "linkCopied": "લિંક ક્લિપબોર્ડ પર કૉપિ થઈ",
+    "idCopied": "રિપોર્ટ ID કૉપિ થયો",
+    "copyFailed": "કૉપિ નિષ્ફળ"
+  },
+  "status": {
+    "pending": "બાકી",
+    "generating": "બનાવવામાં આવી રહ્યું છે",
+    "completed": "પૂર્ણ",
+    "failed": "નિષ્ફળ"
+  },
+  "print": {
+    "loading": "પ્રિન્ટ વ્યૂ તૈયાર થઈ રહ્યું છે…",
+    "loadFailed": "અહેવાલ લોડ કરવામાં નિષ્ફળ",
+    "notFound": "અહેવાલ મળ્યો નથી",
+    "screenHeader": "અહેવાલ #{{id}} માટે પ્રિન્ટ પૂર્વાવલોકન",
+    "printNow": "હમણાં પ્રિન્ટ કરો",
+    "footer": "અહેવાલ #{{id}} · સંસ્કરણ {{version}} · Real Estate Due Diligence Agent દ્વારા બનાવેલ · {{email}}"
+  },
+  "list": {
+    "title": "મારા રિપોર્ટ્સ",
+    "heading": "ડ્યુ ડિલિજન્સ રિપોર્ટ્સ",
+    "subheading": "તમારી બધી મિલકતોમાં તૈયાર કરેલા રિપોર્ટ્સ.",
+    "backToDashboard": "ડેશબોર્ડ",
+    "refresh": "રિફ્રેશ કરો",
+    "generateNew": "નવો બનાવો",
+    "searchPlaceholder": "શીર્ષક અથવા સરનામા દ્વારા શોધો…",
+    "deleted": "રિપોર્ટ કાઢી નાખવામાં આવ્યો",
+    "deleteFailed": "રિપોર્ટ કાઢી નાખવામાં નિષ્ફળ",
+    "errorTitle": "રિપોર્ટ્સ લોડ કરવામાં નિષ્ફળ",
+    "tryAgain": "ફરી પ્રયાસ કરો",
+    "stat": {
+      "total": "કુલ",
+      "completed": "પૂર્ણ",
+      "inProgress": "પ્રગતિમાં",
+      "failed": "નિષ્ફળ"
+    },
+    "filter": {
+      "all": "બધા"
+    },
+    "empty": {
+      "title": "હજી સુધી કોઈ રિપોર્ટ્સ નથી",
+      "body": "અહીં જોવા માટે તમારો પહેલો ડ્યુ ડિલિજન્સ રિપોર્ટ બનાવો. રિપોર્ટ્સ મિલકતના ડેટા, જોખમ વિશ્લેષણ, નાણાકીય અને ભલામણોને એકસાથે જોડે છે.",
+      "cta": "મિલકતો બ્રાઉઝ કરો"
+    },
+    "filtered": {
+      "title": "તમારા ફિલ્ટર સાથે કોઈ રિપોર્ટ્સ મેળ ખાતા નથી",
+      "body": "તમારી શોધ અથવા સ્થિતિ ફિલ્ટરને સમાયોજિત કરવાનો પ્રયાસ કરો.",
+      "clear": "ફિલ્ટર સાફ કરો"
+    },
+    "pagination": {
+      "showing": "પૃષ્ઠ {{page}} માંથી {{total}}",
+      "prev": "પાછલું",
+      "next": "આગલું"
+    },
+    "deleteModal": {
+      "title": "આ રિપોર્ટ કાઢી નાખવો?",
+      "body": "આ કાયમી ધોરણે \"{{title}}\" અને તેના બધા વિભાગોને કાઢી નાખશે. આ ક્રિયા પૂર્વવત્ કરી શકાતી નથી.",
+      "confirmPrompt": "પુષ્ટિ કરવા DELETE ટાઇપ કરો",
+      "confirm": "રિપોર્ટ કાઢી નાખો"
+    }
+  },
+  "versionHistory": {
+  "title": "આવૃત્તિ ઇતિહાસ",
+  "subtitle": "{{address}}",
+  "loading": "આવૃત્તિઓ લોડ થઈ રહી છે…",
+  "error": "આવૃત્તિ ઇતિહાસ લોડ કરવામાં નિષ્ફળ.",
+  "empty": "આ મિલકત માટે કોઈ આવૃત્તિ મળી નથી.",
+  "current": "વર્તમાન",
+  "view": "જુઓ"
+}
+}
 }
 }

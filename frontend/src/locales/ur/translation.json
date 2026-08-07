@@ -62,7 +62,40 @@
     "generateReport": "رپورٹ بنائیں",
     "dataWarningTitle": "کچھ ڈیٹا ذرائع دستیاب نہیں ہیں",
     "dataWarningBody": "6 میں سے {{count}} ڈیٹا فراہم کنندگان تک نہیں پہنچا جا سکا۔ جہاں ڈیٹا غائب تھا، سکورز محتاط تخمینے کی عکاسی کرتے ہیں۔"
-  }
+  },
+    "history": {
+      "sectionTitle": "خطرے کی تاریخ",
+      "sectionSubtitle": "دیکھیں کہ اس جائیداد کا خطرے کا پروفائل کیسے تبدیل ہوا ہے",
+      "chartTitle": "خطرے کے اسکور کا رجحان",
+      "chartSubtitle": "تمام تشخیصات میں مجموعی خطرے کا اسکور",
+      "timelineTitle": "تشخیصی ٹائم لائن",
+      "timelineSubtitle": "ہر دوبارہ حساب، تازہ ترین پہلے",
+      "metaCurrent": "موجودہ",
+      "metaDelta": "تبدیلی",
+      "metaAssessments": "تشخیصات",
+      "metaTimespan": "مدت",
+      "metaLatest": "تازہ ترین",
+      "metaNoChange": "کوئی تبدیلی نہیں",
+      "metaFromBaseline": "بنیاد سے",
+      "metaTotalRuns": "کل حساب",
+      "emptyTitle": "ابھی تک کوئی تاریخ نہیں",
+      "emptyDescription": "متعدد تشخیصات کے بعد خطرے کی تاریخ یہاں ظاہر ہوگی۔ وقت کے ساتھ اسکور کی تبدیلیوں کو ٹریک کرنے کے لیے دوبارہ حساب کریں۔",
+      "recalculateCta": "خطرے کا دوبارہ حساب کریں",
+      "recalculating": "دوبارہ حساب ہو رہا ہے…",
+      "tooltipAssessment": "تشخیص",
+      "tooltipLatest": "تازہ ترین",
+      "badgeLatest": "تازہ ترین",
+      "assessmentId": "تشخیص",
+      "expand": "پھیلائیں",
+      "collapse": "سکیڑیں",
+      "deltaImproved": "پچھلے کے مقابلے میں خطرہ کم ہوا",
+      "deltaWorsened": "پچھلے کے مقابلے میں خطرہ بڑھا",
+      "deltaFlat": "پچھلے کے مقابلے میں کوئی تبدیلی نہیں",
+      "timeJustNow": "ابھی ابھی",
+      "timeMinutesAgo": "{{count}} منٹ پہلے",
+      "timeHoursAgo": "{{count}} گھنٹے پہلے",
+      "timeDaysAgo": "{{count}} دن پہلے"
+    }
 },
   "logoutModal": {
   "title": "سائن آؤٹ کرنے کے لیے تیار؟",
@@ -515,6 +548,7 @@
   "map": {
     "title": "پورٹ فولیو جغرافیہ",
     "status": {
+      "unknown": "نامعلوم",
       "loading": "نقشہ لوڈ ہو رہا ہے...",
       "noPropertiesYet": "ابھی تک کوئی جائیداد نہیں",
       "mappedOfTotal": "{{total}} میں سے {{mapped}} نقشے پر موجود",
@@ -1897,5 +1931,86 @@
     "PRICE_CHANGE": "قیمت تبدیلی",
     "SYSTEM": "سسٹم"
   }
+,
+  "report": {
+  "card": {
+    "untitled": "ڈیو ڈیلیجنس رپورٹ",
+    "moreActions": "مزید کارروائیاں",
+    "delete": "رپورٹ حذف کریں",
+    "risk": "خطرہ",
+    "sections": "{{count}} حصے",
+    "copyLink": "لنک کاپی کریں",
+    "copyId": "رپورٹ ID کاپی کریں",
+    "linkCopied": "لنک کلپ بورڈ پر کاپی ہو گیا",
+    "idCopied": "رپورٹ ID کاپی ہو گیا",
+    "copyFailed": "کاپی ناکام"
+  },
+  "status": {
+    "pending": "زیر التوا",
+    "generating": "بنائی جا رہی ہے",
+    "completed": "مکمل",
+    "failed": "ناکام"
+  },
+  "print": {
+    "loading": "پرنٹ ویو تیار کیا جا رہا ہے…",
+    "loadFailed": "رپورٹ لوڈ کرنے میں ناکام",
+    "notFound": "رپورٹ نہیں ملی",
+    "screenHeader": "رپورٹ #{{id}} کے لیے پرنٹ پیش نظارہ",
+    "printNow": "ابھی پرنٹ کریں",
+    "footer": "رپورٹ #{{id}} · ورژن {{version}} · Real Estate Due Diligence Agent کے ذریعے تیار · {{email}}"
+  },
+  "list": {
+    "title": "میری رپورٹس",
+    "heading": "ڈیو ڈیلیجنس رپورٹس",
+    "subheading": "آپ کی تمام جائیدادوں میں تیار کردہ رپورٹس۔",
+    "backToDashboard": "ڈیش بورڈ",
+    "refresh": "ریفریش کریں",
+    "generateNew": "نئی بنائیں",
+    "searchPlaceholder": "عنوان یا پتے سے تلاش کریں…",
+    "deleted": "رپورٹ حذف کر دی گئی",
+    "deleteFailed": "رپورٹ حذف کرنے میں ناکامی",
+    "errorTitle": "رپورٹس لوڈ کرنے میں ناکامی",
+    "tryAgain": "دوبارہ کوشش کریں",
+    "stat": {
+      "total": "کل",
+      "completed": "مکمل",
+      "inProgress": "پیش رفت میں",
+      "failed": "ناکام"
+    },
+    "filter": {
+      "all": "تمام"
+    },
+    "empty": {
+      "title": "ابھی تک کوئی رپورٹ نہیں",
+      "body": "یہاں دیکھنے کے لیے اپنی پہلی ڈیو ڈیلیجنس رپورٹ بنائیں۔ رپورٹس جائیداد کے ڈیٹا، خطرے کے تجزیے، مالیات اور سفارشات کو یکجا کرتی ہیں۔",
+      "cta": "جائیدادیں براؤز کریں"
+    },
+    "filtered": {
+      "title": "آپ کے فلٹرز سے کوئی رپورٹ میل نہیں کھاتی",
+      "body": "اپنی تلاش یا حیثیت کے فلٹر کو ایڈجسٹ کرنے کی کوشش کریں۔",
+      "clear": "فلٹرز صاف کریں"
+    },
+    "pagination": {
+      "showing": "صفحہ {{page}} از {{total}}",
+      "prev": "پچھلا",
+      "next": "اگلا"
+    },
+    "deleteModal": {
+      "title": "یہ رپورٹ حذف کریں؟",
+      "body": "یہ مستقل طور پر \"{{title}}\" اور اس کے تمام حصوں کو حذف کر دے گا۔ اس عمل کو واپس نہیں لیا جا سکتا۔",
+      "confirmPrompt": "تصدیق کے لیے DELETE ٹائپ کریں",
+      "confirm": "رپورٹ حذف کریں"
+    }
+  },
+  "versionHistory": {
+  "title": "ورژن کی تاریخ",
+  "subtitle": "{{address}}",
+  "loading": "ورژنز لوڈ ہو رہے ہیں…",
+  "error": "ورژن کی تاریخ لوڈ کرنے میں ناکامی۔",
+  "empty": "اس جائیداد کے لیے کوئی ورژن نہیں ملا۔",
+  "current": "موجودہ",
+  "view": "دیکھیں"
+}
+}
 }
 }

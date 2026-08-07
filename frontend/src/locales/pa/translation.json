@@ -63,7 +63,40 @@
     "generateReport": "ਰਿਪੋਰਟ ਬਣਾਓ",
     "dataWarningTitle": "ਕੁਝ ਡੇਟਾ ਸਰੋਤ ਉਪਲਬਧ ਨਹੀਂ ਹਨ",
     "dataWarningBody": "6 ਵਿੱਚੋਂ {{count}} ਡੇਟਾ ਪ੍ਰਦਾਤਾਵਾਂ ਨਾਲ ਸੰਪਰਕ ਨਹੀਂ ਹੋ ਸਕਿਆ। ਜਿੱਥੇ ਡੇਟਾ ਗੁੰਮ ਸੀ, ਸਕੋਰ ਰੂੜੀਵਾਦੀ ਅਨੁਮਾਨਾਂ ਨੂੰ ਦਰਸਾਉਂਦੇ ਹਨ।"
-  }
+  },
+    "history": {
+      "sectionTitle": "ਜੋਖਮ ਇਤਿਹਾਸ",
+      "sectionSubtitle": "ਟਰੈਕ ਕਰੋ ਕਿ ਇਸ ਜਾਇਦਾਦ ਦੀ ਜੋਖਮ ਪ੍ਰੋਫਾਈਲ ਕਿਵੇਂ ਵਿਕਸਿਤ ਹੋਈ ਹੈ",
+      "chartTitle": "ਜੋਖਮ ਸਕੋਰ ਰੁਝਾਨ",
+      "chartSubtitle": "ਸਾਰੇ ਮੁਲਾਂਕਣਾਂ ਵਿੱਚ ਸਮੁੱਚਾ ਜੋਖਮ ਸਕੋਰ",
+      "timelineTitle": "ਮੁਲਾਂਕਣ ਸਮਾਂਰੇਖਾ",
+      "timelineSubtitle": "ਹਰ ਮੁੜ-ਗਣਨਾ, ਸਭ ਤੋਂ ਨਵਾਂ ਪਹਿਲਾਂ",
+      "metaCurrent": "ਮੌਜੂਦਾ",
+      "metaDelta": "ਬਦਲਾਅ",
+      "metaAssessments": "ਮੁਲਾਂਕਣ",
+      "metaTimespan": "ਸਮਾਂ ਸੀਮਾ",
+      "metaLatest": "ਨਵੀਨਤਮ",
+      "metaNoChange": "ਕੋਈ ਬਦਲਾਅ ਨਹੀਂ",
+      "metaFromBaseline": "ਬੇਸਲਾਈਨ ਤੋਂ",
+      "metaTotalRuns": "ਕੁੱਲ ਗਣਨਾਵਾਂ",
+      "emptyTitle": "ਹਾਲੇ ਕੋਈ ਇਤਿਹਾਸ ਨਹੀਂ",
+      "emptyDescription": "ਕਈ ਮੁਲਾਂਕਣਾਂ ਤੋਂ ਬਾਅਦ ਜੋਖਮ ਇਤਿਹਾਸ ਇੱਥੇ ਦਿਖਾਈ ਦੇਵੇਗਾ। ਸਮੇਂ ਦੇ ਨਾਲ ਸਕੋਰ ਬਦਲਾਅ ਟਰੈਕ ਕਰਨ ਲਈ ਮੁੜ-ਗਣਨਾ ਕਰੋ।",
+      "recalculateCta": "ਜੋਖਮ ਮੁੜ-ਗਣਨਾ ਕਰੋ",
+      "recalculating": "ਮੁੜ-ਗਣਨਾ ਹੋ ਰਹੀ ਹੈ…",
+      "tooltipAssessment": "ਮੁਲਾਂਕਣ",
+      "tooltipLatest": "ਨਵੀਨਤਮ",
+      "badgeLatest": "ਨਵੀਨਤਮ",
+      "assessmentId": "ਮੁਲਾਂਕਣ",
+      "expand": "ਵਿਸਥਾਰ ਕਰੋ",
+      "collapse": "ਸੰਕੁਚਿਤ ਕਰੋ",
+      "deltaImproved": "ਪਿਛਲੇ ਦੇ ਮੁਕਾਬਲੇ ਜੋਖਮ ਘਟਿਆ",
+      "deltaWorsened": "ਪਿਛਲੇ ਦੇ ਮੁਕਾਬਲੇ ਜੋਖਮ ਵਧਿਆ",
+      "deltaFlat": "ਪਿਛਲੇ ਦੇ ਮੁਕਾਬਲੇ ਕੋਈ ਬਦਲਾਅ ਨਹੀਂ",
+      "timeJustNow": "ਹੁਣੇ ਹੀ",
+      "timeMinutesAgo": "{{count}} ਮਿੰਟ ਪਹਿਲਾਂ",
+      "timeHoursAgo": "{{count}} ਘੰਟੇ ਪਹਿਲਾਂ",
+      "timeDaysAgo": "{{count}} ਦਿਨ ਪਹਿਲਾਂ"
+    }
 },
   "logoutModal": {
   "title": "ਸਾਈਨ ਆਊਟ ਕਰਨ ਲਈ ਤਿਆਰ ਹੋ?",
@@ -1786,7 +1819,6 @@
       "resendFailed": "ਕੋਡ ਦੁਬਾਰਾ ਨਹੀਂ ਭੇਜਿਆ ਜਾ ਸਕਿਆ"
     }
   },
-
 "notification": {
   "title": "ਸੂਚਨਾਵਾਂ",
   "subtitle": "{{count}} ਸੂਚਨਾਵਾਂ",
@@ -1856,5 +1888,88 @@
     "PRICE_CHANGE": "ਕੀਮਤ ਬਦਲਾਅ",
     "SYSTEM": "ਸਿਸਟਮ"
   }
+,
+  "report": {
+  "card": {
+    "untitled": "ਡਿਊ ਡਿਲਿਜੈਂਸ ਰਿਪੋਰਟ",
+    "moreActions": "ਹੋਰ ਕਾਰਵਾਈਆਂ",
+    "delete": "ਰਿਪੋਰਟ ਮਿਟਾਓ",
+    "risk": "ਜੋਖਮ",
+    "sections": "{{count}} ਭਾਗ",
+    "copyLink": "ਲਿੰਕ ਕਾਪੀ ਕਰੋ",
+    "copyId": "ਰਿਪੋਰਟ ID ਕਾਪੀ ਕਰੋ",
+    "linkCopied": "ਲਿੰਕ ਕਲਿੱਪਬੋਰਡ ਵਿੱਚ ਕਾਪੀ ਹੋ ਗਿਆ",
+    "idCopied": "ਰਿਪੋਰਟ ID ਕਾਪੀ ਹੋ ਗਿਆ",
+    "copyFailed": "ਕਾਪੀ ਅਸਫਲ"
+  },
+  "status": {
+    "pending": "ਬਕਾਇਆ",
+    "unknown": "ਅਣਜਾਣ",
+    "generating": "ਬਣਾਈ ਜਾ ਰਹੀ ਹੈ",
+    "completed": "ਪੂਰਾ ਹੋਇਆ",
+    "failed": "ਅਸਫਲ"
+  },
+  "print": {
+    "loading": "ਪ੍ਰਿੰਟ ਦ੍ਰਿਸ਼ ਤਿਆਰ ਕੀਤਾ ਜਾ ਰਿਹਾ ਹੈ…",
+    "loadFailed": "ਰਿਪੋਰਟ ਲੋਡ ਕਰਨ ਵਿੱਚ ਅਸਫਲ",
+    "notFound": "ਰਿਪੋਰਟ ਨਹੀਂ ਮਿਲੀ",
+    "screenHeader": "ਰਿਪੋਰਟ #{{id}} ਲਈ ਪ੍ਰਿੰਟ ਝਲਕ",
+    "printNow": "ਹੁਣੇ ਪ੍ਰਿੰਟ ਕਰੋ",
+    "footer": "ਰਿਪੋਰਟ #{{id}} · ਸੰਸਕਰਣ {{version}} · Real Estate Due Diligence Agent ਦੁਆਰਾ ਤਿਆਰ · {{email}}"
+  },
+  "list": {
+    "title": "ਮੇਰੀਆਂ ਰਿਪੋਰਟਾਂ",
+    "heading": "ਡਿਊ ਡਿਲਿਜੈਂਸ ਰਿਪੋਰਟਾਂ",
+    "subheading": "ਤੁਹਾਡੀਆਂ ਸਾਰੀਆਂ ਜਾਇਦਾਦਾਂ ਵਿੱਚ ਬਣੀਆਂ ਰਿਪੋਰਟਾਂ।",
+    "backToDashboard": "ਡੈਸ਼ਬੋਰਡ",
+    "refresh": "ਰਿਫ੍ਰੈਸ਼ ਕਰੋ",
+    "generateNew": "ਨਵੀਂ ਬਣਾਓ",
+    "searchPlaceholder": "ਸਿਰਲੇਖ ਜਾਂ ਪਤੇ ਦੁਆਰਾ ਖੋਜੋ…",
+    "deleted": "ਰਿਪੋਰਟ ਮਿਟਾਈ ਗਈ",
+    "deleteFailed": "ਰਿਪੋਰਟ ਮਿਟਾਉਣ ਵਿੱਚ ਅਸਫਲ",
+    "errorTitle": "ਰਿਪੋਰਟਾਂ ਲੋਡ ਕਰਨ ਵਿੱਚ ਅਸਫਲ",
+    "tryAgain": "ਦੁਬਾਰਾ ਕੋਸ਼ਿਸ਼ ਕਰੋ",
+    "stat": {
+      "total": "ਕੁੱਲ",
+      "completed": "ਪੂਰਾ",
+      "inProgress": "ਪ੍ਰਗਤੀ ਵਿੱਚ",
+      "failed": "ਅਸਫਲ"
+    },
+    
+    "filter": {
+      "all": "ਸਾਰੇ"
+    },
+    "empty": {
+      "title": "ਅਜੇ ਤੱਕ ਕੋਈ ਰਿਪੋਰਟ ਨਹੀਂ",
+      "body": "ਇੱਥੇ ਦੇਖਣ ਲਈ ਆਪਣੀ ਪਹਿਲੀ ਡਿਊ ਡਿਲਿਜੈਂਸ ਰਿਪੋਰਟ ਬਣਾਓ। ਰਿਪੋਰਟਾਂ ਜਾਇਦਾਦ ਡੇਟਾ, ਜੋਖਮ ਵਿਸ਼ਲੇਸ਼ਣ, ਵਿੱਤੀ ਅਤੇ ਸਿਫਾਰਸ਼ਾਂ ਨੂੰ ਇਕੱਠਾ ਕਰਦੀਆਂ ਹਨ।",
+      "cta": "ਜਾਇਦਾਦਾਂ ਬ੍ਰਾਊਜ਼ ਕਰੋ"
+    },
+    "filtered": {
+      "title": "ਤੁਹਾਡੇ ਫਿਲਟਰਾਂ ਨਾਲ ਕੋਈ ਰਿਪੋਰਟ ਮੇਲ ਨਹੀਂ ਖਾਂਦੀ",
+      "body": "ਆਪਣੀ ਖੋਜ ਜਾਂ ਸਥਿਤੀ ਫਿਲਟਰ ਨੂੰ ਵਿਵਸਥਿਤ ਕਰਨ ਦੀ ਕੋਸ਼ਿਸ਼ ਕਰੋ।",
+      "clear": "ਫਿਲਟਰ ਸਾਫ਼ ਕਰੋ"
+    },
+    "pagination": {
+      "showing": "ਪੰਨਾ {{page}} / {{total}}",
+      "prev": "ਪਿਛਲਾ",
+      "next": "ਅਗਲਾ"
+    },
+    "deleteModal": {
+      "title": "ਇਹ ਰਿਪੋਰਟ ਮਿਟਾਓ?",
+      "body": "ਇਹ ਸਥਾਈ ਤੌਰ 'ਤੇ \"{{title}}\" ਅਤੇ ਇਸਦੇ ਸਾਰੇ ਭਾਗਾਂ ਨੂੰ ਮਿਟਾ ਦੇਵੇਗਾ। ਇਸ ਕਾਰਵਾਈ ਨੂੰ ਵਾਪਸ ਨਹੀਂ ਲਿਆ ਜਾ ਸਕਦਾ।",
+      "confirmPrompt": "ਪੁਸ਼ਟੀ ਲਈ DELETE ਟਾਈਪ ਕਰੋ",
+      "confirm": "ਰਿਪੋਰਟ ਮਿਟਾਓ"
+    }
+  },
+  "versionHistory": {
+  "title": "ਸੰਸਕਰਣ ਇਤਿਹਾਸ",
+  "subtitle": "{{address}}",
+  "loading": "ਸੰਸਕਰਣ ਲੋਡ ਹੋ ਰਹੇ ਹਨ…",
+  "error": "ਸੰਸਕਰਣ ਇਤਿਹਾਸ ਲੋਡ ਕਰਨ ਵਿੱਚ ਅਸਫਲ।",
+  "empty": "ਇਸ ਜਾਇਦਾਦ ਲਈ ਕੋਈ ਸੰਸਕਰਣ ਨਹੀਂ ਮਿਲਿਆ।",
+  "current": "ਮੌਜੂਦਾ",
+  "view": "ਵੇਖੋ"
+}
+}
 }
 }
