@@ -12,6 +12,10 @@ public interface ExportService {
 
     byte[] exportReportExcel(Long reportId, Long userId);
 
+    byte[] exportPropertySnapshotPdf(Long propertyId, Long userId);
+
+    byte[] exportPropertySnapshotExcel(Long propertyId, Long userId);
+
     ExportResponse getReportPreview(Long reportId, Long userId);
 
     byte[] exportBulk(ExportRequest request, Long userId);
