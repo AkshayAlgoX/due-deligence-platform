@@ -5,9 +5,11 @@ import { motion } from "framer-motion";
 import {
   Activity,
   AlertCircle,
-  ArrowRight,
+  ArrowUpRight,
   Calendar,
+  Copy,
   FileText,
+  Link2,
   Loader2,
   MapPin,
   MoreVertical,
@@ -17,6 +19,7 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
+import { toast } from "sonner";
 
 import {
   formatReportDateShort,
@@ -28,9 +31,12 @@ import { getRiskLevelMeta } from "@/utils/riskUtils";
 /**
  * ReportCard — dense list item for the My Reports page.
  *
- * IMPORTANT: The whole card is a Link when completed. To avoid nested <a> tags
- * (HTML invalid + React hydration error), the kebab menu uses buttons +
- * router.push() for navigation instead of Link components.
+ * Design principles (Linear / Vercel / Notion tier):
+ *  - Entire card is the click target (no redundant "View" button)
+ *  - Kebab menu contains ONLY secondary actions (Copy Link, Copy ID, Delete)
+ *  - stopPropagation() on kebab prevents double navigation
+ *  - Hover reveals ArrowUpRight indicator (subtle "navigate away" hint)
+ *  - Kebab uses buttons + router.push (never nested <a>)
  */
 export default function ReportCard({ report, onDelete, deleting = false }) {
   const { t } = useTranslation();
@@ -72,6 +78,40 @@ export default function ReportCard({ report, onDelete, deleting = false }) {
     ? getRiskLevelMeta(report.riskLevelSnapshot)
     : null;
 
+  // ── Kebab action handlers ──────────────────────────────────
+  const handleMenuToggle = (e) => {
+    e.preventDefault();
+    e.stopPropagation();
+    setMenuOpen((v) => !v);
+  };
+
+  const handleCopyLink = (e) => {
+    e.preventDefault();
+    e.stopPropagation();
+    setMenuOpen(false);
+    try {
+      const url = `${window.location.origin}/reports/${report.id}`;
+      navigator.clipboard.writeText(url);
+      toast.success(t("report.card.linkCopied", "Link copied to clipboard"));
+    } catch (err) {
+      console.error("Copy link failed:", err);
+      toast.error(t("report.card.copyFailed", "Failed to copy"));
+    }
+  };
+
+  const handleCopyId = (e) => {
+    e.preventDefault();
+    e.stopPropagation();
+    setMenuOpen(false);
+    try {
+      navigator.clipboard.writeText(String(report.id));
+      toast.success(t("report.card.idCopied", "Report ID copied"));
+    } catch (err) {
+      console.error("Copy ID failed:", err);
+      toast.error(t("report.card.copyFailed", "Failed to copy"));
+    }
+  };
+
   const handleDelete = (e) => {
     e.preventDefault();
     e.stopPropagation();
@@ -79,19 +119,6 @@ export default function ReportCard({ report, onDelete, deleting = false }) {
     if (typeof onDelete === "function") {
       onDelete(report);
     }
-  };
-
-  const handleMenuToggle = (e) => {
-    e.preventDefault();
-    e.stopPropagation();
-    setMenuOpen((v) => !v);
-  };
-
-  const handleOpenReport = (e) => {
-    e.preventDefault();
-    e.stopPropagation();
-    setMenuOpen(false);
-    router.push(`/reports/${report.id}`);
   };
 
   // ── The whole card is a Link (completed) or a div (in-progress/failed) ──
@@ -108,7 +135,7 @@ export default function ReportCard({ report, onDelete, deleting = false }) {
       className={`
         group relative rounded-xl border transition-all duration-200
         ${isCompleted
-          ? "border-gray-200 dark:border-[#30363d] bg-white dark:bg-[#161b22] hover:border-gray-300 dark:hover:border-[#484f58] hover:shadow-sm"
+          ? "border-gray-200 dark:border-[#30363d] bg-white dark:bg-[#161b22] hover:border-gray-300 dark:hover:border-[#484f58] hover:shadow-sm hover:-translate-y-[1px]"
           : isFailed
           ? "border-red-200 dark:border-red-500/25 bg-red-50/30 dark:bg-red-500/5"
           : "border-blue-200 dark:border-blue-500/25 bg-blue-50/30 dark:bg-blue-500/5"
@@ -236,19 +263,22 @@ export default function ReportCard({ report, onDelete, deleting = false }) {
             </div>
           </div>
 
-          {/* ── Right: Actions ── */}
-          <div className="flex items-center gap-2 flex-shrink-0">
+          {/* ── Right: Hover indicator + Kebab ── */}
+          <div className="flex items-center gap-1 flex-shrink-0">
+            {/* Subtle "navigate away" indicator — Linear/Vercel pattern */}
             {isCompleted && (
-              <div className="hidden sm:inline-flex items-center gap-1.5 text-xs font-semibold text-gray-600 dark:text-[#7d8590] group-hover:text-gray-900 dark:group-hover:text-[#e6edf3] transition-colors">
-                {t("report.card.view", "View")}
-                <ArrowRight
-                  className="w-3.5 h-3.5 transition-transform group-hover:translate-x-0.5"
+              <div
+                className="opacity-0 group-hover:opacity-100 transition-opacity duration-200 pr-1"
+                aria-hidden="true"
+              >
+                <ArrowUpRight
+                  className="w-4 h-4 text-gray-400 dark:text-[#7d8590]"
                   strokeWidth={2.25}
                 />
               </div>
             )}
 
-            {/* Kebab menu — uses buttons only to avoid nested <a> tags */}
+            {/* Kebab menu — buttons only, no nested <a> */}
             <div className="relative" ref={menuRef}>
               <button
                 type="button"
@@ -265,22 +295,36 @@ export default function ReportCard({ report, onDelete, deleting = false }) {
                   initial={{ opacity: 0, scale: 0.95, y: -4 }}
                   animate={{ opacity: 1, scale: 1, y: 0 }}
                   transition={{ duration: 0.12 }}
-                  className="absolute right-0 top-full mt-1.5 z-20 w-48 rounded-lg border border-gray-200 dark:border-[#30363d] bg-white dark:bg-[#161b22] shadow-lg overflow-hidden"
+                  className="absolute right-0 top-full mt-1.5 z-20 w-52 rounded-lg border border-gray-200 dark:border-[#30363d] bg-white dark:bg-[#161b22] shadow-lg overflow-hidden py-1"
                 >
-                  {isCompleted && (
-                    <button
-                      type="button"
-                      onClick={handleOpenReport}
-                      className="w-full flex items-center gap-2.5 px-3 py-2 text-sm text-gray-700 dark:text-[#e6edf3] hover:bg-gray-50 dark:hover:bg-[#21262d] transition-colors text-left"
-                    >
-                      <FileText className="w-3.5 h-3.5" strokeWidth={2} />
-                      {t("report.card.openReport", "Open report")}
-                    </button>
-                  )}
+                  {/* Copy Link */}
+                  <button
+                    type="button"
+                    onClick={handleCopyLink}
+                    className="w-full flex items-center gap-2.5 px-3 py-2 text-[13px] text-gray-700 dark:text-[#e6edf3] hover:bg-gray-50 dark:hover:bg-[#21262d] transition-colors text-left"
+                  >
+                    <Link2 className="w-3.5 h-3.5" strokeWidth={2} />
+                    {t("report.card.copyLink", "Copy link")}
+                  </button>
+
+                  {/* Copy Report ID */}
+                  <button
+                    type="button"
+                    onClick={handleCopyId}
+                    className="w-full flex items-center gap-2.5 px-3 py-2 text-[13px] text-gray-700 dark:text-[#e6edf3] hover:bg-gray-50 dark:hover:bg-[#21262d] transition-colors text-left"
+                  >
+                    <Copy className="w-3.5 h-3.5" strokeWidth={2} />
+                    {t("report.card.copyId", "Copy report ID")}
+                  </button>
+
+                  {/* Divider */}
+                  <div className="my-1 h-px bg-gray-100 dark:bg-[#30363d]" />
+
+                  {/* Delete */}
                   <button
                     type="button"
                     onClick={handleDelete}
-                    className="w-full flex items-center gap-2.5 px-3 py-2 text-sm text-red-600 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-500/10 transition-colors text-left"
+                    className="w-full flex items-center gap-2.5 px-3 py-2 text-[13px] text-red-600 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-500/10 transition-colors text-left"
                   >
                     <Trash2 className="w-3.5 h-3.5" strokeWidth={2} />
                     {t("report.card.delete", "Delete report")}

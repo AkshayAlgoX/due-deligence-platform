@@ -238,12 +238,15 @@ export default function MyReportsPage() {
               {t("report.list.refresh", "Refresh")}
             </button>
             <Link
-              href="/dashboard/property-search"
-              className="inline-flex items-center gap-2 px-4 py-2.5 rounded-lg bg-gray-900 dark:bg-white text-white dark:text-gray-900 text-sm font-semibold hover:opacity-90 transition-opacity"
-            >
-              <Plus className="w-4 h-4" strokeWidth={2.5} />
-              {t("report.list.generateNew", "Generate new")}
-            </Link>
+  href="/dashboard/property-search"
+  className="group relative inline-flex items-center gap-2 overflow-hidden rounded-xl bg-gradient-to-br from-[#22C55E] to-[#16a34a] px-5 py-2.5 text-sm font-bold text-white shadow-[0_10px_30px_rgba(34,197,94,0.4)] transition-all hover:scale-[1.03] hover:shadow-[0_15px_40px_rgba(34,197,94,0.55)] active:scale-[0.97]"
+>
+  <span className="absolute inset-0 -translate-x-full bg-gradient-to-r from-transparent via-white/25 to-transparent transition-transform duration-1000 group-hover:translate-x-full" />
+  <Plus className="w-4 h-4 relative z-10" strokeWidth={2.5} />
+  <span className="relative z-10">
+    {t("report.list.generateNew", "Generate new")}
+  </span>
+</Link>
           </div>
         </motion.div>
 
@@ -413,9 +416,10 @@ export default function MyReportsPage() {
         {pagination && pagination.totalPages > 1 && filteredReports.length > 0 && (
           <div className="mt-8 flex items-center justify-between">
             <div className="text-xs text-gray-500 dark:text-[#7d8590] tabular-nums">
-              {t("report.list.pagination.showing", "Page {{page}} of {{total}}", {
-                page: page + 1,
-                total: pagination.totalPages,
+              {t("report.list.pagination.showing", "Showing {{from}}–{{to}} of {{total}}", {
+                from: page * PAGE_SIZE + 1,
+                to: Math.min((page + 1) * PAGE_SIZE, pagination.totalElements ?? filteredReports.length),
+                total: pagination.totalElements ?? filteredReports.length,
               })}
             </div>
             <div className="flex items-center gap-2">
@@ -598,12 +602,15 @@ function EmptyState() {
         )}
       </p>
       <Link
-        href="/dashboard/property-search"
-        className="inline-flex items-center gap-2 px-5 py-2.5 rounded-lg bg-gray-900 dark:bg-white text-white dark:text-gray-900 text-sm font-semibold hover:opacity-90 transition-opacity"
-      >
-        <Sparkles className="w-4 h-4" strokeWidth={2.25} />
-        {t("report.list.empty.cta", "Browse properties")}
-      </Link>
+  href="/dashboard/property-search"
+  className="group relative inline-flex items-center gap-2 overflow-hidden rounded-xl bg-gradient-to-br from-[#22C55E] to-[#16a34a] px-5 py-2.5 text-sm font-bold text-white shadow-[0_10px_30px_rgba(34,197,94,0.4)] transition-all hover:scale-[1.03] hover:shadow-[0_15px_40px_rgba(34,197,94,0.55)] active:scale-[0.97]"
+>
+  <span className="absolute inset-0 -translate-x-full bg-gradient-to-r from-transparent via-white/25 to-transparent transition-transform duration-1000 group-hover:translate-x-full" />
+  <Sparkles className="w-4 h-4 relative z-10" strokeWidth={2.5} />
+  <span className="relative z-10">
+    {t("report.list.empty.cta", "Browse properties")}
+  </span>
+</Link>
     </motion.div>
   );
 }

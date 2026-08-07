@@ -1,7 +1,9 @@
+// frontend/src/app/reports/[reportId]/page.jsx
 "use client";
 
 import { useState, useEffect, useCallback } from "react";
 import { useParams, useRouter } from "next/navigation";
+import { useTranslation } from "react-i18next";
 import { toast } from "sonner";
 
 import reportService from "@/services/reportService";
@@ -24,19 +26,7 @@ import ReportFinancialSection from "@/components/reports/sections/ReportFinancia
 import ReportRecommendations from "@/components/reports/sections/ReportRecommendations";
 import ReportAppendix from "@/components/reports/sections/ReportAppendix";
 
-// TEMP DEBUG — remove after fix
-if (typeof window !== "undefined") {
-  console.log("=== SECTION RENDERER CHECK ===");
-  console.log("COVER:", typeof ReportCoverSection, ReportCoverSection);
-  console.log("EXEC:", typeof ReportExecutiveSummary, ReportExecutiveSummary);
-  console.log("PROP:", typeof ReportPropertyOverview, ReportPropertyOverview);
-  console.log("RISK:", typeof ReportRiskAnalysis, ReportRiskAnalysis);
-  console.log("COMP:", typeof ReportComparableSection, ReportComparableSection);
-  console.log("FIN:", typeof ReportFinancialSection, ReportFinancialSection);
-  console.log("REC:", typeof ReportRecommendations, ReportRecommendations);
-  console.log("APP:", typeof ReportAppendix, ReportAppendix);
-}
-
+// Section renderer map — order enforced by sortSections() in reportUtils
 const SECTION_RENDERERS = {
   COVER: ReportCoverSection,
   EXECUTIVE_SUMMARY: ReportExecutiveSummary,
@@ -49,6 +39,7 @@ const SECTION_RENDERERS = {
 };
 
 function ErrorState({ message, onRetry }) {
+  const { t } = useTranslation();
   return (
     <div className="min-h-screen bg-[#F6F8FB] dark:bg-[#0d1117] flex items-center justify-center p-6">
       <div className="w-full max-w-md text-center">
@@ -56,24 +47,24 @@ function ErrorState({ message, onRetry }) {
           <span className="text-2xl">⚠️</span>
         </div>
         <h2 className="text-[17px] font-bold text-gray-900 dark:text-[#e6edf3] mb-2">
-          {message || "Failed to load report"}
+          {message || t("report.viewer.notFound")}
         </h2>
         <p className="text-[13px] text-gray-500 dark:text-[#7d8590] mb-5">
-          The report could not be loaded. Please check the URL or try again.
+          {t("report.viewer.notFoundBody")}
         </p>
         <div className="flex items-center justify-center gap-3">
           <button
             onClick={() => window.history.back()}
             className="px-4 py-2 rounded-xl text-[13px] font-semibold text-gray-600 dark:text-[#7d8590] border border-gray-200 dark:border-[#30363d] hover:bg-gray-50 dark:hover:bg-[#21262d] transition-all duration-150"
           >
-            Go back
+            {t("report.viewer.goBack")}
           </button>
           {onRetry && (
             <button
               onClick={onRetry}
               className="px-4 py-2 rounded-xl text-[13px] font-semibold bg-gray-900 dark:bg-[#e6edf3] text-white dark:text-[#0d1117] hover:bg-gray-700 dark:hover:bg-white transition-all duration-150"
             >
-              Try again
+              {t("report.list.tryAgain")}
             </button>
           )}
         </div>
@@ -83,6 +74,11 @@ function ErrorState({ message, onRetry }) {
 }
 
 function InProgressState({ report }) {
+  const { t } = useTranslation();
+  const address =
+    report?.propertyAddress ||
+    t("report.viewer.inProgress.fallbackAddress");
+
   return (
     <div className="min-h-screen bg-[#F6F8FB] dark:bg-[#0d1117] flex items-center justify-center p-6">
       <div className="w-full max-w-md text-center">
@@ -90,13 +86,13 @@ function InProgressState({ report }) {
           <div className="w-7 h-7 border-2 border-blue-600 dark:border-blue-400 border-t-transparent rounded-full animate-spin" />
         </div>
         <h2 className="text-[17px] font-bold text-gray-900 dark:text-[#e6edf3] mb-2">
-          Report is generating…
+          {t("report.viewer.inProgress.title")}
         </h2>
         <p className="text-[13px] text-gray-500 dark:text-[#7d8590] mb-2">
-          {report?.propertyAddress || "Your report"} is being prepared.
+          {t("report.viewer.inProgress.body", { address })}
         </p>
         <p className="text-[12px] text-gray-400 dark:text-[#6e7681]">
-          This page will refresh automatically when ready.
+          {t("report.viewer.inProgress.hint")}
         </p>
       </div>
     </div>
@@ -106,6 +102,7 @@ function InProgressState({ report }) {
 export default function ReportViewerPage() {
   const { reportId } = useParams();
   const router = useRouter();
+  const { t } = useTranslation();
 
   const [report, setReport] = useState(null);
   const [loading, setLoading] = useState(true);
@@ -130,12 +127,12 @@ export default function ReportViewerPage() {
       if (err?.response?.status === 404) {
         setNotFound(true);
       } else {
-        setError("Failed to load report. Please try again.");
+        setError(t("report.viewer.notFoundBody"));
       }
     } finally {
       setLoading(false);
     }
-  }, [reportId]);
+  }, [reportId, t]);
 
   useEffect(() => {
     fetchReport();
@@ -167,10 +164,12 @@ export default function ReportViewerPage() {
     try {
       const newReport = await reportService.regenerate(report.id);
       setRegenerateOpen(false);
-      toast.success(`Version ${newReport.version} is being generated`);
+      toast.success(
+        t("report.regenerate.success", { version: newReport.version })
+      );
       router.push(`/reports/${newReport.id}`);
     } catch {
-      toast.error("Failed to regenerate report");
+      toast.error(t("report.regenerate.error"));
     } finally {
       setIsRegenerating(false);
     }
@@ -182,10 +181,10 @@ export default function ReportViewerPage() {
     try {
       await reportService.delete(report.id);
       setDeleteOpen(false);
-      toast.success("Report deleted");
+      toast.success(t("report.list.deleted"));
       router.push("/reports");
     } catch {
-      toast.error("Failed to delete report");
+      toast.error(t("report.list.deleteFailed"));
       setIsDeleting(false);
     }
   }
@@ -194,12 +193,7 @@ export default function ReportViewerPage() {
   if (loading) return <ReportViewerSkeleton />;
 
   if (notFound) {
-    return (
-      <ErrorState
-        message="Report not found"
-        onRetry={null}
-      />
-    );
+    return <ErrorState message={t("report.viewer.notFound")} onRetry={null} />;
   }
 
   if (error) {
@@ -215,9 +209,12 @@ export default function ReportViewerPage() {
 
   // Failed report
   if (report.status === "FAILED") {
+    const failedMessage = report.errorMessage
+      ? `${t("report.viewer.failed.title")}: ${report.errorMessage}`
+      : t("report.viewer.failed.title");
     return (
       <ErrorState
-        message={`Report generation failed${report.errorMessage ? `: ${report.errorMessage}` : ""}`}
+        message={failedMessage}
         onRetry={() => {
           setRegenerateOpen(true);
         }}
@@ -225,7 +222,9 @@ export default function ReportViewerPage() {
     );
   }
 
-  // Sort sections
+  // ── Sort sections into canonical order ──
+  // Order: COVER → EXECUTIVE_SUMMARY → PROPERTY_OVERVIEW → RISK_ANALYSIS →
+  //        COMPARABLE → FINANCIAL → RECOMMENDATIONS → APPENDIX
   const sortedSections = sortSections(report.sections || []);
 
   return (
@@ -243,10 +242,10 @@ export default function ReportViewerPage() {
         {/* Body */}
         <div className="max-w-7xl mx-auto px-4 sm:px-6 py-8">
           <div className="flex gap-8">
-            {/* TOC */}
-            <ReportViewerTOC sections={report.sections || []} />
+            {/* TOC — pass sorted sections so TOC order matches render order */}
+            <ReportViewerTOC sections={sortedSections} />
 
-            {/* Sections */}
+            {/* Sections rendered in canonical order */}
             <main className="flex-1 min-w-0 space-y-6">
               {sortedSections.map((section) => {
                 const Renderer = SECTION_RENDERERS[section.sectionType];
@@ -263,8 +262,11 @@ export default function ReportViewerPage() {
               {/* Footer */}
               <div className="py-6 text-center">
                 <p className="text-[12px] text-gray-400 dark:text-[#6e7681]">
-                  Report #{report.id} · Version {report.version} ·{" "}
-                  {report.generatedByEmail} · Real Estate Due Diligence Agent
+                  {t("report.viewer.footer", {
+                    id: report.id,
+                    version: report.version,
+                    email: report.generatedByEmail,
+                  })}
                 </p>
               </div>
             </main>

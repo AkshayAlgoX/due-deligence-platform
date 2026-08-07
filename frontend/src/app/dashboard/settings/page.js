@@ -3,6 +3,7 @@
 import { useEffect } from "react";
 import { Settings } from "lucide-react";
 import LanguageSelector from "@/components/settings/LanguageSelector";
+import PreferencesForm from "@/components/notifications/PreferencesForm";
 
 export default function SettingsPage() {
   useEffect(() => {
@@ -32,16 +33,19 @@ export default function SettingsPage() {
       {/* ── Language ── */}
       <LanguageSelector />
 
-      {/*
-        ── ADD NEW SETTINGS SECTIONS BELOW ──────────────────────────────
-        Each section follows the same pattern as LanguageSelector:
-        a self-contained component with its own section header and card.
+      {/* ── Notification Preferences ── */}
+      <section className="space-y-4">
+        <div>
+          <h2 className="text-lg font-bold text-gray-900 dark:text-[#e6edf3]">
+            Notification Preferences
+          </h2>
+          <p className="text-sm text-gray-500 dark:text-[#7d8590]">
+            Choose how and when you receive notifications.
+          </p>
+        </div>
+        <PreferencesForm />
+      </section>
 
-        Example:
-        <NotificationSettings />
-        <ThemeSettings />
-        <PrivacySettings />
-      */}
     </div>
   );
 }
