@@ -1950,7 +1950,7 @@
       "clear": "ਫਿਲਟਰ ਸਾਫ਼ ਕਰੋ"
     },
     "pagination": {
-      "showing": "ਪੰਨਾ {{page}} / {{total}}",
+      "showing": "{{total}} ਵਿੱਚੋਂ {{from}}–{{to}} ਦਿਖਾ ਰਿਹਾ ਹੈ",
       "prev": "ਪਿਛਲਾ",
       "next": "ਅਗਲਾ"
     },

@@ -1957,7 +1957,7 @@
       "clear": "फिल्टर साफ करा"
     },
     "pagination": {
-      "showing": "पृष्ठ {{page}} पैकी {{total}}",
+      "showing": "{{total}} पैकी {{from}}–{{to}} दाखवत आहे",
       "prev": "मागील",
       "next": "पुढील"
     },

@@ -377,9 +377,10 @@ export default function MyReportsPage() {
         {pagination && pagination.totalPages > 1 && filteredReports.length > 0 && (
           <div className="mt-8 flex items-center justify-between">
             <div className="text-xs text-gray-500 dark:text-[#7d8590] tabular-nums">
-              {t("report.list.pagination.showing", "Page {{page}} of {{total}}", {
-                page: page + 1,
-                total: pagination.totalPages,
+              {t("report.list.pagination.showing", "Showing {{from}}–{{to}} of {{total}}", {
+                from: page * PAGE_SIZE + 1,
+                to: Math.min((page + 1) * PAGE_SIZE, pagination.totalElements ?? filteredReports.length),
+                total: pagination.totalElements ?? filteredReports.length,
               })}
             </div>
             <div className="flex items-center gap-2">

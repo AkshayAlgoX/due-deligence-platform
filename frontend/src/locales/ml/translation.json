@@ -1951,7 +1951,7 @@
       "clear": "ഫിൽട്ടറുകൾ മായ്ക്കുക"
     },
     "pagination": {
-      "showing": "പേജ് {{page}} / {{total}}",
+      "showing": "{{total}} ൽ {{from}}–{{to}} കാണിക്കുന്നു",
       "prev": "മുമ്പത്തെ",
       "next": "അടുത്തത്"
     },

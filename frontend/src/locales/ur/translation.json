@@ -1991,7 +1991,7 @@
       "clear": "فلٹرز صاف کریں"
     },
     "pagination": {
-      "showing": "صفحہ {{page}} از {{total}}",
+      "showing": "{{total}} میں سے {{from}}–{{to}} دکھا رہا ہے",
       "prev": "پچھلا",
       "next": "اگلا"
     },

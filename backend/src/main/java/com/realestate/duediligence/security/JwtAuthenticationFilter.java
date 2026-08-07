@@ -28,6 +28,7 @@ import io.jsonwebtoken.UnsupportedJwtException;
 import io.jsonwebtoken.security.SignatureException;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
+import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
@@ -58,21 +59,27 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             throws ServletException, IOException {
 
         final String authHeader = request.getHeader("Authorization");
+        final String tokenParam = request.getParameter("token");
+        final String cookieToken = getCookieValue(request, "auth_token");
 
-        // No Bearer token — let request continue (public endpoints handle it)
-        if (authHeader == null || !authHeader.startsWith("Bearer ")) {
+        String jwt = null;
+        if (authHeader != null && authHeader.startsWith("Bearer ")) {
+            jwt = authHeader.substring(7);
+        } else if (tokenParam != null && !tokenParam.isBlank()) {
+            jwt = tokenParam;
+        } else if (cookieToken != null && !cookieToken.isBlank()) {
+            jwt = cookieToken;
+        }
+
+        if (jwt == null) {
             filterChain.doFilter(request, response);
             return;
         }
 
-        final String jwt = authHeader.substring(7);
-
         try {
             final String email = jwtService.extractUsername(jwt);
 
-            if (email != null &&
-                    SecurityContextHolder.getContext().getAuthentication() == null) {
-
+            if (email != null && SecurityContextHolder.getContext().getAuthentication() == null) {
                 UserDetails userDetails = userDetailsService.loadUserByUsername(email);
 
                 if (jwtService.isTokenValid(jwt, userDetails.getUsername())) {
@@ -125,6 +132,18 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
                     "TOKEN_ERROR",
                     "Authentication failed.");
         }
+    }
+
+    private String getCookieValue(HttpServletRequest request, String name) {
+        if (request.getCookies() == null) {
+            return null;
+        }
+        for (Cookie cookie : request.getCookies()) {
+            if (name.equals(cookie.getName())) {
+                return cookie.getValue();
+            }
+        }
+        return null;
     }
 
     /**

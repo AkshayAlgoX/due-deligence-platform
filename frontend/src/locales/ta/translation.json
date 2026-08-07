@@ -1939,7 +1939,7 @@
         "clear": "வடிகட்டிகளை அழி"
       },
       "pagination": {
-        "showing": "பக்கம் {{page}} / {{total}}",
+        "showing": "{{total}} இல் {{from}}–{{to}} காட்டுகிறோம்",
         "prev": "முந்தையது",
         "next": "அடுத்தது"
       },

@@ -1957,7 +1957,7 @@
       "clear": "ફિલ્ટર સાફ કરો"
     },
     "pagination": {
-      "showing": "પૃષ્ઠ {{page}} માંથી {{total}}",
+      "showing": "{{total}} માંથી {{from}}–{{to}} દર્શાવ્યું",
       "prev": "પાછલું",
       "next": "આગલું"
     },

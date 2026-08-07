@@ -8,9 +8,13 @@
  *  - Cleans up on disconnect
  */
 import { API_ROUTES } from "@/constants/apiRoutes";
+import { getToken } from "@/utils/helpers";
 
 let eventSource = null;
 const listeners = new Set();
+let reconnectTimer = null;
+
+const SSE_RECONNECT_DELAY = 5000; // 5 seconds
 
 /**
  * Connect to the SSE stream.
@@ -22,15 +26,12 @@ const listeners = new Set();
 export function subscribeToNotifications(onNotification) {
   if (typeof window === "undefined") return () => {};
 
-  // Register the listener
   listeners.add(onNotification);
 
-  // Open the connection if not already open
   if (!eventSource || eventSource.readyState === EventSource.CLOSED) {
     openConnection();
   }
 
-  // Return unsubscribe function
   return () => {
     listeners.delete(onNotification);
     if (listeners.size === 0) {
@@ -39,48 +40,93 @@ export function subscribeToNotifications(onNotification) {
   };
 }
 
+function getSseUrl() {
+  const token = getToken();
+  if (!token) return API_ROUTES.SSE_NOTIFICATIONS;
+  const url = new URL(API_ROUTES.SSE_NOTIFICATIONS, window.location.origin);
+  url.searchParams.set("token", token);
+  return url.toString();
+}
+
 function openConnection() {
+  closeConnection();
+  if (reconnectTimer) {
+    window.clearTimeout(reconnectTimer);
+    reconnectTimer = null;
+  }
+
   try {
-    // EventSource uses GET with cookies — Next.js proxy forwards to backend
-    eventSource = new EventSource(API_ROUTES.SSE_NOTIFICATIONS, {
-      withCredentials: true,
-    });
+    const url = getSseUrl();
+    eventSource = new EventSource(url, { withCredentials: true });
 
     eventSource.addEventListener("notification", (event) => {
+      if (!event.data) return;
       try {
         const notification = JSON.parse(event.data);
         listeners.forEach((listener) => {
           try {
             listener(notification);
-          } catch (e) {
-            console.warn("[SSE] listener error:", e);
+          } catch (listenerError) {
+            console.warn("[SSE] listener error:", listenerError);
           }
         });
-      } catch (e) {
-        console.warn("[SSE] failed to parse notification:", e);
+      } catch (parseError) {
+        console.warn("[SSE] failed to parse notification:", parseError);
       }
     });
 
     eventSource.addEventListener("ping", () => {
-      // Keep-alive — no action needed
+      // Keep-alive ping; no further action needed.
     });
 
-    eventSource.onerror = (err) => {
-      console.warn("[SSE] connection error, will reconnect automatically:", err);
-      // EventSource auto-reconnects — we just log
+    eventSource.onopen = () => {
+      console.log("[SSE] connected to notification stream", {
+        readyState: eventSource.readyState,
+        url: eventSource.url,
+      });
     };
 
-    eventSource.onopen = () => {
-      console.log("[SSE] connected to notification stream");
+    eventSource.onerror = (error) => {
+      const readyState = error?.target?.readyState;
+      const url = error?.target?.url;
+      console.warn(
+        "[SSE] connection error",
+        { readyState, url },
+        error
+      );
+
+      if (!eventSource || eventSource.readyState === EventSource.CLOSED) {
+        scheduleReconnect();
+      }
     };
-  } catch (e) {
-    console.error("[SSE] failed to open EventSource:", e);
+  } catch (openError) {
+    console.error("[SSE] failed to open EventSource:", openError);
+    scheduleReconnect();
   }
 }
 
+function scheduleReconnect() {
+  if (reconnectTimer || listeners.size === 0) return;
+  reconnectTimer = window.setTimeout(() => {
+    reconnectTimer = null;
+    if (listeners.size > 0) {
+      openConnection();
+    }
+  }, SSE_RECONNECT_DELAY);
+}
+
 function closeConnection() {
+  if (reconnectTimer) {
+    window.clearTimeout(reconnectTimer);
+    reconnectTimer = null;
+  }
+
   if (eventSource) {
-    eventSource.close();
+    try {
+      eventSource.close();
+    } catch (closeError) {
+      console.warn("[SSE] error closing EventSource:", closeError);
+    }
     eventSource = null;
     console.log("[SSE] connection closed");
   }
