@@ -95,10 +95,40 @@ public class EmailService {
     }
 
     // ══════════════════════════════════════════════════════════════
+    //  5. REPORT READY NOTIFICATION
+    // ══════════════════════════════════════════════════════════════
+
+    @Async
+    public void sendReportReadyEmail(String toEmail, String userName,
+                                     String reportTitle, String propertyAddress, Long reportId) {
+        sendEmail(
+                toEmail,
+                "Your due diligence report is ready",
+                buildReportReadyHtml(userName, reportTitle, propertyAddress, reportId),
+                "report ready"
+        );
+    }
+
+    // ══════════════════════════════════════════════════════════════
+    //  6. RISK ALERT NOTIFICATION
+    // ══════════════════════════════════════════════════════════════
+
+    @Async
+    public void sendRiskAlertEmail(String toEmail, String userName,
+                                   String propertyAddress, String riskLevel, Long propertyId) {
+        sendEmail(
+                toEmail,
+                "Risk alert for your property",
+                buildRiskAlertHtml(userName, propertyAddress, riskLevel, propertyId),
+                "risk alert"
+        );
+    }
+
+    // ══════════════════════════════════════════════════════════════
     //  CORE SENDER (reusable)
     // ══════════════════════════════════════════════════════════════
         // ══════════════════════════════════════════════════════════════
-    //  5. REGISTRATION OTP (NEW)
+    //  7. REGISTRATION OTP
     // ══════════════════════════════════════════════════════════════
 
     @Async
@@ -312,6 +342,79 @@ public class EmailService {
                 We're sorry to see you go. You're welcome back anytime.
             </p>
             """.formatted(displayName, email));
+    }
+
+    private String buildReportReadyHtml(String userName, String reportTitle,
+                                        String propertyAddress, Long reportId) {
+        String displayName = (userName != null && !userName.isBlank()) ? userName : "there";
+        String reportUrl = "http://localhost:3000/reports/" + reportId;
+        return emailWrapper("Report Ready", """
+            <h2 style="margin: 0 0 16px; color: #111827; font-size: 24px; font-weight: 800;">
+                Your report is ready, %s
+            </h2>
+            <p style="margin: 0 0 24px; color: #4b5563; font-size: 15px; line-height: 1.6;">
+                Your due diligence report has been generated successfully and is ready to view.
+            </p>
+
+            <div style="background: linear-gradient(135deg, #f0fdf4 0%%, #dcfce7 100%%); border: 2px solid #22C55E; border-radius: 16px; padding: 24px; margin: 24px 0;">
+                <p style="margin: 0 0 8px; color: #16a34a; font-size: 11px; font-weight: 700; letter-spacing: 2px; text-transform: uppercase;">
+                    Report
+                </p>
+                <p style="margin: 0 0 4px; color: #111827; font-size: 18px; font-weight: 800;">
+                    %s
+                </p>
+                <p style="margin: 0; color: #6b7280; font-size: 14px;">
+                    Property: %s
+                </p>
+            </div>
+
+            <div style="text-align: center; margin: 32px 0;">
+                <a href="%s"
+                   style="display: inline-block; padding: 14px 32px; background: linear-gradient(135deg, #22C55E 0%%, #16a34a 100%%); color: white; text-decoration: none; border-radius: 12px; font-weight: 700; font-size: 14px; box-shadow: 0 10px 30px rgba(34,197,94,0.3);">
+                    View Report
+                </a>
+            </div>
+
+            <p style="margin: 24px 0 0; color: #6b7280; font-size: 13px; line-height: 1.6;">
+                The report includes an executive summary, risk analysis across 6 categories, financial data, and actionable recommendations.
+            </p>
+            """.formatted(displayName, reportTitle, propertyAddress, reportUrl));
+    }
+
+    private String buildRiskAlertHtml(String userName, String propertyAddress,
+                                       String riskLevel, Long propertyId) {
+        String displayName = (userName != null && !userName.isBlank()) ? userName : "there";
+        String propertyUrl = "http://localhost:3000/dashboard/property-search/" + propertyId;
+        String alertColor = riskLevel != null && riskLevel.equalsIgnoreCase("CRITICAL")
+                ? "#dc2626" : "#f59e0b";
+        return emailWrapper("Risk Alert", """
+            <h2 style="margin: 0 0 16px; color: #111827; font-size: 24px; font-weight: 800;">
+                Risk alert, %s
+            </h2>
+            <p style="margin: 0 0 24px; color: #4b5563; font-size: 15px; line-height: 1.6;">
+                A risk assessment update has been detected for one of your properties.
+            </p>
+
+            <div style="background: #fef3c7; border: 2px solid %s; border-radius: 16px; padding: 24px; margin: 24px 0;">
+                <p style="margin: 0 0 8px; color: %s; font-size: 11px; font-weight: 700; letter-spacing: 2px; text-transform: uppercase;">
+                    Risk Level: %s
+                </p>
+                <p style="margin: 0; color: #111827; font-size: 16px; font-weight: 700;">
+                    %s
+                </p>
+            </div>
+
+            <div style="text-align: center; margin: 32px 0;">
+                <a href="%s"
+                   style="display: inline-block; padding: 14px 32px; background: linear-gradient(135deg, #22C55E 0%%, #16a34a 100%%); color: white; text-decoration: none; border-radius: 12px; font-weight: 700; font-size: 14px; box-shadow: 0 10px 30px rgba(34,197,94,0.3);">
+                    View Property
+                </a>
+            </div>
+
+            <p style="margin: 24px 0 0; color: #6b7280; font-size: 13px; line-height: 1.6;">
+                Review the full risk assessment to understand the factors contributing to this alert.
+            </p>
+            """.formatted(displayName, alertColor, alertColor, riskLevel, propertyAddress, propertyUrl));
     }
 
     /**

@@ -17,10 +17,14 @@ import com.realestate.duediligence.dto.RiskBreakdownDto;
 import com.realestate.duediligence.entity.DueDiligenceReport;
 import com.realestate.duediligence.entity.ReportSection;
 import com.realestate.duediligence.entity.RiskAssessment;
+import com.realestate.duediligence.entity.User;
+import com.realestate.duediligence.enums.NotificationType;
 import com.realestate.duediligence.enums.ReportStatus;
 import com.realestate.duediligence.repository.DueDiligenceReportRepository;
 import com.realestate.duediligence.repository.ReportSectionRepository;
 import com.realestate.duediligence.repository.RiskAssessmentRepository;
+import com.realestate.duediligence.service.NotificationEventListener;
+import com.realestate.duediligence.service.NotificationService;
 import com.realestate.duediligence.service.RiskAssessmentService;
 
 import lombok.RequiredArgsConstructor;
@@ -48,6 +52,8 @@ public class ReportGenerationExecutor {
     private final RiskAssessmentService riskAssessmentService;
     private final PropertyAggregationService aggregationService;
     private final ReportSectionBuilder sectionBuilder;
+    private final NotificationService notificationService;
+    private final NotificationEventListener notificationEventListener;
 
     /**
      * Executes report generation asynchronously.
@@ -56,6 +62,7 @@ public class ReportGenerationExecutor {
     @Async("reportTaskExecutor")
     @Transactional(propagation = Propagation.REQUIRES_NEW)
     public void execute(Long reportId, boolean forceRiskRecalculation) {
+
         log.info("[async] Starting report generation for report {}", reportId);
         long start = System.currentTimeMillis();
 
@@ -105,6 +112,9 @@ public class ReportGenerationExecutor {
             log.info("[async] Report {} COMPLETED in {}ms — {} sections generated",
                     reportId, duration, sections.size());
 
+            // 5. Fire notification (in-app + email) — non-blocking, separate transaction
+            fireCompletionNotification(report);
+
         } catch (Exception e) {
             log.error("[async] Report {} generation FAILED: {}", reportId, e.getMessage(), e);
             markFailed(reportId, e.getMessage());
@@ -133,5 +143,37 @@ public class ReportGenerationExecutor {
     private String truncate(String s, int max) {
         if (s == null) return null;
         return s.length() <= max ? s : s.substring(0, max) + "...";
+    }
+
+    /**
+     * Fires in-app + email notification after a report completes.
+     * Runs inside the same async transaction — failures are logged, not propagated.
+     */
+    private void fireCompletionNotification(DueDiligenceReport report) {
+        try {
+            User owner = report.getGeneratedBy();
+            if (owner == null) return;
+
+            String propertyAddress = report.getProperty() != null
+                    ? report.getProperty().getAddress() : "Unknown property";
+            String reportTitle = report.getTitle();
+            String redirectUrl = "/reports/" + report.getId();
+
+            // In-app notification (respects preferences internally)
+            notificationService.createForUser(
+                    owner,
+                    NotificationType.REPORT_READY,
+                    "Your report is ready",
+                    "Due diligence report for " + propertyAddress + " has been generated.",
+                    redirectUrl
+            );
+
+            // Email notification (respects preferences internally)
+            notificationEventListener.onReportReady(owner, reportTitle, propertyAddress, report.getId());
+
+        } catch (Exception e) {
+            log.warn("[async] Failed to fire completion notification for report {}: {}",
+                    report.getId(), e.getMessage());
+        }
     }
 }

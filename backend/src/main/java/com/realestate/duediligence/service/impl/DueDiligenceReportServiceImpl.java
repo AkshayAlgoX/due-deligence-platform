@@ -121,7 +121,6 @@ public class DueDiligenceReportServiceImpl implements DueDiligenceReportService 
         // Dispatch async generation — returns immediately, doesn't block this transaction
         boolean forceRecalc = Boolean.TRUE.equals(request.getForceRiskRecalculation());
         executor.execute(saved.getId(), forceRecalc);
-
         return toFullResponse(saved, List.of());
     }
 
