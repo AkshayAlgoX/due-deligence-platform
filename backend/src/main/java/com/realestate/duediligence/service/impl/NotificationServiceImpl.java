@@ -284,19 +284,6 @@ public class NotificationServiceImpl implements NotificationService {
     }
 
     /**
-     * Check whether email delivery is enabled for a given notification type.
-     * Called externally by the email integration listener.
-     */
-    public boolean isEmailEnabled(NotificationPreference prefs, NotificationType type) {
-        return switch (type) {
-            case REPORT_READY  -> prefs.isReportReadyEmail();
-            case RISK_ALERT    -> prefs.isRiskAlertEmail();
-            case PRICE_CHANGE  -> prefs.isPriceChangeEmail();
-            case SYSTEM        -> prefs.isSystemEmail();
-        };
-    }
-
-    /**
      * Get or create preference for an explicit user (used by email listener).
      * Public so NotificationEventListener can call it.
      */

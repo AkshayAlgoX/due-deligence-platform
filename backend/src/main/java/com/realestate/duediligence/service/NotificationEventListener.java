@@ -4,11 +4,12 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.realestate.duediligence.entity.NotificationPreference;
 import com.realestate.duediligence.entity.User;
 import com.realestate.duediligence.enums.NotificationType;
-import com.realestate.duediligence.service.impl.NotificationServiceImpl;
+import com.realestate.duediligence.repository.NotificationPreferenceRepository;
 
 import lombok.RequiredArgsConstructor;
 
@@ -18,6 +19,17 @@ import lombok.RequiredArgsConstructor;
  * Separated from NotificationServiceImpl to honour Single Responsibility:
  *   - NotificationServiceImpl handles in-app persistence + SSE
  *   - NotificationEventListener handles email side-effects
+ *
+ * IMPORTANT — dependency design:
+ *   This class does NOT inject NotificationServiceImpl to avoid a circular
+ *   dependency chain:
+ *     ReportGenerationExecutor → NotificationEventListener
+ *                              → NotificationServiceImpl
+ *                              → (same bean already being constructed)
+ *
+ *   Instead it injects only what it actually needs:
+ *     - EmailService (sends the email)
+ *     - NotificationPreferenceRepository (checks preferences directly)
  *
  * All methods are @Async so email delivery never blocks the caller.
  * Email failures are logged and swallowed — they must not propagate
@@ -30,7 +42,36 @@ public class NotificationEventListener {
     private static final Logger log = LoggerFactory.getLogger(NotificationEventListener.class);
 
     private final EmailService emailService;
-    private final NotificationServiceImpl notificationService;
+    private final NotificationPreferenceRepository preferenceRepository;
+
+    // ── Private helpers ───────────────────────────────────────────
+
+    /**
+     * Get or create default preferences for a user.
+     * Isolated transaction so it can run on the async thread.
+     */
+    @Transactional
+    private NotificationPreference getOrCreatePreference(User user) {
+        return preferenceRepository.findByUserId(user.getId())
+                .orElseGet(() -> {
+                    com.realestate.duediligence.entity.NotificationPreference defaults =
+                            com.realestate.duediligence.entity.NotificationPreference.builder()
+                                    .user(user)
+                                    .build();
+                    return preferenceRepository.save(defaults);
+                });
+    }
+
+    private boolean isEmailEnabled(NotificationPreference prefs, NotificationType type) {
+        return switch (type) {
+            case REPORT_READY  -> prefs.isReportReadyEmail();
+            case RISK_ALERT    -> prefs.isRiskAlertEmail();
+            case PRICE_CHANGE  -> prefs.isPriceChangeEmail();
+            case SYSTEM        -> prefs.isSystemEmail();
+        };
+    }
+
+    // ── Public event handlers ─────────────────────────────────────
 
     /**
      * Called after a report is completed.
@@ -39,14 +80,14 @@ public class NotificationEventListener {
      * @param user            the report owner
      * @param reportTitle     human-readable report name
      * @param propertyAddress the property address
-     * @param reportId        used to build the redirect URL
+     * @param reportId        used to build the redirect URL in the email
      */
     @Async
     public void onReportReady(User user, String reportTitle, String propertyAddress, Long reportId) {
         try {
-            NotificationPreference prefs = notificationService.getOrCreatePreferenceForUser(user);
+            NotificationPreference prefs = getOrCreatePreference(user);
 
-            if (notificationService.isEmailEnabled(prefs, NotificationType.REPORT_READY)) {
+            if (isEmailEnabled(prefs, NotificationType.REPORT_READY)) {
                 emailService.sendReportReadyEmail(
                         user.getEmail(),
                         user.getFullName(),
@@ -71,9 +112,9 @@ public class NotificationEventListener {
     @Async
     public void onRiskAlert(User user, String propertyAddress, String riskLevel, Long propertyId) {
         try {
-            NotificationPreference prefs = notificationService.getOrCreatePreferenceForUser(user);
+            NotificationPreference prefs = getOrCreatePreference(user);
 
-            if (notificationService.isEmailEnabled(prefs, NotificationType.RISK_ALERT)) {
+            if (isEmailEnabled(prefs, NotificationType.RISK_ALERT)) {
                 emailService.sendRiskAlertEmail(
                         user.getEmail(),
                         user.getFullName(),
