@@ -114,6 +114,9 @@ public class SecurityConfig {
                 .requestMatchers("/api/legal/**").hasRole("LEGAL_REVIEWER")
                 .requestMatchers("/api/financial/**").hasRole("FINANCIAL_INSTITUTION")
 
+                // ── Export endpoints ──────────────────────────────────
+                .requestMatchers("/api/export/**").authenticated()
+
                 // ── Everything else: authenticated ────────────────────
                 .anyRequest().authenticated()
             )

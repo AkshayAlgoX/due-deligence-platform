@@ -2123,8 +2123,60 @@
     "verifiedDesc": "Your account has been created.",
     "verifyFailed": "Verification failed",
     "resentTitle": "New code sent",
-    "resentDesc": "A fresh 6-digit code is on the way.",
     "resendFailed": "Could not resend code"
+  }
+},
+  "export": {
+    "pdf": "PDF Document",
+    "excel": "Excel Workbook",
+    "generating": "Generating Export...",
+    "download": "Export Report",
+    "preview": "Preview Document",
+    "bulk": "Bulk Export",
+    "history": "Export History",
+    "fileSize": "File Size",
+    "fileName": "File Name",
+    "date": "Generated Date",
+    "estimatedPages": "Est. Pages",
+    "pages": "Pages",
+    "sections": "Sections",
+    "modules": "Modules",
+    "status": "Status",
+    "summaryTitle": "Executive Summary Preview",
+    "includedSections": "Included Report Modules",
+    "loadingHistory": "Loading export history...",
+    "noHistory": "No Export History Yet",
+    "noHistoryDesc": "Reports exported in PDF or Excel formats will be archived here for instant re-download.",
+    "bulkPdf": "Export Bulk ZIP (PDF)",
+    "bulkExcel": "Export Bulk (Excel)",
+    "format": {
+      "pdf": "PDF",
+      "excel": "EXCEL",
+      "label": "Format",
+      "select": "Select Export Format",
+      "pdfDesc": "Full report with cover & graphics",
+      "excelDesc": "Multi-sheet structured dataset"
+    },
+    "progress": {
+      "label": "Progress",
+      "preparing": "Preparing document layout & sections...",
+      "fetching": "Fetching report risk data...",
+      "rendering": "Rendering graphics, tables & cover page...",
+      "finalizing": "Finalizing binary stream & starting download..."
+    },
+    "ready": {
+      "title": "Export Ready",
+      "message": "Export completed successfully!"
+    },
+    "error": {
+      "title": "Export Error",
+      "failed": "Failed to generate export file."
+    },
+    "success": {
+      "pdf": "PDF Export Ready",
+      "excel": "Excel Export Ready",
+      "bulk": "Bulk Export Ready"
+    }
   }
 }
 }

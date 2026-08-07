@@ -1793,5 +1793,57 @@
       "resentDesc": "ఒక తాజా 6-అంకెల కోడ్ మార్గంలో ఉంది.",
       "resendFailed": "కోడ్‌ను మళ్లీ పంపలేకపోయాము"
     }
+  },
+  "export": {
+    "pdf": "PDF డాక్యుమెంట్",
+    "excel": "Excel వర్క్‌బుక్",
+    "generating": "ఎగుమతి సిద్ధమవుతోంది...",
+    "download": "నివేదిక ఎగుమతి చేయండి",
+    "preview": "ముందస్తు వీక్షణ",
+    "bulk": "బల్క్ ఎగుమతి",
+    "history": "ఎగుమతి చరిత్ర",
+    "fileSize": "ఫైల్ పరిమాణం",
+    "fileName": "ఫైల్ పేరు",
+    "date": "తేదీ",
+    "estimatedPages": "పేజీలు",
+    "pages": "పేజీలు",
+    "sections": "విభాగాలు",
+    "modules": "మాడ్యూల్స్",
+    "status": "స్థితి",
+    "summaryTitle": "సారాంశం వీక్షణ",
+    "includedSections": "మాడ్యూల్స్",
+    "loadingHistory": "చరిత్ర లోడ్ అవుతోంది...",
+    "noHistory": "ఎగుమతి చరిత్ర లేదు",
+    "noHistoryDesc": "ఎగుమతి చేసిన నివేదికలు ఇక్కడ భద్రపరచబడతాయి.",
+    "bulkPdf": "బల్క్ ZIP (PDF)",
+    "bulkExcel": "బల్క్ Excel",
+    "format": {
+      "pdf": "PDF",
+      "excel": "EXCEL",
+      "label": "ఫార్మాట్",
+      "select": "ఫార్మాట్ ఎంచుకోండి",
+      "pdfDesc": "పూర్తి నివేదిక",
+      "excelDesc": "డేటాసెట్"
+    },
+    "progress": {
+      "label": "పురోగతి",
+      "preparing": "సిద్ధమవుతోంది...",
+      "fetching": "డేటా తీసుకుంటోంది...",
+      "rendering": "రూపొందిస్తోంది...",
+      "finalizing": "డౌన్‌లోడ్ ప్రారంభమవుతోంది..."
+    },
+    "ready": {
+      "title": "ఎగుమతి సిద్ధంగా ఉంది",
+      "message": "విజయవంతంగా పూర్తయింది!"
+    },
+    "error": {
+      "title": "లోపం",
+      "failed": "విఫలమైంది."
+    },
+    "success": {
+      "pdf": "PDF సిద్ధంగా ఉంది",
+      "excel": "Excel సిద్ధంగా ఉంది",
+      "bulk": "బల్క్ సిద్ధంగా ఉంది"
+    }
   }
 }

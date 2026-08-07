@@ -1826,5 +1826,57 @@
       "resentDesc": "ایک تازہ 6 ہندسوں کا کوڈ راستے میں ہے۔",
       "resendFailed": "کوڈ دوبارہ نہیں بھیجا جا سکا"
     }
+  },
+  "export": {
+    "pdf": "پی ڈی ایف دستاویز",
+    "excel": "ایکسل ورک بک",
+    "generating": "برآمد تیار ہو رہی ہے...",
+    "download": "رپورٹ برآمد کریں",
+    "preview": "پیش نظارہ دستاویز",
+    "bulk": "بلک برآمد",
+    "history": "برآمد کی ہسٹری",
+    "fileSize": "فائل کا سائز",
+    "fileName": "فائل کا نام",
+    "date": "تاریخ",
+    "estimatedPages": "صفحات",
+    "pages": "صفحات",
+    "sections": "حصے",
+    "modules": "ماڈیولز",
+    "status": "حالت",
+    "summaryTitle": "خلاصہ پیش نظارہ",
+    "includedSections": "ماڈیولز",
+    "loadingHistory": "ہسٹری لوڈ ہو رہی ہے...",
+    "noHistory": "کوئی برآمد ہسٹری نہیں",
+    "noHistoryDesc": "برآمد شدہ رپورٹس یہاں محفوظ کی جائیں گی۔",
+    "bulkPdf": "بلک ZIP (PDF)",
+    "bulkExcel": "بلک Excel",
+    "format": {
+      "pdf": "PDF",
+      "excel": "EXCEL",
+      "label": "فارمیٹ",
+      "select": "فارمیٹ منتخب کریں",
+      "pdfDesc": "مکمل رپورٹ",
+      "excelDesc": "ڈیٹا سیٹ"
+    },
+    "progress": {
+      "label": "پیش رفت",
+      "preparing": "تیاری ہو رہی ہے...",
+      "fetching": "ڈیٹا حاصل کیا جا رہا ہے...",
+      "rendering": "رینڈر ہو رہا ہے...",
+      "finalizing": "ڈاؤن لوڈ شروع ہو رہا ہے..."
+    },
+    "ready": {
+      "title": "برآمد تیار ہے",
+      "message": "کامیابی سے مکمل ہو گیا!"
+    },
+    "error": {
+      "title": "خرابی",
+      "failed": "ناکام ہو گیا۔"
+    },
+    "success": {
+      "pdf": "PDF تیار ہے",
+      "excel": "Excel تیار ہے",
+      "bulk": "بلک برآمد تیار ہے"
+    }
   }
 }

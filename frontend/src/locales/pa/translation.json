@@ -1780,10 +1780,60 @@
       "sentDesc": "6-ਅੰਕਾਂ ਦੇ ਕੋਡ ਲਈ ਆਪਣਾ ਇਨਬਾਕਸ ਦੇਖੋ।",
       "verifiedTitle": "ਪੁਸ਼ਟੀ ਹੋਈ!",
       "verifiedDesc": "ਤੁਹਾਡਾ ਖਾਤਾ ਬਣਾਇਆ ਗਿਆ ਹੈ।",
-      "verifyFailed": "ਪੁਸ਼ਟੀ ਅਸਫਲ",
-      "resentTitle": "ਨਵਾਂ ਕੋਡ ਭੇਜਿਆ ਗਿਆ",
       "resentDesc": "ਇੱਕ ਤਾਜ਼ਾ 6-ਅੰਕਾਂ ਦਾ ਕੋਡ ਰਾਹ ਵਿੱਚ ਹੈ।",
       "resendFailed": "ਕੋਡ ਦੁਬਾਰਾ ਨਹੀਂ ਭੇਜਿਆ ਜਾ ਸਕਿਆ"
+    }
+  },
+  "export": {
+    "pdf": "PDF ਦਸਤਾਵੇਜ਼",
+    "excel": "Excel ਵਰਕਬੁੱਕ",
+    "generating": "ਐਕਸਪੋਰਟ ਤਿਆਰ ਹੋ ਰਿਹਾ ਹੈ...",
+    "download": "ਰਿਪੋਰਟ ਐਕਸਪੋਰਟ ਕਰੋ",
+    "preview": "ਪੂਰਵ-ਝਲਕ ਦਸਤਾਵੇਜ਼",
+    "bulk": "ਬਲਕ ਐਕਸਪੋਰਟ",
+    "history": "ਐਕਸਪੋਰਟ ਇਤਿਹਾਸ",
+    "fileSize": "ਫਾਈਲ ਆਕਾਰ",
+    "fileName": "ਫਾਈਲ ਦਾ ਨਾਂ",
+    "date": "ਮਿਤੀ",
+    "estimatedPages": "ਅਨੁਮਾਨਿਤ ਸਫ਼ੇ",
+    "pages": "ਸਫ਼ੇ",
+    "sections": "ਸੈਕਸ਼ਨ",
+    "modules": "ਮੋਡਿਊਲ",
+    "status": "ਸਥਿਤੀ",
+    "summaryTitle": "ਸੰਖੇਪ ਪੂਰਵ-ਝਲਕ",
+    "includedSections": "ਮੋਡਿਊਲ",
+    "loadingHistory": "ਇਤਿਹਾਸ ਲੋਡ ਹੋ ਰਿਹਾ ਹੈ...",
+    "noHistory": "ਕੋਈ ਐਕਸਪੋਰਟ ਇਤਿਹਾਸ ਨਹੀਂ",
+    "noHistoryDesc": "ਐਕਸਪੋਰਟ ਕੀਤੀਆਂ ਰਿਪੋਰਟਾਂ ਇੱਥੇ ਮਿਲਣਗੀਆਂ।",
+    "bulkPdf": "ਬਲਕ ZIP (PDF)",
+    "bulkExcel": "ਬਲਕ Excel",
+    "format": {
+      "pdf": "PDF",
+      "excel": "EXCEL",
+      "label": "ਫਾਰਮੈਟ",
+      "select": "ਫਾਰਮੈਟ ਚੁਣੋ",
+      "pdfDesc": "ਪੂਰੀ ਰਿਪੋਰਟ",
+      "excelDesc": "ਡੇਟਾਸੈਟ"
+    },
+    "progress": {
+      "label": "ਤਰੱਕੀ",
+      "preparing": "ਤਿਆਰੀ ਹੋ ਰਹੀ ਹੈ...",
+      "fetching": "ਡੇਟਾ ਲਿਆਇਆ ਜਾ ਰਿਹਾ ਹੈ...",
+      "rendering": "ਰੈਂਡਰ ਹੋ ਰਿਹਾ ਹੈ...",
+      "finalizing": "ਡਾਊਨਲੋਡ ਹੋ ਰਿਹਾ ਹੈ..."
+    },
+    "ready": {
+      "title": "ਐਕਸਪੋਰਟ ਤਿਆਰ ਹੈ",
+      "message": "ਸਫਲਤਾਪੂਰਵਕ ਪੂਰਾ ਹੋਇਆ!"
+    },
+    "error": {
+      "title": "ਗਲਤੀ",
+      "failed": "ਅਸਫਲ ਰਿਹਾ।"
+    },
+    "success": {
+      "pdf": "PDF ਤਿਆਰ ਹੈ",
+      "excel": "Excel ਤਿਆਰ ਹੈ",
+      "bulk": "ਬਲਕ ਤਿਆਰ ਹੈ"
     }
   }
 }

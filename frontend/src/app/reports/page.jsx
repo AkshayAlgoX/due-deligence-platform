@@ -26,6 +26,10 @@ import reportService from "@/services/reportService";
 
 import ReportCard from "@/components/reports/ReportCard";
 import ReportSkeleton from "@/components/reports/ReportSkeleton";
+import ExportProgressModal from "@/components/export/ExportProgressModal";
+import ExportHistoryList from "@/components/export/ExportHistoryList";
+import { useExport } from "@/hooks/useExport";
+import { Archive, CheckSquare, Square } from "lucide-react";
 
 const PAGE_SIZE = 10;
 const STATUS_FILTERS = ["ALL", "COMPLETED", "GENERATING", "PENDING", "FAILED"];
@@ -48,13 +52,29 @@ export default function MyReportsPage() {
   const [deletingId, setDeletingId] = useState(null);
   const [reportToDelete, setReportToDelete] = useState(null);
   const [deleteConfirmText, setDeleteConfirmText] = useState("");
+  const [selectedReportIds, setSelectedReportIds] = useState([]);
+
+  const {
+    isGenerating,
+    progressStage,
+    progressPercent,
+    exportFormat,
+
+    historyData,
+    isHistoryLoading,
+
+    downloadBulk,
+    fetchHistory,
+    downloadFromHistoryItem,
+  } = useExport();
 
   // ── Fetch on mount + when page/filter changes ──
   const loadReports = useCallback(() => {
     fetchList({ page, size: PAGE_SIZE, sort: "createdAt,desc" }).catch((err) => {
       console.error("Failed to load reports:", err);
     });
-  }, [fetchList, page]);
+    fetchHistory(0, 10);
+  }, [fetchList, fetchHistory, page]);
 
   useEffect(() => {
     loadReports();
@@ -185,7 +205,26 @@ export default function MyReportsPage() {
             </p>
           </div>
 
-          <div className="flex items-center gap-2">
+          <div className="flex items-center gap-2 flex-wrap">
+            {selectedReportIds.length > 0 && (
+              <div className="flex items-center gap-2">
+                <button
+                  onClick={() => downloadBulk(selectedReportIds, "PDF")}
+                  className="inline-flex items-center gap-1.5 px-3 py-2 rounded-lg text-xs font-semibold bg-sky-600 hover:bg-sky-700 text-white transition-colors shadow-xs"
+                >
+                  <Archive className="w-3.5 h-3.5" />
+                  {t("export.bulkPdf", `Export Bulk ZIP (${selectedReportIds.length})`)}
+                </button>
+                <button
+                  onClick={() => downloadBulk(selectedReportIds, "EXCEL")}
+                  className="inline-flex items-center gap-1.5 px-3 py-2 rounded-lg text-xs font-semibold bg-emerald-600 hover:bg-emerald-700 text-white transition-colors shadow-xs"
+                >
+                  <Archive className="w-3.5 h-3.5" />
+                  {t("export.bulkExcel", "Excel")}
+                </button>
+              </div>
+            )}
+
             <button
               onClick={loadReports}
               disabled={listLoading}
@@ -484,6 +523,27 @@ export default function MyReportsPage() {
           </motion.div>
         )}
       </AnimatePresence>
+
+      {/* ══════════════════════════════════════════════════════════
+          EXPORT HISTORY SECTION
+      ══════════════════════════════════════════════════════════ */}
+      <div className="mt-12 pt-8 border-t border-gray-200 dark:border-[#30363d]">
+        <ExportHistoryList
+          history={historyData?.content || []}
+          isLoading={isHistoryLoading}
+          page={historyData?.number || 0}
+          totalPages={historyData?.totalPages || 1}
+          onPageChange={(p) => fetchHistory(p, 10)}
+          onDownloadItem={(id, name) => downloadFromHistoryItem(id, name)}
+        />
+      </div>
+
+      <ExportProgressModal
+        isOpen={isGenerating}
+        stage={progressStage}
+        percent={progressPercent}
+        format={exportFormat}
+      />
     </div>
   );
 }

@@ -43,14 +43,14 @@ public class RateLimitFilter extends OncePerRequestFilter {
         String path = request.getRequestURI();
         String method = request.getMethod();
 
-        // Only rate-limit POSTs
-        if (!"POST".equalsIgnoreCase(method)) {
+        String endpoint = classify(path);
+        if (endpoint == null) {
             chain.doFilter(request, response);
             return;
         }
 
-        String endpoint = classify(path);
-        if (endpoint == null) {
+        // Auth rate limiting only applies to POSTs
+        if (!"export".equals(endpoint) && !"POST".equalsIgnoreCase(method)) {
             chain.doFilter(request, response);
             return;
         }
@@ -62,6 +62,7 @@ public class RateLimitFilter extends OncePerRequestFilter {
             case "forgot" -> rateLimitService.tryForgotPassword(ip);
             case "register" -> rateLimitService.tryRegister(ip);
             case "otp" -> rateLimitService.tryOtpVerify(ip);
+            case "export" -> rateLimitService.tryExport(ip);
             default -> true;
         };
 
@@ -78,6 +79,8 @@ public class RateLimitFilter extends OncePerRequestFilter {
     // ── Endpoint classifier ───────────────────────────────────────
 
        private String classify(String path) {
+        if (path.startsWith("/api/export")) return "export";
+
         if (path.equals("/api/auth/login")) return "login";
         if (path.equals("/api/auth/google")) return "login";
 

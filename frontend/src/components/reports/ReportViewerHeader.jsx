@@ -16,6 +16,10 @@ import {
   Loader2,
 } from "lucide-react";
 import { toast } from "sonner";
+import ExportButton from "@/components/export/ExportButton";
+import ExportProgressModal from "@/components/export/ExportProgressModal";
+import ExportPreviewModal from "@/components/export/ExportPreviewModal";
+import { useExport } from "@/hooks/useExport";
 
 function StatusDot({ status, t }) {
   const meta = {
@@ -120,6 +124,22 @@ export default function ReportViewerHeader({
   const [scrolled, setScrolled] = useState(false);
   const [kebabOpen, setKebabOpen] = useState(false);
   const kebabRef = useRef(null);
+
+  const {
+    isGenerating,
+    progressStage,
+    progressPercent,
+    exportFormat,
+
+    isPreviewOpen,
+    previewData,
+    isPreviewLoading,
+
+    downloadPdf,
+    downloadExcel,
+    openPreview,
+    closePreview,
+  } = useExport();
 
   useEffect(() => {
     function handleScroll() {
@@ -247,19 +267,13 @@ export default function ReportViewerHeader({
               </button>
             </Tooltip>
 
-            <Tooltip label={t("report.viewer.actions.downloadSoon")}>
-              <button
-                onClick={() =>
-                  toast.info(t("report.viewer.actions.downloadToast"), {
-                    description: t("report.viewer.actions.downloadToastHint"),
-                  })
-                }
-                className="w-8 h-8 rounded-lg flex items-center justify-center text-gray-300 dark:text-[#6e7681] hover:bg-gray-50 dark:hover:bg-[#21262d]/40 hover:text-gray-400 dark:hover:text-[#7d8590] transition-all duration-150 relative"
-              >
-                <Download className="w-4 h-4" strokeWidth={2} />
-                <span className="absolute top-1 right-1 w-1.5 h-1.5 rounded-full bg-blue-400 dark:bg-blue-500" />
-              </button>
-            </Tooltip>
+            <ExportButton
+              onExportPdf={() => report?.id && downloadPdf(report.id)}
+              onExportExcel={() => report?.id && downloadExcel(report.id)}
+              onPreview={() => report?.id && openPreview(report.id)}
+              isLoading={isGenerating}
+              variant="iconOnly"
+            />
 
             <div className="relative" ref={kebabRef}>
               <Tooltip label={t("report.viewer.actions.moreOptions")}>
@@ -287,6 +301,22 @@ export default function ReportViewerHeader({
           </div>
         </div>
       </div>
+
+      <ExportProgressModal
+        isOpen={isGenerating}
+        stage={progressStage}
+        percent={progressPercent}
+        format={exportFormat}
+      />
+
+      <ExportPreviewModal
+        isOpen={isPreviewOpen}
+        previewData={previewData}
+        isLoading={isPreviewLoading}
+        onClose={closePreview}
+        onDownloadPdf={() => report?.id && downloadPdf(report.id)}
+        onDownloadExcel={() => report?.id && downloadExcel(report.id)}
+      />
     </header>
   );
 }
