@@ -60,6 +60,8 @@ export const API_ROUTES = {
   // ── Export Functionality ──────────────────────────────────────────────────
   EXPORT_PDF: (reportId) => `/api/export/report/${reportId}/pdf`,
   EXPORT_EXCEL: (reportId) => `/api/export/report/${reportId}/excel`,
+  EXPORT_PROPERTY_PDF: (propertyId) => `/api/export/property/${propertyId}/pdf`,
+  EXPORT_PROPERTY_EXCEL: (propertyId) => `/api/export/property/${propertyId}/excel`,
   EXPORT_PREVIEW: (reportId) => `/api/export/report/${reportId}/preview`,
   EXPORT_BULK: "/api/export/bulk",
   EXPORT_HISTORY: "/api/export/history",
