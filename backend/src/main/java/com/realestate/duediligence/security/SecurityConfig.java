@@ -109,6 +109,7 @@ public class SecurityConfig {
 
                 // ── Role-gated endpoints ──────────────────────────────
                 .requestMatchers("/api/admin/**").hasRole("ADMIN")
+                .requestMatchers("/api/audit-logs/**").hasRole("ADMIN")
                 .requestMatchers("/api/buyer/**").hasRole("BUYER")
                 .requestMatchers("/api/agent/**").hasRole("REAL_ESTATE_AGENT")
                 .requestMatchers("/api/legal/**").hasRole("LEGAL_REVIEWER")

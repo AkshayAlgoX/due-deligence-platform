@@ -12,6 +12,9 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
+
 
 import com.realestate.duediligence.dto.RiskAssessmentResponse;
 import com.realestate.duediligence.dto.RiskBreakdownDto;
@@ -20,9 +23,14 @@ import com.realestate.duediligence.dto.RiskHistoryDto;
 import com.realestate.duediligence.entity.Property;
 import com.realestate.duediligence.entity.RiskAssessment;
 import com.realestate.duediligence.entity.RiskFactor;
+import com.realestate.duediligence.entity.User;
+import com.realestate.duediligence.entity.AuditLog;
+import com.realestate.duediligence.enums.AuditAction;
 import com.realestate.duediligence.repository.PropertyRepository;
 import com.realestate.duediligence.repository.RiskAssessmentRepository;
 import com.realestate.duediligence.repository.RiskFactorRepository;
+import com.realestate.duediligence.repository.UserRepository;
+import com.realestate.duediligence.service.AuditLogService;
 import com.realestate.duediligence.service.RiskAssessmentService;
 import com.realestate.duediligence.service.RiskScoringEngine;
 
@@ -44,6 +52,8 @@ public class RiskAssessmentServiceImpl implements RiskAssessmentService {
     private final RiskAssessmentRepository assessmentRepository;
     private final RiskFactorRepository factorRepository;
     private final PropertyRepository propertyRepository;
+    private final AuditLogService auditLogService;
+    private final UserRepository userRepository;
 
     // ── getOrCompute ──────────────────────────────────────────────
 
@@ -177,6 +187,17 @@ public class RiskAssessmentServiceImpl implements RiskAssessmentService {
 
         // Persist assessment first — factors need the FK
         RiskAssessment saved = assessmentRepository.save(assessment);
+
+        User currentUser = resolveCurrentUser();
+
+        saveAuditLog(
+                 currentUser,
+                 AuditAction.RISK_ASSESSED,
+                 "RISK_ASSESSMENT",
+                 property.getId(),
+                "Risk assessment completed"
+    );
+
         log.info("Persisted risk assessment id={} for property {}",
                 saved.getId(), propertyId);
 
@@ -265,4 +286,37 @@ public class RiskAssessmentServiceImpl implements RiskAssessmentService {
     private double nvl(Double value) {
         return value != null ? value : 0.0;
     }
+
+   private void saveAuditLog(
+        User user,
+        AuditAction action,
+        String resourceType,
+        Long resourceId,
+        String details) {
+
+    if (user == null) {
+        return;
+    }
+
+    AuditLog log = new AuditLog();
+
+    log.setUser(user);
+    log.setAction(action);
+    log.setResourceType(resourceType);
+    log.setResourceId(resourceId);
+    log.setDetailsJson(details);
+    log.setCreatedAt(LocalDateTime.now());
+
+    auditLogService.save(log);
+}
+
+private User resolveCurrentUser() {
+    Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+
+    if (auth == null || !auth.isAuthenticated()) {
+        return null;
+    }
+
+    return userRepository.findByEmail(auth.getName()).orElse(null);
+}
 }

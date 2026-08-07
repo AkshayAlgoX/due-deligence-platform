@@ -4,6 +4,8 @@ package com.realestate.duediligence.controller;
 import java.util.List;
 import java.util.Map;
 
+import java.time.LocalDateTime;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Page;
@@ -19,12 +21,19 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 
 import com.realestate.duediligence.dto.DueDiligenceReportResponse;
 import com.realestate.duediligence.dto.GenerateReportRequest;
 import com.realestate.duediligence.dto.ReportSummaryDto;
 import com.realestate.duediligence.enums.ReportStatus;
+import com.realestate.duediligence.enums.AuditAction;
 import com.realestate.duediligence.service.DueDiligenceReportService;
+import com.realestate.duediligence.service.AuditLogService;
+import com.realestate.duediligence.entity.AuditLog;
+import com.realestate.duediligence.entity.User;
+import com.realestate.duediligence.repository.UserRepository;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -59,6 +68,8 @@ public class ReportController {
     private static final Logger log = LoggerFactory.getLogger(ReportController.class);
 
     private final DueDiligenceReportService reportService;
+    private final AuditLogService auditLogService;
+    private final UserRepository userRepository;
 
     // ── POST /api/reports/generate ────────────────────────────────
 
@@ -74,6 +85,16 @@ public class ReportController {
         try {
             log.info("Report generation requested for property {}", request.getPropertyId());
             DueDiligenceReportResponse response = reportService.generate(request);
+
+            User currentUser = resolveCurrentUser();
+
+            saveAuditLog(
+                     currentUser,
+                     AuditAction.REPORT_GENERATED,
+                     "REPORT",
+                     response.getId(),
+                     "Report generated");
+
             return ResponseEntity.status(202).body(response);   // 202 Accepted (async)
         } catch (RuntimeException e) {
             log.warn("Report generation failed: {}", e.getMessage());
@@ -162,6 +183,16 @@ public class ReportController {
             @PathVariable Long reportId) {
         try {
             reportService.delete(reportId);
+
+            User currentUser = resolveCurrentUser();
+
+            saveAuditLog(
+                     currentUser,
+                     AuditAction.REPORT_DELETED,
+                    "REPORT",
+                     reportId,
+                     "Report deleted");
+
             return ResponseEntity.noContent().build();
         } catch (RuntimeException e) {
             log.warn("Delete report failed for {}: {}", reportId, e.getMessage());
@@ -207,4 +238,35 @@ public class ReportController {
             return ResponseEntity.notFound().build();
         }
     }
+
+    private User resolveCurrentUser() {
+
+    Authentication auth =
+            SecurityContextHolder.getContext().getAuthentication();
+
+    if (auth == null || !auth.isAuthenticated()) {
+        return null;
+    }
+
+    return userRepository.findByEmail(auth.getName()).orElse(null);
+}
+
+private void saveAuditLog(
+        User user,
+        AuditAction action,
+        String resourceType,
+        Long resourceId,
+        String details) {
+
+    AuditLog log = new AuditLog();
+
+    log.setUser(user);
+    log.setAction(action);
+    log.setResourceType(resourceType);
+    log.setResourceId(resourceId);
+    log.setDetailsJson(details);
+    log.setCreatedAt(LocalDateTime.now());
+
+    auditLogService.save(log);
+}
 }

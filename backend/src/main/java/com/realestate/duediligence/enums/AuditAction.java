@@ -11,6 +11,7 @@ public enum AuditAction {
     PROPERTY_DELETED,
 
     REPORT_GENERATED,
+    REPORT_DELETED,
     REPORT_DOWNLOADED,
 
     RISK_ASSESSED,

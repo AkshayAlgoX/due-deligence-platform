@@ -25,12 +25,15 @@ import com.realestate.duediligence.entity.DueDiligenceReport;
 import com.realestate.duediligence.entity.Property;
 import com.realestate.duediligence.entity.ReportSection;
 import com.realestate.duediligence.entity.User;
+import com.realestate.duediligence.entity.AuditLog;
+import com.realestate.duediligence.enums.AuditAction;
 import com.realestate.duediligence.enums.ReportStatus;
 import com.realestate.duediligence.repository.DueDiligenceReportRepository;
 import com.realestate.duediligence.repository.PropertyRepository;
 import com.realestate.duediligence.repository.ReportSectionRepository;
 import com.realestate.duediligence.repository.UserRepository;
 import com.realestate.duediligence.service.DueDiligenceReportService;
+import com.realestate.duediligence.service.AuditLogService;
 
 import lombok.RequiredArgsConstructor;
 
@@ -61,6 +64,7 @@ public class DueDiligenceReportServiceImpl implements DueDiligenceReportService 
     private final PropertyRepository propertyRepository;
     private final UserRepository userRepository;
     private final ReportGenerationExecutor executor;
+    private final AuditLogService auditLogService;
 
     // ══════════════════════════════════════════════════════════════
     // PUBLIC API
@@ -103,6 +107,14 @@ public class DueDiligenceReportServiceImpl implements DueDiligenceReportService 
                 .build();
 
         DueDiligenceReport saved = reportRepository.save(report);
+
+        saveAuditLog(
+                  user,
+                  AuditAction.REPORT_GENERATED,
+                  "REPORT",
+                  saved.getId(),
+                  "Due diligence report generated");
+
         log.info("Report {} created (PENDING) for property {} by user {}",
                 saved.getId(), property.getId(), user.getEmail());
 
@@ -145,10 +157,23 @@ public class DueDiligenceReportServiceImpl implements DueDiligenceReportService 
     @Override
     @Transactional
     public void delete(Long reportId) {
+
+        User user = requireCurrentUser();
+
         DueDiligenceReport report = findAndAuthorize(reportId);
         log.info("Deleting report {} (property {})", reportId,
                 report.getProperty() != null ? report.getProperty().getId() : "?");
+        
+        saveAuditLog(
+                  user,
+                  AuditAction.REPORT_DELETED,
+                  "REPORT",
+                   report.getId(),
+                   "Report deleted");
+        
         reportRepository.delete(report);
+
+
     }
 
     @Override
@@ -284,4 +309,25 @@ public class DueDiligenceReportServiceImpl implements DueDiligenceReportService 
                 .generatedByEmail(r.getGeneratedBy() != null ? r.getGeneratedBy().getEmail() : null)
                 .build();
     }
+
+    private void saveAuditLog(
+        User user,
+        AuditAction action,
+        String resourceType,
+        Long resourceId,
+        String details) {
+
+    if (user == null) return;
+
+    AuditLog log = new AuditLog();
+
+    log.setUser(user);
+    log.setAction(action);
+    log.setResourceType(resourceType);
+    log.setResourceId(resourceId);
+    log.setDetailsJson(details);
+    log.setCreatedAt(LocalDateTime.now());
+
+    auditLogService.save(log);
+}
 }
