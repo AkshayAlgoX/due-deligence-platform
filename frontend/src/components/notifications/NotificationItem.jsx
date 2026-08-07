@@ -3,12 +3,11 @@
 /**
  * NotificationItem — single notification row.
  *
- * Shows:
- *  - Type icon (colored)
- *  - Unread indicator dot
- *  - Title + message
- *  - Relative timestamp
- *  - Mark read / delete actions
+ * Layout:
+ *  [type-icon] [content: title + message] [right-col: timestamp + unread-dot + delete]
+ *
+ * The right column is a flex column so timestamp, dot, and delete
+ * never overlap each other.
  */
 import { useRouter } from "next/navigation";
 import { Trash2, FileText, AlertTriangle, TrendingUp, Bell } from "lucide-react";
@@ -45,7 +44,7 @@ export default function NotificationItem({ notification, onMarkRead, onDelete })
   return (
     <div
       className={`
-        group relative flex items-start gap-3 rounded-xl p-3 transition
+        group flex items-start gap-3 rounded-xl p-3 transition
         ${notification.isRead
           ? "hover:bg-gray-50 dark:hover:bg-[#1c2128]"
           : "bg-green-50/50 dark:bg-[#0d2818]/40 hover:bg-green-50 dark:hover:bg-[#0d2818]/60"
@@ -61,58 +60,60 @@ export default function NotificationItem({ notification, onMarkRead, onDelete })
         }
       }}
     >
-      {/* Type icon */}
+      {/* Left: type icon */}
       <div className={`flex-shrink-0 flex h-9 w-9 items-center justify-center rounded-lg ${colors.bg}`}>
         <Icon size={16} className={colors.icon} />
       </div>
 
-      {/* Content */}
+      {/* Centre: title + message */}
       <div className="flex-1 min-w-0">
-        <div className="flex items-start justify-between gap-2">
-          <p className={`text-sm font-semibold truncate
-            ${notification.isRead
-              ? "text-gray-700 dark:text-[#7d8590]"
-              : "text-gray-900 dark:text-[#e6edf3]"
-            }`}>
-            {notification.title}
-          </p>
-          <span className="flex-shrink-0 text-[11px] text-gray-400 dark:text-[#6e7681] mt-0.5">
-            {formatNotificationTime(notification.createdAt)}
-          </span>
-        </div>
+        <p className={`text-sm font-semibold truncate
+          ${notification.isRead
+            ? "text-gray-700 dark:text-[#7d8590]"
+            : "text-gray-900 dark:text-[#e6edf3]"
+          }`}>
+          {notification.title}
+        </p>
         <p className="mt-0.5 text-xs text-gray-500 dark:text-[#7d8590] line-clamp-2">
           {notification.message}
         </p>
       </div>
 
-      {/* Unread dot */}
-      {!notification.isRead && (
-        <span
-          className={`absolute top-3.5 right-10 w-2 h-2 rounded-full flex-shrink-0 ${colors.dot}`}
-          aria-label={t("notification.unread")}
-        />
-      )}
+      {/* Right: timestamp → unread dot → delete (stacked, never overlapping) */}
+      <div className="flex-shrink-0 flex flex-col items-end gap-1.5 ml-1">
+        {/* Timestamp */}
+        <span className="text-[11px] text-gray-400 dark:text-[#6e7681] whitespace-nowrap">
+          {formatNotificationTime(notification.createdAt)}
+        </span>
 
-      {/* Delete button — visible on hover */}
-      <button
-        type="button"
-        aria-label={t("notification.delete")}
-        onClick={(e) => {
-          e.stopPropagation();
-          onDelete?.(notification.id);
-        }}
-        className="
-          absolute right-2 top-2
-          opacity-0 group-hover:opacity-100
-          flex h-7 w-7 items-center justify-center rounded-lg
-          text-gray-400 hover:text-red-500
-          dark:text-[#7d8590] dark:hover:text-red-400
-          hover:bg-red-50 dark:hover:bg-[#2d1214]
-          transition
-        "
-      >
-        <Trash2 size={14} />
-      </button>
+        {/* Unread dot — only when unread */}
+        {!notification.isRead && (
+          <span
+            className={`w-2 h-2 rounded-full ${colors.dot}`}
+            aria-label={t("notification.unread")}
+          />
+        )}
+
+        {/* Delete button — appears on row hover */}
+        <button
+          type="button"
+          aria-label={t("notification.delete")}
+          onClick={(e) => {
+            e.stopPropagation();
+            onDelete?.(notification.id);
+          }}
+          className="
+            opacity-0 group-hover:opacity-100
+            flex h-6 w-6 items-center justify-center rounded-md
+            text-gray-400 hover:text-red-500
+            dark:text-[#7d8590] dark:hover:text-red-400
+            hover:bg-red-50 dark:hover:bg-[#2d1214]
+            transition
+          "
+        >
+          <Trash2 size={13} />
+        </button>
+      </div>
     </div>
   );
 }
