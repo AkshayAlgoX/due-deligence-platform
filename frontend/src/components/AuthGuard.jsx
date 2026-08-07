@@ -27,6 +27,7 @@ const ROUTE_ROLES = {
     "FINANCIAL_INSTITUTION",
     "ADMIN",
   ],
+  "/dashboard/admin": ["ADMIN"],
 };
 
 /** Returns true if the given role can access the given pathname. */

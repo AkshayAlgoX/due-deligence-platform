@@ -18,6 +18,9 @@ import {
   Bookmark,
   Settings,
   ChevronDown,
+  Users,
+  BarChart3,
+  Server,
 } from "lucide-react";
 
 import { getUser } from "@/utils/helpers";
@@ -32,6 +35,11 @@ const ROUTE_ROLES = {
   "/dashboard/reports":             ["REAL_ESTATE_AGENT", "LEGAL_REVIEWER", "FINANCIAL_INSTITUTION", "ADMIN"],
   "/dashboard/notifications":       ["BUYER", "REAL_ESTATE_AGENT", "LEGAL_REVIEWER", "FINANCIAL_INSTITUTION", "ADMIN"],
   "/dashboard/audit-logs":          ["ADMIN"],
+  
+  "/dashboard/admin":               ["ADMIN"],
+  "/dashboard/admin/users":         ["ADMIN"],
+  "/dashboard/admin/analytics":     ["ADMIN"],
+  "/dashboard/admin/system":        ["ADMIN"],
   "/dashboard/profile":             ["BUYER", "REAL_ESTATE_AGENT", "LEGAL_REVIEWER", "FINANCIAL_INSTITUTION", "ADMIN"],
   "/dashboard/settings":            ["BUYER", "REAL_ESTATE_AGENT", "LEGAL_REVIEWER", "FINANCIAL_INSTITUTION", "ADMIN"],
   "/support":                       ["BUYER", "REAL_ESTATE_AGENT", "LEGAL_REVIEWER", "FINANCIAL_INSTITUTION", "ADMIN"],
@@ -75,6 +83,17 @@ const MENU_SECTION_CONFIGS = [
       { titleKey: "nav.reports",       href: "/dashboard/reports",       icon: FileText,      badge: null },
       { titleKey: "nav.notifications", href: "/dashboard/notifications", icon: Bell,          badge: null },
       { titleKey: "nav.auditLogs",     href: "/dashboard/audit-logs",    icon: ClipboardList, badge: null },
+    ],
+  },
+  {
+    id: "admin",
+    sectionKey: "nav.sections.admin",
+    collapsible: true,
+    items: [
+      { titleKey: "nav.admin.dashboard", href: "/dashboard/admin",           icon: LayoutDashboard, badge: null },
+      { titleKey: "nav.admin.users",     href: "/dashboard/admin/users",     icon: Users,           badge: null },
+      { titleKey: "nav.admin.analytics", href: "/dashboard/admin/analytics", icon: BarChart3,       badge: null },
+      { titleKey: "nav.admin.system",    href: "/dashboard/admin/system",    icon: Server,          badge: null },
     ],
   },
   {

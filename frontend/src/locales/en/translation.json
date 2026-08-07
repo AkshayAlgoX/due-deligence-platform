@@ -184,7 +184,14 @@
   "analysis": "Analysis",
   "insights": "Insights",
   "activity": "Activity",
-  "account": "Account"
+  "account": "Account",
+   "admin": "Admin"
+},
+"admin": {
+  "dashboard": "Dashboard",
+  "users": "Users",
+  "analytics": "Analytics",
+  "system": "System"
 },
     "sessionActive": "Session active",
     "version": "v1.0"
