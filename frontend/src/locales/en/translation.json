@@ -2126,5 +2126,76 @@
     "resentDesc": "A fresh 6-digit code is on the way.",
     "resendFailed": "Could not resend code"
   }
+},
+
+"notification": {
+  "title": "Notifications",
+  "subtitle": "{{count}} notifications",
+  "subtitleEmpty": "No notifications yet",
+  "unread": "Unread",
+  "markAllRead": "Mark all read",
+  "clearAll": "Clear all",
+  "delete": "Delete notification",
+  "bell": "Notifications",
+  "filter": {
+    "all": "All",
+    "unread": "Unread",
+    "reportReady": "Reports",
+    "riskAlert": "Alerts",
+    "system": "System"
+  },
+  "group": {
+    "today": "Today",
+    "yesterday": "Yesterday",
+    "earlier": "This week",
+    "older": "Older"
+  },
+  "empty": {
+    "title": "No notifications",
+    "description": "You're all caught up. Notifications will appear here when reports complete or alerts are triggered.",
+    "filteredTitle": "No matching notifications",
+    "filteredDescription": "Try a different filter to see other notifications."
+  },
+  "clearAllConfirm": {
+    "title": "Clear all notifications?",
+    "description": "This will permanently delete all your notifications. This action cannot be undone.",
+    "confirm": "Clear all"
+  },
+  "pagination": {
+    "showing": "Showing {{from}}–{{to}} of {{total}}",
+    "prev": "Previous",
+    "next": "Next"
+  },
+  "toast": {
+    "view": "View",
+    "markReadFailed": "Failed to mark as read",
+    "markAllReadFailed": "Failed to mark all as read",
+    "markedAllRead": "All notifications marked as read",
+    "deleteFailed": "Failed to delete notification",
+    "cleared": "All notifications cleared",
+    "clearFailed": "Failed to clear notifications"
+  },
+  "preferences": {
+    "title": "Notification Preferences",
+    "description": "Choose how and when you receive notifications.",
+    "type": "Type",
+    "email": "Email",
+    "inApp": "In-App",
+    "push": "Push",
+    "reportReady": "Report Ready",
+    "riskAlert": "Risk Alerts",
+    "priceChange": "Price Changes",
+    "system": "System",
+    "save": "Save preferences",
+    "saving": "Saving…",
+    "saved": "Preferences saved",
+    "saveFailed": "Failed to save preferences"
+  },
+  "types": {
+    "REPORT_READY": "Report Ready",
+    "RISK_ALERT": "Risk Alert",
+    "PRICE_CHANGE": "Price Change",
+    "SYSTEM": "System"
+  }
 }
 }

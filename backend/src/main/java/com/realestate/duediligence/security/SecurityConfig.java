@@ -96,10 +96,17 @@ public class SecurityConfig {
     "/swagger-resources/**",
     "/webjars/**",
 
-    // ── NEW: Actuator health + info (safe to be public) ──
+    // ── Actuator health + info (safe to be public) ──
     "/actuator/health",
     "/actuator/health/**",
-    "/actuator/info"
+    "/actuator/info",
+
+    // ── SSE: EventSource cannot send Authorization headers.
+    //    The JWT filter still runs on this endpoint — the controller
+    //    checks auth.getName() and returns 401 if not authenticated.
+    //    We permit here only to avoid Spring Security rejecting it
+    //    before the JWT filter has a chance to set the context.
+    "/api/sse/notifications"
 ).permitAll()
 
                 .requestMatchers("/error").permitAll()

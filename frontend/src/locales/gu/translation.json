@@ -1793,5 +1793,76 @@
       "resentDesc": "એક તાજો 6-અંકનો કોડ રસ્તા પર છે.",
       "resendFailed": "કોડ ફરી મોકલી શકાયો નથી"
     }
+  },
+
+"notification": {
+  "title": "સૂચનાઓ",
+  "subtitle": "{{count}} સૂચનાઓ",
+  "subtitleEmpty": "હજી સૂચનાઓ નથી",
+  "unread": "અવાંચ્યું",
+  "markAllRead": "બધું વાંચ્યું ચિહ્નિત કરો",
+  "clearAll": "બધું સાફ કરો",
+  "delete": "સૂચના ભૂંસો",
+  "bell": "સૂચનાઓ",
+  "filter": {
+    "all": "બધું",
+    "unread": "અવાંચ્યું",
+    "reportReady": "અહેવાલ",
+    "riskAlert": "ચેતવણી",
+    "system": "સિસ્ટમ"
+  },
+  "group": {
+    "today": "આજ",
+    "yesterday": "ગઈકાલ",
+    "earlier": "આ અઠવાડિયે",
+    "older": "જૂનું"
+  },
+  "empty": {
+    "title": "કોઈ સૂચના નથી",
+    "description": "તમે બધું જોઈ લીધું. અહેવાલ પૂર્ણ થતાં અથવા ચેતવણી આવતાં અહીં દેખાશે.",
+    "filteredTitle": "મળતી સૂચના નથી",
+    "filteredDescription": "અન્ય સૂચના જોવા માટે અલગ ફિલ્ટર અજમાવો."
+  },
+  "clearAllConfirm": {
+    "title": "બધી સૂચનાઓ સાફ કરશો?",
+    "description": "આ તમારી બધી સૂચનાઓ કાયમ માટે ભૂંસી નાખશે. આ ક્રિયા પૂર્વવત્ કરી શકાશે નહીં.",
+    "confirm": "બધું સાફ કરો"
+  },
+  "pagination": {
+    "showing": "{{total}} માંથી {{from}}–{{to}} દર્શાવ્યું",
+    "prev": "પાછળ",
+    "next": "આગળ"
+  },
+  "toast": {
+    "view": "જુઓ",
+    "markReadFailed": "વાંચ્યું ચિહ્નિત કરવામાં નિષ્ફળ",
+    "markAllReadFailed": "બધું વાંચ્યું ચિહ્નિત કરવામાં નિષ્ફળ",
+    "markedAllRead": "બધી સૂચનાઓ વાંચ્યું ચિહ્નિત થઈ",
+    "deleteFailed": "સૂચના ભૂંસવામાં નિષ્ફળ",
+    "cleared": "બધી સૂચનાઓ સાફ થઈ",
+    "clearFailed": "સૂચનાઓ સાફ કરવામાં નિષ્ફળ"
+  },
+  "preferences": {
+    "title": "સૂચના પ્રાધાન્યો",
+    "description": "ક્યારે અને કઈ રીતે સૂચનાઓ મળે તે પસંદ કરો.",
+    "type": "પ્રકાર",
+    "email": "ઈમેઈલ",
+    "inApp": "એપ્પમાં",
+    "push": "પુશ",
+    "reportReady": "અહેવાલ તૈયાર",
+    "riskAlert": "જોખમ ચેતવણી",
+    "priceChange": "ભાવ ફેરફાર",
+    "system": "સિસ્ટમ",
+    "save": "પ્રાધાન્ય સાચવો",
+    "saving": "સાચવી રહ્યા છીએ…",
+    "saved": "પ્રાધાન્ય સચવાયા",
+    "saveFailed": "પ્રાધાન્ય સાચવવામાં નિષ્ફળ"
+  },
+  "types": {
+    "REPORT_READY": "અહેવાલ તૈયાર",
+    "RISK_ALERT": "જોખમ ચેતવણી",
+    "PRICE_CHANGE": "ભાવ ફેરફાર",
+    "SYSTEM": "સિસ્ટમ"
   }
+}
 }

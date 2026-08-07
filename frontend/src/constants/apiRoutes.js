@@ -73,7 +73,23 @@ RISK: {
     DELETE:        (reportId) => `/api/reports/${reportId}`,
     BY_PROPERTY:   (propertyId) => `/api/reports/property/${propertyId}`,
     REGENERATE:    (reportId) => `/api/reports/${reportId}/regenerate`,
-  }
+  },
+
+  // ── Notifications ─────────────────────────────────────────────────────────
+  NOTIFICATIONS: {
+    LIST:          '/api/notifications',
+    UNREAD_COUNT:  '/api/notifications/unread-count',
+    MARK_READ:     (id) => `/api/notifications/${id}/read`,
+    MARK_ALL_READ: '/api/notifications/mark-all-read',
+    DELETE:        (id) => `/api/notifications/${id}`,
+    CLEAR_ALL:     '/api/notifications/clear-all',
+    PREFERENCES:   '/api/notifications/preferences',
+    TEST:          '/api/notifications/test',
+    SEND_BULK:     '/api/notifications/send-bulk',
+  },
+
+  // ── SSE ───────────────────────────────────────────────────────────────────
+  SSE_NOTIFICATIONS: '/api/sse/notifications',
 
 };
 
