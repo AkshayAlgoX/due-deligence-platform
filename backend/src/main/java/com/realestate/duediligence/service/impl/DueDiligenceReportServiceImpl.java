@@ -16,6 +16,8 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.transaction.support.TransactionSynchronization;
+import org.springframework.transaction.support.TransactionSynchronizationManager;
 
 import com.realestate.duediligence.dto.DueDiligenceReportResponse;
 import com.realestate.duediligence.dto.GenerateReportRequest;
@@ -46,6 +48,11 @@ import lombok.RequiredArgsConstructor;
  *
  * Async generation itself lives in ReportGenerationExecutor to avoid
  * Spring's @Async self-invocation proxy bypass bug.
+ *
+ * FIX (Session 23):
+ *   executor.execute() is now dispatched inside TransactionSynchronization
+ *   .afterCommit() to guarantee the PENDING report row is visible in the
+ *   database before the async worker attempts to read it.
  */
 @Service
 @RequiredArgsConstructor
@@ -75,7 +82,8 @@ public class DueDiligenceReportServiceImpl implements DueDiligenceReportService 
                         "Property not found: " + request.getPropertyId()));
 
         // Idempotency check — return in-flight report if it exists
-        Optional<DueDiligenceReport> recent = findRecentInFlightReport(user.getId(), property.getId());
+        Optional<DueDiligenceReport> recent = findRecentInFlightReport(
+                user.getId(), property.getId());
         if (recent.isPresent()) {
             log.info("Idempotency: returning in-flight report {} for property {}",
                     recent.get().getId(), property.getId());
@@ -106,9 +114,44 @@ public class DueDiligenceReportServiceImpl implements DueDiligenceReportService 
         log.info("Report {} created (PENDING) for property {} by user {}",
                 saved.getId(), property.getId(), user.getEmail());
 
-        // Dispatch async generation — returns immediately, doesn't block this transaction
-        boolean forceRecalc = Boolean.TRUE.equals(request.getForceRiskRecalculation());
-        executor.execute(saved.getId(), forceRecalc);
+        // ── SESSION 23 FIX ────────────────────────────────────────────────────────
+        //
+        // ROOT CAUSE OF BUG:
+        //   Calling executor.execute() HERE (inside the @Transactional boundary)
+        //   causes the async thread to start a new transaction (REQUIRES_NEW)
+        //   before THIS transaction commits. The async thread calls findById()
+        //   on a row that hasn't been committed yet → gets null → logs "Report
+        //   vanished" → exits → status stays PENDING forever.
+        //
+        // THE FIX:
+        //   Register a TransactionSynchronization callback. Spring will invoke
+        //   afterCommit() after this transaction has fully committed to the DB.
+        //   Only then does the async worker start — at which point the report
+        //   row is guaranteed visible to all new transactions.
+        //
+        // THREAD SAFETY:
+        //   afterCommit() still runs on THIS HTTP thread, but the executor
+        //   call immediately hands off work to the reportTaskExecutor pool.
+        //   This method returns toFullResponse() before executor finishes,
+        //   exactly as before.
+        //
+        // CAPTURES (effectively-final for lambda):
+        //   savedId and forceRecalc are primitives/longs captured safely.
+        // ─────────────────────────────────────────────────────────────────────────
+        final Long savedId = saved.getId();
+        final boolean forceRecalc = Boolean.TRUE.equals(request.getForceRiskRecalculation());
+
+        TransactionSynchronizationManager.registerSynchronization(
+                new TransactionSynchronization() {
+                    @Override
+                    public void afterCommit() {
+                        log.info("Report {} transaction committed — dispatching async generation",
+                                savedId);
+                        executor.execute(savedId, forceRecalc);
+                    }
+                }
+        );
+
         return toFullResponse(saved, List.of());
     }
 
@@ -136,7 +179,8 @@ public class DueDiligenceReportServiceImpl implements DueDiligenceReportService 
 
         Page<DueDiligenceReport> page = isAdmin
                 ? reportRepository.findAllByOrderByCreatedAtDesc(pageable)
-                : reportRepository.findByGeneratedByIdOrderByCreatedAtDesc(user.getId(), pageable);
+                : reportRepository.findByGeneratedByIdOrderByCreatedAtDesc(
+                        user.getId(), pageable);
 
         return page.map(this::toSummaryDto);
     }
@@ -156,10 +200,16 @@ public class DueDiligenceReportServiceImpl implements DueDiligenceReportService 
         DueDiligenceReport original = findAndAuthorize(reportId);
         log.info("Regenerate requested for report {} — creating new version", reportId);
 
+        // NOTE (Session 23):
+        // regenerate() is @Transactional (REQUIRED). It calls generate() which is
+        // also @Transactional (REQUIRED). They SHARE the same transaction.
+        // The afterCommit() callback registered inside generate() fires when
+        // THIS (regenerate's) transaction commits — which is correct, because the
+        // new report row commits with it. No changes needed here.
         GenerateReportRequest req = GenerateReportRequest.builder()
                 .propertyId(original.getProperty().getId())
-                .title(null)                        // auto-title with new version
-                .forceRiskRecalculation(true)       // regenerate always uses fresh data
+                .title(null)                    // auto-title with new version
+                .forceRiskRecalculation(true)   // regenerate always uses fresh data
                 .build();
 
         return generate(req);
@@ -192,7 +242,8 @@ public class DueDiligenceReportServiceImpl implements DueDiligenceReportService 
             throw new RuntimeException("Authentication required");
         }
         return userRepository.findByEmail(auth.getName())
-                .orElseThrow(() -> new RuntimeException("Authenticated user not found: " + auth.getName()));
+                .orElseThrow(() -> new RuntimeException(
+                        "Authenticated user not found: " + auth.getName()));
     }
 
     private boolean isAdmin(User user) {
@@ -214,14 +265,17 @@ public class DueDiligenceReportServiceImpl implements DueDiligenceReportService 
         return report;
     }
 
-    private Optional<DueDiligenceReport> findRecentInFlightReport(Long userId, Long propertyId) {
-        LocalDateTime cutoff = LocalDateTime.now().minusSeconds(IDEMPOTENCY_WINDOW_SECONDS);
+    private Optional<DueDiligenceReport> findRecentInFlightReport(
+            Long userId, Long propertyId) {
+        LocalDateTime cutoff = LocalDateTime.now()
+                .minusSeconds(IDEMPOTENCY_WINDOW_SECONDS);
         return reportRepository.findByPropertyIdOrderByVersionDesc(propertyId).stream()
                 .filter(r -> r.getGeneratedBy() != null &&
                         r.getGeneratedBy().getId().equals(userId))
                 .filter(r -> r.getStatus() == ReportStatus.PENDING ||
                         r.getStatus() == ReportStatus.GENERATING)
-                .filter(r -> r.getCreatedAt() != null && r.getCreatedAt().isAfter(cutoff))
+                .filter(r -> r.getCreatedAt() != null &&
+                        r.getCreatedAt().isAfter(cutoff))
                 .findFirst();
     }
 
@@ -232,15 +286,17 @@ public class DueDiligenceReportServiceImpl implements DueDiligenceReportService 
     // ── DTO mappers ───────────────────────────────────────────────
 
     private DueDiligenceReportResponse toFullResponse(DueDiligenceReport report,
-                                                     List<ReportSection> sections) {
+                                                      List<ReportSection> sections) {
         List<ReportSectionDto> sectionDtos = sections.stream()
                 .map(this::toSectionDto)
                 .collect(Collectors.toList());
 
         return DueDiligenceReportResponse.builder()
                 .id(report.getId())
-                .propertyId(report.getProperty() != null ? report.getProperty().getId() : null)
-                .propertyAddress(report.getProperty() != null ? report.getProperty().getAddress() : null)
+                .propertyId(report.getProperty() != null
+                        ? report.getProperty().getId() : null)
+                .propertyAddress(report.getProperty() != null
+                        ? report.getProperty().getAddress() : null)
                 .title(report.getTitle())
                 .status(report.getStatus())
                 .version(report.getVersion())
@@ -251,8 +307,10 @@ public class DueDiligenceReportServiceImpl implements DueDiligenceReportService 
                 .createdAt(toInstant(report.getCreatedAt()))
                 .completedAt(toInstant(report.getCompletedAt()))
                 .updatedAt(toInstant(report.getUpdatedAt()))
-                .generatedByEmail(report.getGeneratedBy() != null ? report.getGeneratedBy().getEmail() : null)
-                .generatedByUserId(report.getGeneratedBy() != null ? report.getGeneratedBy().getId() : null)
+                .generatedByEmail(report.getGeneratedBy() != null
+                        ? report.getGeneratedBy().getEmail() : null)
+                .generatedByUserId(report.getGeneratedBy() != null
+                        ? report.getGeneratedBy().getId() : null)
                 .build();
     }
 
@@ -272,7 +330,8 @@ public class DueDiligenceReportServiceImpl implements DueDiligenceReportService 
         return ReportSummaryDto.builder()
                 .id(r.getId())
                 .propertyId(r.getProperty() != null ? r.getProperty().getId() : null)
-                .propertyAddress(r.getProperty() != null ? r.getProperty().getAddress() : null)
+                .propertyAddress(r.getProperty() != null
+                        ? r.getProperty().getAddress() : null)
                 .title(r.getTitle())
                 .status(r.getStatus())
                 .version(r.getVersion())
@@ -280,7 +339,8 @@ public class DueDiligenceReportServiceImpl implements DueDiligenceReportService 
                 .errorMessage(r.getErrorMessage())
                 .createdAt(toInstant(r.getCreatedAt()))
                 .completedAt(toInstant(r.getCompletedAt()))
-                .generatedByEmail(r.getGeneratedBy() != null ? r.getGeneratedBy().getEmail() : null)
+                .generatedByEmail(r.getGeneratedBy() != null
+                        ? r.getGeneratedBy().getEmail() : null)
                 .build();
     }
 }
