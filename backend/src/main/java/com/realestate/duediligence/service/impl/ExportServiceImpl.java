@@ -1,3 +1,4 @@
+// backend/src/main/java/com/realestate/duediligence/service/impl/ExportServiceImpl.java
 package com.realestate.duediligence.service.impl;
 
 import java.io.ByteArrayOutputStream;
@@ -21,6 +22,8 @@ import com.realestate.duediligence.service.DueDiligenceReportService;
 import com.realestate.duediligence.service.ExcelExportService;
 import com.realestate.duediligence.service.ExportService;
 import com.realestate.duediligence.service.PdfExportService;
+import com.realestate.duediligence.service.PdfReportDataProvider;
+import com.realestate.duediligence.service.PdfReportDataProvider.PdfReportBundle;
 
 import lombok.RequiredArgsConstructor;
 
@@ -32,24 +35,31 @@ public class ExportServiceImpl implements ExportService {
     private final PdfExportService pdfExportService;
     private final ExcelExportService excelExportService;
     private final ExportHistoryRepository exportHistoryRepository;
+    private final PdfReportDataProvider pdfReportDataProvider;
 
     @Override
     @Transactional
     public byte[] exportReportPdf(Long reportId, Long userId) {
-        DueDiligenceReportResponse report = reportService.getReport(reportId);
-        byte[] pdfBytes = pdfExportService.generatePdfReport(report);
+        // [PHASE 4] No longer needs to preload the DTO — the new pipeline loads
+        // structured data itself. We still call reportService.getReport() only
+        // to trigger the authorization check (findAndAuthorize inside).
+        reportService.getReport(reportId);   // enforces access control
+        byte[] pdfBytes = pdfExportService.generatePdfReport(reportId);
 
-        recordHistory(reportId.toString(), userId, "PDF", "report_" + reportId + ".pdf", (long) pdfBytes.length);
+        recordHistory(reportId.toString(), userId, "PDF",
+                "report_" + reportId + ".pdf", (long) pdfBytes.length);
         return pdfBytes;
     }
 
     @Override
     @Transactional
     public byte[] exportReportExcel(Long reportId, Long userId) {
-        DueDiligenceReportResponse report = reportService.getReport(reportId);
-        byte[] excelBytes = excelExportService.generateExcelReport(report);
+        reportService.getReport(reportId);   // enforces access control
+        PdfReportBundle bundle = pdfReportDataProvider.loadBundle(reportId);
+        byte[] excelBytes = excelExportService.generateExcelReport(bundle);
 
-        recordHistory(reportId.toString(), userId, "EXCEL", "report_" + reportId + ".xlsx", (long) excelBytes.length);
+        recordHistory(reportId.toString(), userId, "EXCEL",
+                "report_" + reportId + ".xlsx", (long) excelBytes.length);
         return excelBytes;
     }
 
@@ -59,7 +69,8 @@ public class ExportServiceImpl implements ExportService {
         DueDiligenceReportResponse report = resolvePropertyReport(propertyId);
         byte[] pdfBytes = pdfExportService.generatePropertySnapshotPdf(report);
 
-        recordHistory("PROP_" + propertyId, userId, "PDF", "snapshot_prop_" + propertyId + ".pdf", (long) pdfBytes.length);
+        recordHistory("PROP_" + propertyId, userId, "PDF",
+                "snapshot_prop_" + propertyId + ".pdf", (long) pdfBytes.length);
         return pdfBytes;
     }
 
@@ -67,9 +78,11 @@ public class ExportServiceImpl implements ExportService {
     @Transactional
     public byte[] exportPropertySnapshotExcel(Long propertyId, Long userId) {
         DueDiligenceReportResponse report = resolvePropertyReport(propertyId);
-        byte[] excelBytes = excelExportService.generateExcelReport(report);
+        PdfReportBundle bundle = pdfReportDataProvider.loadBundle(report.getId());
+        byte[] excelBytes = excelExportService.generateExcelReport(bundle);
 
-        recordHistory("PROP_" + propertyId, userId, "EXCEL", "snapshot_prop_" + propertyId + ".xlsx", (long) excelBytes.length);
+        recordHistory("PROP_" + propertyId, userId, "EXCEL",
+                "snapshot_prop_" + propertyId + ".xlsx", (long) excelBytes.length);
         return excelBytes;
     }
 
@@ -82,7 +95,8 @@ public class ExportServiceImpl implements ExportService {
 
         String summary = report.getExecutiveSummary() != null
                 ? report.getExecutiveSummary()
-                : "Comprehensive due diligence report snapshot covering risk scores, title verification, zoning, and financial modeling.";
+                : "Comprehensive due diligence report snapshot covering risk scores, "
+                  + "title verification, zoning, and financial modeling.";
 
         return ExportResponse.builder()
                 .reportId(reportId.toString())
@@ -100,23 +114,28 @@ public class ExportServiceImpl implements ExportService {
     @Transactional
     public byte[] exportBulk(ExportRequest request, Long userId) {
         if (request.getReportIds() == null || request.getReportIds().isEmpty()) {
-            throw new IllegalArgumentException("At least one report ID must be specified for bulk export");
+            throw new IllegalArgumentException(
+                    "At least one report ID must be specified for bulk export");
         }
 
-        String format = request.getFormat() != null ? request.getFormat().toUpperCase() : "PDF";
+        String format = request.getFormat() != null
+                ? request.getFormat().toUpperCase() : "PDF";
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
 
         try (ZipOutputStream zos = new ZipOutputStream(baos)) {
             for (Long reportId : request.getReportIds()) {
-                DueDiligenceReportResponse report = reportService.getReport(reportId);
                 byte[] fileBytes;
                 String ext;
 
                 if ("EXCEL".equals(format)) {
-                    fileBytes = excelExportService.generateExcelReport(report);
+                    reportService.getReport(reportId);   // enforces access control
+                    PdfReportBundle bundle = pdfReportDataProvider.loadBundle(reportId);
+                    fileBytes = excelExportService.generateExcelReport(bundle);
                     ext = ".xlsx";
                 } else {
-                    fileBytes = pdfExportService.generatePdfReport(report);
+                    // [PHASE 4] PDF path uses the new pipeline directly
+                    reportService.getReport(reportId);   // enforces access control
+                    fileBytes = pdfExportService.generatePdfReport(reportId);
                     ext = ".pdf";
                 }
 
@@ -128,7 +147,8 @@ public class ExportServiceImpl implements ExportService {
             zos.finish();
 
             byte[] zipBytes = baos.toByteArray();
-            recordHistory("BULK_" + request.getReportIds().size(), userId, "ZIP", "bulk_reports.zip", (long) zipBytes.length);
+            recordHistory("BULK_" + request.getReportIds().size(), userId,
+                    "ZIP", "bulk_reports.zip", (long) zipBytes.length);
             return zipBytes;
 
         } catch (Exception e) {
@@ -138,7 +158,8 @@ public class ExportServiceImpl implements ExportService {
 
     @Override
     public Page<ExportResponse> getExportHistory(Long userId, Pageable pageable) {
-        Page<ExportHistory> historyPage = exportHistoryRepository.findByUserIdOrderByCreatedAtDesc(userId, pageable);
+        Page<ExportHistory> historyPage =
+                exportHistoryRepository.findByUserIdOrderByCreatedAtDesc(userId, pageable);
         return historyPage.map(h -> ExportResponse.builder()
                 .exportId(h.getId())
                 .reportId(h.getReportId())
@@ -156,7 +177,8 @@ public class ExportServiceImpl implements ExportService {
     @Transactional
     public byte[] downloadExportFromHistory(Long exportId, Long userId) {
         ExportHistory history = exportHistoryRepository.findById(exportId)
-                .orElseThrow(() -> new IllegalArgumentException("Export history record not found"));
+                .orElseThrow(() -> new IllegalArgumentException(
+                        "Export history record not found"));
 
         if (!history.getUserId().equals(userId)) {
             throw new SecurityException("Access denied to export record");
@@ -165,7 +187,9 @@ public class ExportServiceImpl implements ExportService {
         history.setDownloadCount(history.getDownloadCount() + 1);
         exportHistoryRepository.save(history);
 
-        if (history.getReportId() != null && !history.getReportId().startsWith("BULK") && !history.getReportId().startsWith("PROP")) {
+        if (history.getReportId() != null
+                && !history.getReportId().startsWith("BULK")
+                && !history.getReportId().startsWith("PROP")) {
             Long rId = Long.parseLong(history.getReportId());
             if ("EXCEL".equalsIgnoreCase(history.getFormat())) {
                 return exportReportExcel(rId, userId);
@@ -188,13 +212,14 @@ public class ExportServiceImpl implements ExportService {
         return DueDiligenceReportResponse.builder()
                 .id(propertyId)
                 .title("2nd Block")
-                .propertyAddress("Bangalore North, Karnataka — 560112")
+                .propertyAddress("Bangalore North, Karnataka \u2014 560112")
                 .riskScoreSnapshot(19.0)
                 .version(1)
                 .build();
     }
 
-    private void recordHistory(String reportId, Long userId, String format, String fileName, Long sizeBytes) {
+    private void recordHistory(String reportId, Long userId, String format,
+                                String fileName, Long sizeBytes) {
         try {
             ExportHistory history = ExportHistory.builder()
                     .reportId(reportId)
