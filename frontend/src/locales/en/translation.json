@@ -1,420 +1,419 @@
 {
   "report": {
-  "status": {
-    "pending": "Pending",
-    "generating": "Generating",
-    "completed": "Completed",
-    "failed": "Failed",
-    "unknown": "Unknown"
-  },
-  "modal": {
-    "pendingTitle": "Preparing your report",
-    "generatingTitle": "Generating report",
-    "completedTitle": "Report ready",
-    "failedTitle": "Generation failed",
-    "pendingBody": "Setting up your due diligence report…",
-    "generatingBody": "Analyzing property data and generating sections. This usually takes 10-30 seconds.",
-    "completedBody": "Your report has been generated successfully.",
-    "failedBody": "We couldn't generate your report. Please try again.",
-    "dismiss": "Dismiss",
-    "retry": "Try again",
-    "redirecting": "Opening report…"
-  },
-  "generate": {
-    "back": "Back to property",
-    "title": "Generate Due Diligence Report",
-    "heading": "Generate a new report",
-    "subheading": "We'll analyze this property across 6 risk categories and produce a comprehensive due diligence report.",
-    "reportingOn": "Reporting on",
-    "titleLabel": "Report title",
-    "titlePlaceholder": "e.g. Due Diligence: 456 Avenue Road",
-    "defaultTitle": "Due Diligence: {{address}}",
-    "forceRecalcLabel": "Force fresh recalculation",
-    "forceRecalcHint": "Ignore cached data and fetch everything fresh from all sources.",
-    "infoNote": "Generation takes 10-30 seconds. You'll be redirected to the report as soon as it's ready.",
-    "cancel": "Cancel",
-    "cta": "Generate Report",
-    "starting": "Starting…"
-  },
-  "list": {
-    "title": "My Reports",
-    "heading": "Due Diligence Reports",
-    "subheading": "All reports you've generated across your properties.",
-    "backToDashboard": "Back to dashboard",
-    "refresh": "Refresh",
-    "generateNew": "Generate new report",
-    "stat": {
-      "total": "Total",
+    "status": {
+      "pending": "Pending",
+      "generating": "Generating",
       "completed": "Completed",
-      "inProgress": "In progress",
-      "failed": "Failed"
+      "failed": "Failed",
+      "unknown": "Unknown"
     },
-    "searchPlaceholder": "Search reports…",
-    "filter": {
-      "all": "All"
+    "modal": {
+      "pendingTitle": "Preparing your report",
+      "generatingTitle": "Generating report",
+      "completedTitle": "Report ready",
+      "failedTitle": "Generation failed",
+      "pendingBody": "Setting up your due diligence report…",
+      "generatingBody": "Analyzing property data and generating sections. This usually takes 10-30 seconds.",
+      "completedBody": "Your report has been generated successfully.",
+      "failedBody": "We couldn't generate your report. Please try again.",
+      "dismiss": "Dismiss",
+      "retry": "Try again",
+      "redirecting": "Opening report…"
     },
-    "errorTitle": "Failed to load reports",
-    "tryAgain": "Try again",
-    "empty": {
-      "title": "No reports yet",
-      "body": "Generate your first due diligence report from any property page.",
-      "cta": "Browse properties"
+    "generate": {
+      "back": "Back to property",
+      "title": "Generate Due Diligence Report",
+      "heading": "Generate a new report",
+      "subheading": "We'll analyze this property across 6 risk categories and produce a comprehensive due diligence report.",
+      "reportingOn": "Reporting on",
+      "titleLabel": "Report title",
+      "titlePlaceholder": "e.g. Due Diligence: 456 Avenue Road",
+      "defaultTitle": "Due Diligence: {{address}}",
+      "forceRecalcLabel": "Force fresh recalculation",
+      "forceRecalcHint": "Ignore cached data and fetch everything fresh from all sources.",
+      "infoNote": "Generation takes 10-30 seconds. You'll be redirected to the report as soon as it's ready.",
+      "cancel": "Cancel",
+      "cta": "Generate Report",
+      "starting": "Starting…"
     },
-    "filtered": {
-      "title": "No matching reports",
-      "body": "Try adjusting your search or filter.",
-      "clear": "Clear filters"
-    },
-    "pagination": {
-      "showing": "Showing {{from}}–{{to}} of {{total}}",
-      "prev": "Previous",
-      "next": "Next"
-    },
-    "deleted": "Report deleted",
-    "deleteFailed": "Failed to delete report",
-    "deleteModal": {
-      "title": "Delete report?",
-      "body": "You're about to permanently delete the report for {{address}}. This action cannot be undone.",
-      "confirmPrompt": "Type DELETE to confirm",
-      "confirm": "Delete report"
-    }
-  },
-  "card": {
-    "untitled": "Untitled report",
-    "risk": "Risk",
-    "sections": "sections",
-    "sections_one": "{{count}} section",
-    "sections_other": "{{count}} sections",
-    "view": "View",
-    "openReport": "Open report",
-    "delete": "Delete",
-    "moreActions": "More actions",
-    "copyLink": "Copy link",
-"copyId": "Copy report ID",
-"linkCopied": "Link copied to clipboard",
-"idCopied": "Report ID copied",
-"copyFailed": "Failed to copy"
-  },
-  "sections": {
-    "cover": "Cover Page",
-    "executiveSummary": "Executive Summary",
-    "propertyOverview": "Property Overview",
-    "riskAnalysis": "Risk Analysis",
-    "comparable": "Comparable Properties",
-    "financial": "Financial Analysis",
-    "recommendations": "Recommendations",
-    "appendix": "Appendix"
-  },
-  "viewer": {
-    "back": "Reports",
-    "toc": "Contents",
-    "actions": {
-      "regenerate": "Regenerate",
-      "regenerating": "Regenerating…",
-      "print": "Print",
-      "printShortcut": "Print (⌘P)",
-      "share": "Share",
-      "shareShortcut": "Copy link (⌘K)",
-      "download": "Download PDF",
-      "downloadSoon": "PDF export · coming soon",
-      "downloadToast": "PDF export is coming soon",
-      "downloadToastHint": "Use the Print button for now.",
-      "linkCopied": "Link copied to clipboard",
-      "linkCopyFailed": "Failed to copy link",
-      "moreOptions": "More options"
-    },
-    "kebab": {
-      "versionHistory": "Version history",
-      "duplicate": "Duplicate (new version)",
-      "delete": "Delete report"
-    },
-    "meta": {
-      "generated": "Generated {{date}}"
-    },
-    "footer": "Report #{{id}} · Version {{version}} · {{email}} · Real Estate Due Diligence Agent",
-    "loading": "Loading report…",
-    "notFound": "Report not found",
-    "notFoundBody": "The report could not be loaded. Please check the URL or try again.",
-    "goBack": "Go back",
-    "inProgress": {
-      "title": "Report is generating…",
-      "body": "{{address}} is being prepared.",
-      "hint": "This page will refresh automatically when ready.",
-       "fallbackAddress": "Your report"
-    },
-    "failed": {
-      "title": "Report generation failed",
-      "retry": "Regenerate"
-    }
-  },
-  "print": {
-  "loading": "Preparing print view…",
-  "loadFailed": "Failed to load report",
-  "notFound": "Report not found",
-  "screenHeader": "Print preview for Report #{{id}}",
-  "printNow": "Print now",
-  "footer": "Report #{{id}} · Version {{version}} · Generated by Real Estate Due Diligence Agent · {{email}}"
-},
-  "regenerate": {
-    "title": "Regenerate Report?",
-    "body": "This will create <strong>Version {{next}}</strong> of this report using the latest available data. The current version (v{{current}}) will remain accessible in version history.",
-    "warning": "Regeneration fetches fresh data from all providers and recalculates risk scores. This may take 10-30 seconds.",
-    "cancel": "Cancel",
-    "confirm": "Create v{{next}}",
-    "creating": "Creating v{{next}}…",
-    "success": "Version {{version}} is being generated",
-    "error": "Failed to regenerate report"
-  },
-  "versionHistory": {
-    "title": "Version History",
-    "subtitle": "{{address}}",
-    "loading": "Loading versions…",
-    "error": "Failed to load version history.",
-    "empty": "No versions found for this property.",
-    "current": "Current",
-    "view": "View"
-  },
-  "cover": {
-    "brand": "Real Estate Due Diligence Agent",
-    "reportTag": "Due Diligence Report",
-    "verified": "Verified Property",
-    "version": "Version {{n}}",
-    "preparedFor": "Prepared For",
-    "generatedOn": "Generated",
-    "reportId": "Report ID",
-    "disclaimer": "This report is generated for informational purposes only and does not constitute legal, financial, or investment advice. Always consult qualified professionals before making property transaction decisions."
-  },
-  "executive": {
-    "eyebrow": "Executive Summary",
-    "title": "At-a-Glance Assessment",
-    "riskScore": "Risk Score",
-    "categories": "Categories",
-    "dataQuality": "Data Quality",
-    "dataComplete": "Complete",
-    "dataPartial": "Partial",
-    "categoryBreakdown": "Category Breakdown",
-    "keyFindings": "Key Risk Findings",
-    "riskSuffix": "RISK"
-  },
-  "property": {
-    "eyebrow": "Property Overview",
-    "unavailable": "Property overview data unavailable.",
-    "marketValue": "Market Value",
-    "pricePerSqFt": "₹{{value}}/sq ft",
-    "details": "Property Details",
-    "specs": "Specifications",
-    "labels": {
-      "type": "Type",
-      "area": "Area",
-      "yearBuilt": "Year Built",
-      "stories": "Stories",
-      "structure": "Structure",
-      "condition": "Condition",
-      "bedrooms": "Bedrooms",
-      "bathrooms": "Bathrooms",
-      "zipCode": "ZIP Code",
-      "verified": "Verified",
-      "lotSize": "Lot Size",
-      "zoning": "Zoning",
-      "yes": "Yes",
-      "no": "No"
-    }
-  },
-  "riskAnalysis": {
-    "eyebrow": "Risk Analysis",
-    "title": "6-Category Risk Breakdown",
-    "overallPill": "Overall: {{score}}/100 · {{level}}",
-    "unavailable": "Risk analysis data unavailable.",
-    "dataIncomplete": "Some data sources were unavailable. Uncertainty penalties have been applied.",
-    "unavailableProviders_one": "({{count}} provider unavailable)",
-    "unavailableProviders_other": "({{count}} providers unavailable)",
-    "empty": "No risk factor data available.",
-    "weight": "Weight: {{pct}}%",
-    "recommendationLabel": "Recommendation: ",
-    "uncertain": "(uncertain)",
-    "categories": {
-      "flood": "Flood Risk",
-      "legal": "Legal Risk",
-      "tax": "Tax Compliance",
-      "zoning": "Zoning Compliance",
-      "environmental": "Environmental Risk",
-      "market": "Market Risk"
-    }
-  },
-  "comparable": {
-    "eyebrow": "Comparable Properties",
-    "title": "Comparable Property Analysis",
-    "placeholderTitle": "Coming in a Future Version",
-    "placeholderBody": "Comparable property analysis is under active development and will be included in an upcoming report version.",
-    "features": {
-      "recentSales": "Recent sales within 2 km",
-      "pricePerSqFt": "Price per sq ft benchmarking",
-      "trends": "12-month market trends",
-      "confidence": "Valuation confidence band"
-    }
-  },
-  "financial": {
-    "eyebrow": "Financial Analysis",
-    "title": "Valuation, Ownership & Tax Records",
-    "unavailable": "Financial data unavailable.",
-    "marketValue": "Market Value",
-    "pricePerSqFt": "Price / sq ft",
-    "registeredValue": "Registered Value",
-    "ownership": {
-      "title": "Ownership",
-      "currentOwner": "Current Owner",
-      "ownershipType": "Ownership Type",
-      "registrationDate": "Registration Date",
-      "registrationNumber": "Registration No.",
-      "stampDutyPaid": "Stamp Duty Paid"
-    },
-    "tax": {
-      "title": "Tax Records",
-      "paid": "{{n}} Paid",
-      "pending": "{{n}} Pending",
-      "overdue": "{{n}} Overdue",
-      "fy": "FY {{year}}",
-      "status": {
-        "paid": "Paid",
-        "pending": "Pending",
-        "overdue": "Overdue"
+    "list": {
+      "title": "My Reports",
+      "heading": "Due Diligence Reports",
+      "subheading": "All reports you've generated across your properties.",
+      "backToDashboard": "Back to dashboard",
+      "refresh": "Refresh",
+      "generateNew": "Generate new report",
+      "stat": {
+        "total": "Total",
+        "completed": "Completed",
+        "inProgress": "In progress",
+        "failed": "Failed"
+      },
+      "searchPlaceholder": "Search reports…",
+      "filter": {
+        "all": "All"
+      },
+      "errorTitle": "Failed to load reports",
+      "tryAgain": "Try again",
+      "empty": {
+        "title": "No reports yet",
+        "body": "Generate your first due diligence report from any property page.",
+        "cta": "Browse properties"
+      },
+      "filtered": {
+        "title": "No matching reports",
+        "body": "Try adjusting your search or filter.",
+        "clear": "Clear filters"
+      },
+      "pagination": {
+        "showing": "Showing {{from}}–{{to}} of {{total}}",
+        "prev": "Previous",
+        "next": "Next"
+      },
+      "deleted": "Report deleted",
+      "deleteFailed": "Failed to delete report",
+      "deleteModal": {
+        "title": "Delete report?",
+        "body": "You're about to permanently delete the report for {{address}}. This action cannot be undone.",
+        "confirmPrompt": "Type DELETE to confirm",
+        "confirm": "Delete report"
       }
     },
-    "permits": {
-      "title": "Permits"
+    "card": {
+      "untitled": "Untitled report",
+      "risk": "Risk",
+      "sections": "sections",
+      "sections_one": "{{count}} section",
+      "sections_other": "{{count}} sections",
+      "view": "View",
+      "openReport": "Open report",
+      "delete": "Delete",
+      "moreActions": "More actions",
+      "copyLink": "Copy link",
+      "copyId": "Copy report ID",
+      "linkCopied": "Link copied to clipboard",
+      "idCopied": "Report ID copied",
+      "copyFailed": "Failed to copy"
     },
-    "environmental": {
-      "title": "Environmental Snapshot",
-      "aqi": "AQI",
-      "soilType": "Soil Type",
-      "noiseLevel": "Noise Level",
-      "greenCover": "Green Cover"
+    "sections": {
+      "cover": "Cover Page",
+      "executiveSummary": "Executive Summary",
+      "propertyOverview": "Property Overview",
+      "riskAnalysis": "Risk Analysis",
+      "comparable": "Comparable Properties",
+      "financial": "Financial Analysis",
+      "recommendations": "Recommendations",
+      "appendix": "Appendix"
     },
-    "source": {
-      "live": "Live",
-      "mock": "Mock"
+    "viewer": {
+      "back": "Reports",
+      "toc": "Contents",
+      "actions": {
+        "regenerate": "Regenerate",
+        "regenerating": "Regenerating…",
+        "print": "Print",
+        "printShortcut": "Print (⌘P)",
+        "share": "Share",
+        "shareShortcut": "Copy link (⌘K)",
+        "download": "Download PDF",
+        "downloadSoon": "PDF export · coming soon",
+        "downloadToast": "PDF export is coming soon",
+        "downloadToastHint": "Use the Print button for now.",
+        "linkCopied": "Link copied to clipboard",
+        "linkCopyFailed": "Failed to copy link",
+        "moreOptions": "More options"
+      },
+      "kebab": {
+        "versionHistory": "Version history",
+        "duplicate": "Duplicate (new version)",
+        "delete": "Delete report"
+      },
+      "meta": {
+        "generated": "Generated {{date}}"
+      },
+      "footer": "Report #{{id}} · Version {{version}} · {{email}} · Real Estate Due Diligence Agent",
+      "loading": "Loading report…",
+      "notFound": "Report not found",
+      "notFoundBody": "The report could not be loaded. Please check the URL or try again.",
+      "goBack": "Go back",
+      "inProgress": {
+        "title": "Report is generating…",
+        "body": "{{address}} is being prepared.",
+        "hint": "This page will refresh automatically when ready.",
+        "fallbackAddress": "Your report"
+      },
+      "failed": {
+        "title": "Report generation failed",
+        "retry": "Regenerate"
+      }
+    },
+    "print": {
+      "loading": "Preparing print view…",
+      "loadFailed": "Failed to load report",
+      "notFound": "Report not found",
+      "screenHeader": "Print preview for Report #{{id}}",
+      "printNow": "Print now",
+      "footer": "Report #{{id}} · Version {{version}} · Generated by Real Estate Due Diligence Agent · {{email}}"
+    },
+    "regenerate": {
+      "title": "Regenerate Report?",
+      "body": "This will create <strong>Version {{next}}</strong> of this report using the latest available data. The current version (v{{current}}) will remain accessible in version history.",
+      "warning": "Regeneration fetches fresh data from all providers and recalculates risk scores. This may take 10-30 seconds.",
+      "cancel": "Cancel",
+      "confirm": "Create v{{next}}",
+      "creating": "Creating v{{next}}…",
+      "success": "Version {{version}} is being generated",
+      "error": "Failed to regenerate report"
+    },
+    "versionHistory": {
+      "title": "Version History",
+      "subtitle": "{{address}}",
+      "loading": "Loading versions…",
+      "error": "Failed to load version history.",
+      "empty": "No versions found for this property.",
+      "current": "Current",
+      "view": "View"
+    },
+    "cover": {
+      "brand": "Real Estate Due Diligence Agent",
+      "reportTag": "Due Diligence Report",
+      "verified": "Verified Property",
+      "version": "Version {{n}}",
+      "preparedFor": "Prepared For",
+      "generatedOn": "Generated",
+      "reportId": "Report ID",
+      "disclaimer": "This report is generated for informational purposes only and does not constitute legal, financial, or investment advice. Always consult qualified professionals before making property transaction decisions."
+    },
+    "executive": {
+      "eyebrow": "Executive Summary",
+      "title": "At-a-Glance Assessment",
+      "riskScore": "Risk Score",
+      "categories": "Categories",
+      "dataQuality": "Data Quality",
+      "dataComplete": "Complete",
+      "dataPartial": "Partial",
+      "categoryBreakdown": "Category Breakdown",
+      "keyFindings": "Key Risk Findings",
+      "riskSuffix": "RISK"
+    },
+    "property": {
+      "eyebrow": "Property Overview",
+      "unavailable": "Property overview data unavailable.",
+      "marketValue": "Market Value",
+      "pricePerSqFt": "₹{{value}}/sq ft",
+      "details": "Property Details",
+      "specs": "Specifications",
+      "labels": {
+        "type": "Type",
+        "area": "Area",
+        "yearBuilt": "Year Built",
+        "stories": "Stories",
+        "structure": "Structure",
+        "condition": "Condition",
+        "bedrooms": "Bedrooms",
+        "bathrooms": "Bathrooms",
+        "zipCode": "ZIP Code",
+        "verified": "Verified",
+        "lotSize": "Lot Size",
+        "zoning": "Zoning",
+        "yes": "Yes",
+        "no": "No"
+      }
+    },
+    "riskAnalysis": {
+      "eyebrow": "Risk Analysis",
+      "title": "6-Category Risk Breakdown",
+      "overallPill": "Overall: {{score}}/100 · {{level}}",
+      "unavailable": "Risk analysis data unavailable.",
+      "dataIncomplete": "Some data sources were unavailable. Uncertainty penalties have been applied.",
+      "unavailableProviders_one": "({{count}} provider unavailable)",
+      "unavailableProviders_other": "({{count}} providers unavailable)",
+      "empty": "No risk factor data available.",
+      "weight": "Weight: {{pct}}%",
+      "recommendationLabel": "Recommendation: ",
+      "uncertain": "(uncertain)",
+      "categories": {
+        "flood": "Flood Risk",
+        "legal": "Legal Risk",
+        "tax": "Tax Compliance",
+        "zoning": "Zoning Compliance",
+        "environmental": "Environmental Risk",
+        "market": "Market Risk"
+      }
+    },
+    "comparable": {
+      "eyebrow": "Comparable Properties",
+      "title": "Comparable Property Analysis",
+      "placeholderTitle": "Coming in a Future Version",
+      "placeholderBody": "Comparable property analysis is under active development and will be included in an upcoming report version.",
+      "features": {
+        "recentSales": "Recent sales within 2 km",
+        "pricePerSqFt": "Price per sq ft benchmarking",
+        "trends": "12-month market trends",
+        "confidence": "Valuation confidence band"
+      }
+    },
+    "financial": {
+      "eyebrow": "Financial Analysis",
+      "title": "Valuation, Ownership & Tax Records",
+      "unavailable": "Financial data unavailable.",
+      "marketValue": "Market Value",
+      "pricePerSqFt": "Price / sq ft",
+      "registeredValue": "Registered Value",
+      "ownership": {
+        "title": "Ownership",
+        "currentOwner": "Current Owner",
+        "ownershipType": "Ownership Type",
+        "registrationDate": "Registration Date",
+        "registrationNumber": "Registration No.",
+        "stampDutyPaid": "Stamp Duty Paid"
+      },
+      "tax": {
+        "title": "Tax Records",
+        "paid": "{{n}} Paid",
+        "pending": "{{n}} Pending",
+        "overdue": "{{n}} Overdue",
+        "fy": "FY {{year}}",
+        "status": {
+          "paid": "Paid",
+          "pending": "Pending",
+          "overdue": "Overdue"
+        }
+      },
+      "permits": {
+        "title": "Permits"
+      },
+      "environmental": {
+        "title": "Environmental Snapshot",
+        "aqi": "AQI",
+        "soilType": "Soil Type",
+        "noiseLevel": "Noise Level",
+        "greenCover": "Green Cover"
+      },
+      "source": {
+        "live": "Live",
+        "mock": "Mock"
+      }
+    },
+    "recommendations": {
+      "general1": "Always engage a qualified property lawyer for legal review.",
+      "general2": "Obtain an official encumbrance certificate from the Sub-Registrar office.",
+      "general3": "Verify property tax clearance with the local municipal body.",
+      "general4": "Conduct a physical inspection with a certified structural surveyor.",
+      "general5": "Cross-verify all documentation with original records at government offices.",
+      "eyebrow": "Recommendations",
+      "title": "Prioritized Action Items",
+      "unavailable": "Recommendation data unavailable.",
+      "actionRequired": "Action Required",
+      "minorObservations": "Minor Observations",
+      "standardVerification": "Standard Verification",
+      "priorityPill": "{{level}} Priority",
+      "scoreLabel": "Score: {{score}}/100",
+      "generalTitle": "General Due Diligence Guidance",
+      "priority": {
+        "low": "Low",
+        "medium": "Medium",
+        "high": "High",
+        "critical": "Critical"
+      }
+    },
+    "appendix": {
+      "eyebrow": "Appendix",
+      "title": "Data Sources & Methodology",
+      "dataSources": "Data Sources",
+      "fetchedIn": "Fetched in {{ms}}ms",
+      "methodology": "Risk Scoring Methodology",
+      "methodologyIntro": "This report uses a weighted composite risk score (0-100) derived from six data categories. Each category is scored independently and combined using the weights below.",
+      "categoryWeights": "Category Weights",
+      "thresholds": "Risk Level Thresholds",
+      "uncertaintyNote": "When data sources are unavailable, an uncertainty penalty is applied rather than assuming zero risk — reflecting that missing information is itself a risk factor.",
+      "disclaimer": "Disclaimer",
+      "disclaimerBody": "This report is generated from third-party data sources and property records. It is provided for informational purposes only and does not constitute legal, financial, or investment advice. Always consult qualified professionals before making a property transaction decision.",
+      "categoryLabels": {
+        "flood": "Flood",
+        "legal": "Legal",
+        "tax": "Tax",
+        "zoning": "Zoning",
+        "environmental": "Environmental",
+        "market": "Market"
+      }
     }
   },
-  "recommendations": {
-    "general1": "Always engage a qualified property lawyer for legal review.",
-"general2": "Obtain an official encumbrance certificate from the Sub-Registrar office.",
-"general3": "Verify property tax clearance with the local municipal body.",
-"general4": "Conduct a physical inspection with a certified structural surveyor.",
-"general5": "Cross-verify all documentation with original records at government offices.",
-    "eyebrow": "Recommendations",
-    "title": "Prioritized Action Items",
-    "unavailable": "Recommendation data unavailable.",
-    "actionRequired": "Action Required",
-    "minorObservations": "Minor Observations",
-    "standardVerification": "Standard Verification",
-    "priorityPill": "{{level}} Priority",
-    "scoreLabel": "Score: {{score}}/100",
-    "generalTitle": "General Due Diligence Guidance",
-    "priority": {
-      "low": "Low",
-      "medium": "Medium",
-      "high": "High",
-      "critical": "Critical"
-    }
-  },
-  "appendix": {
-    "eyebrow": "Appendix",
-    "title": "Data Sources & Methodology",
-    "dataSources": "Data Sources",
-    "fetchedIn": "Fetched in {{ms}}ms",
-    "methodology": "Risk Scoring Methodology",
-    "methodologyIntro": "This report uses a weighted composite risk score (0-100) derived from six data categories. Each category is scored independently and combined using the weights below.",
-    "categoryWeights": "Category Weights",
-    "thresholds": "Risk Level Thresholds",
-    "uncertaintyNote": "When data sources are unavailable, an uncertainty penalty is applied rather than assuming zero risk — reflecting that missing information is itself a risk factor.",
-    "disclaimer": "Disclaimer",
-    "disclaimerBody": "This report is generated from third-party data sources and property records. It is provided for informational purposes only and does not constitute legal, financial, or investment advice. Always consult qualified professionals before making a property transaction decision.",
-    "categoryLabels": {
-      "flood": "Flood",
-      "legal": "Legal",
-      "tax": "Tax",
-      "zoning": "Zoning",
-      "environmental": "Environmental",
-      "market": "Market"
-    }
-  }
-},
   "risk": {
-  "badge": {
-    "ariaLabel": "Risk level: {{level}}"
-  },
-  "levels": {
-    "LOW": "Low",
-    "MEDIUM": "Medium",
-    "HIGH": "High",
-    "CRITICAL": "Critical",
-    "UNKNOWN": "Unknown"
-  },
-  "categories": {
-    "FLOOD": "Flood",
-    "LEGAL": "Legal",
-    "TAX": "Tax",
-    "ZONING": "Zoning",
-    "ENVIRONMENTAL": "Environmental",
-    "MARKET": "Market"
-  },
-  "gauge": {
-    "outOf": "out of 100",
-    "ariaLabel": "Risk score: {{score}} out of 100, {{level}}",
-    "deltaWorse": "vs. baseline",
-    "deltaBetter": "vs. baseline",
-    "recalculate": "Recalculate",
-    "recalculating": "Recalculating...",
-    "recalculateAria": "Recalculate risk with latest data"
-  },
-  "radar": {
-    "seriesName": "Risk Score",
-    "helperText": "Each axis shows a category score (0–100). Lower is better.",
-    "tooltipScore": "Score",
-    "tooltipWeight": "Weight"
-  },
-  "factor": {
-    "weight": "Weight: {{weight}}",
-    "explanation": "Analysis",
-    "recommendation": "Recommendation",
-    "dataSource": "Data source",
-    "dataUncertain": "Score reflects data uncertainty penalty",
-    "toggleAria": "Toggle {{category}} details"
-  },
-  "explain": {
-    "title": "How Risk Scoring Works",
-    "subtitle": "Transparent, rule-based scoring — no black-box AI",
-    "howItWorks": "How the Overall Score Is Calculated",
-    "description": "Each property is analyzed across 6 categories. Each category gets a score from 0–100 (higher = more risk). The overall score is a weighted sum — categories with more weight (like Flood at 25%) impact the final score more.",
-    "categoryWeights": "Category Weights",
-    "levelThresholds": "Risk Levels",
-    "dataHonesty": {
-      "title": "About Data Sources",
-      "body": "When a data source is unavailable, we apply an uncertainty penalty rather than assume zero risk. Missing information is itself a risk factor — we won't hide that from you."
-    }
-  },
-  "page": {
-    "title": "Risk Analysis",
-    "loading": "Analyzing property risk...",
-    "errorTitle": "Unable to load risk analysis",
-    "goBack": "Go back",
-    "backAria": "Go back to previous page",
-    "overallScore": "Overall Risk Score",
-    "categoryBreakdown": "Category Breakdown",
-    "categoryBreakdownDesc": "All 6 risk factors visualized. Larger area = higher overall risk.",
-    "factorsTitle": "Risk Factors",
-    "factorsSubtitle": "Ordered by risk contribution. Click any card to see full analysis.",
-    "generateReport": "Generate Report",
-    "dataWarningTitle": "Some data sources are unavailable",
-    "dataWarningBody": "{{count}} of 6 data provider(s) could not be reached. Scores reflect conservative estimates where data was missing.",
-    "backToProperty": "Back to property",
-"bedShort": "BR",
-"topRisksTitle": "Top Risk Contributors",
-"topRisksDesc": "Highest scoring factors driving overall risk",
-"methodology": "Methodology",
-"footerDisclaimer": "Risk scoring is based on 6 categories with transparent weightings. This is a decision support tool, not financial advice."
-  },
-
+    "badge": {
+      "ariaLabel": "Risk level: {{level}}"
+    },
+    "levels": {
+      "LOW": "Low",
+      "MEDIUM": "Medium",
+      "HIGH": "High",
+      "CRITICAL": "Critical",
+      "UNKNOWN": "Unknown"
+    },
+    "categories": {
+      "FLOOD": "Flood",
+      "LEGAL": "Legal",
+      "TAX": "Tax",
+      "ZONING": "Zoning",
+      "ENVIRONMENTAL": "Environmental",
+      "MARKET": "Market"
+    },
+    "gauge": {
+      "outOf": "out of 100",
+      "ariaLabel": "Risk score: {{score}} out of 100, {{level}}",
+      "deltaWorse": "vs. baseline",
+      "deltaBetter": "vs. baseline",
+      "recalculate": "Recalculate",
+      "recalculating": "Recalculating...",
+      "recalculateAria": "Recalculate risk with latest data"
+    },
+    "radar": {
+      "seriesName": "Risk Score",
+      "helperText": "Each axis shows a category score (0–100). Lower is better.",
+      "tooltipScore": "Score",
+      "tooltipWeight": "Weight"
+    },
+    "factor": {
+      "weight": "Weight: {{weight}}",
+      "explanation": "Analysis",
+      "recommendation": "Recommendation",
+      "dataSource": "Data source",
+      "dataUncertain": "Score reflects data uncertainty penalty",
+      "toggleAria": "Toggle {{category}} details"
+    },
+    "explain": {
+      "title": "How Risk Scoring Works",
+      "subtitle": "Transparent, rule-based scoring — no black-box AI",
+      "howItWorks": "How the Overall Score Is Calculated",
+      "description": "Each property is analyzed across 6 categories. Each category gets a score from 0–100 (higher = more risk). The overall score is a weighted sum — categories with more weight (like Flood at 25%) impact the final score more.",
+      "categoryWeights": "Category Weights",
+      "levelThresholds": "Risk Levels",
+      "dataHonesty": {
+        "title": "About Data Sources",
+        "body": "When a data source is unavailable, we apply an uncertainty penalty rather than assume zero risk. Missing information is itself a risk factor — we won't hide that from you."
+      }
+    },
+    "page": {
+      "title": "Risk Analysis",
+      "loading": "Analyzing property risk...",
+      "errorTitle": "Unable to load risk analysis",
+      "goBack": "Go back",
+      "backAria": "Go back to previous page",
+      "overallScore": "Overall Risk Score",
+      "categoryBreakdown": "Category Breakdown",
+      "categoryBreakdownDesc": "All 6 risk factors visualized. Larger area = higher overall risk.",
+      "factorsTitle": "Risk Factors",
+      "factorsSubtitle": "Ordered by risk contribution. Click any card to see full analysis.",
+      "generateReport": "Generate Report",
+      "dataWarningTitle": "Some data sources are unavailable",
+      "dataWarningBody": "{{count}} of 6 data provider(s) could not be reached. Scores reflect conservative estimates where data was missing.",
+      "backToProperty": "Back to property",
+      "bedShort": "BR",
+      "topRisksTitle": "Top Risk Contributors",
+      "topRisksDesc": "Highest scoring factors driving overall risk",
+      "methodology": "Methodology",
+      "footerDisclaimer": "Risk scoring is based on 6 categories with transparent weightings. This is a decision support tool, not financial advice."
+    },
     "history": {
       "sectionTitle": "Risk History",
       "sectionSubtitle": "Track how this property's risk profile has evolved",
@@ -448,218 +447,218 @@
       "timeHoursAgo": "{{count}} hr ago",
       "timeDaysAgo": "{{count}} d ago"
     }
-},
+  },
   "logoutModal": {
-  "title": "Ready to sign out?",
-  "description": "You'll need to log in again to access your dashboard and property data.",
-  "staySignedIn": "Stay signed in",
-  "confirm": "Yes, log out",
-  "signingOut": "Signing out…",
-  "close": "Close",
-  "signedIn": "Signed in",
-  "active": "Active",
-  "fallbackUser": "User",
-  "tip": "Tip: Press",
-  "tipCancel": "to cancel"
-},
+    "title": "Ready to sign out?",
+    "description": "You'll need to log in again to access your dashboard and property data.",
+    "staySignedIn": "Stay signed in",
+    "confirm": "Yes, log out",
+    "signingOut": "Signing out…",
+    "close": "Close",
+    "signedIn": "Signed in",
+    "active": "Active",
+    "fallbackUser": "User",
+    "tip": "Tip: Press",
+    "tipCancel": "to cancel"
+  },
   "labels": {
-  "NEW": "New",
-  "HOT": "Hot",
-  "PRICE_DROP": "Price Drop",
-  "FEATURED": "Featured",
-  "VERIFIED": "Verified",
-  "SOLD": "Sold",
-  "UNDER_OFFER": "Under Offer",
-  "PREMIUM": "Premium",
-  "moreCount": "+{{count}} more",
-  "admin": {
-    "title": "Property Labels",
-    "subtitle": "Manage labels shown on this property",
-    "current": "Current Labels",
-    "empty": "No labels applied yet",
-    "loading": "Loading labels...",
-    "addNew": "Add New Label",
-    "selectType": "Label Type",
-    "selectPlaceholder": "Choose a label...",
-    "expiresInDays": "Expires in (days)",
-    "expiresPlaceholder": "e.g., 30",
-    "optional": "optional",
-    "addButton": "Add Label",
-    "adding": "Adding...",
-    "remove": "Remove label",
-    "added": "Label added successfully",
-    "removed": "Label removed",
-    "addError": "Failed to add label",
-    "removeError": "Failed to remove label"
-  }
-},
-  "passwordStrength": {
-  "weak": "Weak",
-  "fair": "Fair",
-  "good": "Good",
-  "strong": "Strong"
-},
-  "cookies": {
-  "banner": {
-    "ariaLabel": "Cookie consent",
-    "title": "Cookies on this site",
-    "description": "We use essential cookies to keep you signed in. Analytics help us improve — your choice.",
-    "rejectNonEssential": "Reject non-essential",
-    "customize": "Customize",
-    "acceptAll": "Accept all"
-  },
-  "prefs": {
-    "title": "Cookie preferences",
-    "subtitle": "You control what data we collect.",
-    "essential": {
-      "title": "Essential",
-      "description": "Required for authentication, session management, and security. Cannot be disabled."
-    },
-    "analytics": {
-      "title": "Analytics",
-      "description": "Google Analytics 4 — anonymized page views and events. Helps us understand which features get used. Off by default."
-    },
-    "rejectAll": "Reject all",
-    "acceptAll": "Accept all",
-    "saveChoices": "Save choices"
-  }
-},
-"recommendations": {
-  "title": "Recommendations",
-  "actionsCount_one": "{{count}} action to improve your portfolio",
-  "actionsCount_other": "{{count}} actions to improve your portfolio",
-  "urgentCount_one": "{{count}} urgent",
-  "urgentCount_other": "{{count}} urgent",
-  "dismiss": "Dismiss",
-  "showLess": "Show less",
-  "showMore_one": "Show {{count}} more",
-  "showMore_other": "Show {{count}} more",
-  "severity": {
-    "urgent": "Urgent",
-    "action": "Action",
-    "onTrack": "On track",
-    "tip": "Tip"
-  },
-  "items": {
-  "incompleteData": {
-    "title": "{{fieldCount}} fields missing on {{address}}",
-    "description": "Complete the missing fields to improve your verification score and risk accuracy.",
-    "actionLabel": "View property"
-  },
-  "missingPhoto": {
-    "title": "{{count}} properties have no photo",
-    "description": "Adding a photo helps identify properties in search results and PDF reports.",
-    "actionLabel": "Add photo"
-  },
-  "missingArea": {
-    "title": "{{count}} properties are missing area data",
-    "description": "Area (sqft) is required for accurate risk scoring and price-per-sqft calculations.",
-    "actionLabel": "Add details"
-  },
-  "diversePortfolio": {
-    "title": "Portfolio spans {{count}} cities",
-    "description": "You have properties across multiple cities. Consider reviewing location-specific risk factors.",
-    "actionLabel": "View all"
-  },
-  "allVerified": {
-    "title": "All properties verified",
-    "description": "Every property in your portfolio has passed all verification checks. Your data is complete.",
-    "actionLabel": "View portfolio"
-  },
-  "pendingVerification": {
-    "title": "{{count}} properties awaiting verification",
-    "description": "Complete the missing fields on pending properties to mark them verified.",
-    "actionLabel": "View pending"
-  }
-}
-},
-"faq": {
-  "categories": {
-    "GETTING_STARTED":  "Getting started",
-    "VERIFICATION":     "Verification",
-    "RISK_SCORING":     "Risk scoring",
-    "DATA_SOURCES":     "Data sources",
-    "REPORTS_PDF":      "Reports & PDF",
-    "ACCOUNT":          "Account",
-    "PRIVACY_SECURITY": "Privacy & security"
-  },
-  "items": {
-    "item1": {
-      "question": "How do I add my first property?",
-      "answer": "After signing in, click 'Add property' in the top-right of the dashboard, or use the button in the property search page. Fill in the address — we'll auto-suggest matches from OpenStreetMap. Only address and city are required; everything else can be added later."
-    },
-    "item2": {
-      "question": "What information do I need to add a property?",
-      "answer": "Required: address and city. Recommended: property type, market value, area (sqft), year built, and bedrooms/bathrooms. The more fields you fill in, the higher your verification score and the more accurate your risk assessment."
-    },
-    "item3": {
-      "question": "Why is my property marked as 'Pending' or 'Incomplete'?",
-      "answer": "We run 7 data quality checks on every property (address, city, state, ZIP, market value, area, property type). Missing any of these keeps the status as pending. Click 'Complete to verify' on any pending card to fill in the missing fields."
-    },
-    "item4": {
-      "question": "How does verification work?",
-      "answer": "Verification is automatic and based purely on data completeness — not manual review. When you fill in all 7 required fields, the property is marked verified. If you edit a verified property and remove a field, it goes back to pending."
-    },
-    "item5": {
-      "question": "How is the risk score calculated?",
-      "answer": "The risk score is a weighted average of four categories: Financial (30%), Legal (30%), Environmental (25%), and Structural (15%). Each category has documented rules — for example, unverified status adds legal risk, high AQI adds environmental risk, condition 'Poor' adds structural risk. Score ranges: 0–33 Low, 34–66 Medium, 67–100 High."
-    },
-    "item6": {
-      "question": "Why does my property show 'data incomplete' on the risk card?",
-      "answer": "Some data sources (like ownership, tax history, permits) currently return sample data because reliable public APIs for these domains are not yet available for India at scale. The risk engine flags this so you know the score would be more precise with real data."
-    },
-    "item7": {
-      "question": "Where does the air quality data come from?",
-      "answer": "AQI values come from the WAQI (World Air Quality Index) API, which aggregates real-time readings from CPCB monitoring stations across India. If your property is in a city without a nearby station, this section will be marked as 'No data'."
-    },
-    "item8": {
-      "question": "Is the ownership and tax data real?",
-      "answer": "No — we're upfront about this. The ownership, tax history, zoning, flood zone, and permits sections currently return sample data. Reliable public APIs for these domains don't yet exist in India at scale. Every card that shows sample data is clearly labelled 'Sample data' or 'Mock' in the interface."
-    },
-    "item9": {
-      "question": "How do I download a property report?",
-      "answer": "Open any property in property search, then click 'Download report' in the top-right of the property hero card. The PDF includes the property overview, risk assessment, all 6 data sections, and a data completeness summary. Generation takes 2–4 seconds."
-    },
-    "item10": {
-      "question": "Can I compare multiple properties in one report?",
-      "answer": "Yes. On the property search page, hover over any card and click the compare checkbox that appears. Select 2–3 properties, then click 'Compare' in the bottom bar. On the comparison page, click 'Download comparison' to get a landscape PDF with all properties side by side."
-    },
-    "item11": {
-      "question": "How do I delete my account?",
-      "answer": "Go to your profile page and scroll to the danger zone at the bottom. Deleting your account is immediate and permanent — all your properties and history are removed from our database via cascade delete. There is no recovery period."
-    },
-    "item12": {
-      "question": "I forgot my password. What do I do?",
-      "answer": "Click 'Forgot password' on the login page. Enter your registered email and we'll send a 6-digit OTP. Verify the OTP, then set a new password. OTPs are single-use and expire quickly. If you signed up with Google, use 'Continue with Google' instead — there is no password to reset."
-    },
-    "item13": {
-      "question": "Is my data shared with third parties?",
-      "answer": "We call a small number of external services for specific purposes: WAQI for air quality (city name only), Nominatim for geocoding (address string only), and Google OAuth for sign-in verification. Full details are on our /security page. No personal or property data is sold to anyone."
-    },
-    "item14": {
-      "question": "How are my passwords stored?",
-      "answer": "Passwords are hashed with BCrypt (strength factor 10) before being stored. We never see your plain-text password and cannot recover it — only reset it via OTP. If you sign in exclusively with Google, no password is stored at all."
+    "NEW": "New",
+    "HOT": "Hot",
+    "PRICE_DROP": "Price Drop",
+    "FEATURED": "Featured",
+    "VERIFIED": "Verified",
+    "SOLD": "Sold",
+    "UNDER_OFFER": "Under Offer",
+    "PREMIUM": "Premium",
+    "moreCount": "+{{count}} more",
+    "admin": {
+      "title": "Property Labels",
+      "subtitle": "Manage labels shown on this property",
+      "current": "Current Labels",
+      "empty": "No labels applied yet",
+      "loading": "Loading labels...",
+      "addNew": "Add New Label",
+      "selectType": "Label Type",
+      "selectPlaceholder": "Choose a label...",
+      "expiresInDays": "Expires in (days)",
+      "expiresPlaceholder": "e.g., 30",
+      "optional": "optional",
+      "addButton": "Add Label",
+      "adding": "Adding...",
+      "remove": "Remove label",
+      "added": "Label added successfully",
+      "removed": "Label removed",
+      "addError": "Failed to add label",
+      "removeError": "Failed to remove label"
     }
-  }
-},
-"aqiScale": {
-  "labels": {
-    "good": "Good",
-    "satisfactory": "Satisfactory",
-    "moderate": "Moderate",
-    "poor": "Poor",
-    "veryPoor": "Very Poor",
-    "severe": "Severe"
   },
-  "descriptions": {
-    "good": "Minimal impact",
-    "satisfactory": "Minor breathing discomfort to sensitive people",
-    "moderate": "Breathing discomfort to sensitive groups",
-    "poor": "Breathing discomfort on prolonged exposure",
-    "veryPoor": "Respiratory illness on prolonged exposure",
-    "severe": "Serious health impact on everyone"
-  }
-},
+  "passwordStrength": {
+    "weak": "Weak",
+    "fair": "Fair",
+    "good": "Good",
+    "strong": "Strong"
+  },
+  "cookies": {
+    "banner": {
+      "ariaLabel": "Cookie consent",
+      "title": "Cookies on this site",
+      "description": "We use essential cookies to keep you signed in. Analytics help us improve — your choice.",
+      "rejectNonEssential": "Reject non-essential",
+      "customize": "Customize",
+      "acceptAll": "Accept all"
+    },
+    "prefs": {
+      "title": "Cookie preferences",
+      "subtitle": "You control what data we collect.",
+      "essential": {
+        "title": "Essential",
+        "description": "Required for authentication, session management, and security. Cannot be disabled."
+      },
+      "analytics": {
+        "title": "Analytics",
+        "description": "Google Analytics 4 — anonymized page views and events. Helps us understand which features get used. Off by default."
+      },
+      "rejectAll": "Reject all",
+      "acceptAll": "Accept all",
+      "saveChoices": "Save choices"
+    }
+  },
+  "recommendations": {
+    "title": "Recommendations",
+    "actionsCount_one": "{{count}} action to improve your portfolio",
+    "actionsCount_other": "{{count}} actions to improve your portfolio",
+    "urgentCount_one": "{{count}} urgent",
+    "urgentCount_other": "{{count}} urgent",
+    "dismiss": "Dismiss",
+    "showLess": "Show less",
+    "showMore_one": "Show {{count}} more",
+    "showMore_other": "Show {{count}} more",
+    "severity": {
+      "urgent": "Urgent",
+      "action": "Action",
+      "onTrack": "On track",
+      "tip": "Tip"
+    },
+    "items": {
+      "incompleteData": {
+        "title": "{{fieldCount}} fields missing on {{address}}",
+        "description": "Complete the missing fields to improve your verification score and risk accuracy.",
+        "actionLabel": "View property"
+      },
+      "missingPhoto": {
+        "title": "{{count}} properties have no photo",
+        "description": "Adding a photo helps identify properties in search results and PDF reports.",
+        "actionLabel": "Add photo"
+      },
+      "missingArea": {
+        "title": "{{count}} properties are missing area data",
+        "description": "Area (sqft) is required for accurate risk scoring and price-per-sqft calculations.",
+        "actionLabel": "Add details"
+      },
+      "diversePortfolio": {
+        "title": "Portfolio spans {{count}} cities",
+        "description": "You have properties across multiple cities. Consider reviewing location-specific risk factors.",
+        "actionLabel": "View all"
+      },
+      "allVerified": {
+        "title": "All properties verified",
+        "description": "Every property in your portfolio has passed all verification checks. Your data is complete.",
+        "actionLabel": "View portfolio"
+      },
+      "pendingVerification": {
+        "title": "{{count}} properties awaiting verification",
+        "description": "Complete the missing fields on pending properties to mark them verified.",
+        "actionLabel": "View pending"
+      }
+    }
+  },
+  "faq": {
+    "categories": {
+      "GETTING_STARTED": "Getting started",
+      "VERIFICATION": "Verification",
+      "RISK_SCORING": "Risk scoring",
+      "DATA_SOURCES": "Data sources",
+      "REPORTS_PDF": "Reports & PDF",
+      "ACCOUNT": "Account",
+      "PRIVACY_SECURITY": "Privacy & security"
+    },
+    "items": {
+      "item1": {
+        "question": "How do I add my first property?",
+        "answer": "After signing in, click 'Add property' in the top-right of the dashboard, or use the button in the property search page. Fill in the address — we'll auto-suggest matches from OpenStreetMap. Only address and city are required; everything else can be added later."
+      },
+      "item2": {
+        "question": "What information do I need to add a property?",
+        "answer": "Required: address and city. Recommended: property type, market value, area (sqft), year built, and bedrooms/bathrooms. The more fields you fill in, the higher your verification score and the more accurate your risk assessment."
+      },
+      "item3": {
+        "question": "Why is my property marked as 'Pending' or 'Incomplete'?",
+        "answer": "We run 7 data quality checks on every property (address, city, state, ZIP, market value, area, property type). Missing any of these keeps the status as pending. Click 'Complete to verify' on any pending card to fill in the missing fields."
+      },
+      "item4": {
+        "question": "How does verification work?",
+        "answer": "Verification is automatic and based purely on data completeness — not manual review. When you fill in all 7 required fields, the property is marked verified. If you edit a verified property and remove a field, it goes back to pending."
+      },
+      "item5": {
+        "question": "How is the risk score calculated?",
+        "answer": "The risk score is a weighted average of four categories: Financial (30%), Legal (30%), Environmental (25%), and Structural (15%). Each category has documented rules — for example, unverified status adds legal risk, high AQI adds environmental risk, condition 'Poor' adds structural risk. Score ranges: 0–33 Low, 34–66 Medium, 67–100 High."
+      },
+      "item6": {
+        "question": "Why does my property show 'data incomplete' on the risk card?",
+        "answer": "Some data sources (like ownership, tax history, permits) currently return sample data because reliable public APIs for these domains are not yet available for India at scale. The risk engine flags this so you know the score would be more precise with real data."
+      },
+      "item7": {
+        "question": "Where does the air quality data come from?",
+        "answer": "AQI values come from the WAQI (World Air Quality Index) API, which aggregates real-time readings from CPCB monitoring stations across India. If your property is in a city without a nearby station, this section will be marked as 'No data'."
+      },
+      "item8": {
+        "question": "Is the ownership and tax data real?",
+        "answer": "No — we're upfront about this. The ownership, tax history, zoning, flood zone, and permits sections currently return sample data. Reliable public APIs for these domains don't yet exist in India at scale. Every card that shows sample data is clearly labelled 'Sample data' or 'Mock' in the interface."
+      },
+      "item9": {
+        "question": "How do I download a property report?",
+        "answer": "Open any property in property search, then click 'Download report' in the top-right of the property hero card. The PDF includes the property overview, risk assessment, all 6 data sections, and a data completeness summary. Generation takes 2–4 seconds."
+      },
+      "item10": {
+        "question": "Can I compare multiple properties in one report?",
+        "answer": "Yes. On the property search page, hover over any card and click the compare checkbox that appears. Select 2–3 properties, then click 'Compare' in the bottom bar. On the comparison page, click 'Download comparison' to get a landscape PDF with all properties side by side."
+      },
+      "item11": {
+        "question": "How do I delete my account?",
+        "answer": "Go to your profile page and scroll to the danger zone at the bottom. Deleting your account is immediate and permanent — all your properties and history are removed from our database via cascade delete. There is no recovery period."
+      },
+      "item12": {
+        "question": "I forgot my password. What do I do?",
+        "answer": "Click 'Forgot password' on the login page. Enter your registered email and we'll send a 6-digit OTP. Verify the OTP, then set a new password. OTPs are single-use and expire quickly. If you signed up with Google, use 'Continue with Google' instead — there is no password to reset."
+      },
+      "item13": {
+        "question": "Is my data shared with third parties?",
+        "answer": "We call a small number of external services for specific purposes: WAQI for air quality (city name only), Nominatim for geocoding (address string only), and Google OAuth for sign-in verification. Full details are on our /security page. No personal or property data is sold to anyone."
+      },
+      "item14": {
+        "question": "How are my passwords stored?",
+        "answer": "Passwords are hashed with BCrypt (strength factor 10) before being stored. We never see your plain-text password and cannot recover it — only reset it via OTP. If you sign in exclusively with Google, no password is stored at all."
+      }
+    }
+  },
+  "aqiScale": {
+    "labels": {
+      "good": "Good",
+      "satisfactory": "Satisfactory",
+      "moderate": "Moderate",
+      "poor": "Poor",
+      "veryPoor": "Very Poor",
+      "severe": "Severe"
+    },
+    "descriptions": {
+      "good": "Minimal impact",
+      "satisfactory": "Minor breathing discomfort to sensitive people",
+      "moderate": "Breathing discomfort to sensitive groups",
+      "poor": "Breathing discomfort on prolonged exposure",
+      "veryPoor": "Respiratory illness on prolonged exposure",
+      "severe": "Serious health impact on everyone"
+    }
+  },
   "nav": {
     "dashboard": "Dashboard",
     "propertySearch": "Property Search",
@@ -674,7 +673,7 @@
     "settings": "Settings",
     "support": "Support",
     "sections": {
-  "main": "Main",
+"main": "Main",
   "analysis": "Analysis",
   "insights": "Insights",
   "activity": "Activity",
@@ -686,7 +685,7 @@
   "users": "Users",
   "analytics": "Analytics",
   "system": "System"
-},
+}, 71bc8d3f86d32b11dd30517222435af644dd1c41
     "sessionActive": "Session active",
     "version": "v1.0"
   },
@@ -861,11 +860,11 @@
       "afternoon": "Good afternoon",
       "evening": "Good evening"
     },
-     "adminBanner": {
-  "title": "Admin Mode — Platform Overview",
-  "description": "You are viewing all properties and users across the platform. A dedicated admin dashboard is coming in the next update.",
-  "badge": "Admin"
-},
+    "adminBanner": {
+      "title": "Admin Mode — Platform Overview",
+      "description": "You are viewing all properties and users across the platform. A dedicated admin dashboard is coming in the next update.",
+      "badge": "Admin"
+    },
     "subtitle": "Your portfolio at a glance",
     "platformOverview": "Platform overview",
     "pageTitle": "Dashboard | Real Estate Due Diligence Agent",
@@ -897,153 +896,153 @@
     }
   },
   "hero": {
-  "portfolio": {
-    "label": "Portfolio value",
-    "citiesCount_one": "{{count}} city",
-    "citiesCount_other": "{{count}} cities",
-    "acrossProperties_one": "across {{count}} property",
-    "acrossProperties_other": "across {{count}} properties",
-    "topAsset": "Top asset"
+    "portfolio": {
+      "label": "Portfolio value",
+      "citiesCount_one": "{{count}} city",
+      "citiesCount_other": "{{count}} cities",
+      "acrossProperties_one": "across {{count}} property",
+      "acrossProperties_other": "across {{count}} properties",
+      "topAsset": "Top asset"
+    },
+    "verification": {
+      "label": "Verification",
+      "allVerified": "All verified",
+      "noPropertiesYet": "No properties yet",
+      "portfolioComplete": "Portfolio complete",
+      "pendingCount_one": "{{count}} pending",
+      "pendingCount_other": "{{count}} pending"
+    },
+    "aqi": {
+      "label": "Air quality",
+      "live": "Live",
+      "fetchingLive": "Fetching live data...",
+      "addPropertyToSee": "Add a property to see live air quality"
+    }
   },
-  "verification": {
-    "label": "Verification",
-    "allVerified": "All verified",
-    "noPropertiesYet": "No properties yet",
-    "portfolioComplete": "Portfolio complete",
-    "pendingCount_one": "{{count}} pending",
-    "pendingCount_other": "{{count}} pending"
+  "trend": {
+    "title": "Portfolio value over time",
+    "dataPointsInWindow_one": "{{count}} data point in selected window",
+    "dataPointsInWindow_other": "{{count}} data points in selected window",
+    "deltaVsAgo": "{{sign}}{{pct}}% vs {{days}}d ago",
+    "noChange": "No change",
+    "empty": {
+      "title": "Tracking starts today",
+      "description": "Check back tomorrow to see your portfolio value trend."
+    },
+    "error": {
+      "couldntLoad": "Could not load trend data."
+    },
+    "tooltip": {
+      "propertiesCount_one": "{{count}} property",
+      "propertiesCount_other": "{{count}} properties",
+      "verifiedCount_one": "{{count}} verified",
+      "verifiedCount_other": "{{count}} verified"
+    }
   },
-  "aqi": {
-    "label": "Air quality",
+  "breakdown": {
+    "title": "Portfolio breakdown",
+    "subtitle": "By property type",
+    "empty": {
+      "title": "No data yet",
+      "description": "Add properties to see breakdown"
+    },
+    "tooltip": {
+      "propertyCount_one": "{{count}} property",
+      "propertyCount_other": "{{count}} properties",
+      "valueLabel": "Value"
+    }
+  },
+  "map": {
+    "title": "Portfolio geography",
+    "status": {
+      "loading": "Loading map...",
+      "noPropertiesYet": "No properties yet",
+      "mappedOfTotal": "{{mapped}} of {{total}} mapped",
+      "pendingCount_one": "{{count}} pending",
+      "pendingCount_other": "{{count}} pending"
+    },
+    "zoomHint": "Use +/− to zoom",
+    "retryGeocoding": "Retry geocoding",
+    "geocoding": "Geocoding...",
+    "viewDetails": "View details",
+    "empty": {
+      "noMappedTitle": "No mapped properties yet",
+      "noMappedDesc": "Add properties using the address suggestions to see them on the map.",
+      "noCoordsTitle": "No coordinates captured yet",
+      "noCoordsDesc": "Properties exist but need geocoding. Admins can trigger it above."
+    },
+    "error": {
+      "couldntLoad": "Couldn't load map data."
+    },
+    "toasts": {
+      "geocodedCount_one": "{{count}} property geocoded",
+      "geocodedCount_other": "{{count}} properties geocoded",
+      "reloadingMap": "Reloading map...",
+      "noNewLocations": "No new locations found",
+      "tooVague": "Remaining addresses may be too vague to geocode.",
+      "geocodingFailed": "Geocoding failed",
+      "tryAgainLater": "Please try again later."
+    }
+  },
+  "activity": {
+    "title": "Recent activity",
+    "subtitle": "Latest actions across the platform",
     "live": "Live",
-    "fetchingLive": "Fetching live data...",
-    "addPropertyToSee": "Add a property to see live air quality"
-  }
-},
-"trend": {
-  "title": "Portfolio value over time",
-  "dataPointsInWindow_one": "{{count}} data point in selected window",
-  "dataPointsInWindow_other": "{{count}} data points in selected window",
-  "deltaVsAgo": "{{sign}}{{pct}}% vs {{days}}d ago",
-  "noChange": "No change",
-  "empty": {
-    "title": "Tracking starts today",
-    "description": "Check back tomorrow to see your portfolio value trend."
+    "byActor": "by {{name}}",
+    "showAll": "Show all",
+    "viewAllProperties": "View all properties",
+    "filters": {
+      "all": "All",
+      "added": "Added",
+      "verified": "Verified",
+      "updated": "Updated"
+    },
+    "types": {
+      "propertyAdded": "Property added",
+      "propertyVerified": "Property verified",
+      "propertyUpdated": "Property updated"
+    },
+    "empty": {
+      "noActivity": "No activity yet",
+      "addProperties": "Add properties to see activity here",
+      "noFiltered": "No {{filter}} activity in recent events"
+    }
   },
-  "error": {
-    "couldntLoad": "Could not load trend data."
+  "recentTable": {
+    "title": "Recent properties",
+    "subtitle": "Latest additions to the platform",
+    "columns": {
+      "address": "Address",
+      "type": "Type",
+      "status": "Status",
+      "missingFields": "Missing fields"
+    },
+    "missingCount_one": "{{count}} missing",
+    "missingCount_other": "{{count}} missing",
+    "noneMissing": "None",
+    "empty": {
+      "title": "No properties found",
+      "description": "Add a property to see it here."
+    },
+    "error": {
+      "title": "Couldn't load properties",
+      "description": "Please refresh the page to try again."
+    }
   },
-  "tooltip": {
-    "propertiesCount_one": "{{count}} property",
-    "propertiesCount_other": "{{count}} properties",
-    "verifiedCount_one": "{{count}} verified",
-    "verifiedCount_other": "{{count}} verified"
-  }
-},
-"breakdown": {
-  "title": "Portfolio breakdown",
-  "subtitle": "By property type",
-  "empty": {
-    "title": "No data yet",
-    "description": "Add properties to see breakdown"
-  },
-  "tooltip": {
-    "propertyCount_one": "{{count}} property",
-    "propertyCount_other": "{{count}} properties",
-    "valueLabel": "Value"
-  }
-},
-"map": {
-  "title": "Portfolio geography",
-  "status": {
-    "loading": "Loading map...",
-    "noPropertiesYet": "No properties yet",
-    "mappedOfTotal": "{{mapped}} of {{total}} mapped",
-    "pendingCount_one": "{{count}} pending",
-    "pendingCount_other": "{{count}} pending"
-  },
-  "zoomHint": "Use +/− to zoom",
-  "retryGeocoding": "Retry geocoding",
-  "geocoding": "Geocoding...",
-  "viewDetails": "View details",
-  "empty": {
-    "noMappedTitle": "No mapped properties yet",
-    "noMappedDesc": "Add properties using the address suggestions to see them on the map.",
-    "noCoordsTitle": "No coordinates captured yet",
-    "noCoordsDesc": "Properties exist but need geocoding. Admins can trigger it above."
-  },
-  "error": {
-    "couldntLoad": "Couldn't load map data."
-  },
-  "toasts": {
-    "geocodedCount_one": "{{count}} property geocoded",
-    "geocodedCount_other": "{{count}} properties geocoded",
-    "reloadingMap": "Reloading map...",
-    "noNewLocations": "No new locations found",
-    "tooVague": "Remaining addresses may be too vague to geocode.",
-    "geocodingFailed": "Geocoding failed",
-    "tryAgainLater": "Please try again later."
-  }
-},
-"activity": {
-  "title": "Recent activity",
-  "subtitle": "Latest actions across the platform",
-  "live": "Live",
-  "byActor": "by {{name}}",
-  "showAll": "Show all",
-  "viewAllProperties": "View all properties",
-  "filters": {
-    "all": "All",
-    "added": "Added",
-    "verified": "Verified",
-    "updated": "Updated"
-  },
-  "types": {
-    "propertyAdded": "Property added",
-    "propertyVerified": "Property verified",
-    "propertyUpdated": "Property updated"
-  },
-  "empty": {
-    "noActivity": "No activity yet",
-    "addProperties": "Add properties to see activity here",
-    "noFiltered": "No {{filter}} activity in recent events"
-  }
-},
-"recentTable": {
-  "title": "Recent properties",
-  "subtitle": "Latest additions to the platform",
-  "columns": {
-    "address": "Address",
-    "type": "Type",
-    "status": "Status",
-    "missingFields": "Missing fields"
-  },
-  "missingCount_one": "{{count}} missing",
-  "missingCount_other": "{{count}} missing",
-  "noneMissing": "None",
-  "empty": {
-    "title": "No properties found",
-    "description": "Add a property to see it here."
-  },
-  "error": {
-    "title": "Couldn't load properties",
-    "description": "Please refresh the page to try again."
-  }
-},
   "property": {
     "addProperty": "Add property",
     "addFirstProperty": "Add your first property",
     "pdf": {
-  "downloadReport": "Download report",
-  "generating": "Generating...",
-  "buttonTooltip": "Download PDF report",
-  "preparing": "Preparing PDF engine...",
-  "downloaded": "Report downloaded",
-  "savedTo": "{{filename}} saved to your downloads folder.",
-  "loadFailed": "Could not load property data",
-  "downloadFailed": "Download failed",
-  "generateFailed": "Could not generate the report. Try again."
-},
+      "downloadReport": "Download report",
+      "generating": "Generating...",
+      "buttonTooltip": "Download PDF report",
+      "preparing": "Preparing PDF engine...",
+      "downloaded": "Report downloaded",
+      "savedTo": "{{filename}} saved to your downloads folder.",
+      "loadFailed": "Could not load property data",
+      "downloadFailed": "Download failed",
+      "generateFailed": "Could not generate the report. Try again."
+    },
     "search": {
       "title": "Property search",
       "placeholder": "Search pages, properties, actions...",
@@ -1218,119 +1217,119 @@
     },
     "aggregation": {
       "enums": {
-  "taxStatus": {
-    "PAID": "Paid",
-    "PENDING": "Pending",
-    "OVERDUE": "Overdue"
-  },
-  "permitType": {
-    "BUILDING": "Building",
-    "RENOVATION": "Renovation",
-    "OCCUPANCY": "Occupancy",
-    "DEMOLITION": "Demolition",
-    "ELECTRICAL": "Electrical",
-    "PLUMBING": "Plumbing"
-  },
-  "permitStatus": {
-    "APPROVED": "Approved",
-    "PENDING": "Pending",
-    "EXPIRED": "Expired",
-    "REJECTED": "Rejected"
-  },
-  "buildingType": {
-  "CONCRETE": "Concrete",
-  "STEEL": "Steel",
-  "WOOD": "Wood",
-  "BRICK": "Brick"
-},
-"condition": {
-  "EXCELLENT": "Excellent",
-  "GOOD": "Good",
-  "FAIR": "Fair",
-  "POOR": "Poor"
-},
-"soilType": {
-  "BLACK_COTTON": "Black Cotton",
-  "RED_SOIL": "Red Soil",
-  "ALLUVIAL": "Alluvial",
-  "LATERITE": "Laterite",
-  "SANDY": "Sandy",
-  "CLAYEY": "Clayey"
-}
-},
+        "taxStatus": {
+          "PAID": "Paid",
+          "PENDING": "Pending",
+          "OVERDUE": "Overdue"
+        },
+        "permitType": {
+          "BUILDING": "Building",
+          "RENOVATION": "Renovation",
+          "OCCUPANCY": "Occupancy",
+          "DEMOLITION": "Demolition",
+          "ELECTRICAL": "Electrical",
+          "PLUMBING": "Plumbing"
+        },
+        "permitStatus": {
+          "APPROVED": "Approved",
+          "PENDING": "Pending",
+          "EXPIRED": "Expired",
+          "REJECTED": "Rejected"
+        },
+        "buildingType": {
+          "CONCRETE": "Concrete",
+          "STEEL": "Steel",
+          "WOOD": "Wood",
+          "BRICK": "Brick"
+        },
+        "condition": {
+          "EXCELLENT": "Excellent",
+          "GOOD": "Good",
+          "FAIR": "Fair",
+          "POOR": "Poor"
+        },
+        "soilType": {
+          "BLACK_COTTON": "Black Cotton",
+          "RED_SOIL": "Red Soil",
+          "ALLUVIAL": "Alluvial",
+          "LATERITE": "Laterite",
+          "SANDY": "Sandy",
+          "CLAYEY": "Clayey"
+        }
+      },
       "completeness": {
-  "title": "Data completeness",
-  "subtitle": "Aggregation health across 6 data sources",
-  "refreshAria": "Refresh aggregation",
-  "refreshTitle": "Refresh all sources",
-  "overallStatus": "Overall status",
-  "coverage": "Coverage",
-  "liveSources_one": "Live source",
-  "liveSources_other": "Live sources",
-  "mockSources_one": "Mock source",
-  "mockSources_other": "Mock sources",
-  "unavailable": "Unavailable",
-  "dataSources": "Data sources",
-  "totalCount": "{{n}} total",
-  "latestFetch": "Latest fetch:",
-  "oldest": "Oldest:",
-  "duration": "Duration:",
-  "overallOk": "All sources available",
-  "overallPartial": "Partial data",
-  "overallDegraded": "Degraded — some sources down",
-  "overallLoading": "Loading",
-  "statusEmpty": "Empty",
-  "statusDown": "Down",
-  "sources": {
-    "ownership": "Ownership Registry",
-    "taxHistory": "Municipal Tax Records",
-    "zoning": "Zoning Authority",
-    "floodZone": "Flood Risk Assessment",
-    "permits": "Permits Database",
-    "environmental": "Environmental Monitoring"
-  }
-},
-"environmental": {
-  "title": "Environmental",
-  "subtitle": "Air quality and surroundings",
-  "emptyLabel": "environmental data",
-  "aqi": "Air quality index",
-  "mainPollutant": "Main pollutant",
-  "nearestStation": "Nearest monitoring station",
-  "measured": "Measured {{ago}}",
-  "greenCover": "Green cover",
-  "noiseLevel": "Noise level",
-  "soilType": "Soil type",
-  "industrialZone": "Industrial zone",
-  "nearby": "Nearby",
-  "notNearby": "Not nearby"
-},
-"flood": {
-  "title": "Flood risk",
-  "subtitle": "Flood zone classification and history",
-  "emptyLabel": "flood data",
-  "zone": "Zone",
-  "insuranceRecommended": "Flood insurance recommended",
-  "insuranceNotMandatory": "Flood insurance not mandatory",
-  "basedOn": "Based on {{agency}}",
-  "regionalHazard": "regional hazard data",
-  "nearestWater": "Nearest water body",
-  "distance": "Distance",
-  "lastFlood": "Last major flood:"
-},
-"zoning": {
-  "title": "Zoning information",
-  "subtitle": "Land use classification and building rules",
-  "emptyLabel": "zoning information",
-  "zoneCode": "Zone code",
-  "category": "Category",
-  "maxFar": "Max FAR",
-  "groundCoverage": "Ground coverage",
-  "maxHeight": "Max height",
-  "allowedUses": "Allowed uses",
-  "restrictedUses": "Restricted uses",
-  "referencePlan": "Reference plan"
-},
+        "title": "Data completeness",
+        "subtitle": "Aggregation health across 6 data sources",
+        "refreshAria": "Refresh aggregation",
+        "refreshTitle": "Refresh all sources",
+        "overallStatus": "Overall status",
+        "coverage": "Coverage",
+        "liveSources_one": "Live source",
+        "liveSources_other": "Live sources",
+        "mockSources_one": "Mock source",
+        "mockSources_other": "Mock sources",
+        "unavailable": "Unavailable",
+        "dataSources": "Data sources",
+        "totalCount": "{{n}} total",
+        "latestFetch": "Latest fetch:",
+        "oldest": "Oldest:",
+        "duration": "Duration:",
+        "overallOk": "All sources available",
+        "overallPartial": "Partial data",
+        "overallDegraded": "Degraded — some sources down",
+        "overallLoading": "Loading",
+        "statusEmpty": "Empty",
+        "statusDown": "Down",
+        "sources": {
+          "ownership": "Ownership Registry",
+          "taxHistory": "Municipal Tax Records",
+          "zoning": "Zoning Authority",
+          "floodZone": "Flood Risk Assessment",
+          "permits": "Permits Database",
+          "environmental": "Environmental Monitoring"
+        }
+      },
+      "environmental": {
+        "title": "Environmental",
+        "subtitle": "Air quality and surroundings",
+        "emptyLabel": "environmental data",
+        "aqi": "Air quality index",
+        "mainPollutant": "Main pollutant",
+        "nearestStation": "Nearest monitoring station",
+        "measured": "Measured {{ago}}",
+        "greenCover": "Green cover",
+        "noiseLevel": "Noise level",
+        "soilType": "Soil type",
+        "industrialZone": "Industrial zone",
+        "nearby": "Nearby",
+        "notNearby": "Not nearby"
+      },
+      "flood": {
+        "title": "Flood risk",
+        "subtitle": "Flood zone classification and history",
+        "emptyLabel": "flood data",
+        "zone": "Zone",
+        "insuranceRecommended": "Flood insurance recommended",
+        "insuranceNotMandatory": "Flood insurance not mandatory",
+        "basedOn": "Based on {{agency}}",
+        "regionalHazard": "regional hazard data",
+        "nearestWater": "Nearest water body",
+        "distance": "Distance",
+        "lastFlood": "Last major flood:"
+      },
+      "zoning": {
+        "title": "Zoning information",
+        "subtitle": "Land use classification and building rules",
+        "emptyLabel": "zoning information",
+        "zoneCode": "Zone code",
+        "category": "Category",
+        "maxFar": "Max FAR",
+        "groundCoverage": "Ground coverage",
+        "maxHeight": "Max height",
+        "allowedUses": "Allowed uses",
+        "restrictedUses": "Restricted uses",
+        "referencePlan": "Reference plan"
+      },
       "section": {
         "waiting": "Waiting for data...",
         "errorTitle": "Section temporarily unavailable",
@@ -1518,10 +1517,10 @@
       "moreItems": "+{{n}} more",
       "photoPending": "Photo pending",
       "criticalRisk": "Critical Risk",
-"riskScoreTooltipFull": "Risk: {{level}} ({{score}}/100) — click for full analysis",
-"riskScoreClickTooltip": "Click for full risk analysis",
-"riskBadgeAria": "View full risk analysis: {{level}}",
-"riskAnalyzeTooltip": "Click for full risk analysis"
+      "riskScoreTooltipFull": "Risk: {{level}} ({{score}}/100) — click for full analysis",
+      "riskScoreClickTooltip": "Click for full risk analysis",
+      "riskBadgeAria": "View full risk analysis: {{level}}",
+      "riskAnalyzeTooltip": "Click for full risk analysis"
     },
     "risk": {
       "title": "Risk assessment",
@@ -1539,11 +1538,11 @@
         "structural": "Structural"
       },
       "spectrum": {
-  "risk": "risk",
-  "outOf": "out of 100",
-  "recalculate": "Recalculate",
-  "recalculating": "Recalculating…"
-}
+        "risk": "risk",
+        "outOf": "out of 100",
+        "recalculate": "Recalculate",
+        "recalculating": "Recalculating…"
+      }
     },
     "building": {
       "title": "Building information",
@@ -1575,9 +1574,9 @@
       "monthlyEst": "Est. {{amount}}/mo",
       "getPrequalified": "Get pre-qualified",
       "generateReport": "Generate Report",
-"generateReportTooltip": "Generate a full due diligence report for this property",
-"quickPdf": "Quick PDF",
-"quickPdfTooltip": "Download a quick client-side PDF summary"
+      "generateReportTooltip": "Generate a full due diligence report for this property",
+      "quickPdf": "Quick PDF",
+      "quickPdfTooltip": "Download a quick client-side PDF summary"
     },
     "comparison": {
       "title": "Property comparison",
@@ -1589,25 +1588,25 @@
       "selectHelper": "Go to property search, select 2–3 properties using the compare checkbox on each card, then click \"Compare\".",
       "backToSearch": "Back to property search",
       "empty": {
-  "heroTitle": "Compare properties side by side",
-  "heroSubtitle": "See financials, risk scores, verification status, and environmental data — all lined up in one place. Pick 2 or 3 properties to get started.",
-  "browseAndSelect": "Browse & select properties",
-  "pickUpTitle": "Pick up where you left off",
-  "pickUpSubtitle": "Your most recent saved comparisons",
-  "viewAll": "View all saved",
-  "untitled": "Untitled comparison",
-  "propCount_one": "{{count}} property",
-  "propCount_other": "{{count}} properties",
-  "savedInvalid": "This saved comparison has fewer than 2 properties",
-  "howItWorksTitle": "How it works",
-  "howItWorksSubtitle": "Three steps to a full side-by-side breakdown",
-  "step1Title": "Browse properties",
-  "step1Desc": "Go to Property Search to see everything in your portfolio.",
-  "step2Title": "Tick the compare box",
-  "step2Desc": "Select 2 or 3 properties using the checkbox on each card.",
-  "step3Title": "Compare instantly",
-  "step3Desc": "Click Compare in the bottom bar — see the full breakdown here."
-},
+        "heroTitle": "Compare properties side by side",
+        "heroSubtitle": "See financials, risk scores, verification status, and environmental data — all lined up in one place. Pick 2 or 3 properties to get started.",
+        "browseAndSelect": "Browse & select properties",
+        "pickUpTitle": "Pick up where you left off",
+        "pickUpSubtitle": "Your most recent saved comparisons",
+        "viewAll": "View all saved",
+        "untitled": "Untitled comparison",
+        "propCount_one": "{{count}} property",
+        "propCount_other": "{{count}} properties",
+        "savedInvalid": "This saved comparison has fewer than 2 properties",
+        "howItWorksTitle": "How it works",
+        "howItWorksSubtitle": "Three steps to a full side-by-side breakdown",
+        "step1Title": "Browse properties",
+        "step1Desc": "Go to Property Search to see everything in your portfolio.",
+        "step2Title": "Tick the compare box",
+        "step2Desc": "Select 2 or 3 properties using the checkbox on each card.",
+        "step3Title": "Compare instantly",
+        "step3Desc": "Click Compare in the bottom bar — see the full breakdown here."
+      },
       "metricHeader": "Metric",
       "propertyUnit": "property",
       "propertiesUnit": "properties",
@@ -1761,108 +1760,108 @@
     }
   },
   "deleteAccount": {
-  "title": "Delete account",
-  "subtitle": "This action cannot be undone.",
-  "impactTitle": "The following will be permanently deleted:",
-  "impact": {
-    "account": "Your account and profile",
-    "properties": "All properties you added",
-    "sessions": "All your session data"
-  },
-  "passwordLabel": "Enter your password",
-  "passwordPlaceholder": "Current password",
-  "emailLabel": "Type your email to confirm",
-  "typeToConfirmPrefix": "Type",
-  "typeToConfirmSuffix": "to confirm",
-  "deleteButton": "Delete account",
-  "toasts": {
-    "confirmRequired": "Confirmation required",
-    "typeExactly": "Type DELETE exactly to confirm this action.",
-    "passwordRequired": "Password required",
-    "emailRequired": "Email required",
-    "enterPasswordToConfirm": "Enter your password to confirm.",
-    "enterEmailToConfirm": "Enter your email to confirm.",
-    "accountDeleted": "Account deleted",
-    "redirecting": "You'll be redirected in a moment.",
-    "couldNotDelete": "Could not delete account",
-    "tryAgainMoment": "Please try again in a moment.",
-    "tryAgain": "Please try again."
-  }
-},
-"changePassword": {
-  "title": "Change password",
-  "subtitle": "Update your account password",
-  "currentLabel": "Current password",
-  "currentPlaceholder": "Enter current password",
-  "newLabel": "New password",
-  "newPlaceholder": "At least 8 characters",
-  "confirmLabel": "Confirm new password",
-  "confirmPlaceholder": "Re-enter new password",
-  "submit": "Change password",
-  "saving": "Saving...",
-  "errors": {
-    "currentRequired": "Current password is required",
-    "newRequired": "New password is required"
-  },
-  "toasts": {
-    "samePassword": "Same password",
-    "samePasswordDesc": "New password must be different from your current password.",
-    "success": "Password changed",
-    "successDesc": "You can sign in with your new password.",
-    "failed": "Change failed"
-  }
-},
-"signOutAll": {
-  "title": "Sign out of all devices?",
-  "subtitle": "This will end your session on every device currently signed in with this account.",
-  "confirmButton": "Yes, sign out everywhere",
-  "processing": "Signing out everywhere…",
-  "tipEsc": "Tip: Press",
-  "tipEscSuffix": "to cancel",
-  "useIfPrefix": "Use this if:",
-  "useIfBody": "your account may be compromised, you shared your device, or you forgot to log out somewhere.",
-  "impact": {
-    "endSessions": {
-      "title": "All active sessions will end",
-      "description": "Phones, tablets, other browsers — everywhere you're signed in"
+    "title": "Delete account",
+    "subtitle": "This action cannot be undone.",
+    "impactTitle": "The following will be permanently deleted:",
+    "impact": {
+      "account": "Your account and profile",
+      "properties": "All properties you added",
+      "sessions": "All your session data"
     },
-    "logoutHere": {
-      "title": "You'll be logged out here too",
-      "description": "You'll need to sign in again to continue"
+    "passwordLabel": "Enter your password",
+    "passwordPlaceholder": "Current password",
+    "emailLabel": "Type your email to confirm",
+    "typeToConfirmPrefix": "Type",
+    "typeToConfirmSuffix": "to confirm",
+    "deleteButton": "Delete account",
+    "toasts": {
+      "confirmRequired": "Confirmation required",
+      "typeExactly": "Type DELETE exactly to confirm this action.",
+      "passwordRequired": "Password required",
+      "emailRequired": "Email required",
+      "enterPasswordToConfirm": "Enter your password to confirm.",
+      "enterEmailToConfirm": "Enter your email to confirm.",
+      "accountDeleted": "Account deleted",
+      "redirecting": "You'll be redirected in a moment.",
+      "couldNotDelete": "Could not delete account",
+      "tryAgainMoment": "Please try again in a moment.",
+      "tryAgain": "Please try again."
     }
   },
-  "toasts": {
-    "signedOutTitle": "Signed out everywhere",
-    "signedOutDesc": "All your active sessions have been ended.",
-    "failedTitle": "Could not sign out"
-  }
-},
-"avatar": {
-  "aria": {
-    "changePhoto": "Change profile photo",
-    "photoOptions": "Photo options"
+  "changePassword": {
+    "title": "Change password",
+    "subtitle": "Update your account password",
+    "currentLabel": "Current password",
+    "currentPlaceholder": "Enter current password",
+    "newLabel": "New password",
+    "newPlaceholder": "At least 8 characters",
+    "confirmLabel": "Confirm new password",
+    "confirmPlaceholder": "Re-enter new password",
+    "submit": "Change password",
+    "saving": "Saving...",
+    "errors": {
+      "currentRequired": "Current password is required",
+      "newRequired": "New password is required"
+    },
+    "toasts": {
+      "samePassword": "Same password",
+      "samePasswordDesc": "New password must be different from your current password.",
+      "success": "Password changed",
+      "successDesc": "You can sign in with your new password.",
+      "failed": "Change failed"
+    }
   },
-  "menu": {
-    "upload": "Upload photo",
-    "change": "Change photo",
-    "remove": "Remove photo",
-    "fileHint": "JPG, PNG, WebP · Max 5 MB"
+  "signOutAll": {
+    "title": "Sign out of all devices?",
+    "subtitle": "This will end your session on every device currently signed in with this account.",
+    "confirmButton": "Yes, sign out everywhere",
+    "processing": "Signing out everywhere…",
+    "tipEsc": "Tip: Press",
+    "tipEscSuffix": "to cancel",
+    "useIfPrefix": "Use this if:",
+    "useIfBody": "your account may be compromised, you shared your device, or you forgot to log out somewhere.",
+    "impact": {
+      "endSessions": {
+        "title": "All active sessions will end",
+        "description": "Phones, tablets, other browsers — everywhere you're signed in"
+      },
+      "logoutHere": {
+        "title": "You'll be logged out here too",
+        "description": "You'll need to sign in again to continue"
+      }
+    },
+    "toasts": {
+      "signedOutTitle": "Signed out everywhere",
+      "signedOutDesc": "All your active sessions have been ended.",
+      "failedTitle": "Could not sign out"
+    }
   },
-  "preview": {
-    "title": "Preview & upload",
-    "alt": "Preview",
-    "fileSizeKB": "{{size}} KB",
-    "upload": "Upload photo",
-    "uploading": "Uploading..."
+  "avatar": {
+    "aria": {
+      "changePhoto": "Change profile photo",
+      "photoOptions": "Photo options"
+    },
+    "menu": {
+      "upload": "Upload photo",
+      "change": "Change photo",
+      "remove": "Remove photo",
+      "fileHint": "JPG, PNG, WebP · Max 5 MB"
+    },
+    "preview": {
+      "title": "Preview & upload",
+      "alt": "Preview",
+      "fileSizeKB": "{{size}} KB",
+      "upload": "Upload photo",
+      "uploading": "Uploading..."
+    },
+    "toasts": {
+      "invalidFile": "Invalid file",
+      "photoUpdated": "Profile photo updated",
+      "uploadFailed": "Upload failed",
+      "photoRemoved": "Profile photo removed",
+      "removeFailed": "Failed to remove photo"
+    }
   },
-  "toasts": {
-    "invalidFile": "Invalid file",
-    "photoUpdated": "Profile photo updated",
-    "uploadFailed": "Upload failed",
-    "photoRemoved": "Profile photo removed",
-    "removeFailed": "Failed to remove photo"
-  }
-},
   "settings": {
     "title": "Settings",
     "language": {
@@ -1875,127 +1874,159 @@
     }
   },
   "commandPalette": {
-  "searchPlaceholder": "Search pages, properties, or actions...",
-  "ariaLabel": "Command palette search",
-  "searchingProperties": "Searching properties...",
-  "clear": "Clear",
-  "recentSearchLabel": "Recent search",
-  "sections": {
-    "recent": "Recent",
-    "pages": "Pages",
-    "properties": "Properties",
-    "propertiesSubtitle": "Live from database",
-    "actions": "Actions"
-  },
-  "empty": {
-    "title": "No matches for \u201C{{query}}\u201D",
-    "hint": "Try searching for a page name, property address, or action"
-  },
-  "kbd": {
-    "navigate": "Navigate",
-    "select": "Select",
-    "close": "Close",
-    "esc": "esc"
-  },
-  "pages": {
-    "dashboard":     { "label": "Dashboard",           "description": "Portfolio overview & KPIs" },
-    "search":        { "label": "Property Search",     "description": "Find & verify properties" },
-    "diligence":     { "label": "Due Diligence",       "description": "Deep verification workflow" },
-    "risk":          { "label": "Risk Assessment",     "description": "Risk scores & red flags" },
-    "compare":       { "label": "Property Comparison", "description": "Side-by-side analysis" },
-    "reports":       { "label": "Reports",             "description": "Generated PDF reports" },
-    "notifications": { "label": "Notifications",       "description": "Alerts & activity feed" },
-    "audit":         { "label": "Audit Logs",          "description": "Every action, timestamped" },
-    "profile":       { "label": "My Profile",          "description": "Account & preferences" }
-  },
-  "actions": {
-    "addProperty": { "label": "Add New Property", "description": "Register a new listing" },
-    "logout":      { "label": "Log Out",          "description": "End your session" }
-  }
-},
-"navbar": {
-  "toggleSidebar": "Toggle sidebar",
-  "openCommandPalette": "Open command palette",
-  "userMenu": "User menu",
-  "signedIn": "Signed In",
-  "myProfile": "My Profile",
-  "logOut": "Log Out"
-},
-"emptyState": {
-  "defaultTitle": "Nothing here yet",
-  "defaultDescription": "Get started by adding your first item."
-},
-"support": {
-  "hero": {
-    "title": "How can we help?",
-    "subtitle": "Answers to common questions and direct ways to reach us. If you can't find what you need, email us and we'll respond within 48 hours on business days.",
-    "searchPlaceholder": "Search articles, questions, features...",
-    "statusOperational": "All systems operational"
-  },
-  "contact": {
-    "eyebrow": "Get in touch",
-    "title": "Contact us directly",
-    "subtitle": "Choose the option that best fits — clicking opens your email client with a pre-filled subject line.",
-    "openEmail": "Open email",
-    "general": {
-      "title": "General question",
-      "description": "Product help, account questions, or anything else that's not urgent.",
-      "subject": "Support request — Due Diligence Platform",
-      "body": "Hi team,\n\nI have a question about:\n\n"
+    "searchPlaceholder": "Search pages, properties, or actions...",
+    "ariaLabel": "Command palette search",
+    "searchingProperties": "Searching properties...",
+    "clear": "Clear",
+    "recentSearchLabel": "Recent search",
+    "sections": {
+      "recent": "Recent",
+      "pages": "Pages",
+      "properties": "Properties",
+      "propertiesSubtitle": "Live from database",
+      "actions": "Actions"
     },
-    "bug": {
-      "title": "Report a bug",
-      "description": "Something not working as expected? Tell us what you saw and what you expected.",
-      "subject": "Bug report — Due Diligence Platform",
-      "body": "What I did:\n\nWhat I expected:\n\nWhat actually happened:\n\nBrowser & version:\n\n"
+    "empty": {
+      "title": "No matches for “{{query}}”",
+      "hint": "Try searching for a page name, property address, or action"
     },
-    "feature": {
-      "title": "Request a feature",
-      "description": "Have an idea that would make the platform better? We read every message.",
-      "subject": "Feature request — Due Diligence Platform",
-      "body": "I'd like to see:\n\nWhy this would help:\n\n"
+    "kbd": {
+      "navigate": "Navigate",
+      "select": "Select",
+      "close": "Close",
+      "esc": "esc"
+    },
+    "pages": {
+      "dashboard": {
+        "label": "Dashboard",
+        "description": "Portfolio overview & KPIs"
+      },
+      "search": {
+        "label": "Property Search",
+        "description": "Find & verify properties"
+      },
+      "diligence": {
+        "label": "Due Diligence",
+        "description": "Deep verification workflow"
+      },
+      "risk": {
+        "label": "Risk Assessment",
+        "description": "Risk scores & red flags"
+      },
+      "compare": {
+        "label": "Property Comparison",
+        "description": "Side-by-side analysis"
+      },
+      "reports": {
+        "label": "Reports",
+        "description": "Generated PDF reports"
+      },
+      "notifications": {
+        "label": "Notifications",
+        "description": "Alerts & activity feed"
+      },
+      "audit": {
+        "label": "Audit Logs",
+        "description": "Every action, timestamped"
+      },
+      "profile": {
+        "label": "My Profile",
+        "description": "Account & preferences"
+      }
+    },
+    "actions": {
+      "addProperty": {
+        "label": "Add New Property",
+        "description": "Register a new listing"
+      },
+      "logout": {
+        "label": "Log Out",
+        "description": "End your session"
+      }
     }
   },
-  "faq": {
-    "eyebrow": "Knowledge base",
-    "title": "Frequently asked questions",
-    "allCategory": "All",
-    "articleCount_one": "{{count}} article",
-    "articleCount_other": "{{count}} articles",
-    "noResults": {
-      "title": "No articles match your search",
-      "hint": "Try different keywords or clear the filter to see all articles.",
-      "emailButton": "Email us this question",
-      "emailSubjectPrefix": "Support:",
-      "emailSubjectFallback": "Question not in FAQ"
-    }
+  "navbar": {
+    "toggleSidebar": "Toggle sidebar",
+    "openCommandPalette": "Open command palette",
+    "userMenu": "User menu",
+    "signedIn": "Signed In",
+    "myProfile": "My Profile",
+    "logOut": "Log Out"
   },
-  "response": {
-    "eyebrow": "Response time",
-    "headline": "Within 48 hours",
-    "description": "We respond to emails on business days (Mon–Fri). Complex issues may take longer — we'll always acknowledge receipt first."
+  "emptyState": {
+    "defaultTitle": "Nothing here yet",
+    "defaultDescription": "Get started by adding your first item."
   },
-  "direct": {
-    "eyebrow": "Direct email",
-    "headline": "Contact team"
-  },
-  "related": {
-    "eyebrow": "Related",
-    "title": "More resources",
-    "security": {
-      "title": "Security",
-      "description": "How we protect your data — full disclosure of what's built and what's planned."
+  "support": {
+    "hero": {
+      "title": "How can we help?",
+      "subtitle": "Answers to common questions and direct ways to reach us. If you can't find what you need, email us and we'll respond within 48 hours on business days.",
+      "searchPlaceholder": "Search articles, questions, features...",
+      "statusOperational": "All systems operational"
     },
-    "source": {
-      "title": "Source code",
-      "description": "Open-source on GitHub. Report issues, read the code, or contribute."
+    "contact": {
+      "eyebrow": "Get in touch",
+      "title": "Contact us directly",
+      "subtitle": "Choose the option that best fits — clicking opens your email client with a pre-filled subject line.",
+      "openEmail": "Open email",
+      "general": {
+        "title": "General question",
+        "description": "Product help, account questions, or anything else that's not urgent.",
+        "subject": "Support request — Due Diligence Platform",
+        "body": "Hi team,\n\nI have a question about:\n\n"
+      },
+      "bug": {
+        "title": "Report a bug",
+        "description": "Something not working as expected? Tell us what you saw and what you expected.",
+        "subject": "Bug report — Due Diligence Platform",
+        "body": "What I did:\n\nWhat I expected:\n\nWhat actually happened:\n\nBrowser & version:\n\n"
+      },
+      "feature": {
+        "title": "Request a feature",
+        "description": "Have an idea that would make the platform better? We read every message.",
+        "subject": "Feature request — Due Diligence Platform",
+        "body": "I'd like to see:\n\nWhy this would help:\n\n"
+      }
+    },
+    "faq": {
+      "eyebrow": "Knowledge base",
+      "title": "Frequently asked questions",
+      "allCategory": "All",
+      "articleCount_one": "{{count}} article",
+      "articleCount_other": "{{count}} articles",
+      "noResults": {
+        "title": "No articles match your search",
+        "hint": "Try different keywords or clear the filter to see all articles.",
+        "emailButton": "Email us this question",
+        "emailSubjectPrefix": "Support:",
+        "emailSubjectFallback": "Question not in FAQ"
+      }
+    },
+    "response": {
+      "eyebrow": "Response time",
+      "headline": "Within 48 hours",
+      "description": "We respond to emails on business days (Mon–Fri). Complex issues may take longer — we'll always acknowledge receipt first."
+    },
+    "direct": {
+      "eyebrow": "Direct email",
+      "headline": "Contact team"
+    },
+    "related": {
+      "eyebrow": "Related",
+      "title": "More resources",
+      "security": {
+        "title": "Security",
+        "description": "How we protect your data — full disclosure of what's built and what's planned."
+      },
+      "source": {
+        "title": "Source code",
+        "description": "Open-source on GitHub. Report issues, read the code, or contribute."
+      }
+    },
+    "footer": {
+      "note": "This support page is not a live chat, ticket system, or automated helpdesk. It's a direct line to the team that built the platform. We read every email and reply personally."
     }
   },
-  "footer": {
-    "note": "This support page is not a live chat, ticket system, or automated helpdesk. It's a direct line to the team that built the platform. We read every email and reply personally."
-  }
-},
-
   "savedComparisons": {
     "pageTitle": "Saved Comparisons | Real Estate Due Diligence Agent",
     "title": "Saved comparisons",
@@ -2014,20 +2045,20 @@
     "loadComparison": "Load comparison"
   },
   "savedSheet": {
-  "ariaLabel": "Saved comparisons",
-  "savedCount_one": "{{count}} saved",
-  "savedCount_other": "{{count}} saved",
-  "loading": "Loading saved comparisons...",
-  "emptyHint": "Compare properties and click \"Save comparison\" to keep them here.",
-  "load": "Load",
-  "viewAll": "View all saved comparisons →"
-},
-"marketChart": {
-  "title": "Market value trend",
-  "subtitle": "6-month estimated trend · indicative only",
-  "estimatedBadge": "Estimated data",
-  "propertyLabel": "Property {{letter}}"
-},
+    "ariaLabel": "Saved comparisons",
+    "savedCount_one": "{{count}} saved",
+    "savedCount_other": "{{count}} saved",
+    "loading": "Loading saved comparisons...",
+    "emptyHint": "Compare properties and click \"Save comparison\" to keep them here.",
+    "load": "Load",
+    "viewAll": "View all saved comparisons →"
+  },
+  "marketChart": {
+    "title": "Market value trend",
+    "subtitle": "6-month estimated trend · indicative only",
+    "estimatedBadge": "Estimated data",
+    "propertyLabel": "Property {{letter}}"
+  },
   "common": {
     "loading": "Loading...",
     "error": "Something went wrong",
@@ -2086,171 +2117,222 @@
     }
   },
   "completeProfile": {
-  "title": "One more step",
-  "subtitle": "Tell us a bit about yourself to personalize your experience.",
-  "signedInAs": "Signed in as {{name}}",
-  "roleLabel": "I am a...",
-  "phoneLabel": "Phone Number",
-  "phonePlaceholder": "98765 43210",
-  "phoneHelp": "We'll use this for important account notifications only.",
-  "submit": "Complete Setup",
-  "creating": "Creating your account…",
-  "terms": "By continuing, you agree to our Terms of Service & Privacy Policy.",
-  "notYou": "Not you?",
-  "signOut": "Sign out",
-  "signOutAria": "Sign out and close",
-  "signOutTitle": "Sign out",
-  "confirmSignOut": "Sign out and go back? Your progress will be lost.",
-  "defaultName": "there",
-  "roles": {
-    "buyer": {
-      "label": "Buyer / Individual",
-      "description": "Looking to purchase properties"
+    "title": "One more step",
+    "subtitle": "Tell us a bit about yourself to personalize your experience.",
+    "signedInAs": "Signed in as {{name}}",
+    "roleLabel": "I am a...",
+    "phoneLabel": "Phone Number",
+    "phonePlaceholder": "98765 43210",
+    "phoneHelp": "We'll use this for important account notifications only.",
+    "submit": "Complete Setup",
+    "creating": "Creating your account…",
+    "terms": "By continuing, you agree to our Terms of Service & Privacy Policy.",
+    "notYou": "Not you?",
+    "signOut": "Sign out",
+    "signOutAria": "Sign out and close",
+    "signOutTitle": "Sign out",
+    "confirmSignOut": "Sign out and go back? Your progress will be lost.",
+    "defaultName": "there",
+    "roles": {
+      "buyer": {
+        "label": "Buyer / Individual",
+        "description": "Looking to purchase properties"
+      },
+      "agent": {
+        "label": "Real Estate Agent",
+        "description": "Managing property listings"
+      },
+      "legal": {
+        "label": "Legal Reviewer",
+        "description": "Reviewing legal documents"
+      },
+      "financial": {
+        "label": "Financial Institution",
+        "description": "Bank / Lending partner"
+      }
     },
-    "agent": {
-      "label": "Real Estate Agent",
-      "description": "Managing property listings"
-    },
-    "legal": {
-      "label": "Legal Reviewer",
-      "description": "Reviewing legal documents"
-    },
-    "financial": {
-      "label": "Financial Institution",
-      "description": "Bank / Lending partner"
+    "toasts": {
+      "sessionExpired": {
+        "title": "Session expired",
+        "description": "Please sign in again to continue."
+      },
+      "signedOut": {
+        "title": "You're signed out",
+        "description": "Sign in again anytime."
+      },
+      "roleRequired": {
+        "title": "Role required",
+        "description": "Please pick a role to continue."
+      },
+      "invalidPhone": {
+        "title": "Invalid phone number",
+        "description": "Enter a 10-digit Indian mobile starting with 6-9."
+      },
+      "welcome": {
+        "title": "Welcome to the platform, {{name}}",
+        "description": "Your account is ready. Redirecting to your dashboard."
+      },
+      "signupFailed": {
+        "title": "Signup couldn't be completed",
+        "description": "Please try again in a moment."
+      }
     }
   },
-  "toasts": {
-    "sessionExpired": {
-      "title": "Session expired",
-      "description": "Please sign in again to continue."
-    },
-    "signedOut": {
-      "title": "You're signed out",
-      "description": "Sign in again anytime."
-    },
-    "roleRequired": {
-      "title": "Role required",
-      "description": "Please pick a role to continue."
-    },
-    "invalidPhone": {
-      "title": "Invalid phone number",
-      "description": "Enter a 10-digit Indian mobile starting with 6-9."
-    },
-    "welcome": {
-      "title": "Welcome to the platform, {{name}}",
-      "description": "Your account is ready. Redirecting to your dashboard."
-    },
-    "signupFailed": {
-      "title": "Signup couldn't be completed",
-      "description": "Please try again in a moment."
-    }
-  }
-},
-"searchableSelect": {
-  "searchPlaceholder": "Type to search...",
-  "noMatches": "No matches for \"{{query}}\"",
-  "usePrefix": "Use"
-},
-"otpVerification": {
-  "title": "Verify your email",
-  "subtitle": "We sent a 6-digit code to",
-  "verifyAndCreate": "Verify & create account",
-  "verifying": "Verifying…",
-  "changeEmail": "← Change email",
-  "resendCode": "Resend code",
-  "resendIn": "Resend in {{n}}s",
-  "resending": "Resending…",
-  "successTitle": "Email verified!",
-  "successSubtitle": "Setting up your account…",
-  "close": "Close",
-  "digitAria": "Digit {{n}}",
-  "securityNote": "Never share this code. Our team will never ask for it.",
-  "errors": {
-    "enterAllDigits": "Please enter all 6 digits",
-    "invalidCode": "Invalid or expired code",
-    "tryAgainMoment": "Please try again in a moment."
+  "searchableSelect": {
+    "searchPlaceholder": "Type to search...",
+    "noMatches": "No matches for \"{{query}}\"",
+    "usePrefix": "Use"
   },
-  "toasts": {
-    "sentTitle": "Verification code sent",
-    "sentDesc": "Check your inbox for the 6-digit code.",
-    "verifiedTitle": "Verified!",
-    "verifiedDesc": "Your account has been created.",
-    "verifyFailed": "Verification failed",
-    "resentTitle": "New code sent",
-    "resentDesc": "A fresh 6-digit code is on the way.",
-    "resendFailed": "Could not resend code"
-  }
-},
-
-"notification": {
-  "title": "Notifications",
-  "subtitle": "{{count}} notifications",
-  "subtitleEmpty": "No notifications yet",
-  "unread": "Unread",
-  "markAllRead": "Mark all read",
-  "clearAll": "Clear all",
-  "delete": "Delete notification",
-  "bell": "Notifications",
-  "filter": {
-    "all": "All",
+  "otpVerification": {
+    "title": "Verify your email",
+    "subtitle": "We sent a 6-digit code to",
+    "verifyAndCreate": "Verify & create account",
+    "verifying": "Verifying…",
+    "changeEmail": "← Change email",
+    "resendCode": "Resend code",
+    "resendIn": "Resend in {{n}}s",
+    "resending": "Resending…",
+    "successTitle": "Email verified!",
+    "successSubtitle": "Setting up your account…",
+    "close": "Close",
+    "digitAria": "Digit {{n}}",
+    "securityNote": "Never share this code. Our team will never ask for it.",
+    "errors": {
+      "enterAllDigits": "Please enter all 6 digits",
+      "invalidCode": "Invalid or expired code",
+      "tryAgainMoment": "Please try again in a moment."
+    },
+    "toasts": {
+      "sentTitle": "Verification code sent",
+      "sentDesc": "Check your inbox for the 6-digit code.",
+      "verifiedTitle": "Verified!",
+      "verifiedDesc": "Your account has been created.",
+      "verifyFailed": "Verification failed",
+      "resentTitle": "New code sent",
+      "resentDesc": "A fresh 6-digit code is on the way.",
+      "resendFailed": "Could not resend code"
+    }
+  },
+  "notification": {
+    "title": "Notifications",
+    "subtitle": "{{count}} notifications",
+    "subtitleEmpty": "No notifications yet",
     "unread": "Unread",
-    "reportReady": "Reports",
-    "riskAlert": "Alerts",
-    "system": "System"
+    "markAllRead": "Mark all read",
+    "clearAll": "Clear all",
+    "delete": "Delete notification",
+    "bell": "Notifications",
+    "filter": {
+      "all": "All",
+      "unread": "Unread",
+      "reportReady": "Reports",
+      "riskAlert": "Alerts",
+      "system": "System"
+    },
+    "group": {
+      "today": "Today",
+      "yesterday": "Yesterday",
+      "earlier": "This week",
+      "older": "Older"
+    },
+    "empty": {
+      "title": "No notifications",
+      "description": "You're all caught up. Notifications will appear here when reports complete or alerts are triggered.",
+      "filteredTitle": "No matching notifications",
+      "filteredDescription": "Try a different filter to see other notifications."
+    },
+    "clearAllConfirm": {
+      "title": "Clear all notifications?",
+      "description": "This will permanently delete all your notifications. This action cannot be undone.",
+      "confirm": "Clear all"
+    },
+    "pagination": {
+      "showing": "Showing {{from}}–{{to}} of {{total}}",
+      "prev": "Previous",
+      "next": "Next"
+    },
+    "toast": {
+      "view": "View",
+      "markReadFailed": "Failed to mark as read",
+      "markAllReadFailed": "Failed to mark all as read",
+      "markedAllRead": "All notifications marked as read",
+      "deleteFailed": "Failed to delete notification",
+      "cleared": "All notifications cleared",
+      "clearFailed": "Failed to clear notifications"
+    },
+    "preferences": {
+      "title": "Notification Preferences",
+      "description": "Choose how and when you receive notifications.",
+      "type": "Type",
+      "email": "Email",
+      "inApp": "In-App",
+      "push": "Push",
+      "reportReady": "Report Ready",
+      "riskAlert": "Risk Alerts",
+      "priceChange": "Price Changes",
+      "system": "System",
+      "save": "Save preferences",
+      "saving": "Saving…",
+      "saved": "Preferences saved",
+      "saveFailed": "Failed to save preferences"
+    },
+    "types": {
+      "REPORT_READY": "Report Ready",
+      "RISK_ALERT": "Risk Alert",
+      "PRICE_CHANGE": "Price Change",
+      "SYSTEM": "System"
+    }
   },
-  "group": {
-    "today": "Today",
-    "yesterday": "Yesterday",
-    "earlier": "This week",
-    "older": "Older"
-  },
-  "empty": {
-    "title": "No notifications",
-    "description": "You're all caught up. Notifications will appear here when reports complete or alerts are triggered.",
-    "filteredTitle": "No matching notifications",
-    "filteredDescription": "Try a different filter to see other notifications."
-  },
-  "clearAllConfirm": {
-    "title": "Clear all notifications?",
-    "description": "This will permanently delete all your notifications. This action cannot be undone.",
-    "confirm": "Clear all"
-  },
-  "pagination": {
-    "showing": "Showing {{from}}–{{to}} of {{total}}",
-    "prev": "Previous",
-    "next": "Next"
-  },
-  "toast": {
-    "view": "View",
-    "markReadFailed": "Failed to mark as read",
-    "markAllReadFailed": "Failed to mark all as read",
-    "markedAllRead": "All notifications marked as read",
-    "deleteFailed": "Failed to delete notification",
-    "cleared": "All notifications cleared",
-    "clearFailed": "Failed to clear notifications"
-  },
-  "preferences": {
-    "title": "Notification Preferences",
-    "description": "Choose how and when you receive notifications.",
-    "type": "Type",
-    "email": "Email",
-    "inApp": "In-App",
-    "push": "Push",
-    "reportReady": "Report Ready",
-    "riskAlert": "Risk Alerts",
-    "priceChange": "Price Changes",
-    "system": "System",
-    "save": "Save preferences",
-    "saving": "Saving…",
-    "saved": "Preferences saved",
-    "saveFailed": "Failed to save preferences"
-  },
-  "types": {
-    "REPORT_READY": "Report Ready",
-    "RISK_ALERT": "Risk Alert",
-    "PRICE_CHANGE": "Price Change",
-    "SYSTEM": "System"
+  "export": {
+    "pdf": "PDF Document",
+    "excel": "Excel Workbook",
+    "generating": "Generating Export...",
+    "download": "Export Report",
+    "preview": "Preview Document",
+    "bulk": "Bulk Export",
+    "history": "Export History",
+    "fileSize": "File Size",
+    "fileName": "File Name",
+    "date": "Generated Date",
+    "estimatedPages": "Est. Pages",
+    "pages": "Pages",
+    "sections": "Sections",
+    "modules": "Modules",
+    "status": "Status",
+    "summaryTitle": "Executive Summary Preview",
+    "includedSections": "Included Report Modules",
+    "loadingHistory": "Loading export history...",
+    "noHistory": "No Export History Yet",
+    "noHistoryDesc": "Reports exported in PDF or Excel formats will be archived here for instant re-download.",
+    "bulkPdf": "Export Bulk ZIP (PDF)",
+    "bulkExcel": "Export Bulk (Excel)",
+    "format": {
+      "pdf": "PDF",
+      "excel": "EXCEL",
+      "label": "Format",
+      "select": "Select Export Format",
+      "pdfDesc": "Full report with cover & graphics",
+      "excelDesc": "Multi-sheet structured dataset"
+    },
+    "progress": {
+      "label": "Progress",
+      "preparing": "Preparing document layout & sections...",
+      "fetching": "Fetching report risk data...",
+      "rendering": "Rendering graphics, tables & cover page...",
+      "finalizing": "Finalizing binary stream & starting download..."
+    },
+    "ready": {
+      "title": "Export Ready",
+      "message": "Export completed successfully!"
+    },
+    "error": {
+      "title": "Export Error",
+      "failed": "Failed to generate export file."
+    },
+    "success": {
+      "pdf": "PDF Export Ready",
+      "excel": "Excel Export Ready",
+      "bulk": "Bulk Export Ready"
+    }
   }
-}
 }

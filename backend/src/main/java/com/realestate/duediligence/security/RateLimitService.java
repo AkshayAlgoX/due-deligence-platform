@@ -54,10 +54,18 @@ public class RateLimitService {
                     .refillGreedy(10, Duration.ofMinutes(10))
                     .build();
 
+    /** Export: 30 downloads / minute — prevents server resource exhaustion. */
+    private static final Bandwidth EXPORT_LIMIT =
+            Bandwidth.builder()
+                    .capacity(30)
+                    .refillGreedy(30, Duration.ofMinutes(1))
+                    .build();
+
     private final ConcurrentMap<String, Bucket> loginBuckets = new ConcurrentHashMap<>();
     private final ConcurrentMap<String, Bucket> forgotBuckets = new ConcurrentHashMap<>();
     private final ConcurrentMap<String, Bucket> registerBuckets = new ConcurrentHashMap<>();
     private final ConcurrentMap<String, Bucket> otpBuckets = new ConcurrentHashMap<>();
+    private final ConcurrentMap<String, Bucket> exportBuckets = new ConcurrentHashMap<>();
 
     // ── Public API ────────────────────────────────────────────────
 
@@ -75,6 +83,10 @@ public class RateLimitService {
 
     public boolean tryOtpVerify(String ip) {
         return bucketFor(otpBuckets, ip, OTP_VERIFY_LIMIT).tryConsume(1);
+    }
+
+    public boolean tryExport(String ip) {
+        return bucketFor(exportBuckets, ip, EXPORT_LIMIT).tryConsume(1);
     }
 
     /**
@@ -101,6 +113,7 @@ public class RateLimitService {
             case "forgot" -> forgotBuckets;
             case "register" -> registerBuckets;
             case "otp" -> otpBuckets;
+            case "export" -> exportBuckets;
             default -> throw new IllegalArgumentException("Unknown endpoint: " + endpoint);
         };
     }

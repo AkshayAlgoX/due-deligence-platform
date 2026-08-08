@@ -33,18 +33,31 @@ import lombok.RequiredArgsConstructor;
  * Runs report generation on the reportTaskExecutor thread pool.
  *
  * WHY A SEPARATE @Component:
- * Spring's @Async only works when the method is called through the Spring proxy.
- * If DueDiligenceReportServiceImpl.generate() calls generateAsync() on itself,
- * the proxy is bypassed and @Async does nothing (executes synchronously).
+ *   Spring's @Async only works when the method is called through the Spring
+ *   proxy. If DueDiligenceReportServiceImpl.generate() called an async method
+ *   on itself, the proxy would be bypassed and @Async would do nothing
+ *   (executes synchronously, blocks the HTTP thread).
  *
- * By putting the async method in a separate bean, injection ensures the proxy
- * is used properly and the method runs on the executor pool.
+ *   By putting the async method in a separate bean, injection ensures the
+ *   proxy is used and the method runs on the executor pool.
+ *
+ * SESSION 23 CHANGE — Defense-in-depth retry:
+ *   The primary fix (afterCommit dispatch) lives in DueDiligenceReportServiceImpl.
+ *   As a safety net, execute() now retries findById() up to 3 times with a
+ *   200ms delay before giving up. This handles any residual edge cases such
+ *   as DB replication lag or unexpected slow commits on burdened systems.
+ *   Each retry is clearly logged for observability.
  */
 @Component
 @RequiredArgsConstructor
 public class ReportGenerationExecutor {
 
-    private static final Logger log = LoggerFactory.getLogger(ReportGenerationExecutor.class);
+    private static final Logger log =
+            LoggerFactory.getLogger(ReportGenerationExecutor.class);
+
+    // ── Retry constants (defense-in-depth, primary fix is in afterCommit) ──
+    private static final int    MAX_FIND_RETRIES      = 3;
+    private static final long   FIND_RETRY_DELAY_MS   = 200L;
 
     private final DueDiligenceReportRepository reportRepository;
     private final ReportSectionRepository sectionRepository;
@@ -55,9 +68,20 @@ public class ReportGenerationExecutor {
     private final NotificationService notificationService;
     private final NotificationEventListener notificationEventListener;
 
+    // ══════════════════════════════════════════════════════════════
+    // ASYNC ENTRY POINT
+    // ══════════════════════════════════════════════════════════════
+
     /**
-     * Executes report generation asynchronously.
-     * Uses REQUIRES_NEW so the async transaction is independent of any caller's transaction.
+     * Executes report generation asynchronously on the reportTaskExecutor pool.
+     *
+     * Uses REQUIRES_NEW so this transaction is fully independent of any caller
+     * transaction. The caller's transaction will have already committed by the
+     * time this method is invoked (guaranteed by the afterCommit() dispatch in
+     * DueDiligenceReportServiceImpl.generate()).
+     *
+     * @param reportId              ID of the PENDING report to generate
+     * @param forceRiskRecalculation  true → always recalculate risk scores
      */
     @Async("reportTaskExecutor")
     @Transactional(propagation = Propagation.REQUIRES_NEW)
@@ -66,22 +90,50 @@ public class ReportGenerationExecutor {
         log.info("[async] Starting report generation for report {}", reportId);
         long start = System.currentTimeMillis();
 
-        DueDiligenceReport report = reportRepository.findById(reportId).orElse(null);
+        // ── SESSION 23: RETRY SAFETY NET ─────────────────────────────────────
+        //
+        // PRIMARY FIX: executor.execute() is now dispatched in afterCommit()
+        // inside DueDiligenceReportServiceImpl, so the caller's transaction is
+        // always committed before we arrive here. This means findById() should
+        // succeed on the very first attempt in all normal cases.
+        //
+        // DEFENSE-IN-DEPTH: We still retry up to MAX_FIND_RETRIES times with
+        // FIND_RETRY_DELAY_MS between each attempt. This protects against:
+        //   - DB replication lag (if using a read replica — not current setup
+        //     but future-proofs the code)
+        //   - Unexpected slow commits on a heavily loaded DB
+        //   - Any future code change that accidentally re-introduces the race
+        //
+        // If all retries fail, we log a structured ERROR and attempt to mark
+        // the report FAILED so the user sees a clear error state rather than
+        // a stuck PENDING forever.
+        // ─────────────────────────────────────────────────────────────────────
+        DueDiligenceReport report = findWithRetry(reportId);
+
         if (report == null) {
-            log.error("[async] Report {} vanished before generation started", reportId);
+            log.error("[async] Report {} not found after {} retries ({} ms each) — "
+                    + "marking FAILED. Primary fix may not be active.",
+                    reportId, MAX_FIND_RETRIES, FIND_RETRY_DELAY_MS);
+            markFailed(reportId,
+                    "Report not found in database after async dispatch — "
+                    + "possible transaction visibility issue");
             return;
         }
 
         try {
-            // Mark GENERATING (visible to polling clients immediately)
+            // ── STEP 1: Mark GENERATING ───────────────────────────────────────
+            // Visible to polling clients on their next 2-second poll.
             report.setStatus(ReportStatus.GENERATING);
             reportRepository.save(report);
             reportRepository.flush();
+            log.info("[async] Report {} status → GENERATING", reportId);
 
             Long propertyId = report.getProperty().getId();
 
-            // 1. Ensure a risk assessment exists
+            // ── STEP 2: Ensure risk assessment exists ─────────────────────────
             if (forceRiskRecalculation) {
+                log.info("[async] Report {} — forcing risk recalculation for property {}",
+                        reportId, propertyId);
                 riskAssessmentService.recalculate(propertyId);
             } else {
                 riskAssessmentService.getOrCompute(propertyId);
@@ -90,17 +142,19 @@ public class ReportGenerationExecutor {
             RiskAssessment assessment = riskAssessmentRepository
                     .findByPropertyIdAndIsLatestTrue(propertyId)
                     .orElseThrow(() -> new RuntimeException(
-                            "Risk assessment missing after compute for property " + propertyId));
+                            "Risk assessment missing after compute for property "
+                            + propertyId));
 
-            // 2. Fetch aggregated property data + risk breakdown
+            // ── STEP 3: Fetch aggregated property data + risk breakdown ────────
             AggregatedPropertyResponse agg = aggregationService.aggregate(propertyId);
             RiskBreakdownDto breakdown = riskAssessmentService.getBreakdown(propertyId);
 
-            // 3. Build & persist all 8 sections
-            List<ReportSection> sections = sectionBuilder.buildAll(report, agg, assessment, breakdown);
+            // ── STEP 4: Build & persist all report sections ───────────────────
+            List<ReportSection> sections =
+                    sectionBuilder.buildAll(report, agg, assessment, breakdown);
             sectionRepository.saveAll(sections);
 
-            // 4. Finalize report metadata
+            // ── STEP 5: Finalize report metadata ──────────────────────────────
             report.setRiskAssessmentSnapshot(assessment);
             report.setRiskScoreSnapshot(assessment.getOverallScore());
             report.setExecutiveSummary(assessment.getSummary());
@@ -112,18 +166,70 @@ public class ReportGenerationExecutor {
             log.info("[async] Report {} COMPLETED in {}ms — {} sections generated",
                     reportId, duration, sections.size());
 
-            // 5. Fire notification (in-app + email) — non-blocking, separate transaction
+            // ── STEP 6: Fire completion notification ──────────────────────────
+            // Non-blocking; failures are logged, not propagated.
             fireCompletionNotification(report);
 
         } catch (Exception e) {
-            log.error("[async] Report {} generation FAILED: {}", reportId, e.getMessage(), e);
+            log.error("[async] Report {} generation FAILED: {}",
+                    reportId, e.getMessage(), e);
             markFailed(reportId, e.getMessage());
         }
     }
 
+    // ══════════════════════════════════════════════════════════════
+    // PRIVATE HELPERS
+    // ══════════════════════════════════════════════════════════════
+
     /**
-     * Persists FAILED status in its own transaction so it survives even if
-     * the enclosing async transaction was rolled back by the exception.
+     * Attempts to load the report from the DB, retrying up to MAX_FIND_RETRIES
+     * times with FIND_RETRY_DELAY_MS between each attempt.
+     *
+     * In normal operation (primary fix active), the report will be found on
+     * attempt 1 every time. Retries exist purely as defense-in-depth.
+     *
+     * @return the report entity, or null if all retries failed
+     */
+    private DueDiligenceReport findWithRetry(Long reportId) {
+        for (int attempt = 1; attempt <= MAX_FIND_RETRIES; attempt++) {
+            DueDiligenceReport report = reportRepository.findById(reportId).orElse(null);
+            if (report != null) {
+                if (attempt > 1) {
+                    // Only log if we actually needed a retry — keeps logs clean
+                    log.warn("[async] Report {} found on retry attempt {} of {}",
+                            reportId, attempt, MAX_FIND_RETRIES);
+                }
+                return report;
+            }
+
+            // Report not found on this attempt
+            if (attempt < MAX_FIND_RETRIES) {
+                log.warn("[async] Report {} not found on attempt {} of {} — "
+                        + "retrying in {}ms",
+                        reportId, attempt, MAX_FIND_RETRIES, FIND_RETRY_DELAY_MS);
+                try {
+                    Thread.sleep(FIND_RETRY_DELAY_MS);
+                } catch (InterruptedException ie) {
+                    Thread.currentThread().interrupt();
+                    log.error("[async] Retry interrupted for report {} on attempt {}",
+                            reportId, attempt);
+                    return null;
+                }
+            } else {
+                // Final attempt failed
+                log.error("[async] Report {} not found on final attempt {} of {}",
+                        reportId, attempt, MAX_FIND_RETRIES);
+            }
+        }
+        return null;
+    }
+
+    /**
+     * Persists FAILED status in its own independent transaction so it survives
+     * even if the enclosing async transaction was rolled back by an exception.
+     *
+     * Also handles the "report not found even in markFailed" edge case
+     * gracefully — logs and exits without throwing.
      */
     @Transactional(propagation = Propagation.REQUIRES_NEW)
     protected void markFailed(Long reportId, String errorMessage) {
@@ -133,6 +239,10 @@ public class ReportGenerationExecutor {
                 failed.setStatus(ReportStatus.FAILED);
                 failed.setErrorMessage(truncate(errorMessage, 500));
                 reportRepository.save(failed);
+                log.info("[async] Report {} marked as FAILED in DB", reportId);
+            } else {
+                log.error("[async] Cannot mark report {} as FAILED — "
+                        + "report does not exist in DB at all", reportId);
             }
         } catch (Exception e) {
             log.error("[async] Also failed to save FAILED status for report {}: {}",
@@ -147,7 +257,8 @@ public class ReportGenerationExecutor {
 
     /**
      * Fires in-app + email notification after a report completes.
-     * Runs inside the same async transaction — failures are logged, not propagated.
+     * Failures are swallowed and logged — a notification failure must never
+     * roll back a successfully generated report.
      */
     private void fireCompletionNotification(DueDiligenceReport report) {
         try {
@@ -159,17 +270,19 @@ public class ReportGenerationExecutor {
             String reportTitle = report.getTitle();
             String redirectUrl = "/reports/" + report.getId();
 
-            // In-app notification (respects preferences internally)
+            // In-app notification (respects user preferences internally)
             notificationService.createForUser(
                     owner,
                     NotificationType.REPORT_READY,
                     "Your report is ready",
-                    "Due diligence report for " + propertyAddress + " has been generated.",
+                    "Due diligence report for " + propertyAddress
+                            + " has been generated.",
                     redirectUrl
             );
 
-            // Email notification (respects preferences internally)
-            notificationEventListener.onReportReady(owner, reportTitle, propertyAddress, report.getId());
+            // Email notification (respects user preferences internally)
+            notificationEventListener.onReportReady(
+                    owner, reportTitle, propertyAddress, report.getId());
 
         } catch (Exception e) {
             log.warn("[async] Failed to fire completion notification for report {}: {}",

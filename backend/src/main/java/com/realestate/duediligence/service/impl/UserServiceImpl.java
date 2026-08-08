@@ -29,19 +29,29 @@ import com.realestate.duediligence.dto.VerifyRegistrationOtpRequest;
 import com.realestate.duediligence.entity.PendingRegistration;
 import com.realestate.duediligence.entity.Role;
 import com.realestate.duediligence.entity.User;
+import com.realestate.duediligence.entity.AuditLog;
 import com.realestate.duediligence.repository.PendingRegistrationRepository;
 import com.realestate.duediligence.repository.RoleRepository;
 import com.realestate.duediligence.repository.UserRepository;
 import com.realestate.duediligence.service.EmailService;
 import com.realestate.duediligence.service.GoogleTokenVerifier;
 import com.realestate.duediligence.service.UserService;
+import com.realestate.duediligence.service.AuditLogService;
 import com.realestate.duediligence.util.JwtService;
+import com.realestate.duediligence.dto.ResendRegistrationOtpRequest;
+import com.realestate.duediligence.dto.SendOtpResponse;
+import com.realestate.duediligence.dto.SendRegistrationOtpRequest;
+import com.realestate.duediligence.dto.VerifyRegistrationOtpRequest;
+import com.realestate.duediligence.entity.PendingRegistration;
+import com.realestate.duediligence.repository.PendingRegistrationRepository;
+import com.realestate.duediligence.enums.RoleType;
+import com.realestate.duediligence.enums.AuditAction;
 
 @Service
 public class UserServiceImpl implements UserService {
 
     private static final int OTP_EXPIRY_MINUTES = 10;
-        private static final int OTP_RESEND_COOLDOWN_SECONDS = 60;
+    private static final int OTP_RESEND_COOLDOWN_SECONDS = 60;
     private static final int OTP_MAX_RESENDS_PER_HOUR = 3;
     private static final int OTP_MAX_VERIFY_ATTEMPTS = 5;
     private static final SecureRandom RANDOM = new SecureRandom();
@@ -53,6 +63,7 @@ public class UserServiceImpl implements UserService {
     private final AuthenticationManager authenticationManager;
     private final JwtService jwtService;
     private final EmailService emailService;
+    private final AuditLogService auditLogService;
     private final GoogleTokenVerifier googleTokenVerifier;
 
         public UserServiceImpl(
@@ -63,6 +74,7 @@ public class UserServiceImpl implements UserService {
             AuthenticationManager authenticationManager,
             JwtService jwtService,
             EmailService emailService,
+            AuditLogService auditLogService,
             GoogleTokenVerifier googleTokenVerifier) {
 
         this.userRepository = userRepository;
@@ -72,6 +84,7 @@ public class UserServiceImpl implements UserService {
         this.authenticationManager = authenticationManager;
         this.jwtService = jwtService;
         this.emailService = emailService;
+        this.auditLogService = auditLogService;
         this.googleTokenVerifier = googleTokenVerifier;
     }
 
@@ -238,6 +251,13 @@ public class UserServiceImpl implements UserService {
         user.setUpdatedAt(LocalDateTime.now());
         userRepository.save(user);
 
+        saveAuditLog(
+        user,
+        AuditAction.USER_REGISTERED,
+        "USER",
+        user.getId(),
+        "User registered successfully");
+
         // Clean up the pending row
         pendingRegistrationRepository.delete(pending);
 
@@ -319,12 +339,22 @@ public class UserServiceImpl implements UserService {
 
         String token = jwtService.generateToken(request.getEmail());
 
-        userRepository.findByEmail(request.getEmail()).ifPresent(user ->
-                emailService.sendLoginAlert(
-                        user.getEmail(),
-                        user.getFullName(),
-                        getClientIp(),
-                        getUserAgent()));
+        userRepository.findByEmail(request.getEmail()).ifPresent(user -> {
+
+           emailService.sendLoginAlert(
+                   user.getEmail(),
+                   user.getFullName(),
+                   getClientIp(),
+                   getUserAgent());
+
+    
+            saveAuditLog(
+                    user,
+                    AuditAction.LOGIN,
+                    "USER",
+                    user.getId(),
+                    "User logged in");
+    });
 
         return new AuthResponse(token);
     }
@@ -367,7 +397,14 @@ public class UserServiceImpl implements UserService {
             user.setAuthProvider("LOCAL_AND_GOOGLE");
             user.setUpdatedAt(LocalDateTime.now());
             userRepository.save(user);
-        }
+
+            saveAuditLog(
+                    user,
+                    AuditAction.USER_REGISTERED,
+                    "USER",
+                    user.getId(),
+                    "Google registration completed");
+    }
 
         String token = jwtService.generateToken(email);
 
@@ -569,6 +606,35 @@ public class UserServiceImpl implements UserService {
     //  HELPERS
     // ══════════════════════════════════════════════════════════════
 
+    private void saveAuditLog(
+        User user,
+        AuditAction action,
+        String resourceType,
+        Long resourceId,
+        String details) {
+
+    AuditLog log = new AuditLog();
+
+    log.setUser(user);
+
+    log.setAction(action);
+
+    log.setResourceType(resourceType);
+
+    log.setResourceId(resourceId);
+
+    log.setDetailsJson(details);
+
+    log.setIpAddress(getClientIp());
+
+    log.setUserAgent(getUserAgent());
+
+    log.setCreatedAt(LocalDateTime.now());
+
+    auditLogService.save(log);
+    
+    }
+
     private String generateOtp() {
         int otp = 100000 + RANDOM.nextInt(900000);
         return String.valueOf(otp);
@@ -668,9 +734,18 @@ if (request.getProfilePicture() != null) {
 }
 
 if (changed) {
-            user.setUpdatedAt(LocalDateTime.now());
-            userRepository.save(user);
-        }
+
+    user.setUpdatedAt(LocalDateTime.now());
+
+    userRepository.save(user);
+
+    saveAuditLog(
+            user,
+            AuditAction.PROFILE_UPDATED,
+            "USER",
+            user.getId(),
+            "Profile updated");
+}
 
         return UserProfileResponse.builder()
                 .id(user.getId())
@@ -714,6 +789,13 @@ if (changed) {
         user.setUpdatedAt(LocalDateTime.now());
         userRepository.save(user);
 
+        saveAuditLog(
+        user,
+        AuditAction.PASSWORD_CHANGED,
+        "USER",
+        user.getId(),
+        "Password changed");
+
         return new ApiResponse(true, "Password changed successfully.");
     }
 
@@ -730,6 +812,13 @@ if (changed) {
         user.setTokenValidFrom(LocalDateTime.now());
         user.setUpdatedAt(LocalDateTime.now());
         userRepository.save(user);
+
+        saveAuditLog(
+        user,
+        AuditAction.LOGOUT,
+        "USER",
+        user.getId(),
+        "Logged out from all devices");
 
         return new ApiResponse(true, "Signed out from all devices successfully.");
     }

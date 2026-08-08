@@ -61,14 +61,24 @@ ADMIN_DASHBOARD_STATS:             "/api/admin/dashboard/stats",
   COMPARISON_BY_ID:    (id) => `/api/comparisons/${id}`,
 
   // Property Labels
-GET_PROPERTY_LABELS: (propertyId) => `/api/properties/${propertyId}/labels`,
-ADD_PROPERTY_LABEL: (propertyId) => `/api/properties/${propertyId}/labels`,
-REMOVE_PROPERTY_LABEL: (propertyId, labelId) =>
-  `/api/properties/${propertyId}/labels/${labelId}`,
-RECALCULATE_ALL_LABELS: "/api/labels/recalculate-all",
-BULK_PROPERTY_LABELS: "/api/labels/bulk",
+  GET_PROPERTY_LABELS: (propertyId) => `/api/properties/${propertyId}/labels`,
+  ADD_PROPERTY_LABEL: (propertyId) => `/api/properties/${propertyId}/labels`,
+  REMOVE_PROPERTY_LABEL: (propertyId, labelId) =>
+    `/api/properties/${propertyId}/labels/${labelId}`,
+  RECALCULATE_ALL_LABELS: "/api/labels/recalculate-all",
+  BULK_PROPERTY_LABELS: "/api/labels/bulk",
 
-RISK: {
+  // ── Export Functionality ──────────────────────────────────────────────────
+  EXPORT_PDF: (reportId) => `/api/export/report/${reportId}/pdf`,
+  EXPORT_EXCEL: (reportId) => `/api/export/report/${reportId}/excel`,
+  EXPORT_PROPERTY_PDF: (propertyId) => `/api/export/property/${propertyId}/pdf`,
+  EXPORT_PROPERTY_EXCEL: (propertyId) => `/api/export/property/${propertyId}/excel`,
+  EXPORT_PREVIEW: (reportId) => `/api/export/report/${reportId}/preview`,
+  EXPORT_BULK: "/api/export/bulk",
+  EXPORT_HISTORY: "/api/export/history",
+  EXPORT_DOWNLOAD: (exportId) => `/api/export/${exportId}/download`,
+
+  RISK: {
     GET:         (propertyId) => `/api/properties/${propertyId}/risk`,
     BREAKDOWN:   (propertyId) => `/api/properties/${propertyId}/risk/breakdown`,
     HISTORY:     (propertyId) => `/api/properties/${propertyId}/risk/history`,

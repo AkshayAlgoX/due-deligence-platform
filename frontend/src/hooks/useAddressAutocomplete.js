@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect, useRef } from "react";
+import { useTranslation } from "react-i18next";
 
 /**
  * Address autocomplete using Nominatim (OpenStreetMap).
@@ -10,7 +11,8 @@ import { useState, useEffect, useRef } from "react";
  *   2. Max 1 request per second (we debounce 400ms + throttle)
  *   3. Cache results in sessionStorage (avoid re-hits)
  *   4. India-only results (countrycodes=in)
- *   5. Attribution shown in dropdown UI
+ *   5. accept-language matches app UI language (Issue 6)
+ *   6. Attribution shown in dropdown UI
  *
  * Docs: https://nominatim.org/release-docs/latest/api/Search/
  */
@@ -23,7 +25,7 @@ const CACHE_KEY_PREFIX = "nominatim-cache-";
 let lastRequestTime = 0;
 const MIN_REQUEST_INTERVAL = 1100; // just over 1s to be safe
 
-async function throttledFetch(url) {
+async function throttledFetch(url, options = {}) {
   const now = Date.now();
   const wait = Math.max(0, MIN_REQUEST_INTERVAL - (now - lastRequestTime));
   if (wait > 0) {
@@ -32,31 +34,47 @@ async function throttledFetch(url) {
   lastRequestTime = Date.now();
 
   return fetch(url, {
+    ...options,
     headers: {
       // Nominatim requires a User-Agent identifying the app
-      "Accept": "application/json",
+      Accept: "application/json",
+      ...(options.headers || {}),
     },
   });
 }
 
-function getCached(query) {
+function getCached(key) {
   try {
-    const raw = sessionStorage.getItem(CACHE_KEY_PREFIX + query);
+    const raw = sessionStorage.getItem(CACHE_KEY_PREFIX + key);
     return raw ? JSON.parse(raw) : null;
   } catch {
     return null;
   }
 }
 
-function setCached(query, data) {
+function setCached(key, data) {
   try {
-    sessionStorage.setItem(CACHE_KEY_PREFIX + query, JSON.stringify(data));
+    sessionStorage.setItem(CACHE_KEY_PREFIX + key, JSON.stringify(data));
   } catch {
     // storage full — silently ignore
   }
 }
 
+/**
+ * Normalize i18n language code to Nominatim accept-language format.
+ * Nominatim accepts BCP47 codes. Our i18n uses simple codes: en, hi, kn, ta...
+ * Fallback: always append 'en' as secondary so we never get empty results
+ * for regions where the primary language isn't available.
+ */
+function buildAcceptLanguage(lang) {
+  const primary = (lang || "en").toLowerCase().split("-")[0];
+  return primary === "en" ? "en" : `${primary},en`;
+}
+
 export function useAddressAutocomplete(query) {
+  const { i18n } = useTranslation();
+  const lang = i18n.language || "en";
+
   const [suggestions, setSuggestions] = useState([]);
   const [loading, setLoading] = useState(false);
   const abortRef = useRef(null);
@@ -77,8 +95,12 @@ export function useAddressAutocomplete(query) {
       return;
     }
 
+    // Cache key now includes language — 'en' and 'kn' won't collide
+    const acceptLang = buildAcceptLanguage(lang);
+    const cacheKey = `${acceptLang}:${trimmed.toLowerCase()}`;
+
     // Check cache first (synchronous — no debounce needed)
-    const cached = getCached(trimmed.toLowerCase());
+    const cached = getCached(cacheKey);
     if (cached) {
       setSuggestions(cached);
       setLoading(false);
@@ -92,9 +114,15 @@ export function useAddressAutocomplete(query) {
       abortRef.current = controller;
 
       try {
-        const url = `${NOMINATIM_URL}?q=${encodeURIComponent(
-          trimmed
-        )}&format=json&addressdetails=1&limit=5&countrycodes=in`;
+        // Issue 6 — pass accept-language so OSM returns names in user's UI language
+        const url =
+          `${NOMINATIM_URL}` +
+          `?q=${encodeURIComponent(trimmed)}` +
+          `&format=json` +
+          `&addressdetails=1` +
+          `&limit=5` +
+          `&countrycodes=in` +
+          `&accept-language=${encodeURIComponent(acceptLang)}`;
 
         const res = await throttledFetch(url, { signal: controller.signal });
 
@@ -113,7 +141,7 @@ export function useAddressAutocomplete(query) {
           lon: item.lon,
         }));
 
-        setCached(trimmed.toLowerCase(), parsed);
+        setCached(cacheKey, parsed);
         setSuggestions(parsed);
       } catch (err) {
         if (err.name !== "AbortError") {
@@ -128,7 +156,8 @@ export function useAddressAutocomplete(query) {
       if (debounceRef.current) clearTimeout(debounceRef.current);
       if (abortRef.current) abortRef.current.abort();
     };
-  }, [query]);
+    // Refetch if user changes app language mid-typing
+  }, [query, lang]);
 
   return { suggestions, loading, clear: () => setSuggestions([]) };
 }

@@ -6,8 +6,6 @@ import {
   Bell,
   CheckCheck,
   Trash2,
-  RefreshCw,
-  Filter,
 } from "lucide-react";
 import { useNotifications } from "@/hooks/useNotifications";
 import { useUnreadCount } from "@/hooks/useUnreadCount";
@@ -38,10 +36,9 @@ export default function NotificationsPage() {
 
   // Derive filter props from activeFilter
   const isUnreadOnly = activeFilter === "UNREAD";
-  const typeFilter = ["REPORT_READY", "RISK_ALERT", "RISK_ALERT", "SYSTEM"].includes(activeFilter)
-    ? activeFilter
-    : null;
-
+  const typeFilter = ["REPORT_READY", "RISK_ALERT", "SYSTEM"].includes(activeFilter)
+  ? activeFilter
+  : null;
   const {
     notifications,
     totalElements,
@@ -70,9 +67,8 @@ export default function NotificationsPage() {
   useSse({ onNewNotification: handleNewNotification });
 
   useEffect(() => {
-    document.title = "Notifications | Real Estate Due Diligence";
-  }, []);
-
+  document.title = `${t("notification.title")} | Real Estate Due Diligence`;
+}, [t]);
   const handleMarkAllRead = async () => {
     await markAllAsRead();
     resetUnread();
@@ -120,15 +116,6 @@ export default function NotificationsPage() {
 
         {/* Actions */}
         <div className="flex items-center gap-2">
-          <button
-            type="button"
-            onClick={refresh}
-            disabled={loading}
-            aria-label={t("common.refresh")}
-            className="flex h-9 w-9 items-center justify-center rounded-lg text-gray-500 dark:text-[#7d8590] hover:bg-gray-50 dark:hover:bg-[#1c2128] transition"
-          >
-            <RefreshCw size={16} className={loading ? "animate-spin" : ""} />
-          </button>
 
           {unreadCount > 0 && (
             <button

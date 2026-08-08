@@ -136,4 +136,18 @@ public class Property {
     @lombok.ToString.Exclude
     @lombok.EqualsAndHashCode.Exclude
     private List<DueDiligenceReport> reports = new ArrayList<>();
+
+
+        // ── Milestone 3: Comparable Analysis + Valuation  ─────
+
+
+    @OneToMany(mappedBy = "property", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
+    @lombok.ToString.Exclude
+    @lombok.EqualsAndHashCode.Exclude
+    private List<ComparableAnalysis> comparableAnalyses = new ArrayList<>();
+
+    @OneToMany(mappedBy = "property", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
+    @lombok.ToString.Exclude
+    @lombok.EqualsAndHashCode.Exclude
+    private List<PropertyValuation> valuations = new ArrayList<>();
 }
