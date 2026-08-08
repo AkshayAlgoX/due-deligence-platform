@@ -12,13 +12,12 @@ export function useExport() {
   const [progressPercent, setProgressPercent] = useState(0);
   const [exportFormat, setExportFormat] = useState(EXPORT_FORMATS.PDF);
 
-  const [isPreviewOpen, setIsPreviewOpen] = useState(false);
-  const [previewData, setPreviewData] = useState(null);
-  const [isPreviewLoading, setIsPreviewLoading] = useState(false);
-
+  // History state — kept (history moved to dedicated page, not removed)
   const [historyData, setHistoryData] = useState(null);
   const [isHistoryLoading, setIsHistoryLoading] = useState(false);
 
+  // Aligned to 2500ms — modal auto-dismisses at 2000ms,
+  // this gives framer-motion exit animation time to complete
   const resetProgress = useCallback(() => {
     setIsGenerating(false);
     setProgressStage(EXPORT_STAGES.IDLE);
@@ -57,7 +56,7 @@ export function useExport() {
         });
         setProgressStage(EXPORT_STAGES.FAILED);
       } finally {
-        setTimeout(resetProgress, 1200);
+        setTimeout(resetProgress, 2500);
       }
     },
     [resetProgress]
@@ -95,32 +94,11 @@ export function useExport() {
         });
         setProgressStage(EXPORT_STAGES.FAILED);
       } finally {
-        setTimeout(resetProgress, 1200);
+        setTimeout(resetProgress, 2500);
       }
     },
     [resetProgress]
   );
-
-  const openPreview = useCallback(async (reportId) => {
-    try {
-      setIsPreviewOpen(true);
-      setIsPreviewLoading(true);
-      const data = await exportService.getPreview(reportId);
-      setPreviewData(data);
-    } catch (error) {
-      console.error("Fetch preview failed:", error);
-      toast.error("Preview Unavailable", {
-        description: "Could not load report preview details.",
-      });
-    } finally {
-      setIsPreviewLoading(false);
-    }
-  }, []);
-
-  const closePreview = useCallback(() => {
-    setIsPreviewOpen(false);
-    setPreviewData(null);
-  }, []);
 
   const downloadBulk = useCallback(
     async (reportIds, format = EXPORT_FORMATS.PDF) => {
@@ -157,7 +135,7 @@ export function useExport() {
         });
         setProgressStage(EXPORT_STAGES.FAILED);
       } finally {
-        setTimeout(resetProgress, 1200);
+        setTimeout(resetProgress, 2500);
       }
     },
     [resetProgress]
@@ -199,17 +177,14 @@ export function useExport() {
     progressPercent,
     exportFormat,
 
-    isPreviewOpen,
-    previewData,
-    isPreviewLoading,
+    // Preview state intentionally removed (Issue 2)
+    // ExportPreviewModal.jsx deleted — redundant with report TOC sidebar
 
     historyData,
     isHistoryLoading,
 
     downloadPdf,
     downloadExcel,
-    openPreview,
-    closePreview,
     downloadBulk,
     fetchHistory,
     downloadFromHistoryItem,
