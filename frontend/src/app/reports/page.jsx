@@ -219,19 +219,6 @@ export default function MyReportsPage() {
               </div>
             )}
 
-            {/* Refresh */}
-            <button
-              onClick={loadReports}
-              disabled={listLoading}
-              className="inline-flex items-center gap-1.5 px-3 py-2 rounded-lg text-xs font-semibold text-gray-700 dark:text-[#e6edf3] border border-gray-200 dark:border-[#30363d] hover:bg-gray-50 dark:hover:bg-[#161b22] transition-colors disabled:opacity-50"
-              title={t("report.list.refresh", "Refresh")}
-            >
-              <RefreshCw
-                className={`w-3.5 h-3.5 ${listLoading ? "animate-spin" : ""}`}
-                strokeWidth={2.25}
-              />
-              {t("report.list.refresh", "Refresh")}
-            </button>
 
             {/* Issue 5 — Export History navigation link */}
             <Link
@@ -485,7 +472,7 @@ export default function MyReportsPage() {
                   <p className="text-sm text-gray-600 dark:text-[#c9d1d9] leading-relaxed">
                     {t(
                       "report.list.deleteModal.body",
-                      "This will permanently delete "{{title}}" and all its sections. This action cannot be undone.",
+                      "This will permanently delete \"{{title}}\" and all its sections. This action cannot be undone.",
                       {
                         title:
                           reportToDelete.title ||
