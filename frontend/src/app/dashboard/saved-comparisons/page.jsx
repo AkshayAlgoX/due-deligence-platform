@@ -87,18 +87,6 @@ export default function SavedComparisonsPage() {
             </div>
           </div>
 
-          <button
-            type="button"
-            onClick={fetchComparisons}
-            disabled={isLoading}
-            className="flex items-center gap-2 rounded-xl border border-gray-200 dark:border-[#30363d] bg-white dark:bg-[#0d1117] px-4 py-2.5 text-sm font-bold text-gray-600 dark:text-[#7d8590] transition hover:border-[#22C55E] hover:text-[#16a34a] dark:hover:border-[#22C55E] dark:hover:text-[#22C55E] disabled:opacity-50 cursor-pointer"
-          >
-            <RefreshCw
-              className={`h-4 w-4 ${isLoading ? "animate-spin" : ""}`}
-              strokeWidth={2}
-            />
-            {t("common.refresh")}
-          </button>
         </div>
 
         {/* Search */}
