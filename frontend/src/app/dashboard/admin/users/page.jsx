@@ -1,5 +1,6 @@
 "use client";
-
+import UserDetailModal from "@/components/admin/UserDetailModal";
+import { Eye } from "lucide-react";
 import { useEffect, useState, useCallback } from "react";
 import { Table, TableHeader, TableBody, TableRow, TableHead, TableCell } from "@/components/ui/table";
 import { Badge } from "@/components/ui/badge";
@@ -20,7 +21,7 @@ export default function AdminUsersPage() {
   const [page, setPage] = useState(0);
   const [totalPages, setTotalPages] = useState(0);
   const [confirmTarget, setConfirmTarget] = useState(null); // { user, action: "ban"|"unban" }
-
+const [viewUserId, setViewUserId] = useState(null);
   const fetchUsers = useCallback(async () => {
     setLoading(true);
     try {
@@ -116,13 +117,18 @@ export default function AdminUsersPage() {
                   </Badge>
                 </TableCell>
                 <TableCell className="text-right">
-                  <Button
-                    size="sm"
-                    variant={u.isBanned ? "outline" : "destructive"}
-                    onClick={() => setConfirmTarget({ user: u, action: u.isBanned ? "unban" : "ban" })}
-                  >
-                    {u.isBanned ? "Unban" : "Ban"}
-                  </Button>
+                  <div className="flex justify-end gap-2">
+                    <Button size="sm" variant="outline" onClick={() => setViewUserId(u.id)}>
+                      <Eye size={14} className="mr-1" /> View
+                    </Button>
+                    <Button
+                      size="sm"
+                      variant={u.isBanned ? "outline" : "destructive"}
+                      onClick={() => setConfirmTarget({ user: u, action: u.isBanned ? "unban" : "ban" })}
+                    >
+                      {u.isBanned ? "Unban" : "Ban"}
+                    </Button>
+                  </div>
                 </TableCell>
               </TableRow>
             ))}
@@ -136,14 +142,25 @@ export default function AdminUsersPage() {
           <Button size="sm" variant="outline" disabled={page >= totalPages - 1} onClick={() => setPage((p) => p + 1)}>Next</Button>
         </div>
       )}
+      
 
       <ConfirmDialog
-        open={!!confirmTarget}
-        onOpenChange={(open) => !open && setConfirmTarget(null)}
-        title={confirmTarget?.action === "ban" ? "Ban this user?" : "Unban this user?"}
-        description="This action can be reversed later."
-        onConfirm={handleConfirmAction}
-      />
+  isOpen={!!confirmTarget}
+  onClose={() => setConfirmTarget(null)}
+  title={confirmTarget?.action === "ban" ? "Ban this user?" : "Unban this user?"}
+  description="This action can be reversed later."
+  onConfirm={handleConfirmAction}
+  confirmLabel={confirmTarget?.action === "ban" ? "Ban" : "Unban"}
+  variant={confirmTarget?.action === "ban" ? "danger" : "info"}
+/>
+{viewUserId && (
+  <div className="fixed inset-0 z-[9999] flex items-center justify-center bg-black/50">
+    <div className="bg-white p-6 rounded-xl">
+      <p>Inline test modal for user {viewUserId}</p>
+      <button onClick={() => setViewUserId(null)}>Close</button>
+    </div>
+  </div>
+)}
     </div>
   );
 }

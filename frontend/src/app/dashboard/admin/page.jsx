@@ -1,5 +1,5 @@
 "use client";
-
+import UserActivityHeatmap from "@/components/admin/UserActivityHeatmap";
 import { useState, useEffect } from "react";
 import { useTranslation } from "react-i18next";
 import {
@@ -32,6 +32,7 @@ import {
   getTopCities,
   getActiveUsers,
   getSystemHealth,
+  getUserActivityHeatmap,
 } from "@/services/adminService";
 
 const RISK_COLORS = {
@@ -80,24 +81,26 @@ export default function AdminDashboardPage() {
   const [riskData, setRiskData] = useState([]);
   const [trendData, setTrendData] = useState([]);
   const [topCities, setTopCities] = useState([]);
-
+const [heatmapData, setHeatmapData] = useState([]);
   useEffect(() => {
     (async () => {
       try {
-        const [s, r, t, c, a, h] = await Promise.all([
-          getAdminDashboardStats("30d"),
-          getRiskDistribution("30d"),
-          getReportsTrend("30d", "daily"),
-          getTopCities(10),
-          getActiveUsers(),
-          getSystemHealth(),
-        ]);
-        setStats(s);
-        setRiskData(r.map((d) => ({ name: d.level, value: d.count, color: RISK_COLORS[d.level] ?? "#9CA3AF" })));
-        setTrendData(t.map((d) => ({ label: d.date, reports: d.count })));
-        setTopCities(c.map((d) => ({ city: d.city, count: d.count })));
-        setActiveUsers(a);
-        setSystemHealth(h.dbStatus === "UP" && h.apiStatus === "UP" ? "Operational" : "Degraded");
+        const [s, r, t, c, a, h, hm] = await Promise.all([
+  getAdminDashboardStats("30d"),
+  getRiskDistribution("30d"),
+  getReportsTrend("30d", "daily"),
+  getTopCities(10),
+  getActiveUsers(),
+  getSystemHealth(),
+  getUserActivityHeatmap(),
+]);
+       setStats(s);
+setRiskData(r.map((d) => ({ name: d.level, value: d.count, color: RISK_COLORS[d.level] ?? "#9CA3AF" })));
+setTrendData(t.map((d) => ({ label: d.date, reports: d.count })));
+setTopCities(c.map((d) => ({ city: d.city, count: d.count })));
+setActiveUsers(a);
+setHeatmapData(hm);   // ← add this line
+setSystemHealth(h.dbStatus === "UP" && h.apiStatus === "UP" ? "Operational" : "Degraded");
       } catch {
         toast.error("Failed to load dashboard data.");
       } finally {
@@ -160,7 +163,16 @@ export default function AdminDashboardPage() {
               <CartesianGrid strokeDasharray="3 3" stroke={gridStroke} vertical={false} />
               <XAxis dataKey="label" tick={{ fontSize: 11, fill: axisTickFill }} axisLine={false} tickLine={false} />
               <YAxis tick={{ fontSize: 10, fill: axisTickFill }} axisLine={false} tickLine={false} width={32} />
-              <Tooltip />
+            <Tooltip
+  contentStyle={{
+    backgroundColor: isDark ? "#161b22" : "#ffffff",
+    border: `1px solid ${isDark ? "#30363d" : "#e5e7eb"}`,
+    borderRadius: 8,
+    fontSize: 12,
+  }}
+  labelStyle={{ color: isDark ? "#e6edf3" : "#111827" }}
+  cursor={{ fill: isDark ? "rgba(255,255,255,0.04)" : "rgba(0,0,0,0.04)" }}
+/>
               <Area type="monotone" dataKey="reports" stroke="#22C55E" strokeWidth={2.5} fill="url(#reportsGrad)" dot={false} />
             </AreaChart>
           </ResponsiveContainer>
@@ -181,7 +193,16 @@ export default function AdminDashboardPage() {
                   <Cell key={i} fill={entry.color} />
                 ))}
               </Pie>
-              <Tooltip />
+              <Tooltip
+  contentStyle={{
+    backgroundColor: isDark ? "#161b22" : "#ffffff",
+    border: `1px solid ${isDark ? "#30363d" : "#e5e7eb"}`,
+    borderRadius: 8,
+    fontSize: 12,
+  }}
+  labelStyle={{ color: isDark ? "#e6edf3" : "#111827" }}
+  cursor={{ fill: isDark ? "rgba(255,255,255,0.04)" : "rgba(0,0,0,0.04)" }}
+/>
             </PieChart>
           </ResponsiveContainer>
         </ChartCardShell>
@@ -192,23 +213,24 @@ export default function AdminDashboardPage() {
               <CartesianGrid strokeDasharray="3 3" stroke={gridStroke} vertical={false} />
               <XAxis dataKey="city" tick={{ fontSize: 11, fill: axisTickFill }} axisLine={false} tickLine={false} />
               <YAxis tick={{ fontSize: 10, fill: axisTickFill }} axisLine={false} tickLine={false} width={32} />
-              <Tooltip />
+              <Tooltip
+  contentStyle={{
+    backgroundColor: isDark ? "#161b22" : "#ffffff",
+    border: `1px solid ${isDark ? "#30363d" : "#e5e7eb"}`,
+    borderRadius: 8,
+    fontSize: 12,
+  }}
+  labelStyle={{ color: isDark ? "#e6edf3" : "#111827" }}
+  cursor={{ fill: isDark ? "rgba(255,255,255,0.04)" : "rgba(0,0,0,0.04)" }}
+/>
               <Bar dataKey="count" fill="#22C55E" radius={[6, 6, 0, 0]} />
             </BarChart>
           </ResponsiveContainer>
         </ChartCardShell>
 
-        <ChartCardShell title="Reports Trend (secondary view)" subtitle="Same data, bar form">
-          <ResponsiveContainer width="100%" height={220}>
-            <BarChart data={trendData} margin={{ top: 4, right: 4, left: 0, bottom: 0 }}>
-              <CartesianGrid strokeDasharray="3 3" stroke={gridStroke} vertical={false} />
-              <XAxis dataKey="label" tick={{ fontSize: 11, fill: axisTickFill }} axisLine={false} tickLine={false} />
-              <YAxis tick={{ fontSize: 10, fill: axisTickFill }} axisLine={false} tickLine={false} width={32} />
-              <Tooltip />
-              <Bar dataKey="reports" fill="#3B82F6" radius={[6, 6, 0, 0]} />
-            </BarChart>
-          </ResponsiveContainer>
-        </ChartCardShell>
+        <ChartCardShell title="User Activity" subtitle="By day and hour">
+  <UserActivityHeatmap data={heatmapData} />
+</ChartCardShell>
       </div>
     </div>
   );

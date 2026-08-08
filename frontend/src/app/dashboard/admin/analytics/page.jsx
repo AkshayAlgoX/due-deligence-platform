@@ -1,4 +1,5 @@
 "use client";
+import DateRangePicker from "@/components/admin/DateRangePicker";
 
 import { useState, useEffect, useCallback } from "react";
 import {
@@ -104,18 +105,7 @@ export default function AdminAnalyticsPage() {
             Platform trends, risk breakdown, and geographic activity
           </p>
         </div>
-        <div className="flex gap-2">
-          {PERIODS.map((p) => (
-            <Button
-              key={p.value}
-              size="sm"
-              variant={period === p.value ? "default" : "outline"}
-              onClick={() => setPeriod(p.value)}
-            >
-              {p.label}
-            </Button>
-          ))}
-        </div>
+        <DateRangePicker value={period} onChange={setPeriod} />
       </div>
 
       {loading ? (
@@ -136,7 +126,16 @@ export default function AdminAnalyticsPage() {
                 <CartesianGrid strokeDasharray="3 3" stroke={gridStroke} vertical={false} />
                 <XAxis dataKey="label" tick={{ fontSize: 11, fill: axisTickFill }} axisLine={false} tickLine={false} />
                 <YAxis tick={{ fontSize: 10, fill: axisTickFill }} axisLine={false} tickLine={false} width={32} />
-                <Tooltip />
+                <Tooltip
+  contentStyle={{
+    backgroundColor: isDark ? "#161b22" : "#ffffff",
+    border: `1px solid ${isDark ? "#30363d" : "#e5e7eb"}`,
+    borderRadius: 8,
+    fontSize: 12,
+  }}
+  labelStyle={{ color: isDark ? "#e6edf3" : "#111827" }}
+  cursor={{ fill: isDark ? "rgba(255,255,255,0.04)" : "rgba(0,0,0,0.04)" }}
+/>
                 <Area type="monotone" dataKey="reports" stroke="#22C55E" strokeWidth={2.5} fill="url(#analyticsReportsGrad)" dot={false} />
               </AreaChart>
             </ResponsiveContainer>
@@ -148,7 +147,16 @@ export default function AdminAnalyticsPage() {
                 <Pie data={riskData} dataKey="value" nameKey="name" innerRadius={60} outerRadius={90} paddingAngle={3}>
                   {riskData.map((entry, i) => <Cell key={i} fill={entry.color} />)}
                 </Pie>
-                <Tooltip />
+                <Tooltip
+  contentStyle={{
+    backgroundColor: isDark ? "#161b22" : "#ffffff",
+    border: `1px solid ${isDark ? "#30363d" : "#e5e7eb"}`,
+    borderRadius: 8,
+    fontSize: 12,
+  }}
+  labelStyle={{ color: isDark ? "#e6edf3" : "#111827" }}
+  cursor={{ fill: isDark ? "rgba(255,255,255,0.04)" : "rgba(0,0,0,0.04)" }}
+/>
               </PieChart>
             </ResponsiveContainer>
           </ChartCardShell>
@@ -159,7 +167,16 @@ export default function AdminAnalyticsPage() {
                 <CartesianGrid strokeDasharray="3 3" stroke={gridStroke} vertical={false} />
                 <XAxis dataKey="city" tick={{ fontSize: 11, fill: axisTickFill }} axisLine={false} tickLine={false} />
                 <YAxis tick={{ fontSize: 10, fill: axisTickFill }} axisLine={false} tickLine={false} width={32} />
-                <Tooltip />
+                <Tooltip
+  contentStyle={{
+    backgroundColor: isDark ? "#161b22" : "#ffffff",
+    border: `1px solid ${isDark ? "#30363d" : "#e5e7eb"}`,
+    borderRadius: 8,
+    fontSize: 12,
+  }}
+  labelStyle={{ color: isDark ? "#e6edf3" : "#111827" }}
+  cursor={{ fill: isDark ? "rgba(255,255,255,0.04)" : "rgba(0,0,0,0.04)" }}
+/>
                 <Bar dataKey="count" fill="#22C55E" radius={[6, 6, 0, 0]} />
               </BarChart>
             </ResponsiveContainer>

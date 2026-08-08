@@ -18,6 +18,7 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
 import { useTranslation } from "react-i18next";
+import { getUser } from "@/utils/helpers";
 import i18n from "@/i18n";
 
 import {
@@ -93,6 +94,8 @@ export function useAuth() {
    *  - Language follows the BROWSER, not the user account
    *  - Matches behavior of Zillow, Netflix, Airbnb
    */
+  /** Returns true if the current user has the ADMIN role. */
+  const isAdmin = () => getUser()?.role === "ADMIN";
   const logout = () => {
     // 1. Capture current language before ANY storage is cleared
     const currentLang = i18n.language || "en";
@@ -119,12 +122,13 @@ export function useAuth() {
     router.push("/login");
   };
 
-  return {
+ return {
     loading,
     startRegistration,
     verifyOtpAndRegister,
     resendOtp,
     login,
     logout,
+    isAdmin,
   };
 }
