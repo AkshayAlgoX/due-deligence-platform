@@ -1,416 +1,414 @@
 // src/components/reports/ReportCard.jsx
-// ---------------------------------------------------------------------------
-// Premium report list row — risk badge + inline hover actions + relative time
-// Matches Linear/Vercel/Stripe dashboard density and hierarchy.
-// ---------------------------------------------------------------------------
+// Dashboard design tokens: bg-[#161b22] card, border-[#30363d]
 
 "use client";
 
-import { useState, useCallback, useRef, useEffect } from "react";
-import { motion, AnimatePresence } from "framer-motion";
+import { useState, useRef, useEffect, useCallback } from "react";
+import { useRouter } from "next/navigation";
+import { motion } from "framer-motion";
 import {
   FileText,
-  Loader2,
   AlertCircle,
-  Clock,
-  MoreHorizontal,
+  Loader2,
+  MoreVertical,
   Trash2,
   RefreshCw,
-  Copy,
   ExternalLink,
+  Link2,
+  Clock,
+  User,
+  Hash,
+  MapPin,
 } from "lucide-react";
-import { useRouter } from "next/navigation";
-import RiskScoreBadge from "@/components/reports/RiskScoreBadge";
-import InlineActions from "@/components/reports/InlineActions";
+
+import RiskScoreBadge from "./RiskScoreBadge";
+import InlineActions from "./InlineActions";
 import { formatRelativeTime, formatAbsoluteDate } from "@/utils/formatDate";
 
-// ---------------------------------------------------------------------------
-// Status config
-// ---------------------------------------------------------------------------
+function getRiskBarColor(status, score) {
+  if (status === "FAILED") return "#dc2626";
+  if (status === "PENDING" || status === "GENERATING") return "#7d8590";
+  if (score === null || score === undefined) return "#7d8590";
+  if (score <= 25) return "#22C55E";
+  if (score <= 50) return "#f59e0b";
+  if (score <= 75) return "#ef4444";
+  return "#b91c1c";
+}
 
-const STATUS_CONFIG = {
-  COMPLETED: {
-    label: "Completed",
-    dot: "bg-emerald-400",
-    text: "text-emerald-400",
-    bg: "bg-emerald-500/10",
-    border: "border-emerald-500/20",
+function StatusIconTile({ status }) {
+  const base = "flex-shrink-0 flex items-center justify-center w-10 h-10 rounded-xl";
+  if (status === "COMPLETED") {
+    return (
+      <div className={`${base} bg-[#edf7f3] dark:bg-[#0d2818]`}>
+        <FileText size={18} strokeWidth={1.75} className="text-[#16a34a] dark:text-green-400" />
+      </div>
+    );
+  }
+  if (status === "GENERATING" || status === "PENDING") {
+    return (
+      <div className={`${base} bg-blue-50 dark:bg-blue-500/10`}>
+        <Loader2 size={18} strokeWidth={1.75} className="text-blue-600 dark:text-blue-400 animate-spin" />
+      </div>
+    );
+  }
+  if (status === "FAILED") {
+    return (
+      <div className={`${base} bg-red-50 dark:bg-red-500/10`}>
+        <AlertCircle size={18} strokeWidth={1.75} className="text-red-600 dark:text-red-400" />
+      </div>
+    );
+  }
+  return (
+    <div className={`${base} bg-gray-100 dark:bg-[#1c2128]`}>
+      <FileText size={18} strokeWidth={1.75} className="text-gray-600 dark:text-[#7d8590]" />
+    </div>
+  );
+}
+
+function StatusPill({ status }) {
+  const variants = {
+    COMPLETED: {
+      dot: "bg-[#22C55E]",
+      text: "text-[#16a34a] dark:text-green-400",
+      bg: "bg-[#edf7f3] dark:bg-[#0d2818] border-[#22C55E]/20 dark:border-green-400/20",
+      label: "Completed",
+      pulse: false,
+    },
+    GENERATING: {
+      dot: "bg-blue-500",
+      text: "text-blue-700 dark:text-blue-400",
+      bg: "bg-blue-50 dark:bg-blue-500/10 border-blue-200 dark:border-blue-500/20",
+      label: "Generating",
+      pulse: true,
+    },
+    PENDING: {
+      dot: "bg-blue-400",
+      text: "text-blue-600 dark:text-blue-400",
+      bg: "bg-blue-50 dark:bg-blue-500/10 border-blue-200 dark:border-blue-500/20",
+      label: "Pending",
+      pulse: true,
+    },
+    FAILED: {
+      dot: "bg-red-500",
+      text: "text-red-700 dark:text-red-400",
+      bg: "bg-red-50 dark:bg-red-500/10 border-red-200 dark:border-red-500/20",
+      label: "Failed",
+      pulse: false,
+    },
+  };
+
+  const v = variants[status] ?? {
+    dot: "bg-gray-400",
+    text: "text-gray-600 dark:text-[#7d8590]",
+    bg: "bg-gray-50 dark:bg-[#1c2128] border-gray-200 dark:border-[#30363d]",
+    label: status ?? "Unknown",
     pulse: false,
-  },
-  GENERATING: {
-    label: "Generating",
-    dot: "bg-blue-400",
-    text: "text-blue-400",
-    bg: "bg-blue-500/10",
-    border: "border-blue-500/20",
-    pulse: true,
-  },
-  PENDING: {
-    label: "Pending",
-    dot: "bg-amber-400",
-    text: "text-amber-400",
-    bg: "bg-amber-500/10",
-    border: "border-amber-500/20",
-    pulse: true,
-  },
-  FAILED: {
-    label: "Failed",
-    dot: "bg-red-400",
-    text: "text-red-400",
-    bg: "bg-red-500/10",
-    border: "border-red-500/20",
-    pulse: false,
-  },
-};
+  };
 
-// ---------------------------------------------------------------------------
-// Main component
-// ---------------------------------------------------------------------------
+  return (
+    <span className={`inline-flex items-center gap-1.5 px-2 py-0.5 rounded-full border text-[11px] font-medium ${v.bg} ${v.text}`}>
+      <span className={`w-1.5 h-1.5 rounded-full flex-shrink-0 ${v.dot} ${v.pulse ? "animate-pulse" : ""}`} />
+      {v.label}
+    </span>
+  );
+}
 
-/**
- * @param {{
- *   report: {
- *     id: number,
- *     title: string,
- *     propertyAddress: string,
- *     status: "PENDING"|"GENERATING"|"COMPLETED"|"FAILED",
- *     version: number,
- *     riskScoreSnapshot: number|null,
- *     riskLevelSnapshot: "LOW"|"MEDIUM"|"HIGH"|"CRITICAL"|null,
- *     sectionCount: number,
- *     createdAt: string,
- *     updatedAt: string,
- *     errorMessage: string|null,
- *   },
- *   onDownloadPdf: (reportId: number, filename: string) => Promise<void>,
- *   onDownloadExcel: (reportId: number, filename: string) => Promise<void>,
- *   onDelete: (reportId: number) => void,
- *   onRegenerate: (reportId: number) => void,
- *   isExporting?: boolean,
- *   animationDelay?: number,
- * }} props
- */
+function VersionPill({ version }) {
+  if (!version) return null;
+  return (
+    <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full border border-gray-200 dark:border-[#30363d] bg-gray-50 dark:bg-[#1c2128] text-[11px] font-medium text-gray-600 dark:text-[#7d8590]">
+      <Hash size={9} strokeWidth={2.5} />
+      v{version}
+    </span>
+  );
+}
+
+function MetaTrio({ report }) {
+  const displayTime = report.status === "COMPLETED" && report.completedAt
+    ? report.completedAt
+    : report.createdAt;
+
+  const absTime = formatAbsoluteDate(displayTime);
+  const relTime = formatRelativeTime(displayTime);
+
+  return (
+    <div className="flex items-center gap-3 flex-wrap">
+      <span
+        className="inline-flex items-center gap-1 text-[11px] text-gray-500 dark:text-[#7d8590]"
+        title={absTime}
+      >
+        <Clock size={11} strokeWidth={2} className="flex-shrink-0 text-gray-400 dark:text-[#6e7681]" />
+        {relTime}
+      </span>
+
+      <span className="text-gray-300 dark:text-[#30363d] text-[11px]" aria-hidden="true">·</span>
+
+      <span className="inline-flex items-center gap-1 text-[11px] text-gray-500 dark:text-[#7d8590]">
+        <Hash size={11} strokeWidth={2} className="flex-shrink-0 text-gray-400 dark:text-[#6e7681]" />
+        {report.id}
+      </span>
+
+      {report.generatedByEmail && (
+        <>
+          <span className="text-gray-300 dark:text-[#30363d] text-[11px]" aria-hidden="true">·</span>
+          <span className="inline-flex items-center gap-1 text-[11px] text-gray-500 dark:text-[#7d8590] min-w-0">
+            <User size={11} strokeWidth={2} className="flex-shrink-0 text-gray-400 dark:text-[#6e7681]" />
+            <span className="truncate max-w-[160px]">{report.generatedByEmail}</span>
+          </span>
+        </>
+      )}
+    </div>
+  );
+}
+
+function KebabMenuWrapper({ report, onDelete, onRegenerate, onCopyLink, onOpenChange }) {
+  const [open, setOpen] = useState(false);
+  const menuRef = useRef(null);
+  const btnRef = useRef(null);
+  const router = useRouter();
+
+  useEffect(() => {
+    onOpenChange?.(open);
+  }, [open, onOpenChange]);
+
+  useEffect(() => {
+    if (!open) return;
+    function handle(e) {
+      if (menuRef.current && !menuRef.current.contains(e.target)) setOpen(false);
+    }
+    document.addEventListener("mousedown", handle);
+    return () => document.removeEventListener("mousedown", handle);
+  }, [open]);
+
+  useEffect(() => {
+    if (!open) return;
+    function handle(e) {
+      if (e.key === "Escape") {
+        setOpen(false);
+        btnRef.current?.focus();
+      }
+    }
+    document.addEventListener("keydown", handle);
+    return () => document.removeEventListener("keydown", handle);
+  }, [open]);
+
+  const canRegenerate = report.status === "FAILED" || report.status === "COMPLETED";
+
+  return (
+    <div className="relative flex-shrink-0" ref={menuRef}>
+      <button
+        ref={btnRef}
+        type="button"
+        onClick={(e) => {
+          e.stopPropagation();
+          setOpen((v) => !v);
+        }}
+        aria-label="More actions"
+        aria-haspopup="true"
+        aria-expanded={open}
+        className="flex items-center justify-center w-8 h-8 rounded-lg text-gray-400 dark:text-[#7d8590] hover:text-gray-700 dark:hover:text-[#e6edf3] hover:bg-gray-100 dark:hover:bg-[#1c2128] border border-transparent hover:border-gray-200 dark:hover:border-[#30363d] transition-all duration-150 focus:outline-none focus-visible:ring-2 focus-visible:ring-[#22C55E]/50"
+      >
+        <MoreVertical size={15} strokeWidth={2} aria-hidden="true" />
+      </button>
+
+      {open && (
+        <motion.div
+          initial={{ opacity: 0, scale: 0.95, y: -4 }}
+          animate={{ opacity: 1, scale: 1, y: 0 }}
+          exit={{ opacity: 0, scale: 0.95, y: -4 }}
+          transition={{ duration: 0.1 }}
+          className="absolute right-0 top-9 z-[100] w-48 rounded-xl border border-gray-200 dark:border-[#30363d] bg-white dark:bg-[#1c2128] shadow-xl overflow-hidden"
+          role="menu"
+        >
+          <button
+            type="button"
+            role="menuitem"
+            onClick={(e) => {
+              e.stopPropagation();
+              router.push(`/reports/${report.id}`);
+              setOpen(false);
+            }}
+            className="w-full flex items-center gap-2.5 px-3.5 py-2.5 text-sm text-gray-700 dark:text-[#e6edf3] hover:bg-gray-50 dark:hover:bg-[#22282f] transition-colors duration-100"
+          >
+            <ExternalLink size={14} strokeWidth={1.75} className="text-gray-400 dark:text-[#7d8590]" />
+            View report
+          </button>
+
+          <button
+            type="button"
+            role="menuitem"
+            onClick={(e) => {
+              e.stopPropagation();
+              onCopyLink(report.id);
+              setOpen(false);
+            }}
+            className="w-full flex items-center gap-2.5 px-3.5 py-2.5 text-sm text-gray-700 dark:text-[#e6edf3] hover:bg-gray-50 dark:hover:bg-[#22282f] transition-colors duration-100"
+          >
+            <Link2 size={14} strokeWidth={1.75} className="text-gray-400 dark:text-[#7d8590]" />
+            Copy link
+          </button>
+
+          {canRegenerate && (
+            <button
+              type="button"
+              role="menuitem"
+              onClick={(e) => {
+                e.stopPropagation();
+                onRegenerate(report.id);
+                setOpen(false);
+              }}
+              className="w-full flex items-center gap-2.5 px-3.5 py-2.5 text-sm text-gray-700 dark:text-[#e6edf3] hover:bg-gray-50 dark:hover:bg-[#22282f] transition-colors duration-100"
+            >
+              <RefreshCw size={14} strokeWidth={1.75} className="text-gray-400 dark:text-[#7d8590]" />
+              Regenerate
+            </button>
+          )}
+
+          <div className="h-px bg-gray-100 dark:bg-[#30363d] my-1" />
+
+          <button
+            type="button"
+            role="menuitem"
+            onClick={(e) => {
+              e.stopPropagation();
+              onDelete(report.id);
+              setOpen(false);
+            }}
+            className="w-full flex items-center gap-2.5 px-3.5 py-2.5 text-sm text-red-600 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-500/[0.08] transition-colors duration-100"
+          >
+            <Trash2 size={14} strokeWidth={1.75} />
+            Delete
+          </button>
+        </motion.div>
+      )}
+    </div>
+  );
+}
+
 export default function ReportCard({
   report,
   onDownloadPdf,
   onDownloadExcel,
   onDelete,
   onRegenerate,
-  isExporting = false,
+  onCopyLink,
+  isExporting,
   animationDelay = 0,
 }) {
   const router = useRouter();
   const [menuOpen, setMenuOpen] = useState(false);
-  const menuRef = useRef(null);
-  const menuButtonRef = useRef(null);
-
-  const statusCfg = STATUS_CONFIG[report.status] ?? STATUS_CONFIG.PENDING;
   const isCompleted = report.status === "COMPLETED";
-  const isFailed = report.status === "FAILED";
-  const isProcessing = report.status === "PENDING" || report.status === "GENERATING";
+  const barColor = getRiskBarColor(report.status, report.riskScoreSnapshot);
 
-  // ── Context menu close on outside click ──────────────────────────────
-  useEffect(() => {
-    if (!menuOpen) return;
-    function handleClick(e) {
-      if (
-        menuRef.current &&
-        !menuRef.current.contains(e.target) &&
-        menuButtonRef.current &&
-        !menuButtonRef.current.contains(e.target)
-      ) {
-        setMenuOpen(false);
-      }
-    }
-    document.addEventListener("mousedown", handleClick);
-    return () => document.removeEventListener("mousedown", handleClick);
-  }, [menuOpen]);
-
-  useEffect(() => {
-    if (!menuOpen) return;
-    function handleKey(e) {
-      if (e.key === "Escape") setMenuOpen(false);
-    }
-    document.addEventListener("keydown", handleKey);
-    return () => document.removeEventListener("keydown", handleKey);
-  }, [menuOpen]);
-
-  // ── Navigation ────────────────────────────────────────────────────────
-  const handleRowClick = useCallback(() => {
-    if (isCompleted) router.push(`/reports/${report.id}`);
-  }, [isCompleted, router, report.id]);
-
-  const handleKeyDown = useCallback(
+  const handleRowClick = useCallback(
     (e) => {
-      if (e.key === "Enter" || e.key === " ") {
-        e.preventDefault();
-        handleRowClick();
+      if (e.target.closest("button") || e.target.closest("[role='menu']")) return;
+      if (isCompleted) {
+        router.push(`/reports/${report.id}`);
       }
     },
-    [handleRowClick]
+    [isCompleted, report.id, router]
   );
 
-  // ── Menu open handler ────────────────────────────────────────────────
-  const handleMenuOpen = useCallback(() => {
-    setMenuOpen((o) => !o);
-  }, []);
-
-  // ── Row icon ─────────────────────────────────────────────────────────
-  const RowIcon = isFailed
-    ? AlertCircle
-    : isProcessing
-    ? Loader2
-    : FileText;
-
-  const iconClass = isFailed
-    ? "text-red-400"
-    : isProcessing
-    ? "text-blue-400 animate-spin"
-    : "text-slate-400";
-
-  // ── Timestamps ───────────────────────────────────────────────────────
-  const relativeTime = formatRelativeTime(report.createdAt);
-  const absoluteTime = formatAbsoluteDate(report.createdAt);
-  const updatedRelative = report.updatedAt ? formatRelativeTime(report.updatedAt) : null;
-
-  // ── Address display ───────────────────────────────────────────────────
-  // Title is "Due Diligence: {address}" — extract address after colon for
-  // cleaner display, or fall back to propertyAddress
-  const displayAddress = report.propertyAddress || report.title || "Unknown property";
-  const displayTitle = report.title || `Report #${report.id}`;
+  const filename = (report.propertyAddress ?? `report-${report.id}`)
+    .replace(/[^a-z0-9]/gi, "-")
+    .toLowerCase();
 
   return (
     <motion.div
       initial={{ opacity: 0, y: 6 }}
       animate={{ opacity: 1, y: 0 }}
+      exit={{ opacity: 0, y: -4 }}
       transition={{ duration: 0.2, delay: animationDelay, ease: "easeOut" }}
-      // `group` enables child group-hover: selectors
-      className={`
-        group relative flex items-center gap-4 px-5 py-4
-        rounded-xl border
-        bg-white/[0.02] hover:bg-white/[0.04]
-        border-white/[0.06] hover:border-white/15
-        transition-all duration-150 cursor-default
-        ${isCompleted ? "cursor-pointer" : ""}
-        focus:outline-none focus-visible:ring-2 focus-visible:ring-emerald-500/40
-      `}
-      onClick={handleRowClick}
-      onKeyDown={handleKeyDown}
-      tabIndex={isCompleted ? 0 : undefined}
-      role={isCompleted ? "link" : undefined}
-      aria-label={isCompleted ? `View report: ${displayTitle}` : displayTitle}
+      layout
+      className={`relative ${menuOpen ? "z-50" : "z-0"}`}
     >
-      {/* ── Left: Row icon ────────────────────────────────────────────── */}
       <div
-        className="flex-shrink-0 flex items-center justify-center w-9 h-9 rounded-lg bg-white/[0.03] border border-white/[0.06]"
-        aria-hidden="true"
-      >
-        <RowIcon size={16} strokeWidth={1.75} className={iconClass} />
-      </div>
-
-      {/* ── Centre: Title + meta ─────────────────────────────────────── */}
-      <div className="flex-1 min-w-0">
-        {/* Title row */}
-        <div className="flex items-center gap-2.5 flex-wrap">
-          <span className="text-sm font-semibold text-slate-100 truncate leading-tight">
-            {displayAddress}
-          </span>
-
-          {/* Version badge */}
-          <span className="flex-shrink-0 text-[10px] font-medium text-slate-400 bg-white/[0.04] border border-white/[0.06] px-1.5 py-0.5 rounded">
-            v{report.version ?? 1}
-          </span>
-
-          {/* Status pill */}
-          <StatusPill status={report.status} config={statusCfg} />
-        </div>
-
-        {/* Meta row */}
-        <div className="flex items-center gap-3 mt-1.5 flex-wrap">
-          {/* Section count (if completed) */}
-          {isCompleted && report.sectionCount > 0 && (
-            <span className="text-xs text-slate-500">
-              {report.sectionCount} sections
-            </span>
-          )}
-
-          {/* Error message (if failed) */}
-          {isFailed && report.errorMessage && (
-            <span className="text-xs text-red-400/80 truncate max-w-xs">
-              {report.errorMessage}
-            </span>
-          )}
-
-          {/* Timestamp */}
-          <span
-            className="flex items-center gap-1 text-xs text-slate-500"
-            title={absoluteTime}
-          >
-            <Clock size={10} strokeWidth={1.75} aria-hidden="true" />
-            <time dateTime={report.createdAt}>{relativeTime}</time>
-          </span>
-
-          {/* Updated (if different from created) */}
-          {updatedRelative && updatedRelative !== relativeTime && (
-            <span className="text-xs text-slate-600">
-              Updated {updatedRelative}
-            </span>
-          )}
-        </div>
-      </div>
-
-      {/* ── Right: Risk badge + inline actions ───────────────────────── */}
-      <div className="flex-shrink-0 flex items-center gap-3">
-        {/* Risk score badge */}
-        <RiskScoreBadge
-          score={report.riskScoreSnapshot}
-          level={report.riskLevelSnapshot}
-          status={report.status}
-          size="md"
-        />
-
-        {/* Inline hover actions — always in DOM, opacity toggled via group-hover */}
-        <InlineActions
-          report={report}
-          onDownloadPdf={onDownloadPdf}
-          onDownloadExcel={onDownloadExcel}
-          onMenuOpen={handleMenuOpen}
-          isExporting={isExporting}
-        />
-      </div>
-
-      {/* ── Context menu (tertiary actions) ──────────────────────────── */}
-      <AnimatePresence>
-        {menuOpen && (
-          <motion.div
-            ref={menuRef}
-            initial={{ opacity: 0, scale: 0.95, y: -4 }}
-            animate={{ opacity: 1, scale: 1, y: 0 }}
-            exit={{ opacity: 0, scale: 0.95, y: -4 }}
-            transition={{ duration: 0.12 }}
-            className="
-              absolute right-4 top-full mt-1.5 z-50
-              w-52 rounded-xl overflow-hidden
-              bg-slate-900/95 backdrop-blur-xl border border-white/10
-              shadow-2xl shadow-black/50
-            "
-            role="menu"
-            aria-label="Report options"
-          >
-            {/* View */}
-            {isCompleted && (
-              <ContextMenuItem
-                icon={ExternalLink}
-                label="View report"
-                onClick={() => {
-                  setMenuOpen(false);
+        onClick={handleRowClick}
+        className={[
+          "group relative flex overflow-visible rounded-2xl border transition-all duration-200 shadow-sm",
+          "bg-white border-gray-100",
+          "dark:bg-[#161b22] dark:border-[#30363d]",
+          "hover:border-gray-200 hover:bg-gray-50/50",
+          "dark:hover:border-[#3a424c] dark:hover:bg-[#1c2128]",
+          "hover:shadow-md",
+          isCompleted ? "cursor-pointer" : "cursor-default",
+        ].join(" ")}
+        role={isCompleted ? "button" : undefined}
+        tabIndex={isCompleted ? 0 : undefined}
+        aria-label={isCompleted ? `View report for ${report.propertyAddress ?? report.title}` : undefined}
+        onKeyDown={
+          isCompleted
+            ? (e) => {
+                if (e.key === "Enter" || e.key === " ") {
+                  e.preventDefault();
                   router.push(`/reports/${report.id}`);
-                }}
-              />
-            )}
-
-            {/* Regenerate */}
-            {(isFailed || isCompleted) && onRegenerate && (
-              <ContextMenuItem
-                icon={RefreshCw}
-                label="Regenerate"
-                onClick={() => {
-                  setMenuOpen(false);
-                  onRegenerate(report.id);
-                }}
-              />
-            )}
-
-            {/* Copy ID */}
-            <ContextMenuItem
-              icon={Copy}
-              label="Copy report ID"
-              onClick={() => {
-                navigator.clipboard
-                  ?.writeText(String(report.id))
-                  .catch(() => {});
-                setMenuOpen(false);
-              }}
-            />
-
-            {/* Divider */}
-            <div className="h-px bg-slate-800/80 my-1" aria-hidden="true" />
-
-            {/* Delete */}
-            {onDelete && (
-              <ContextMenuItem
-                icon={Trash2}
-                label="Delete report"
-                variant="danger"
-                onClick={() => {
-                  setMenuOpen(false);
-                  onDelete(report.id);
-                }}
-              />
-            )}
-          </motion.div>
-        )}
-      </AnimatePresence>
-    </motion.div>
-  );
-}
-
-// ---------------------------------------------------------------------------
-// StatusPill sub-component
-// ---------------------------------------------------------------------------
-
-function StatusPill({ status, config }) {
-  return (
-    <span
-      className={`
-        flex-shrink-0 inline-flex items-center gap-1.5 px-2 py-0.5 rounded-md
-        text-[11px] font-medium border
-        ${config.bg} ${config.border} ${config.text}
-      `}
-      aria-label={`Status: ${config.label}`}
-    >
-      {/* Dot */}
-      <span className="relative flex items-center justify-center w-1.5 h-1.5 flex-shrink-0">
-        {config.pulse && (
-          <span
-            className={`absolute inline-flex w-full h-full rounded-full opacity-50 animate-ping ${config.dot}`}
-            aria-hidden="true"
-          />
-        )}
-        <span
-          className={`relative inline-flex w-1.5 h-1.5 rounded-full ${config.dot}`}
+                }
+              }
+            : undefined
+        }
+      >
+        {/* Risk color left bar */}
+        <div
+          className="flex-shrink-0 w-[3px] self-stretch rounded-l-2xl"
+          style={{ backgroundColor: barColor }}
           aria-hidden="true"
         />
-      </span>
-      {config.label}
-    </span>
-  );
-}
 
-// ---------------------------------------------------------------------------
-// ContextMenuItem sub-component
-// ---------------------------------------------------------------------------
+        <div className="flex items-center gap-3.5 flex-1 min-w-0 px-4 py-3.5">
+          <StatusIconTile status={report.status} />
 
-function ContextMenuItem({ icon: Icon, label, onClick, variant = "default" }) {
-  return (
-    <button
-      type="button"
-      role="menuitem"
-      onClick={onClick}
-      className={`
-        flex items-center gap-3 w-full px-3.5 py-2.5
-        text-sm text-left
-        transition-colors duration-100
-        focus:outline-none focus-visible:bg-slate-800/60
-        ${
-          variant === "danger"
-            ? "text-red-400 hover:text-red-300 hover:bg-red-500/8"
-            : "text-slate-300 hover:text-white hover:bg-slate-800/60"
-        }
-      `}
-    >
-      <Icon size={14} strokeWidth={1.75} aria-hidden="true" />
-      {label}
-    </button>
+          <div className="flex-1 min-w-0 space-y-1.5">
+            <div className="flex items-center gap-2 flex-wrap min-w-0">
+              <span className="text-sm font-semibold text-gray-900 dark:text-[#e6edf3] truncate max-w-[320px] sm:max-w-[440px]">
+                {report.propertyAddress ?? report.title ?? `Report #${report.id}`}
+              </span>
+              <VersionPill version={report.version} />
+              <StatusPill status={report.status} />
+            </div>
+
+            {report.propertyAddress && (
+              <div className="flex items-center gap-1">
+                <MapPin size={11} strokeWidth={2} className="flex-shrink-0 text-gray-400 dark:text-[#6e7681]" aria-hidden="true" />
+                <span className="text-[11px] text-gray-500 dark:text-[#7d8590] truncate">
+                  {report.title ?? report.propertyAddress}
+                </span>
+              </div>
+            )}
+
+            <MetaTrio report={report} />
+          </div>
+
+          <div
+            className="flex items-center gap-2 flex-shrink-0 ml-2"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <RiskScoreBadge
+              score={report.riskScoreSnapshot}
+              status={report.status}
+              size="sm"
+            />
+
+            {isCompleted && (
+              <InlineActions
+                reportId={report.id}
+                filename={filename}
+                onDownloadPdf={onDownloadPdf}
+                onDownloadExcel={onDownloadExcel}
+                isExporting={isExporting}
+              />
+            )}
+
+            <KebabMenuWrapper
+              report={report}
+              onDelete={onDelete}
+              onRegenerate={onRegenerate}
+              onCopyLink={onCopyLink}
+              onOpenChange={setMenuOpen}
+            />
+          </div>
+        </div>
+      </div>
+    </motion.div>
   );
 }

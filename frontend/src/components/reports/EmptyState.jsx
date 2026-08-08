@@ -1,167 +1,125 @@
 // src/components/reports/EmptyState.jsx
 // ---------------------------------------------------------------------------
-// Empty state for filtered/unfiltered report list views.
-// Handles: no reports at all | no results for filter/search
+// Empty state — no-reports / no-results / error variants
+// ✓ Full light/dark mode
+// ✓ Routes to /dashboard/property-search for new report CTA
 // ---------------------------------------------------------------------------
 
 "use client";
 
-import { motion } from "framer-motion";
-import { FileSearch, FilePlus, AlertCircle } from "lucide-react";
 import Link from "next/link";
+import { motion } from "framer-motion";
+import { FileText, Search, AlertTriangle, Plus, RefreshCw } from "lucide-react";
 
-/**
- * @param {{
- *   variant?: "no-reports"|"no-results"|"error",
- *   filterLabel?: string,   // e.g. "Completed" — shown in "No Completed reports"
- *   searchQuery?: string,   // if set, shows search-specific copy
- *   onClearFilters?: () => void,
- * }} props
- */
+const VARIANTS = {
+  "no-reports": {
+    icon: FileText,
+    iconColor: "text-emerald-600 dark:text-emerald-400",
+    iconBg: "bg-emerald-500/10 border-emerald-500/20",
+    title: "No reports yet",
+    description: "Generate your first due diligence report by selecting a property.",
+    primaryLabel: "Create your first report",
+    primaryIcon: Plus,
+    primaryHref: "/dashboard/property-search",
+  },
+  "no-results": {
+    icon: Search,
+    iconColor: "text-slate-600 dark:text-slate-400",
+    iconBg: "bg-slate-100 dark:bg-slate-500/10 border-slate-200 dark:border-slate-500/20",
+    title: "No matching reports",
+    description: "Try adjusting your filters or search query.",
+  },
+  "error": {
+    icon: AlertTriangle,
+    iconColor: "text-red-600 dark:text-red-400",
+    iconBg: "bg-red-500/10 border-red-500/20",
+    title: "Couldn't load reports",
+    description: "Something went wrong. Please try again.",
+    primaryLabel: "Retry",
+    primaryIcon: RefreshCw,
+    primaryOnClick: () => window.location.reload(),
+  },
+};
+
 export default function EmptyState({
-  variant = "no-results",
-  filterLabel = "",
-  searchQuery = "",
+  variant = "no-reports",
+  filterLabel,
+  searchQuery,
   onClearFilters,
 }) {
-  const config = {
-    "no-reports": {
-      Icon: FilePlus,
-      iconColor: "text-emerald-400",
-      iconBg: "bg-emerald-500/8",
-      iconBorder: "border-emerald-500/20",
-      title: "No reports yet",
-      subtitle:
-        "Generate your first due diligence report to get started. Analysis takes about 30 seconds.",
-      cta: (
-        <Link
-          href="/generate"
-          className="
-            inline-flex items-center gap-2 px-4 py-2 rounded-lg
-            bg-emerald-500 hover:bg-emerald-400
-            text-slate-950 text-sm font-semibold
-            transition-colors duration-150
-            focus:outline-none focus-visible:ring-2 focus-visible:ring-emerald-500/50
-          "
-        >
-          <FilePlus size={14} strokeWidth={2} aria-hidden="true" />
-          Generate first report
-        </Link>
-      ),
-    },
-    "no-results": {
-      Icon: FileSearch,
-      iconColor: "text-slate-400",
-      iconBg: "bg-slate-800/40",
-      iconBorder: "border-slate-700/40",
-      title: searchQuery
-        ? `No results for "${searchQuery}"`
-        : filterLabel
-        ? `No ${filterLabel.toLowerCase()} reports`
-        : "No reports match your filters",
-      subtitle: searchQuery
-        ? "Try a different search term or clear your filters to see all reports."
-        : filterLabel
-        ? `You don't have any ${filterLabel.toLowerCase()} reports yet. Try a different filter or generate a new report.`
-        : "Try adjusting your filters or search to find what you're looking for.",
-      cta: (
-        <div className="flex items-center gap-3">
-          {onClearFilters && (
-            <button
-              type="button"
-              onClick={onClearFilters}
-              className="
-                inline-flex items-center gap-2 px-4 py-2 rounded-lg
-                bg-slate-800 hover:bg-slate-700
-                text-slate-300 hover:text-white text-sm font-medium
-                border border-slate-700/60 hover:border-slate-600
-                transition-all duration-150
-                focus:outline-none focus-visible:ring-2 focus-visible:ring-emerald-500/50
-              "
-            >
-              Clear filters
-            </button>
-          )}
-          <Link
-            href="/generate"
-            className="
-              inline-flex items-center gap-2 px-4 py-2 rounded-lg
-              bg-emerald-500/10 hover:bg-emerald-500/20
-              text-emerald-400 hover:text-emerald-300 text-sm font-medium
-              border border-emerald-500/20 hover:border-emerald-500/30
-              transition-all duration-150
-              focus:outline-none focus-visible:ring-2 focus-visible:ring-emerald-500/50
-            "
-          >
-            <FilePlus size={14} strokeWidth={1.75} aria-hidden="true" />
-            New report
-          </Link>
-        </div>
-      ),
-    },
-    error: {
-      Icon: AlertCircle,
-      iconColor: "text-red-400",
-      iconBg: "bg-red-500/8",
-      iconBorder: "border-red-500/20",
-      title: "Failed to load reports",
-      subtitle:
-        "Something went wrong while fetching your reports. Please refresh the page.",
-      cta: (
-        <button
-          type="button"
-          onClick={() => window.location.reload()}
-          className="
-            inline-flex items-center gap-2 px-4 py-2 rounded-lg
-            bg-slate-800 hover:bg-slate-700
-            text-slate-300 hover:text-white text-sm font-medium
-            border border-slate-700/60 hover:border-slate-600
-            transition-all duration-150
-            focus:outline-none focus-visible:ring-2 focus-visible:ring-emerald-500/50
-          "
-        >
-          Refresh page
-        </button>
-      ),
-    },
-  };
+  const v = VARIANTS[variant] ?? VARIANTS["no-reports"];
+  const Icon = v.icon;
+  const PrimaryIcon = v.primaryIcon;
 
-  const { Icon, iconColor, iconBg, iconBorder, title, subtitle, cta } =
-    config[variant] ?? config["no-results"];
+  // Custom description for no-results
+  let description = v.description;
+  if (variant === "no-results") {
+    if (filterLabel && searchQuery) {
+      description = `No ${filterLabel} reports match "${searchQuery}".`;
+    } else if (filterLabel) {
+      description = `No reports with status "${filterLabel}".`;
+    } else if (searchQuery) {
+      description = `No reports match "${searchQuery}".`;
+    }
+  }
 
   return (
     <motion.div
       initial={{ opacity: 0, y: 8 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.25, ease: "easeOut" }}
-      className="flex flex-col items-center justify-center py-20 px-6 text-center"
-      role="status"
-      aria-live="polite"
+      className="flex flex-col items-center justify-center text-center px-6 py-16 rounded-2xl border border-dashed border-slate-300 dark:border-white/10 bg-slate-50/50 dark:bg-white/[0.015]"
     >
-      {/* Icon container */}
+      {/* Icon */}
       <div
-        className={`
-          flex items-center justify-center w-16 h-16 rounded-2xl mb-5
-          border ${iconBg} ${iconBorder}
-        `}
+        className={`flex items-center justify-center w-14 h-14 rounded-2xl border ${v.iconBg} mb-4`}
         aria-hidden="true"
       >
-        <Icon size={28} strokeWidth={1.5} className={iconColor} />
+        <Icon size={26} strokeWidth={1.5} className={v.iconColor} />
       </div>
 
       {/* Title */}
-      <h3 className="text-base font-semibold text-slate-100 mb-2 tracking-tight">
-        {title}
+      <h3 className="text-base font-semibold text-slate-900 dark:text-slate-100 mb-1.5">
+        {v.title}
       </h3>
 
-      {/* Subtitle */}
-      <p className="text-sm text-slate-400 leading-relaxed max-w-sm mb-6">
-        {subtitle}
+      {/* Description */}
+      <p className="text-sm text-slate-600 dark:text-slate-400 max-w-md leading-relaxed mb-6">
+        {description}
       </p>
 
-      {/* CTA(s) */}
-      <div className="flex items-center gap-3 flex-wrap justify-center">
-        {cta}
+      {/* Actions */}
+      <div className="flex items-center gap-2.5 flex-wrap justify-center">
+        {variant === "no-results" && onClearFilters && (
+          <button
+            type="button"
+            onClick={onClearFilters}
+            className="flex items-center gap-2 h-9 px-4 rounded-lg bg-white dark:bg-white/[0.03] border border-slate-200 dark:border-white/10 text-sm text-slate-700 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white hover:bg-slate-50 dark:hover:bg-white/[0.06] hover:border-slate-300 dark:hover:border-white/20 transition-all duration-150 focus:outline-none focus-visible:ring-2 focus-visible:ring-emerald-500/50"
+          >
+            Clear filters
+          </button>
+        )}
+
+        {v.primaryHref && (
+          <Link
+            href={v.primaryHref}
+            className="flex items-center gap-2 h-9 px-4 rounded-lg bg-emerald-500 hover:bg-emerald-400 text-slate-950 text-sm font-semibold shadow-md shadow-emerald-900/30 transition-all duration-150 focus:outline-none focus-visible:ring-2 focus-visible:ring-emerald-400/60"
+          >
+            {PrimaryIcon && <PrimaryIcon size={14} strokeWidth={2.5} aria-hidden="true" />}
+            {v.primaryLabel}
+          </Link>
+        )}
+
+        {v.primaryOnClick && (
+          <button
+            type="button"
+            onClick={v.primaryOnClick}
+            className="flex items-center gap-2 h-9 px-4 rounded-lg bg-emerald-500 hover:bg-emerald-400 text-slate-950 text-sm font-semibold shadow-md shadow-emerald-900/30 transition-all duration-150 focus:outline-none focus-visible:ring-2 focus-visible:ring-emerald-400/60"
+          >
+            {PrimaryIcon && <PrimaryIcon size={14} strokeWidth={2.5} aria-hidden="true" />}
+            {v.primaryLabel}
+          </button>
+        )}
       </div>
     </motion.div>
   );

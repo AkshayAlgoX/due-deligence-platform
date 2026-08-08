@@ -1,52 +1,29 @@
 // src/components/reports/FilterBar.jsx
-// ---------------------------------------------------------------------------
-// Search + status filter chips + sort dropdown + results count
-// All state driven by props — page.jsx owns the state
-// ---------------------------------------------------------------------------
+// Dashboard design tokens
 
 "use client";
 
-import { useRef, useState, useEffect, useCallback } from "react";
-import { Search, X, ChevronDown, Check } from "lucide-react";
+import { useState, useRef, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
+import { Search, ChevronDown, X, Check } from "lucide-react";
 
-// ---------------------------------------------------------------------------
-// Constants
-// ---------------------------------------------------------------------------
-
-export const STATUS_FILTERS = [
-  { key: "ALL", label: "All" },
-  { key: "COMPLETED", label: "Completed" },
-  { key: "GENERATING", label: "Generating" },
-  { key: "PENDING", label: "Pending" },
-  { key: "FAILED", label: "Failed" },
+const STATUS_CHIPS = [
+  { key: "ALL", label: "All", dot: "bg-gray-500 dark:bg-[#7d8590]" },
+  { key: "COMPLETED", label: "Completed", dot: "bg-[#22C55E]" },
+  { key: "GENERATING", label: "Generating", dot: "bg-blue-500" },
+  { key: "PENDING", label: "Pending", dot: "bg-amber-500" },
+  { key: "FAILED", label: "Failed", dot: "bg-red-500" },
 ];
 
-export const SORT_OPTIONS = [
+const SORT_OPTIONS = [
   { key: "newest", label: "Newest first" },
   { key: "oldest", label: "Oldest first" },
   { key: "risk-high", label: "Highest risk" },
   { key: "risk-low", label: "Lowest risk" },
-  { key: "address-az", label: "Address A–Z" },
-  { key: "address-za", label: "Address Z–A" },
+  { key: "address-az", label: "Address (A–Z)" },
+  { key: "address-za", label: "Address (Z–A)" },
 ];
 
-// ---------------------------------------------------------------------------
-// Main component
-// ---------------------------------------------------------------------------
-
-/**
- * @param {{
- *   searchQuery: string,
- *   onSearchChange: (q: string) => void,
- *   activeStatus: string,
- *   onStatusChange: (status: string) => void,
- *   sortKey: string,
- *   onSortChange: (key: string) => void,
- *   totalCount: number,
- *   filteredCount: number,
- * }} props
- */
 export default function FilterBar({
   searchQuery,
   onSearchChange,
@@ -57,267 +34,153 @@ export default function FilterBar({
   totalCount,
   filteredCount,
 }) {
-  const searchRef = useRef(null);
   const [sortOpen, setSortOpen] = useState(false);
-  const sortButtonRef = useRef(null);
-  const sortMenuRef = useRef(null);
+  const sortRef = useRef(null);
 
-  // Close sort dropdown on outside click
   useEffect(() => {
     if (!sortOpen) return;
-    function handleClick(e) {
-      if (
-        sortMenuRef.current &&
-        !sortMenuRef.current.contains(e.target) &&
-        sortButtonRef.current &&
-        !sortButtonRef.current.contains(e.target)
-      ) {
+    function handle(e) {
+      if (sortRef.current && !sortRef.current.contains(e.target)) {
         setSortOpen(false);
       }
     }
-    document.addEventListener("mousedown", handleClick);
-    return () => document.removeEventListener("mousedown", handleClick);
+    document.addEventListener("mousedown", handle);
+    return () => document.removeEventListener("mousedown", handle);
   }, [sortOpen]);
 
-  // Close sort dropdown on Escape
-  useEffect(() => {
-    if (!sortOpen) return;
-    function handleKey(e) {
-      if (e.key === "Escape") setSortOpen(false);
-    }
-    document.addEventListener("keydown", handleKey);
-    return () => document.removeEventListener("keydown", handleKey);
-  }, [sortOpen]);
-
-  const activeSortLabel =
-    SORT_OPTIONS.find((o) => o.key === sortKey)?.label ?? "Newest first";
-
-  const hasActiveFilter = activeStatus !== "ALL" || searchQuery.trim().length > 0;
-
-  // Results summary text
-  const resultsSummary = (() => {
-    if (!hasActiveFilter) return `Showing all ${totalCount} reports`;
-    const parts = [];
-    if (activeStatus !== "ALL") {
-      const label = STATUS_FILTERS.find((f) => f.key === activeStatus)?.label;
-      if (label) parts.push(label);
-    }
-    if (searchQuery.trim()) parts.push(`"${searchQuery.trim()}"`);
-    const filterSummary = parts.length ? ` · Filtered: ${parts.join(", ")}` : "";
-    return `Showing ${filteredCount} of ${totalCount} reports${filterSummary}`;
-  })();
-
-  const handleClearSearch = useCallback(() => {
-    onSearchChange("");
-    searchRef.current?.focus();
-  }, [onSearchChange]);
+  const currentSort = SORT_OPTIONS.find((s) => s.key === sortKey) ?? SORT_OPTIONS[0];
+  const hasQuery = searchQuery && searchQuery.length > 0;
 
   return (
-    <div className="flex flex-col gap-3">
-      {/* ── Row 1: Search + Sort ───────────────────────────────────── */}
+    <div className="space-y-3">
+      {/* Row 1: search + sort */}
       <div className="flex items-center gap-3 flex-wrap sm:flex-nowrap">
-        {/* Search input */}
-        <div className="relative flex-1 min-w-0">
+        {/* Search */}
+        <div className="relative flex-1 min-w-[220px]">
           <Search
-            size={14}
-            className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-500 pointer-events-none"
+            size={15}
+            strokeWidth={2}
+            className="absolute left-3.5 top-1/2 -translate-y-1/2 text-gray-400 dark:text-[#6e7681] pointer-events-none"
             aria-hidden="true"
           />
           <input
-            ref={searchRef}
             type="search"
             value={searchQuery}
             onChange={(e) => onSearchChange(e.target.value)}
             placeholder="Search by address or title…"
             aria-label="Search reports"
-            className="
-              w-full h-9 pl-9 pr-8 rounded-lg
-              bg-white/[0.03] border border-white/10
-              text-sm text-slate-100 placeholder:text-slate-500
-              focus:outline-none focus:border-white/25 focus:bg-white/[0.05]
-              transition-colors duration-150
-            "
+            className="w-full h-10 pl-10 pr-10 rounded-xl text-sm bg-white dark:bg-[#161b22] border border-gray-200 dark:border-[#30363d] text-gray-900 dark:text-[#e6edf3] placeholder:text-gray-400 dark:placeholder:text-[#6e7681] hover:border-gray-300 dark:hover:border-[#3a424c] focus:outline-none focus:border-[#22C55E]/60 dark:focus:border-green-400/60 focus:ring-2 focus:ring-[#22C55E]/20 dark:focus:ring-green-400/20 transition-all duration-150"
           />
-          {/* Clear button */}
-          <AnimatePresence>
-            {searchQuery && (
-              <motion.button
-                initial={{ opacity: 0, scale: 0.8 }}
-                animate={{ opacity: 1, scale: 1 }}
-                exit={{ opacity: 0, scale: 0.8 }}
-                transition={{ duration: 0.1 }}
-                type="button"
-                onClick={handleClearSearch}
-                aria-label="Clear search"
-                className="
-                  absolute right-2.5 top-1/2 -translate-y-1/2
-                  flex items-center justify-center w-4 h-4 rounded-full
-                  text-slate-500 hover:text-slate-300
-                  transition-colors duration-150
-                "
-              >
-                <X size={11} strokeWidth={2.5} aria-hidden="true" />
-              </motion.button>
-            )}
-          </AnimatePresence>
+          {hasQuery && (
+            <button
+              type="button"
+              onClick={() => onSearchChange("")}
+              aria-label="Clear search"
+              className="absolute right-2 top-1/2 -translate-y-1/2 flex items-center justify-center w-6 h-6 rounded-md text-gray-400 hover:text-gray-700 dark:hover:text-[#e6edf3] hover:bg-gray-100 dark:hover:bg-[#1c2128] transition-all duration-150"
+            >
+              <X size={13} strokeWidth={2} />
+            </button>
+          )}
         </div>
 
-        {/* Sort dropdown */}
-        <div className="relative flex-shrink-0">
+        {/* Sort */}
+        <div className="relative flex-shrink-0" ref={sortRef}>
           <button
-            ref={sortButtonRef}
             type="button"
-            onClick={() => setSortOpen((o) => !o)}
+            onClick={() => setSortOpen((v) => !v)}
             aria-haspopup="listbox"
             aria-expanded={sortOpen}
-            aria-label={`Sort: ${activeSortLabel}`}
-            className="
-              flex items-center gap-2 h-9 px-3 rounded-lg
-              bg-white/[0.03] border border-white/10
-              text-sm text-slate-200 hover:text-white
-              hover:bg-white/[0.06] hover:border-white/20
-              transition-all duration-150
-              focus:outline-none focus-visible:ring-2 focus-visible:ring-emerald-500/50
-              whitespace-nowrap
-            "
+            aria-label={`Sort: ${currentSort.label}`}
+            className="flex items-center gap-2 h-10 px-3.5 rounded-xl bg-white dark:bg-[#161b22] border border-gray-200 dark:border-[#30363d] text-sm text-gray-700 dark:text-[#e6edf3] hover:bg-gray-50 dark:hover:bg-[#1c2128] hover:border-gray-300 dark:hover:border-[#3a424c] transition-all duration-150 focus:outline-none focus-visible:ring-2 focus-visible:ring-[#22C55E]/50"
           >
-            <span className="text-slate-500 text-xs font-medium">Sort:</span>
-            <span>{activeSortLabel}</span>
+            <span className="text-gray-500 dark:text-[#7d8590] text-[13px]">Sort:</span>
+            <span className="font-medium">{currentSort.label}</span>
             <ChevronDown
-              size={12}
+              size={13}
               strokeWidth={2}
-              className={`text-slate-500 transition-transform duration-150 ${
-                sortOpen ? "rotate-180" : ""
-              }`}
+              className={`text-gray-500 dark:text-[#7d8590] transition-transform duration-150 ${sortOpen ? "rotate-180" : ""}`}
               aria-hidden="true"
             />
           </button>
 
-          {/* Sort dropdown menu */}
           <AnimatePresence>
             {sortOpen && (
               <motion.div
-                ref={sortMenuRef}
-                initial={{ opacity: 0, y: -4, scale: 0.97 }}
-                animate={{ opacity: 1, y: 0, scale: 1 }}
-                exit={{ opacity: 0, y: -4, scale: 0.97 }}
+                initial={{ opacity: 0, scale: 0.96, y: -4 }}
+                animate={{ opacity: 1, scale: 1, y: 0 }}
+                exit={{ opacity: 0, scale: 0.96, y: -4 }}
                 transition={{ duration: 0.12 }}
                 role="listbox"
-                aria-label="Sort options"
-                className="
-                  absolute right-0 top-full mt-1.5 z-50
-                  w-48 rounded-xl overflow-hidden
-                  bg-slate-900/95 backdrop-blur-xl border border-white/10
-                  shadow-2xl shadow-black/50
-                "
+                className="absolute right-0 top-11 z-50 w-52 rounded-xl border border-gray-200 dark:border-[#30363d] bg-white dark:bg-[#1c2128] shadow-xl overflow-hidden"
               >
-                {SORT_OPTIONS.map((opt) => (
-                  <button
-                    key={opt.key}
-                    type="button"
-                    role="option"
-                    aria-selected={sortKey === opt.key}
-                    onClick={() => {
-                      onSortChange(opt.key);
-                      setSortOpen(false);
-                    }}
-                    className={`
-                      flex items-center justify-between w-full px-3.5 py-2.5
-                      text-sm text-left
-                      transition-colors duration-100
-                      ${
-                        sortKey === opt.key
-                          ? "text-emerald-400 bg-emerald-500/8"
-                          : "text-slate-300 hover:text-white hover:bg-slate-800/60"
-                      }
-                    `}
-                  >
-                    {opt.label}
-                    {sortKey === opt.key && (
-                      <Check
-                        size={13}
-                        strokeWidth={2.5}
-                        className="text-emerald-400"
-                        aria-hidden="true"
-                      />
-                    )}
-                  </button>
-                ))}
+                {SORT_OPTIONS.map((opt) => {
+                  const isSelected = opt.key === sortKey;
+                  return (
+                    <button
+                      key={opt.key}
+                      type="button"
+                      role="option"
+                      aria-selected={isSelected}
+                      onClick={() => {
+                        onSortChange(opt.key);
+                        setSortOpen(false);
+                      }}
+                      className={[
+                        "w-full flex items-center justify-between gap-2 px-3.5 py-2.5 text-sm transition-colors duration-100",
+                        isSelected
+                          ? "bg-[#edf7f3] dark:bg-[#0d2818] text-[#16a34a] dark:text-green-400 font-medium"
+                          : "text-gray-700 dark:text-[#e6edf3] hover:bg-gray-50 dark:hover:bg-[#22282f]",
+                      ].join(" ")}
+                    >
+                      <span>{opt.label}</span>
+                      {isSelected && (
+                        <Check size={14} strokeWidth={2.5} className="text-[#16a34a] dark:text-green-400" />
+                      )}
+                    </button>
+                  );
+                })}
               </motion.div>
             )}
           </AnimatePresence>
         </div>
       </div>
 
-      {/* ── Row 2: Status filter chips ─────────────────────────────── */}
-      <div
-        className="flex items-center gap-1.5 overflow-x-auto pb-0.5 scrollbar-none"
-        role="group"
-        aria-label="Filter by status"
-      >
-        {STATUS_FILTERS.map((filter) => {
-          const isActive = activeStatus === filter.key;
+      {/* Row 2: status chips */}
+      <div className="flex items-center gap-2 flex-wrap">
+        {STATUS_CHIPS.map((chip) => {
+          const isActive = activeStatus === chip.key;
           return (
             <button
-              key={filter.key}
+              key={chip.key}
               type="button"
-              onClick={() => onStatusChange(filter.key)}
+              onClick={() => onStatusChange(chip.key)}
               aria-pressed={isActive}
-              className={`
-                flex items-center gap-1.5 px-3 py-1.5 rounded-lg
-                text-xs font-medium whitespace-nowrap flex-shrink-0
-                border transition-all duration-150
-                focus:outline-none focus-visible:ring-2 focus-visible:ring-emerald-500/50
-                ${
-                  isActive
-                    ? "bg-emerald-500/12 border-emerald-500/30 text-emerald-400"
-                    : "bg-white/[0.02] border-white/[0.06] text-slate-400 hover:text-slate-100 hover:border-white/15 hover:bg-white/[0.04]"
-                }
-              `}
+              className={[
+                "flex items-center gap-1.5 h-8 px-3 rounded-full border text-[12px] font-medium transition-all duration-150",
+                "focus:outline-none focus-visible:ring-2 focus-visible:ring-[#22C55E]/50",
+                isActive
+                  ? "bg-gray-900 dark:bg-[#e6edf3] text-white dark:text-[#0d1117] border-gray-900 dark:border-[#e6edf3] shadow-sm"
+                  : "bg-white dark:bg-[#161b22] text-gray-700 dark:text-[#e6edf3] border-gray-200 dark:border-[#30363d] hover:bg-gray-50 dark:hover:bg-[#1c2128] hover:border-gray-300 dark:hover:border-[#3a424c]",
+              ].join(" ")}
             >
-              {/* Status dot — pulses for active processing states */}
-              <StatusDot status={filter.key} isChipActive={isActive} />
-              {filter.label}
+              <span className={`w-1.5 h-1.5 rounded-full flex-shrink-0 ${chip.dot}`} />
+              {chip.label}
             </button>
           );
         })}
       </div>
 
-      {/* ── Row 3: Results count ───────────────────────────────────── */}
-      <p className="text-xs text-slate-500 leading-none" aria-live="polite" aria-atomic="true">
-        {resultsSummary}
-      </p>
+      {/* Row 3: result count */}
+      <div className="text-[12px] text-gray-500 dark:text-[#7d8590]">
+        {filteredCount === totalCount ? (
+          <span>Showing all <span className="text-gray-800 dark:text-[#e6edf3] font-medium">{totalCount}</span> reports</span>
+        ) : (
+          <span>
+            Showing <span className="text-gray-800 dark:text-[#e6edf3] font-medium">{filteredCount}</span> of{" "}
+            <span className="text-gray-800 dark:text-[#e6edf3] font-medium">{totalCount}</span> reports
+          </span>
+        )}
+      </div>
     </div>
-  );
-}
-
-// ---------------------------------------------------------------------------
-// Sub-component: status dot (with pulse for GENERATING/PENDING)
-// ---------------------------------------------------------------------------
-
-function StatusDot({ status, isChipActive }) {
-  const dotColor = {
-    ALL: "bg-slate-500",
-    COMPLETED: "bg-emerald-400",
-    GENERATING: "bg-blue-400",
-    PENDING: "bg-amber-400",
-    FAILED: "bg-red-400",
-  }[status] ?? "bg-slate-500";
-
-  const shouldPulse = (status === "GENERATING" || status === "PENDING") && isChipActive;
-
-  return (
-    <span className="relative flex items-center justify-center w-2 h-2 flex-shrink-0">
-      {shouldPulse && (
-        <span
-          className={`absolute inline-flex w-full h-full rounded-full opacity-60 animate-ping ${dotColor}`}
-          aria-hidden="true"
-        />
-      )}
-      <span
-        className={`relative inline-flex w-1.5 h-1.5 rounded-full ${dotColor}`}
-        aria-hidden="true"
-      />
-    </span>
   );
 }

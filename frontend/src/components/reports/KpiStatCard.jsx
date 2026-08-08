@@ -1,155 +1,110 @@
 // src/components/reports/KpiStatCard.jsx
-// ---------------------------------------------------------------------------
-// Redesigned KPI card — icon + label + big number + delta indicator
-// Replaces the inline StatChip from page.jsx
-// ---------------------------------------------------------------------------
+// Premium filled icon tiles — matches Export History EXCEL/PDF badge DNA
 
 "use client";
 
 import { motion } from "framer-motion";
 
-/**
- * @param {{
- *   label: string,
- *   value: number,
- *   icon: React.ComponentType<{ size?: number, strokeWidth?: number, className?: string }>,
- *   color?: "emerald"|"blue"|"amber"|"red"|"slate",
- *   delta?: number|null,       // +3 = "+3 this week ▲", -1 = "-1 this week ▼"
- *   deltaLabel?: string,       // defaults to "this week"
- *   isActive?: boolean,        // true when this card's filter is selected
- *   onClick?: () => void,
- * }} props
- */
+const COLOR_MAP = {
+  slate: {
+    // Neutral — subtle grey (Total)
+    iconBg: "bg-gray-100 dark:bg-[#1c2128]",
+    iconBorder: "border-gray-200 dark:border-[#30363d]",
+    iconText: "text-gray-600 dark:text-[#7d8590]",
+    valueText: "text-gray-900 dark:text-[#e6edf3]",
+    activeBorder: "border-gray-400 dark:border-[#7d8590]",
+  },
+  emerald: {
+    // Green filled — like EXCEL badge
+    iconBg: "bg-[#dcfce7] dark:bg-green-500/[0.15]",
+    iconBorder: "border-[#22C55E]/40 dark:border-green-400/40",
+    iconText: "text-[#16a34a] dark:text-green-400",
+    valueText: "text-[#16a34a] dark:text-green-400",
+    activeBorder: "border-[#22C55E]/60 dark:border-green-400/60",
+  },
+  blue: {
+    // Blue filled — matching the same DNA
+    iconBg: "bg-blue-100 dark:bg-blue-500/[0.15]",
+    iconBorder: "border-blue-500/40 dark:border-blue-400/40",
+    iconText: "text-blue-600 dark:text-blue-400",
+    valueText: "text-blue-600 dark:text-blue-400",
+    activeBorder: "border-blue-500/60 dark:border-blue-400/60",
+  },
+  red: {
+    // Red filled — like PDF badge
+    iconBg: "bg-red-100 dark:bg-red-500/[0.15]",
+    iconBorder: "border-red-500/40 dark:border-red-400/40",
+    iconText: "text-red-600 dark:text-red-400",
+    valueText: "text-red-600 dark:text-red-400",
+    activeBorder: "border-red-500/60 dark:border-red-400/60",
+  },
+};
+
 export default function KpiStatCard({
   label,
   value,
   icon: Icon,
   color = "slate",
-  delta = null,
-  deltaLabel = "this week",
-  isActive = false,
   onClick,
+  isActive = false,
+  delta,
 }) {
-  const colorMap = {
-    emerald: {
-      icon: "text-emerald-400",
-      iconBg: "bg-emerald-500/10",
-      value: "text-emerald-400",
-      activeBorder: "border-emerald-500/50",
-      activeGlow: "shadow-emerald-500/10",
-    },
-    blue: {
-      icon: "text-blue-400",
-      iconBg: "bg-blue-500/10",
-      value: "text-blue-400",
-      activeBorder: "border-blue-500/50",
-      activeGlow: "shadow-blue-500/10",
-    },
-    amber: {
-      icon: "text-amber-400",
-      iconBg: "bg-amber-500/10",
-      value: "text-amber-400",
-      activeBorder: "border-amber-500/50",
-      activeGlow: "shadow-amber-500/10",
-    },
-    red: {
-      icon: "text-red-400",
-      iconBg: "bg-red-500/10",
-      value: "text-red-400",
-      activeBorder: "border-red-500/50",
-      activeGlow: "shadow-red-500/10",
-    },
-    slate: {
-      icon: "text-slate-400",
-      iconBg: "bg-slate-700/40",
-      value: "text-slate-100",
-      activeBorder: "border-slate-500/50",
-      activeGlow: "shadow-slate-500/10",
-    },
-  };
-
-  const c = colorMap[color] ?? colorMap.slate;
-
-  const deltaPositive = delta !== null && delta > 0;
-  const deltaNeutral = delta === null || delta === 0;
-  const deltaText = deltaNeutral
-    ? null
-    : `${deltaPositive ? "+" : ""}${delta} ${deltaLabel} ${deltaPositive ? "▲" : "▼"}`;
-
-  const isClickable = typeof onClick === "function";
+  const c = COLOR_MAP[color] ?? COLOR_MAP.slate;
 
   return (
-    <motion.div
-      whileHover={isClickable ? { y: -1 } : undefined}
+    <motion.button
+      type="button"
+      onClick={onClick}
+      whileHover={{ y: -2 }}
+      whileTap={{ scale: 0.98 }}
       transition={{ duration: 0.15 }}
-      onClick={isClickable ? onClick : undefined}
-      role={isClickable ? "button" : undefined}
-      tabIndex={isClickable ? 0 : undefined}
-      onKeyDown={
-        isClickable
-          ? (e) => (e.key === "Enter" || e.key === " ") && onClick()
-          : undefined
-      }
-      aria-pressed={isClickable ? isActive : undefined}
-      className={`
-        relative flex flex-col gap-3 p-4 rounded-xl border
-        bg-white/[0.02] backdrop-blur-sm
-        transition-all duration-200
-        ${isClickable ? "cursor-pointer select-none" : ""}
-        ${
-          isActive
-            ? `border-white/20 shadow-lg ${c.activeGlow}`
-            : "border-white/[0.06] hover:border-white/15 hover:bg-white/[0.04]"
-        }
-        focus:outline-none focus-visible:ring-2 focus-visible:ring-emerald-500/50
-      `}
+      className={[
+        "group relative flex flex-col items-start justify-between gap-2 w-full min-h-[116px] px-4 py-3.5 rounded-2xl border text-left transition-all duration-200 shadow-sm",
+        "bg-white dark:bg-[#161b22]",
+        "hover:bg-gray-50 dark:hover:bg-[#1c2128]",
+        "focus:outline-none focus-visible:ring-2 focus-visible:ring-[#22C55E]/50",
+        isActive
+          ? `${c.activeBorder} shadow-md`
+          : "border-gray-100 dark:border-[#30363d] hover:border-gray-200 dark:hover:border-[#3a424c]",
+      ].join(" ")}
+      aria-pressed={isActive}
+      aria-label={`Filter by ${label}: ${value}`}
     >
-      {/* Active indicator strip */}
-      {isActive && (
-        <div
-          className={`absolute top-0 left-0 right-0 h-0.5 rounded-t-xl ${c.activeBorder} bg-gradient-to-r from-transparent via-current to-transparent opacity-60`}
-          aria-hidden="true"
-        />
-      )}
-
-      {/* Top row — icon + label */}
-      <div className="flex items-center gap-2.5">
-        <div
-          className={`flex items-center justify-center w-7 h-7 rounded-lg ${c.iconBg} flex-shrink-0`}
-          aria-hidden="true"
-        >
-          <Icon size={14} strokeWidth={1.75} className={c.icon} />
-        </div>
-        <span className="text-xs font-medium text-slate-400 uppercase tracking-wider leading-none">
+      {/* Row 1: filled icon tile + label */}
+      <div className="flex items-center gap-2.5 w-full">
+        {Icon && (
+          <div
+            className={`flex-shrink-0 flex items-center justify-center w-9 h-9 rounded-xl border ${c.iconBg} ${c.iconBorder}`}
+            aria-hidden="true"
+          >
+            <Icon
+              size={16}
+              strokeWidth={2.25}
+              className={`${c.iconText} ${color === "blue" && label === "In Progress" ? "animate-spin" : ""}`}
+            />
+          </div>
+        )}
+        <span className="text-[11px] font-semibold uppercase tracking-wider text-gray-500 dark:text-[#7d8590]">
           {label}
         </span>
       </div>
 
-      {/* Middle — big number */}
-      <div className="flex items-end gap-2">
-        <span
-          className={`text-3xl font-bold leading-none tabular-nums tracking-tight ${c.value}`}
-        >
-          {value ?? 0}
+      {/* Row 2: big value + sub-label */}
+      <div className="flex flex-col gap-1 w-full">
+        <div className="flex items-baseline gap-2">
+          <span className={`text-[30px] font-bold tabular-nums leading-none ${c.valueText}`}>
+            {value ?? 0}
+          </span>
+          {delta && (
+            <span className="text-[11px] font-medium text-gray-500 dark:text-[#7d8590]">
+              {delta}
+            </span>
+          )}
+        </div>
+        <span className="text-[11px] text-gray-400 dark:text-[#6e7681]">
+          Last 7 days
         </span>
       </div>
-
-      {/* Bottom — delta indicator */}
-      <div className="h-4 flex items-center">
-        {deltaText ? (
-          <span
-            className={`text-xs font-medium leading-none ${
-              deltaPositive ? "text-emerald-400" : "text-red-400"
-            }`}
-          >
-            {deltaText}
-          </span>
-        ) : (
-          <span className="text-xs text-slate-600 leading-none">
-            Last 7 days
-          </span>
-        )}
-      </div>
-    </motion.div>
+    </motion.button>
   );
 }
