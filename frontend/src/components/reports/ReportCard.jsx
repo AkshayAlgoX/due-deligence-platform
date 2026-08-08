@@ -164,7 +164,7 @@ export default function ReportCard({ report, onDelete, deleting = false }) {
   const CardWrapper = isCompleted ? Link : "div";
   const wrapperProps = isCompleted ? { href: `/reports/${report.id}` } : {};
 
-  return (
+   return (
     <motion.div
       layout
       initial={{ opacity: 0, y: 6 }}
@@ -182,11 +182,14 @@ export default function ReportCard({ report, onDelete, deleting = false }) {
         ${deleting ? "opacity-50 pointer-events-none" : ""}
       `}
     >
-      <CardWrapper
-        {...wrapperProps}
-        className={`block p-5 ${isCompleted ? "cursor-pointer" : ""}`}
-      >
-        <div className="flex items-start gap-4">
+      <div className="flex items-start gap-4 p-5">
+        {/* ── LEFT + MIDDLE wrapped in Link (navigable content) ── */}
+        <CardWrapper
+          {...wrapperProps}
+          className={`flex items-start gap-4 flex-1 min-w-0 ${
+            isCompleted ? "cursor-pointer" : ""
+          }`}
+        >
           {/* ── Left: Status icon ── */}
           <div
             className="w-11 h-11 rounded-lg flex items-center justify-center flex-shrink-0 transition-transform group-hover:scale-105"
@@ -301,88 +304,88 @@ export default function ReportCard({ report, onDelete, deleting = false }) {
               )}
             </div>
           </div>
+        </CardWrapper>
 
-          {/* ── Right: Hover indicator + Kebab ── */}
-          <div className="flex items-center gap-1 flex-shrink-0">
-            {/* Subtle "navigate away" indicator — Linear/Vercel pattern */}
-            {isCompleted && (
-              <div
-                className="opacity-0 group-hover:opacity-100 transition-opacity duration-200 pr-1"
-                aria-hidden="true"
-              >
-                <ArrowUpRight
-                  className="w-4 h-4 text-gray-400 dark:text-[#7d8590]"
-                  strokeWidth={2.25}
-                />
-              </div>
-            )}
-
-            {/* Kebab menu — button stays here, dropdown portaled to body */}
-            <div className="relative">
-              <button
-                ref={buttonRef}
-                type="button"
-                onClick={handleMenuToggle}
-                aria-label={t("report.card.moreActions", "More actions")}
-                aria-expanded={menuOpen}
-                className="p-1.5 rounded-lg text-gray-400 dark:text-[#6e7681] hover:text-gray-700 dark:hover:text-[#e6edf3] hover:bg-gray-100 dark:hover:bg-[#21262d] transition-colors"
-              >
-                <MoreVertical className="w-4 h-4" strokeWidth={2.25} />
-              </button>
-
-              {/* Portaled dropdown — escapes parent stacking contexts */}
-              {menuOpen && typeof window !== "undefined" && createPortal(
-                <motion.div
-                  ref={menuRef}
-                  initial={{ opacity: 0, scale: 0.95, y: -4 }}
-                  animate={{ opacity: 1, scale: 1, y: 0 }}
-                  transition={{ duration: 0.12 }}
-                  style={{
-                    position: "fixed",
-                    top: menuPos.top,
-                    left: menuPos.left,
-                  }}
-                  className="z-[9999] w-52 rounded-xl border border-gray-200 dark:border-[#30363d] bg-white dark:bg-[#161b22] shadow-xl overflow-hidden py-1"
-                >
-                  {/* Copy Link */}
-                  <button
-                    type="button"
-                    onClick={handleCopyLink}
-                    className="w-full flex items-center gap-2.5 px-3 py-2 text-[13px] text-gray-700 dark:text-[#e6edf3] hover:bg-gray-50 dark:hover:bg-[#1c2129] transition-colors text-left"
-                  >
-                    <Link2 className="w-3.5 h-3.5" strokeWidth={2} />
-                    {t("report.card.copyLink", "Copy link")}
-                  </button>
-
-                  {/* Copy Report ID */}
-                  <button
-                    type="button"
-                    onClick={handleCopyId}
-                    className="w-full flex items-center gap-2.5 px-3 py-2 text-[13px] text-gray-700 dark:text-[#e6edf3] hover:bg-gray-50 dark:hover:bg-[#1c2129] transition-colors text-left"
-                  >
-                    <Copy className="w-3.5 h-3.5" strokeWidth={2} />
-                    {t("report.card.copyId", "Copy report ID")}
-                  </button>
-
-                  {/* Divider */}
-                  <div className="my-1 h-px bg-gray-100 dark:bg-[#30363d]" />
-
-                  {/* Delete */}
-                  <button
-                    type="button"
-                    onClick={handleDelete}
-                    className="w-full flex items-center gap-2.5 px-3 py-2 text-[13px] text-red-600 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-500/10 transition-colors text-left"
-                  >
-                    <Trash2 className="w-3.5 h-3.5" strokeWidth={2} />
-                    {t("report.card.delete", "Delete report")}
-                  </button>
-                </motion.div>,
-                document.body
-              )}
+        {/* ── RIGHT: Hover indicator + Kebab — OUTSIDE the Link ── */}
+        <div className="flex items-center gap-1 flex-shrink-0">
+          {/* Subtle "navigate away" indicator */}
+          {isCompleted && (
+            <div
+              className="opacity-0 group-hover:opacity-100 transition-opacity duration-200 pr-1"
+              aria-hidden="true"
+            >
+              <ArrowUpRight
+                className="w-4 h-4 text-gray-400 dark:text-[#7d8590]"
+                strokeWidth={2.25}
+              />
             </div>
+          )}
+
+          {/* Kebab — completely outside Link, no more router bar flash */}
+          <div className="relative">
+            <button
+              ref={buttonRef}
+              type="button"
+              onClick={handleMenuToggle}
+              aria-label={t("report.card.moreActions", "More actions")}
+              aria-expanded={menuOpen}
+              className="p-1.5 rounded-lg text-gray-400 dark:text-[#6e7681] hover:text-gray-700 dark:hover:text-[#e6edf3] hover:bg-gray-100 dark:hover:bg-[#21262d] transition-colors"
+            >
+              <MoreVertical className="w-4 h-4" strokeWidth={2.25} />
+            </button>
+
+            {/* Portaled dropdown */}
+            {menuOpen && typeof window !== "undefined" && createPortal(
+              <motion.div
+                ref={menuRef}
+                initial={{ opacity: 0, scale: 0.95, y: -4 }}
+                animate={{ opacity: 1, scale: 1, y: 0 }}
+                transition={{ duration: 0.12 }}
+                style={{
+                  position: "fixed",
+                  top: menuPos.top,
+                  left: menuPos.left,
+                }}
+                className="z-[9999] w-52 rounded-xl border border-gray-200 dark:border-[#30363d] bg-white dark:bg-[#161b22] shadow-xl overflow-hidden py-1"
+              >
+                {/* Copy Link */}
+                <button
+                  type="button"
+                  onClick={handleCopyLink}
+                  className="w-full flex items-center gap-2.5 px-3 py-2 text-[13px] text-gray-700 dark:text-[#e6edf3] hover:bg-gray-50 dark:hover:bg-[#1c2129] transition-colors text-left"
+                >
+                  <Link2 className="w-3.5 h-3.5" strokeWidth={2} />
+                  {t("report.card.copyLink", "Copy link")}
+                </button>
+
+                {/* Copy Report ID */}
+                <button
+                  type="button"
+                  onClick={handleCopyId}
+                  className="w-full flex items-center gap-2.5 px-3 py-2 text-[13px] text-gray-700 dark:text-[#e6edf3] hover:bg-gray-50 dark:hover:bg-[#1c2129] transition-colors text-left"
+                >
+                  <Copy className="w-3.5 h-3.5" strokeWidth={2} />
+                  {t("report.card.copyId", "Copy report ID")}
+                </button>
+
+                {/* Divider */}
+                <div className="my-1 h-px bg-gray-100 dark:bg-[#30363d]" />
+
+                {/* Delete */}
+                <button
+                  type="button"
+                  onClick={handleDelete}
+                  className="w-full flex items-center gap-2.5 px-3 py-2 text-[13px] text-red-600 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-500/10 transition-colors text-left"
+                >
+                  <Trash2 className="w-3.5 h-3.5" strokeWidth={2} />
+                  {t("report.card.delete", "Delete report")}
+                </button>
+              </motion.div>,
+              document.body
+            )}
           </div>
         </div>
-      </CardWrapper>
+      </div>
     </motion.div>
   );
 }
