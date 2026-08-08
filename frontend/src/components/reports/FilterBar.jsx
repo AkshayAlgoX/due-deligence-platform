@@ -132,9 +132,9 @@ export default function FilterBar({
             aria-label="Search reports"
             className="
               w-full h-9 pl-9 pr-8 rounded-lg
-              bg-slate-900/60 border border-slate-800/80
-              text-sm text-slate-200 placeholder:text-slate-600
-              focus:outline-none focus:border-slate-600 focus:ring-1 focus:ring-slate-600/50
+              bg-white/[0.03] border border-white/10
+              text-sm text-slate-100 placeholder:text-slate-500
+              focus:outline-none focus:border-white/25 focus:bg-white/[0.05]
               transition-colors duration-150
             "
           />
@@ -173,9 +173,9 @@ export default function FilterBar({
             aria-label={`Sort: ${activeSortLabel}`}
             className="
               flex items-center gap-2 h-9 px-3 rounded-lg
-              bg-slate-900/60 border border-slate-800/80
-              text-sm text-slate-300 hover:text-white
-              hover:border-slate-700
+              bg-white/[0.03] border border-white/10
+              text-sm text-slate-200 hover:text-white
+              hover:bg-white/[0.06] hover:border-white/20
               transition-all duration-150
               focus:outline-none focus-visible:ring-2 focus-visible:ring-emerald-500/50
               whitespace-nowrap
@@ -207,8 +207,8 @@ export default function FilterBar({
                 className="
                   absolute right-0 top-full mt-1.5 z-50
                   w-48 rounded-xl overflow-hidden
-                  bg-slate-900 border border-slate-700/80
-                  shadow-2xl shadow-black/40
+                  bg-slate-900/95 backdrop-blur-xl border border-white/10
+                  shadow-2xl shadow-black/50
                 "
               >
                 {SORT_OPTIONS.map((opt) => (
@@ -271,7 +271,7 @@ export default function FilterBar({
                 ${
                   isActive
                     ? "bg-emerald-500/12 border-emerald-500/30 text-emerald-400"
-                    : "bg-slate-900/40 border-slate-800/60 text-slate-400 hover:text-slate-200 hover:border-slate-700/80 hover:bg-slate-800/40"
+                    : "bg-white/[0.02] border-white/[0.06] text-slate-400 hover:text-slate-100 hover:border-white/15 hover:bg-white/[0.04]"
                 }
               `}
             >

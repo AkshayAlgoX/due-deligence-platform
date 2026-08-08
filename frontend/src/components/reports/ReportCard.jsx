@@ -188,8 +188,8 @@ export default function ReportCard({
       className={`
         group relative flex items-center gap-4 px-5 py-4
         rounded-xl border
-        bg-slate-900/50 hover:bg-slate-900/80
-        border-slate-800/60 hover:border-slate-700/80
+        bg-white/[0.02] hover:bg-white/[0.04]
+        border-white/[0.06] hover:border-white/15
         transition-all duration-150 cursor-default
         ${isCompleted ? "cursor-pointer" : ""}
         focus:outline-none focus-visible:ring-2 focus-visible:ring-emerald-500/40
@@ -202,7 +202,7 @@ export default function ReportCard({
     >
       {/* ── Left: Row icon ────────────────────────────────────────────── */}
       <div
-        className="flex-shrink-0 flex items-center justify-center w-9 h-9 rounded-lg bg-slate-800/60 border border-slate-700/40"
+        className="flex-shrink-0 flex items-center justify-center w-9 h-9 rounded-lg bg-white/[0.03] border border-white/[0.06]"
         aria-hidden="true"
       >
         <RowIcon size={16} strokeWidth={1.75} className={iconClass} />
@@ -217,7 +217,7 @@ export default function ReportCard({
           </span>
 
           {/* Version badge */}
-          <span className="flex-shrink-0 text-[10px] font-medium text-slate-500 bg-slate-800/60 border border-slate-700/40 px-1.5 py-0.5 rounded">
+          <span className="flex-shrink-0 text-[10px] font-medium text-slate-400 bg-white/[0.04] border border-white/[0.06] px-1.5 py-0.5 rounded">
             v{report.version ?? 1}
           </span>
 
@@ -291,7 +291,7 @@ export default function ReportCard({
             className="
               absolute right-4 top-full mt-1.5 z-50
               w-52 rounded-xl overflow-hidden
-              bg-slate-900 border border-slate-700/80
+              bg-slate-900/95 backdrop-blur-xl border border-white/10
               shadow-2xl shadow-black/50
             "
             role="menu"

@@ -1,43 +1,141 @@
-// frontend/src/app/reports/page.jsx
+// src/app/reports/page.jsx
+// ---------------------------------------------------------------------------
+// My Reports — Premium redesign (Phase 1)
+// Compact header · KPI cards · FilterBar · ReportCard list · EmptyState
+// URL-persisted sort + filter (?sort=newest&status=ALL&q=)
+// ---------------------------------------------------------------------------
+
 "use client";
 
-import { AnimatePresence, motion } from "framer-motion";
+import { useState, useEffect, useMemo, useCallback } from "react";
+import { useRouter, useSearchParams, usePathname } from "next/navigation";
+import { AnimatePresence } from "framer-motion";
 import {
-  AlertCircle,
-  ArrowLeft,
-  ChevronLeft,
-  ChevronRight,
-  ClockIcon,
   FileText,
-  Filter,
-  Loader2,
   Plus,
-  RefreshCw,
-  Search,
-  Sparkles,
+  History,
+  LayoutGrid,
+  CheckCircle2,
+  Loader2,
+  XCircle,
+  ChevronRight,
 } from "lucide-react";
 import Link from "next/link";
-import { useRouter } from "next/navigation";
-import { useCallback, useEffect, useMemo, useState } from "react";
-import { useTranslation } from "react-i18next";
-import { toast } from "sonner";
 
 import { useReport } from "@/hooks/useReport";
+import { useExport } from "@/hooks/useExport";
 import reportService from "@/services/reportService";
 
 import ReportCard from "@/components/reports/ReportCard";
-import ReportSkeleton from "@/components/reports/ReportSkeleton";
+import KpiStatCard from "@/components/reports/KpiStatCard";
+import FilterBar from "@/components/reports/FilterBar";
+import EmptyState from "@/components/reports/EmptyState";
 import ExportProgressModal from "@/components/export/ExportProgressModal";
-import { useExport } from "@/hooks/useExport";
-import { Archive, CheckSquare, Square } from "lucide-react";
 
-const PAGE_SIZE = 10;
-const STATUS_FILTERS = ["ALL", "COMPLETED", "GENERATING", "PENDING", "FAILED"];
+// ---------------------------------------------------------------------------
+// Sorting logic
+// ---------------------------------------------------------------------------
 
-export default function MyReportsPage() {
-  const { t } = useTranslation();
+function sortReports(reports, sortKey) {
+  if (!Array.isArray(reports)) return [];
+  const arr = [...reports];
+
+  switch (sortKey) {
+    case "oldest":
+      return arr.sort(
+        (a, b) => new Date(a.createdAt) - new Date(b.createdAt)
+      );
+    case "risk-high":
+      return arr.sort(
+        (a, b) => (b.riskScoreSnapshot ?? -1) - (a.riskScoreSnapshot ?? -1)
+      );
+    case "risk-low":
+      return arr.sort(
+        (a, b) => (a.riskScoreSnapshot ?? 101) - (b.riskScoreSnapshot ?? 101)
+      );
+    case "address-az":
+      return arr.sort((a, b) =>
+        (a.propertyAddress ?? "").localeCompare(b.propertyAddress ?? "")
+      );
+    case "address-za":
+      return arr.sort((a, b) =>
+        (b.propertyAddress ?? "").localeCompare(a.propertyAddress ?? "")
+      );
+    case "newest":
+    default:
+      return arr.sort(
+        (a, b) => new Date(b.createdAt) - new Date(a.createdAt)
+      );
+  }
+}
+
+// ---------------------------------------------------------------------------
+// Filter logic
+// ---------------------------------------------------------------------------
+
+function filterReports(reports, status, query) {
+  if (!Array.isArray(reports)) return [];
+  let result = reports;
+
+  if (status && status !== "ALL") {
+    if (status === "GENERATING") {
+      result = result.filter(
+        (r) => r.status === "GENERATING" || r.status === "PENDING"
+      );
+    } else {
+      result = result.filter((r) => r.status === status);
+    }
+  }
+
+  if (query && query.trim()) {
+    const q = query.trim().toLowerCase();
+    result = result.filter(
+      (r) =>
+        (r.propertyAddress ?? "").toLowerCase().includes(q) ||
+        (r.title ?? "").toLowerCase().includes(q)
+    );
+  }
+
+  return result;
+}
+
+// ---------------------------------------------------------------------------
+// KPI computation
+// ---------------------------------------------------------------------------
+
+function computeKpis(reports) {
+  if (!Array.isArray(reports)) {
+    return { total: 0, completed: 0, inProgress: 0, failed: 0 };
+  }
+  return {
+    total: reports.length,
+    completed: reports.filter((r) => r.status === "COMPLETED").length,
+    inProgress: reports.filter(
+      (r) => r.status === "GENERATING" || r.status === "PENDING"
+    ).length,
+    failed: reports.filter((r) => r.status === "FAILED").length,
+  };
+}
+
+// ---------------------------------------------------------------------------
+// Page component
+// ---------------------------------------------------------------------------
+
+export default function ReportsPage() {
   const router = useRouter();
+  const pathname = usePathname();
+  const searchParams = useSearchParams();
 
+  // ── URL-synced state ───────────────────────────────────────────────────
+  const urlSort = searchParams.get("sort") || "newest";
+  const urlStatus = searchParams.get("status") || "ALL";
+  const urlQuery = searchParams.get("q") || "";
+
+  const [sortKey, setSortKey] = useState(urlSort);
+  const [activeStatus, setActiveStatus] = useState(urlStatus);
+  const [searchQuery, setSearchQuery] = useState(urlQuery);
+
+  // ── Data — CORRECTED useReport API usage ─────────────────────────────
   const {
     reports,
     pagination,
@@ -46,583 +144,347 @@ export default function MyReportsPage() {
     fetchList,
   } = useReport();
 
-  const [page, setPage] = useState(0);
-  const [statusFilter, setStatusFilter] = useState("ALL");
-  const [searchQuery, setSearchQuery] = useState("");
-  const [deletingId, setDeletingId] = useState(null);
-  const [reportToDelete, setReportToDelete] = useState(null);
-  const [deleteConfirmText, setDeleteConfirmText] = useState("");
-  const [selectedReportIds, setSelectedReportIds] = useState([]);
+  // Initial fetch — deliberately once on mount
+  useEffect(() => {
+    fetchList({ page: 0, size: 200, sort: "createdAt,desc" });
+  }, [fetchList]);
 
+  const rawReports = reports ?? [];
+  const isLoading = listLoading;
+  const error = listError;
+
+  // ── Export ────────────────────────────────────────────────────────────
   const {
     isGenerating,
     progressStage,
     progressPercent,
     exportFormat,
-    downloadBulk,
+    downloadPdf,
+    downloadExcel,
   } = useExport();
 
-  // ── Fetch on mount + when page changes ──
-  const loadReports = useCallback(() => {
-    fetchList({ page, size: PAGE_SIZE, sort: "createdAt,desc" }).catch((err) => {
-      console.error("Failed to load reports:", err);
-    });
-  }, [fetchList, page]);
+  // ── Delete handler ────────────────────────────────────────────────────
+  const handleDelete = useCallback(
+    async (reportId) => {
+      if (!window.confirm("Delete this report? This action cannot be undone."))
+        return;
+      try {
+        await reportService.delete(reportId);
+        fetchList({ page: 0, size: 200, sort: "createdAt,desc" });
+      } catch (err) {
+        console.error("Delete failed:", err);
+      }
+    },
+    [fetchList]
+  );
 
-  useEffect(() => {
-    loadReports();
-  }, [loadReports]);
+  // ── Regenerate handler ────────────────────────────────────────────────
+  const handleRegenerate = useCallback(
+    async (reportId) => {
+      try {
+        await reportService.regenerate(reportId);
+        fetchList({ page: 0, size: 200, sort: "createdAt,desc" });
+      } catch (err) {
+        console.error("Regenerate failed:", err);
+      }
+    },
+    [fetchList]
+  );
 
-  // ── Filter reports client-side (status + search) ──
-  const filteredReports = useMemo(() => {
-    let out = reports || [];
-    if (statusFilter !== "ALL") {
-      out = out.filter((r) => r.status === statusFilter);
-    }
-    if (searchQuery.trim()) {
-      const q = searchQuery.toLowerCase().trim();
-      out = out.filter(
-        (r) =>
-          r.title?.toLowerCase().includes(q) ||
-          r.propertyAddress?.toLowerCase().includes(q)
-      );
-    }
-    return out;
-  }, [reports, statusFilter, searchQuery]);
+  // ── URL sync ──────────────────────────────────────────────────────────
+  const syncUrl = useCallback(
+    (newSort, newStatus, newQuery) => {
+      const params = new URLSearchParams();
+      if (newSort && newSort !== "newest") params.set("sort", newSort);
+      if (newStatus && newStatus !== "ALL") params.set("status", newStatus);
+      if (newQuery && newQuery.trim()) params.set("q", newQuery.trim());
+      const qs = params.toString();
+      router.replace(`${pathname}${qs ? `?${qs}` : ""}`, { scroll: false });
+    },
+    [router, pathname]
+  );
 
-  // ── Stats for header ──
-  const stats = useMemo(() => {
-    const totals = {
-      total: reports?.length || 0,
-      completed: 0,
-      inProgress: 0,
-      failed: 0,
-    };
-    (reports || []).forEach((r) => {
-      if (r.status === "COMPLETED") totals.completed++;
-      else if (r.status === "PENDING" || r.status === "GENERATING")
-        totals.inProgress++;
-      else if (r.status === "FAILED") totals.failed++;
-    });
-    return totals;
-  }, [reports]);
+  const handleSortChange = useCallback(
+    (key) => {
+      setSortKey(key);
+      syncUrl(key, activeStatus, searchQuery);
+    },
+    [syncUrl, activeStatus, searchQuery]
+  );
 
-  // ── Delete handling ──
-  const handleDeleteRequest = (report) => {
-    setReportToDelete(report);
-    setDeleteConfirmText("");
-  };
+  const handleStatusChange = useCallback(
+    (status) => {
+      setActiveStatus(status);
+      syncUrl(sortKey, status, searchQuery);
+    },
+    [syncUrl, sortKey, searchQuery]
+  );
 
-  const handleDeleteConfirm = async () => {
-    if (!reportToDelete) return;
-    if (deleteConfirmText.trim().toUpperCase() !== "DELETE") return;
+  const handleSearchChange = useCallback(
+    (q) => {
+      setSearchQuery(q);
+      syncUrl(sortKey, activeStatus, q);
+    },
+    [syncUrl, sortKey, activeStatus]
+  );
 
-    const id = reportToDelete.id;
-    setDeletingId(id);
-    setReportToDelete(null);
-    setDeleteConfirmText("");
+  const handleClearFilters = useCallback(() => {
+    setSortKey("newest");
+    setActiveStatus("ALL");
+    setSearchQuery("");
+    router.replace(pathname, { scroll: false });
+  }, [router, pathname]);
 
-    try {
-      await reportService.delete(id);
-      toast.success(t("report.list.deleted", "Report deleted"));
-      loadReports();
-    } catch (err) {
-      console.error("Delete failed:", err);
-      toast.error(
-        t("report.list.deleteFailed", "Failed to delete report"),
-        {
-          description: err?.response?.data?.message || err.message,
-        }
-      );
-    } finally {
-      setDeletingId(null);
-    }
-  };
+  // ── Derived data ───────────────────────────────────────────────────────
+  const kpis = useMemo(() => computeKpis(rawReports), [rawReports]);
 
-  const handleDeleteCancel = () => {
-    setReportToDelete(null);
-    setDeleteConfirmText("");
-  };
+  const filteredReports = useMemo(
+    () => filterReports(rawReports, activeStatus, searchQuery),
+    [rawReports, activeStatus, searchQuery]
+  );
 
-  // ── Pagination handlers ──
-  const canGoBack = page > 0;
-  const canGoForward = pagination && page < pagination.totalPages - 1;
+  const sortedReports = useMemo(
+    () => sortReports(filteredReports, sortKey),
+    [filteredReports, sortKey]
+  );
 
-  return (
-    <div className="min-h-screen bg-white dark:bg-[#0d1117]">
-      {/* ══════════════════════════════════════════════════════════
-          BREADCRUMB HEADER
-      ══════════════════════════════════════════════════════════ */}
-      <div className="border-b border-gray-200 dark:border-[#30363d]">
-        <div className="max-w-6xl mx-auto px-6 py-3 flex items-center gap-2 text-sm">
-          <button
-            onClick={() => router.push("/dashboard")}
-            className="inline-flex items-center gap-1 text-gray-500 dark:text-[#7d8590] hover:text-gray-900 dark:hover:text-[#e6edf3] transition-colors"
-          >
-            <ArrowLeft className="w-3.5 h-3.5" strokeWidth={2} />
-            {t("report.list.backToDashboard", "Dashboard")}
-          </button>
-          <ChevronRight className="w-3.5 h-3.5 text-gray-300 dark:text-[#484f58]" />
-          <span className="text-gray-900 dark:text-[#e6edf3] font-medium">
-            {t("report.list.title", "My Reports")}
-          </span>
-        </div>
+  // ── KPI click → set status filter ─────────────────────────────────────
+  const handleKpiClick = useCallback(
+    (status) => {
+      const next = activeStatus === status ? "ALL" : status;
+      handleStatusChange(next);
+    },
+    [activeStatus, handleStatusChange]
+  );
+
+  // ── Skeleton row ─────────────────────────────────────────────────────
+  const SkeletonRow = () => (
+    <div className="flex items-center gap-4 px-5 py-4 rounded-xl border border-white/5 bg-white/[0.02] animate-pulse">
+      <div className="w-9 h-9 rounded-lg bg-white/5 flex-shrink-0" />
+      <div className="flex-1 space-y-2">
+        <div className="h-3.5 bg-white/5 rounded w-48" />
+        <div className="h-2.5 bg-white/5 rounded w-32" />
       </div>
+      <div className="w-12 h-12 rounded-full bg-white/5 flex-shrink-0" />
+    </div>
+  );
 
-      <div className="max-w-6xl mx-auto px-6 py-8">
-        {/* ══════════════════════════════════════════════════════════
-            PAGE HEADER
-        ══════════════════════════════════════════════════════════ */}
-        <motion.div
-          initial={{ opacity: 0, y: -8 }}
-          animate={{ opacity: 1, y: 0 }}
-          className="mb-8 flex flex-col md:flex-row md:items-end md:justify-between gap-4"
-        >
-          <div>
-            <div className="flex items-center gap-3 mb-2">
-              <div className="w-10 h-10 rounded-xl bg-gray-900 dark:bg-white flex items-center justify-center">
-                <FileText
-                  className="w-5 h-5 text-white dark:text-gray-900"
-                  strokeWidth={2.25}
+  // ── Render ────────────────────────────────────────────────────────────
+  // NOTE: No `bg-*` on the outer container — inherit from app shell.
+  return (
+    <div className="w-full">
+      <div className="max-w-6xl mx-auto px-6 py-8 lg:px-10 space-y-7">
+
+        {/* ══ HEADER ══════════════════════════════════════════════════════ */}
+        <header className="space-y-5">
+          {/* Breadcrumb */}
+          <nav aria-label="Breadcrumb" className="flex items-center gap-1.5">
+            <Link
+              href="/dashboard"
+              className="text-xs text-slate-400/80 hover:text-slate-200 transition-colors duration-150"
+            >
+              Dashboard
+            </Link>
+            <ChevronRight
+              size={12}
+              className="text-slate-600"
+              aria-hidden="true"
+            />
+            <span className="text-xs text-slate-200 font-medium">
+              My Reports
+            </span>
+          </nav>
+
+          {/* Title row */}
+          <div className="flex items-start justify-between gap-4 flex-wrap sm:flex-nowrap">
+            <div className="flex items-center gap-3.5 min-w-0">
+              <div
+                className="flex-shrink-0 flex items-center justify-center w-10 h-10 rounded-xl bg-emerald-500/10 border border-emerald-500/20"
+                aria-hidden="true"
+              >
+                <FileText size={18} strokeWidth={1.75} className="text-emerald-400" />
+              </div>
+              <div className="min-w-0">
+                <h1 className="text-xl font-bold text-white tracking-tight leading-tight">
+                  Due Diligence Reports
+                </h1>
+                <p className="text-xs text-slate-400 mt-0.5 leading-tight">
+                  AI-generated property risk analysis · India
+                </p>
+              </div>
+            </div>
+
+            <div className="flex items-center gap-2.5 flex-shrink-0">
+              <Link
+                href="/export-history"
+                className="
+                  flex items-center gap-2 h-9 px-3.5 rounded-lg
+                  bg-white/[0.03] border border-white/10
+                  text-sm text-slate-300 hover:text-white
+                  hover:bg-white/[0.06] hover:border-white/20
+                  transition-all duration-150
+                  focus:outline-none focus-visible:ring-2 focus-visible:ring-emerald-500/50
+                "
+              >
+                <History size={14} strokeWidth={1.75} aria-hidden="true" />
+                <span className="hidden sm:inline">Export History</span>
+              </Link>
+
+              <Link
+                href="/generate"
+                className="
+                  flex items-center gap-2 h-9 px-4 rounded-lg
+                  bg-emerald-500 hover:bg-emerald-400
+                  text-slate-950 text-sm font-semibold
+                  shadow-md shadow-emerald-900/30
+                  transition-all duration-150
+                  focus:outline-none focus-visible:ring-2 focus-visible:ring-emerald-400/60
+                "
+              >
+                <Plus size={15} strokeWidth={2.5} aria-hidden="true" />
+                <span>New report</span>
+              </Link>
+            </div>
+          </div>
+        </header>
+
+        {/* ══ KPI CARDS ═══════════════════════════════════════════════════ */}
+        <section aria-label="Report statistics">
+          {isLoading ? (
+            <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 animate-pulse">
+              {[...Array(4)].map((_, i) => (
+                <div
+                  key={i}
+                  className="h-[108px] rounded-xl bg-white/[0.02] border border-white/5"
                 />
-              </div>
-              <h1 className="text-3xl font-black text-gray-900 dark:text-[#e6edf3] tracking-tight">
-                {t("report.list.heading", "My Reports")}
-              </h1>
+              ))}
             </div>
-            <p className="text-sm text-gray-500 dark:text-[#7d8590] ml-13">
-              {t(
-                "report.list.subheading",
-                "Due diligence reports generated across all your properties."
-              )}
-            </p>
-          </div>
-
-          <div className="flex items-center gap-2 flex-wrap">
-            {/* Bulk export buttons — shown when reports selected */}
-            {selectedReportIds.length > 0 && (
-              <div className="flex items-center gap-2">
-                <button
-                  onClick={() => downloadBulk(selectedReportIds, "PDF")}
-                  className="inline-flex items-center gap-1.5 px-3 py-2 rounded-lg text-xs font-semibold bg-sky-600 hover:bg-sky-700 text-white transition-colors shadow-xs"
-                >
-                  <Archive className="w-3.5 h-3.5" />
-                  {t("export.bulkPdf", `Export Bulk ZIP (${selectedReportIds.length})`)}
-                </button>
-                <button
-                  onClick={() => downloadBulk(selectedReportIds, "EXCEL")}
-                  className="inline-flex items-center gap-1.5 px-3 py-2 rounded-lg text-xs font-semibold bg-emerald-600 hover:bg-emerald-700 text-white transition-colors shadow-xs"
-                >
-                  <Archive className="w-3.5 h-3.5" />
-                  {t("export.bulkExcel", "Excel")}
-                </button>
-              </div>
-            )}
-
-
-            {/* Issue 5 — Export History navigation link */}
-            <Link
-              href="/reports/export-history"
-              className="inline-flex items-center gap-1.5 px-3 py-2 rounded-lg text-xs font-semibold text-gray-700 dark:text-[#e6edf3] border border-gray-200 dark:border-[#30363d] hover:bg-gray-50 dark:hover:bg-[#1c2129] transition-all duration-200"
-            >
-              <ClockIcon className="w-3.5 h-3.5 text-gray-400 dark:text-[#7d8590]" strokeWidth={2} />
-              {t("export.history.link", "Export History")}
-              <ChevronRight className="w-3 h-3 text-gray-400 dark:text-[#7d8590]" strokeWidth={2} />
-            </Link>
-
-            {/* Generate new */}
-            <Link
-              href="/dashboard/property-search"
-              className="group relative inline-flex items-center gap-2 overflow-hidden rounded-xl bg-gradient-to-br from-[#22C55E] to-[#16a34a] px-5 py-2.5 text-sm font-bold text-white shadow-[0_10px_30px_rgba(34,197,94,0.4)] transition-all hover:scale-[1.03] hover:shadow-[0_15px_40px_rgba(34,197,94,0.55)] active:scale-[0.97]"
-            >
-              <span className="absolute inset-0 -translate-x-full bg-gradient-to-r from-transparent via-white/25 to-transparent transition-transform duration-1000 group-hover:translate-x-full" />
-              <Plus className="w-4 h-4 relative z-10" strokeWidth={2.5} />
-              <span className="relative z-10">
-                {t("report.list.generateNew", "Generate new")}
-              </span>
-            </Link>
-          </div>
-        </motion.div>
-
-        {/* ══════════════════════════════════════════════════════════
-            STATS STRIP
-        ══════════════════════════════════════════════════════════ */}
-        {!listLoading && reports.length > 0 && (
-          <motion.div
-            initial={{ opacity: 0, y: 8 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.1 }}
-            className="mb-6 grid grid-cols-2 sm:grid-cols-4 gap-3"
-          >
-            <StatChip
-              label={t("report.list.stat.total", "Total")}
-              value={pagination?.totalElements ?? stats.total}
-              color="#7d8590"
-            />
-            <StatChip
-              label={t("report.list.stat.completed", "Completed")}
-              value={stats.completed}
-              color="#22C55E"
-            />
-            <StatChip
-              label={t("report.list.stat.inProgress", "In progress")}
-              value={stats.inProgress}
-              color="#3B82F6"
-              pulse={stats.inProgress > 0}
-            />
-            <StatChip
-              label={t("report.list.stat.failed", "Failed")}
-              value={stats.failed}
-              color="#EF4444"
-            />
-          </motion.div>
-        )}
-
-        {/* ══════════════════════════════════════════════════════════
-            FILTERS BAR
-        ══════════════════════════════════════════════════════════ */}
-        {!listLoading && reports.length > 0 && (
-          <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ delay: 0.15 }}
-            className="mb-5 flex flex-col sm:flex-row gap-3 items-stretch sm:items-center"
-          >
-            {/* Search */}
-            <div className="relative flex-1 max-w-md">
-              <Search
-                className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400 dark:text-[#6e7681]"
-                strokeWidth={2}
+          ) : (
+            <div className="grid grid-cols-2 lg:grid-cols-4 gap-3">
+              <KpiStatCard
+                label="Total"
+                value={kpis.total}
+                icon={LayoutGrid}
+                color="slate"
+                onClick={() => handleKpiClick("ALL")}
+                isActive={activeStatus === "ALL"}
               />
-              <input
-                type="text"
-                value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
-                placeholder={t(
-                  "report.list.searchPlaceholder",
-                  "Search by title or address…"
-                )}
-                className="w-full pl-9 pr-3 py-2 rounded-lg border border-gray-200 dark:border-[#30363d] bg-white dark:bg-[#161b22] text-sm text-gray-900 dark:text-[#e6edf3] placeholder:text-gray-400 dark:placeholder:text-[#6e7681] focus:outline-none focus:ring-2 focus:ring-gray-900/10 dark:focus:ring-white/10 focus:border-gray-400 dark:focus:border-[#484f58] transition-colors"
+              <KpiStatCard
+                label="Completed"
+                value={kpis.completed}
+                icon={CheckCircle2}
+                color="emerald"
+                onClick={() => handleKpiClick("COMPLETED")}
+                isActive={activeStatus === "COMPLETED"}
+              />
+              <KpiStatCard
+                label="In Progress"
+                value={kpis.inProgress}
+                icon={Loader2}
+                color="blue"
+                onClick={() => handleKpiClick("GENERATING")}
+                isActive={activeStatus === "GENERATING"}
+              />
+              <KpiStatCard
+                label="Failed"
+                value={kpis.failed}
+                icon={XCircle}
+                color="red"
+                onClick={() => handleKpiClick("FAILED")}
+                isActive={activeStatus === "FAILED"}
               />
             </div>
+          )}
+        </section>
 
-            {/* Status filter pills */}
-            <div className="flex items-center gap-1.5 flex-wrap">
-              <Filter
-                className="w-3.5 h-3.5 text-gray-400 dark:text-[#6e7681] flex-shrink-0"
-                strokeWidth={2}
-              />
-              {STATUS_FILTERS.map((status) => {
-                const isActive = statusFilter === status;
-                return (
-                  <button
-                    key={status}
-                    onClick={() => setStatusFilter(status)}
-                    className={`
-                      px-3 py-1.5 rounded-full text-[11px] font-bold uppercase tracking-widest transition-all
-                      ${isActive
-                        ? "bg-gray-900 dark:bg-white text-white dark:text-gray-900"
-                        : "bg-gray-100 dark:bg-[#21262d] text-gray-600 dark:text-[#7d8590] hover:bg-gray-200 dark:hover:bg-[#30363d]"
-                      }
-                    `}
-                  >
-                    {status === "ALL"
-                      ? t("report.list.filter.all", "All")
-                      : t(`report.status.${status.toLowerCase()}`, status)}
-                  </button>
-                );
-              })}
+        {/* ══ FILTER BAR ══════════════════════════════════════════════════ */}
+        <section aria-label="Search and filter">
+          <FilterBar
+            searchQuery={searchQuery}
+            onSearchChange={handleSearchChange}
+            activeStatus={activeStatus}
+            onStatusChange={handleStatusChange}
+            sortKey={sortKey}
+            onSortChange={handleSortChange}
+            totalCount={kpis.total}
+            filteredCount={sortedReports.length}
+          />
+        </section>
+
+        {/* ══ REPORT LIST ═════════════════════════════════════════════════ */}
+        <section aria-label="Report list" aria-live="polite">
+          {isLoading && (
+            <div className="space-y-2.5">
+              {[...Array(5)].map((_, i) => (
+                <SkeletonRow key={i} />
+              ))}
             </div>
-          </motion.div>
-        )}
+          )}
 
-        {/* ══════════════════════════════════════════════════════════
-            LIST / STATES
-        ══════════════════════════════════════════════════════════ */}
+          {!isLoading && error && <EmptyState variant="error" />}
 
-        {/* Loading state */}
-        {listLoading && !reports.length && <ReportSkeleton count={5} />}
+          {!isLoading && !error && kpis.total === 0 && (
+            <EmptyState variant="no-reports" />
+          )}
 
-        {/* Error state */}
-        {listError && !listLoading && (
-          <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            className="rounded-2xl border border-red-200 dark:border-red-500/25 bg-red-50 dark:bg-red-500/10 p-8 text-center"
-          >
-            <AlertCircle
-              className="w-10 h-10 text-red-500 mx-auto mb-3"
-              strokeWidth={1.5}
-            />
-            <h3 className="text-base font-bold text-red-900 dark:text-red-200 mb-2">
-              {t("report.list.errorTitle", "Failed to load reports")}
-            </h3>
-            <p className="text-sm text-red-700 dark:text-red-300 mb-4">
-              {listError}
-            </p>
-            <button
-              onClick={loadReports}
-              className="inline-flex items-center gap-1.5 px-4 py-2 rounded-lg bg-white dark:bg-[#161b22] border border-red-200 dark:border-red-500/25 text-sm font-semibold text-red-700 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-500/5"
-            >
-              <RefreshCw className="w-3.5 h-3.5" strokeWidth={2.25} />
-              {t("report.list.tryAgain", "Try again")}
-            </button>
-          </motion.div>
-        )}
-
-        {/* Empty state — no reports at all */}
-        {!listLoading && !listError && reports.length === 0 && (
-          <EmptyState />
-        )}
-
-        {/* Empty state — filters applied but no results */}
-        {!listLoading &&
-          !listError &&
-          reports.length > 0 &&
-          filteredReports.length === 0 && (
-            <FilteredEmptyState
-              onClear={() => {
-                setStatusFilter("ALL");
-                setSearchQuery("");
-              }}
+          {!isLoading && !error && kpis.total > 0 && sortedReports.length === 0 && (
+            <EmptyState
+              variant="no-results"
+              filterLabel={
+                activeStatus !== "ALL"
+                  ? activeStatus.charAt(0) + activeStatus.slice(1).toLowerCase()
+                  : ""
+              }
+              searchQuery={searchQuery}
+              onClearFilters={handleClearFilters}
             />
           )}
 
-        {/* Report list */}
-        {!listError && filteredReports.length > 0 && (
-          <div className="space-y-3">
+          {!isLoading && !error && sortedReports.length > 0 && (
             <AnimatePresence mode="popLayout">
-              {filteredReports.map((report) => (
-                <ReportCard
-                  key={report.id}
-                  report={report}
-                  onDelete={handleDeleteRequest}
-                  deleting={deletingId === report.id}
-                />
-              ))}
-            </AnimatePresence>
-          </div>
-        )}
-
-        {/* ══════════════════════════════════════════════════════════
-            PAGINATION
-        ══════════════════════════════════════════════════════════ */}
-        {pagination && pagination.totalPages > 1 && filteredReports.length > 0 && (
-          <div className="mt-8 flex items-center justify-between">
-            <div className="text-xs text-gray-500 dark:text-[#7d8590] tabular-nums">
-              {t("report.list.pagination.showing", "Showing {{from}}–{{to}} of {{total}}", {
-                from: page * PAGE_SIZE + 1,
-                to: Math.min((page + 1) * PAGE_SIZE, pagination.totalElements ?? filteredReports.length),
-                total: pagination.totalElements ?? filteredReports.length,
-              })}
-            </div>
-            <div className="flex items-center gap-2">
-              <button
-                onClick={() => setPage((p) => Math.max(0, p - 1))}
-                disabled={!canGoBack || listLoading}
-                className="inline-flex items-center gap-1 px-3 py-2 rounded-lg text-xs font-semibold text-gray-700 dark:text-[#e6edf3] border border-gray-200 dark:border-[#30363d] hover:bg-gray-50 dark:hover:bg-[#161b22] transition-colors disabled:opacity-40 disabled:cursor-not-allowed"
-              >
-                <ChevronLeft className="w-3.5 h-3.5" strokeWidth={2.25} />
-                {t("report.list.pagination.prev", "Previous")}
-              </button>
-              <button
-                onClick={() => setPage((p) => p + 1)}
-                disabled={!canGoForward || listLoading}
-                className="inline-flex items-center gap-1 px-3 py-2 rounded-lg text-xs font-semibold text-gray-700 dark:text-[#e6edf3] border border-gray-200 dark:border-[#30363d] hover:bg-gray-50 dark:hover:bg-[#161b22] transition-colors disabled:opacity-40 disabled:cursor-not-allowed"
-              >
-                {t("report.list.pagination.next", "Next")}
-                <ChevronRight className="w-3.5 h-3.5" strokeWidth={2.25} />
-              </button>
-            </div>
-          </div>
-        )}
-      </div>
-
-      {/* ══════════════════════════════════════════════════════════
-          DELETE CONFIRMATION MODAL
-      ══════════════════════════════════════════════════════════ */}
-      <AnimatePresence>
-        {reportToDelete && (
-          <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            className="fixed inset-0 z-[9999] flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm"
-            onClick={handleDeleteCancel}
-          >
-            <motion.div
-              initial={{ scale: 0.95, opacity: 0, y: 10 }}
-              animate={{ scale: 1, opacity: 1, y: 0 }}
-              exit={{ scale: 0.95, opacity: 0, y: 10 }}
-              transition={{ duration: 0.2 }}
-              onClick={(e) => e.stopPropagation()}
-              className="w-full max-w-md rounded-2xl bg-white dark:bg-[#161b22] border border-gray-200 dark:border-[#30363d] shadow-2xl p-6"
-            >
-              <div className="flex items-start gap-4 mb-4">
-                <div className="w-11 h-11 rounded-full bg-red-100 dark:bg-red-500/15 flex items-center justify-center flex-shrink-0">
-                  <AlertCircle
-                    className="w-5 h-5 text-red-600 dark:text-red-400"
-                    strokeWidth={2.25}
+              <div className="space-y-2">
+                {sortedReports.map((report, index) => (
+                  <ReportCard
+                    key={report.id}
+                    report={report}
+                    onDownloadPdf={downloadPdf}
+                    onDownloadExcel={downloadExcel}
+                    onDelete={handleDelete}
+                    onRegenerate={handleRegenerate}
+                    isExporting={isGenerating}
+                    animationDelay={Math.min(index * 0.04, 0.3)}
                   />
-                </div>
-                <div className="flex-1">
-                  <h2 className="text-base font-bold text-gray-900 dark:text-[#e6edf3] mb-1">
-                    {t("report.list.deleteModal.title", "Delete this report?")}
-                  </h2>
-                  <p className="text-sm text-gray-600 dark:text-[#c9d1d9] leading-relaxed">
-                    {t(
-                      "report.list.deleteModal.body",
-                      "This will permanently delete \"{{title}}\" and all its sections. This action cannot be undone.",
-                      {
-                        title:
-                          reportToDelete.title ||
-                          t("report.card.untitled", "Due Diligence Report"),
-                      }
-                    )}
-                  </p>
-                </div>
+                ))}
               </div>
+            </AnimatePresence>
+          )}
+        </section>
 
-              <label className="block mb-5">
-                <span className="block text-xs font-semibold text-gray-700 dark:text-[#c9d1d9] mb-2">
-                  {t(
-                    "report.list.deleteModal.confirmPrompt",
-                    "Type DELETE to confirm"
-                  )}
-                </span>
-                <input
-                  type="text"
-                  autoFocus
-                  value={deleteConfirmText}
-                  onChange={(e) => setDeleteConfirmText(e.target.value)}
-                  placeholder="DELETE"
-                  className="w-full px-3.5 py-2.5 rounded-lg border border-gray-200 dark:border-[#30363d] bg-white dark:bg-[#0d1117] text-sm text-gray-900 dark:text-[#e6edf3] placeholder:text-gray-400 dark:placeholder:text-[#6e7681] focus:outline-none focus:ring-2 focus:ring-red-500/20 focus:border-red-400 transition-colors font-mono"
-                />
-              </label>
-
-              <div className="flex gap-2 justify-end">
-                <button
-                  onClick={handleDeleteCancel}
-                  className="px-4 py-2 rounded-lg text-sm font-semibold text-gray-700 dark:text-[#e6edf3] border border-gray-200 dark:border-[#30363d] hover:bg-gray-50 dark:hover:bg-[#21262d] transition-colors"
-                >
-                  {t("common.cancel", "Cancel")}
-                </button>
-                <button
-                  onClick={handleDeleteConfirm}
-                  disabled={
-                    deleteConfirmText.trim().toUpperCase() !== "DELETE"
-                  }
-                  className="px-4 py-2 rounded-lg text-sm font-semibold bg-red-600 hover:bg-red-700 text-white transition-colors disabled:opacity-40 disabled:cursor-not-allowed"
-                >
-                  {t("report.list.deleteModal.confirm", "Delete report")}
-                </button>
-              </div>
-            </motion.div>
-          </motion.div>
+        {/* ══ FOOTER META ════════════════════════════════════════════════ */}
+        {!isLoading && !error && kpis.total > 0 && (
+          <footer className="flex items-center justify-between pt-2 pb-4">
+            <p className="text-xs text-slate-500">
+              {kpis.total} report{kpis.total !== 1 ? "s" : ""} in workspace
+              {pagination?.totalElements && pagination.totalElements > kpis.total
+                ? ` (${pagination.totalElements} total on server)`
+                : ""}
+            </p>
+            <p className="text-xs text-slate-600">
+              Due Diligence Agent · India
+            </p>
+          </footer>
         )}
-      </AnimatePresence>
+      </div>
 
-      {/* Export Progress Modal — stays on this page */}
-      <ExportProgressModal
-        isOpen={isGenerating}
-        stage={progressStage}
-        percent={progressPercent}
-        format={exportFormat}
-      />
-    </div>
-  );
-}
-
-// ─────────────────────────────────────────────────────────────
-// SUB-COMPONENTS
-// ─────────────────────────────────────────────────────────────
-
-function StatChip({ label, value, color, pulse = false }) {
-  return (
-    <div className="rounded-xl border border-gray-200 dark:border-[#30363d] bg-white dark:bg-[#161b22] px-4 py-3">
-      <div className="flex items-center gap-2 mb-1">
-        <span
-          className={`w-1.5 h-1.5 rounded-full ${pulse ? "animate-pulse" : ""}`}
-          style={{ backgroundColor: color }}
+      {/* Export progress modal */}
+      {isGenerating && (
+        <ExportProgressModal
+          isOpen={isGenerating}
+          stage={progressStage}
+          percent={progressPercent}
+          format={exportFormat}
         />
-        <span className="text-[10px] font-bold uppercase tracking-widest text-gray-500 dark:text-[#7d8590]">
-          {label}
-        </span>
-      </div>
-      <div
-        className="text-2xl font-black tabular-nums"
-        style={{ color }}
-      >
-        {value}
-      </div>
+      )}
     </div>
-  );
-}
-
-function EmptyState() {
-  const { t } = useTranslation();
-  return (
-    <motion.div
-      initial={{ opacity: 0, scale: 0.98 }}
-      animate={{ opacity: 1, scale: 1 }}
-      className="rounded-2xl border border-dashed border-gray-300 dark:border-[#30363d] bg-gray-50/40 dark:bg-[#0d1117] p-12 text-center"
-    >
-      <div className="w-16 h-16 rounded-2xl bg-gray-100 dark:bg-[#161b22] flex items-center justify-center mx-auto mb-5">
-        <FileText
-          className="w-8 h-8 text-gray-400 dark:text-[#6e7681]"
-          strokeWidth={1.5}
-        />
-      </div>
-      <h3 className="text-lg font-bold text-gray-900 dark:text-[#e6edf3] mb-2">
-        {t("report.list.empty.title", "No reports yet")}
-      </h3>
-      <p className="text-sm text-gray-500 dark:text-[#7d8590] max-w-md mx-auto mb-6 leading-relaxed">
-        {t(
-          "report.list.empty.body",
-          "Generate your first due diligence report to see it here. Reports combine property data, risk analysis, financials, and recommendations into one comprehensive document."
-        )}
-      </p>
-      <Link
-        href="/dashboard/property-search"
-        className="group relative inline-flex items-center gap-2 overflow-hidden rounded-xl bg-gradient-to-br from-[#22C55E] to-[#16a34a] px-5 py-2.5 text-sm font-bold text-white shadow-[0_10px_30px_rgba(34,197,94,0.4)] transition-all hover:scale-[1.03] hover:shadow-[0_15px_40px_rgba(34,197,94,0.55)] active:scale-[0.97]"
-      >
-        <span className="absolute inset-0 -translate-x-full bg-gradient-to-r from-transparent via-white/25 to-transparent transition-transform duration-1000 group-hover:translate-x-full" />
-        <Sparkles className="w-4 h-4 relative z-10" strokeWidth={2.5} />
-        <span className="relative z-10">
-          {t("report.list.empty.cta", "Browse properties")}
-        </span>
-      </Link>
-    </motion.div>
-  );
-}
-
-function FilteredEmptyState({ onClear }) {
-  const { t } = useTranslation();
-  return (
-    <motion.div
-      initial={{ opacity: 0 }}
-      animate={{ opacity: 1 }}
-      className="rounded-2xl border border-gray-200 dark:border-[#30363d] p-10 text-center"
-    >
-      <Search
-        className="w-8 h-8 text-gray-300 dark:text-[#484f58] mx-auto mb-3"
-        strokeWidth={1.5}
-      />
-      <h3 className="text-sm font-bold text-gray-900 dark:text-[#e6edf3] mb-1">
-        {t("report.list.filtered.title", "No reports match your filters")}
-      </h3>
-      <p className="text-xs text-gray-500 dark:text-[#7d8590] mb-4">
-        {t(
-          "report.list.filtered.body",
-          "Try adjusting your search or status filter."
-        )}
-      </p>
-      <button
-        onClick={onClear}
-        className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold text-gray-700 dark:text-[#e6edf3] border border-gray-200 dark:border-[#30363d] hover:bg-gray-50 dark:hover:bg-[#161b22] transition-colors"
-      >
-        {t("report.list.filtered.clear", "Clear filters")}
-      </button>
-    </motion.div>
   );
 }

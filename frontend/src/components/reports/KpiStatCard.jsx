@@ -93,13 +93,13 @@ export default function KpiStatCard({
       aria-pressed={isClickable ? isActive : undefined}
       className={`
         relative flex flex-col gap-3 p-4 rounded-xl border
-        bg-slate-900/60 backdrop-blur-sm
+        bg-white/[0.02] backdrop-blur-sm
         transition-all duration-200
         ${isClickable ? "cursor-pointer select-none" : ""}
         ${
           isActive
-            ? `border-slate-600 shadow-lg ${c.activeGlow}`
-            : "border-slate-800/60 hover:border-slate-700/80"
+            ? `border-white/20 shadow-lg ${c.activeGlow}`
+            : "border-white/[0.06] hover:border-white/15 hover:bg-white/[0.04]"
         }
         focus:outline-none focus-visible:ring-2 focus-visible:ring-emerald-500/50
       `}
