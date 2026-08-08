@@ -98,13 +98,17 @@ export default function AdminUsersPage() {
                 <TableCell>{u.fullName}</TableCell>
                 <TableCell>{u.email}</TableCell>
                 <TableCell>
-                  <select
-                    value={u.role}
-                    onChange={(e) => handleRoleChange(u.id, e.target.value)}
-                    className="bg-transparent border rounded px-2 py-1 text-sm"
-                  >
-                    {ROLES.map((r) => <option key={r} value={r}>{r}</option>)}
-                  </select>
+                 <select
+  value={u.role}
+  onChange={(e) => handleRoleChange(u.id, e.target.value)}
+  className="bg-white text-gray-900 dark:bg-[#161b22] dark:text-[#e6edf3] border border-gray-200 dark:border-[#30363d] rounded px-2 py-1 text-sm"
+>
+  {ROLES.map((r) => (
+    <option key={r} value={r} className="bg-white text-gray-900 dark:bg-[#161b22] dark:text-[#e6edf3]">
+      {r}
+    </option>
+  ))}
+</select>
                 </TableCell>
                 <TableCell>
                   <Badge variant={u.isBanned ? "destructive" : u.isActive ? "default" : "secondary"}>

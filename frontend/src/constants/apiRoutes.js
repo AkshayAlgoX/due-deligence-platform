@@ -41,9 +41,20 @@ export const API_ROUTES = {
   ADMIN_DASHBOARD:    "/api/admin/dashboard",
   DASHBOARD_HISTORY: "/api/dashboard/history",
   DASHBOARD_RECOMMENDATIONS: "/api/dashboard/recommendations",
-
+ADMIN_DASHBOARD_STATS:             "/api/admin/dashboard/stats",
+  ADMIN_DASHBOARD_RISK_DISTRIBUTION: "/api/admin/dashboard/risk-distribution",
+  ADMIN_DASHBOARD_REPORTS_TREND:     "/api/admin/dashboard/reports-trend",
+  ADMIN_DASHBOARD_TOP_CITIES:        "/api/admin/dashboard/top-cities",
+  ADMIN_DASHBOARD_USER_ACTIVITY:     "/api/admin/dashboard/user-activity-heatmap",
+  ADMIN_DASHBOARD_ACTIVE_USERS:      "/api/admin/dashboard/active-users",
+  ADMIN_DASHBOARD_EXPORT:            "/api/admin/dashboard/export",
   // ── Admin ─────────────────────────────────────────────────────────────────
   ADMIN_USERS: "/api/admin/users",
+  ADMIN_USER_BY_ID:        (id) => `/api/admin/users/${id}`,
+  ADMIN_UPDATE_USER_ROLE:  (id) => `/api/admin/users/${id}/role`,
+  ADMIN_BAN_USER:          (id) => `/api/admin/users/${id}/ban`,
+  ADMIN_UNBAN_USER:        (id) => `/api/admin/users/${id}/unban`,
+  ADMIN_SYSTEM_HEALTH:     "/api/admin/system/health",
 
     // ── Comparisons ──────────────────────────────────────────────────────────────
   COMPARISONS:         "/api/comparisons",

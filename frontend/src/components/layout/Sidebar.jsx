@@ -160,10 +160,12 @@ export default function Sidebar({ isOpen = true, onClose, isDesktopRail = false 
       if (!section.collapsible) continue;
       const hasActive = section.items.some((item) =>
         item.href === "/dashboard"
-          ? pathname === "/dashboard"
-          : item.href === "/support"
-          ? pathname === "/support"
-          : pathname.startsWith(item.href)
+  ? pathname === "/dashboard"
+  : item.href === "/dashboard/admin"
+  ? pathname === "/dashboard/admin"
+  : item.href === "/support"
+  ? pathname === "/support"
+  : pathname.startsWith(item.href)
       );
       if (hasActive && collapsedSections[section.id]) {
         setCollapsedSections((prev) => {
@@ -260,13 +262,14 @@ export default function Sidebar({ isOpen = true, onClose, isDesktopRail = false 
                 >
                   {visibleItems.map((item) => {
                     const Icon = item.icon;
-                    const isActive =
-                      item.href === "/dashboard"
-                        ? pathname === "/dashboard"
-                        : item.href === "/support"
-                        ? pathname === "/support"
-                        : pathname?.startsWith(item.href);
-
+                   const isActive =
+  item.href === "/dashboard"
+    ? pathname === "/dashboard"
+    : item.href === "/dashboard/admin"
+    ? pathname === "/dashboard/admin"
+    : item.href === "/support"
+    ? pathname === "/support"
+    : pathname?.startsWith(item.href);
                     return (
                       <Link
                         key={item.titleKey}
