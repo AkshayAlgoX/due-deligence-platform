@@ -1,68 +1,79 @@
 {
   "risk": {
-  "badge": { "ariaLabel": "જોખમ સ્તર: {{level}}" },
-  "levels": {
-    "LOW": "ઓછું", "MEDIUM": "મધ્યમ", "HIGH": "ઉચ્ચ", "CRITICAL": "ગંભીર", "UNKNOWN": "અજ્ઞાત"
-  },
-  "categories": {
-    "FLOOD": "પૂર", "LEGAL": "કાનૂની", "TAX": "કર", "ZONING": "ઝોનિંગ",
-    "ENVIRONMENTAL": "પર્યાવરણીય", "MARKET": "બજાર"
-  },
-  "gauge": {
-    "outOf": "100 માંથી",
-    "ariaLabel": "જોખમ સ્કોર: 100 માંથી {{score}}, {{level}}",
-    "deltaWorse": "બેઝલાઇનની તુલનામાં",
-    "deltaBetter": "બેઝલાઇનની તુલનામાં",
-    "recalculate": "ફરીથી ગણતરી કરો",
-    "recalculating": "ફરીથી ગણતરી કરી રહ્યું છે...",
-    "recalculateAria": "નવીનતમ ડેટા સાથે જોખમની ફરીથી ગણતરી કરો"
-  },
-  "radar": {
-    "seriesName": "જોખમ સ્કોર",
-    "helperText": "દરેક અક્ષ એક શ્રેણી સ્કોર બતાવે છે (0–100). ઓછું વધુ સારું.",
-    "tooltipScore": "સ્કોર", "tooltipWeight": "વજન"
-  },
-  "factor": {
-    "weight": "વજન: {{weight}}",
-    "explanation": "વિશ્લેષણ",
-    "recommendation": "ભલામણ",
-    "dataSource": "ડેટા સ્રોત",
-    "dataUncertain": "સ્કોર ડેટા અનિશ્ચિતતા દંડ પ્રતિબિંબિત કરે છે",
-    "toggleAria": "{{category}} વિગતો ટૉગલ કરો"
-  },
-  "explain": {
-    "title": "જોખમ સ્કોરિંગ કેવી રીતે કામ કરે છે",
-    "subtitle": "પારદર્શક, નિયમ-આધારિત સ્કોરિંગ — બ્લેક-બોક્સ AI નથી",
-    "howItWorks": "કુલ સ્કોર કેવી રીતે ગણવામાં આવે છે",
-    "description": "દરેક મિલકતનું 6 શ્રેણીઓમાં વિશ્લેષણ થાય છે. દરેક શ્રેણીને 0–100 સ્કોર મળે છે (વધુ = વધુ જોખમ). કુલ સ્કોર એ વજનયુક્ત સરવાળો છે — વધુ વજનવાળી શ્રેણીઓ (પૂર 25% જેવી) અંતિમ સ્કોર પર વધુ અસર કરે છે.",
-    "categoryWeights": "શ્રેણી વજન",
-    "levelThresholds": "જોખમ સ્તરો",
-    "dataHonesty": {
-      "title": "ડેટા સ્રોતો વિશે",
-      "body": "જ્યારે ડેટા સ્રોત ઉપલબ્ધ ન હોય, ત્યારે અમે શૂન્ય જોખમ માની લેવાને બદલે અનિશ્ચિતતા દંડ લાગુ કરીએ છીએ. ગુમ થયેલી માહિતી પોતે એક જોખમ પરિબળ છે — અમે તેને તમારાથી છુપાવીશું નહીં."
-    }
-  },
-  "page": {
-    "backToProperty": "મિલકત પર પાછા જાઓ",
-"bedShort": "BR",
-"topRisksTitle": "મુખ્ય જોખમ પરિબળો",
-"topRisksDesc": "એકંદર જોખમ સ્કોરને સૌથી વધુ અસર કરતા પરિબળો",
-"methodology": "પદ્ધતિ",
-"footerDisclaimer": "જોખમ સ્કોરિંગ 6 શ્રેણીઓના પારદર્શક વજન પર આધારિત છે. આ નિર્ણય લેવામાં મદદરૂપ સાધન છે, નાણાકીય સલાહ નથી.",
-    "title": "જોખમ વિશ્લેષણ",
-    "loading": "મિલકત જોખમનું વિશ્લેષણ કરી રહ્યું છે...",
-    "errorTitle": "જોખમ વિશ્લેષણ લોડ કરવામાં અસમર્થ",
-    "goBack": "પાછા જાઓ",
-    "backAria": "પાછલા પૃષ્ઠ પર પાછા જાઓ",
-    "overallScore": "કુલ જોખમ સ્કોર",
-    "categoryBreakdown": "શ્રેણી વિભાજન",
-    "categoryBreakdownDesc": "તમામ 6 જોખમ પરિબળો વિઝ્યુઅલાઇઝ. મોટો વિસ્તાર = ઉચ્ચ કુલ જોખમ.",
-    "factorsTitle": "જોખમ પરિબળો",
-    "factorsSubtitle": "જોખમ યોગદાન દ્વારા ઑર્ડર. સંપૂર્ણ વિશ્લેષણ જોવા માટે કોઈપણ કાર્ડ ક્લિક કરો.",
-    "generateReport": "અહેવાલ બનાવો",
-    "dataWarningTitle": "કેટલાક ડેટા સ્રોત ઉપલબ્ધ નથી",
-    "dataWarningBody": "6 માંથી {{count}} ડેટા પ્રદાતાઓનો સંપર્ક કરી શકાયો નથી. જ્યાં ડેટા ગુમ હતો, સ્કોર રૂઢિચુસ્ત અંદાજો પ્રતિબિંબિત કરે છે."
-  },
+    "badge": {
+      "ariaLabel": "જોખમ સ્તર: {{level}}"
+    },
+    "levels": {
+      "LOW": "ઓછું",
+      "MEDIUM": "મધ્યમ",
+      "HIGH": "ઉચ્ચ",
+      "CRITICAL": "ગંભીર",
+      "UNKNOWN": "અજ્ઞાત"
+    },
+    "categories": {
+      "FLOOD": "પૂર",
+      "LEGAL": "કાનૂની",
+      "TAX": "કર",
+      "ZONING": "ઝોનિંગ",
+      "ENVIRONMENTAL": "પર્યાવરણીય",
+      "MARKET": "બજાર"
+    },
+    "gauge": {
+      "outOf": "100 માંથી",
+      "ariaLabel": "જોખમ સ્કોર: 100 માંથી {{score}}, {{level}}",
+      "deltaWorse": "બેઝલાઇનની તુલનામાં",
+      "deltaBetter": "બેઝલાઇનની તુલનામાં",
+      "recalculate": "ફરીથી ગણતરી કરો",
+      "recalculating": "ફરીથી ગણતરી કરી રહ્યું છે...",
+      "recalculateAria": "નવીનતમ ડેટા સાથે જોખમની ફરીથી ગણતરી કરો"
+    },
+    "radar": {
+      "seriesName": "જોખમ સ્કોર",
+      "helperText": "દરેક અક્ષ એક શ્રેણી સ્કોર બતાવે છે (0–100). ઓછું વધુ સારું.",
+      "tooltipScore": "સ્કોર",
+      "tooltipWeight": "વજન"
+    },
+    "factor": {
+      "weight": "વજન: {{weight}}",
+      "explanation": "વિશ્લેષણ",
+      "recommendation": "ભલામણ",
+      "dataSource": "ડેટા સ્રોત",
+      "dataUncertain": "સ્કોર ડેટા અનિશ્ચિતતા દંડ પ્રતિબિંબિત કરે છે",
+      "toggleAria": "{{category}} વિગતો ટૉગલ કરો"
+    },
+    "explain": {
+      "title": "જોખમ સ્કોરિંગ કેવી રીતે કામ કરે છે",
+      "subtitle": "પારદર્શક, નિયમ-આધારિત સ્કોરિંગ — બ્લેક-બોક્સ AI નથી",
+      "howItWorks": "કુલ સ્કોર કેવી રીતે ગણવામાં આવે છે",
+      "description": "દરેક મિલકતનું 6 શ્રેણીઓમાં વિશ્લેષણ થાય છે. દરેક શ્રેણીને 0–100 સ્કોર મળે છે (વધુ = વધુ જોખમ). કુલ સ્કોર એ વજનયુક્ત સરવાળો છે — વધુ વજનવાળી શ્રેણીઓ (પૂર 25% જેવી) અંતિમ સ્કોર પર વધુ અસર કરે છે.",
+      "categoryWeights": "શ્રેણી વજન",
+      "levelThresholds": "જોખમ સ્તરો",
+      "dataHonesty": {
+        "title": "ડેટા સ્રોતો વિશે",
+        "body": "જ્યારે ડેટા સ્રોત ઉપલબ્ધ ન હોય, ત્યારે અમે શૂન્ય જોખમ માની લેવાને બદલે અનિશ્ચિતતા દંડ લાગુ કરીએ છીએ. ગુમ થયેલી માહિતી પોતે એક જોખમ પરિબળ છે — અમે તેને તમારાથી છુપાવીશું નહીં."
+      }
+    },
+    "page": {
+      "backToProperty": "મિલકત પર પાછા જાઓ",
+      "bedShort": "BR",
+      "topRisksTitle": "મુખ્ય જોખમ પરિબળો",
+      "topRisksDesc": "એકંદર જોખમ સ્કોરને સૌથી વધુ અસર કરતા પરિબળો",
+      "methodology": "પદ્ધતિ",
+      "footerDisclaimer": "જોખમ સ્કોરિંગ 6 શ્રેણીઓના પારદર્શક વજન પર આધારિત છે. આ નિર્ણય લેવામાં મદદરૂપ સાધન છે, નાણાકીય સલાહ નથી.",
+      "title": "જોખમ વિશ્લેષણ",
+      "loading": "મિલકત જોખમનું વિશ્લેષણ કરી રહ્યું છે...",
+      "errorTitle": "જોખમ વિશ્લેષણ લોડ કરવામાં અસમર્થ",
+      "goBack": "પાછા જાઓ",
+      "backAria": "પાછલા પૃષ્ઠ પર પાછા જાઓ",
+      "overallScore": "કુલ જોખમ સ્કોર",
+      "categoryBreakdown": "શ્રેણી વિભાજન",
+      "categoryBreakdownDesc": "તમામ 6 જોખમ પરિબળો વિઝ્યુઅલાઇઝ. મોટો વિસ્તાર = ઉચ્ચ કુલ જોખમ.",
+      "factorsTitle": "જોખમ પરિબળો",
+      "factorsSubtitle": "જોખમ યોગદાન દ્વારા ઑર્ડર. સંપૂર્ણ વિશ્લેષણ જોવા માટે કોઈપણ કાર્ડ ક્લિક કરો.",
+      "generateReport": "અહેવાલ બનાવો",
+      "dataWarningTitle": "કેટલાક ડેટા સ્રોત ઉપલબ્ધ નથી",
+      "dataWarningBody": "6 માંથી {{count}} ડેટા પ્રદાતાઓનો સંપર્ક કરી શકાયો નથી. જ્યાં ડેટા ગુમ હતો, સ્કોર રૂઢિચુસ્ત અંદાજો પ્રતિબિંબિત કરે છે."
+    },
     "history": {
       "sectionTitle": "જોખમ ઇતિહાસ",
       "sectionSubtitle": "આ મિલકતની જોખમ પ્રોફાઇલ કેવી રીતે વિકસિત થઈ છે તે ટ્રેક કરો",
@@ -96,57 +107,57 @@
       "timeHoursAgo": "{{count}} કલાક પહેલા",
       "timeDaysAgo": "{{count}} દિવસ પહેલા"
     }
-},
+  },
   "logoutModal": {
-  "title": "સાઇન આઉટ કરવા તૈયાર છો?",
-  "description": "તમારા ડેશબોર્ડ અને પ્રોપર્ટી ડેટાને ઍક્સેસ કરવા માટે તમારે ફરી લોગ ઇન કરવું પડશે.",
-  "staySignedIn": "સાઇન ઇન રહો",
-  "confirm": "હા, લોગ આઉટ કરો",
-  "signingOut": "સાઇન આઉટ થઈ રહ્યું છે…",
-  "close": "બંધ કરો",
-  "signedIn": "સાઇન ઇન",
-  "active": "સક્રિય",
-  "fallbackUser": "વપરાશકર્તા",
-  "tip": "ટિપ: દબાવો",
-  "tipCancel": "રદ કરવા"
-},
+    "title": "સાઇન આઉટ કરવા તૈયાર છો?",
+    "description": "તમારા ડેશબોર્ડ અને પ્રોપર્ટી ડેટાને ઍક્સેસ કરવા માટે તમારે ફરી લોગ ઇન કરવું પડશે.",
+    "staySignedIn": "સાઇન ઇન રહો",
+    "confirm": "હા, લોગ આઉટ કરો",
+    "signingOut": "સાઇન આઉટ થઈ રહ્યું છે…",
+    "close": "બંધ કરો",
+    "signedIn": "સાઇન ઇન",
+    "active": "સક્રિય",
+    "fallbackUser": "વપરાશકર્તા",
+    "tip": "ટિપ: દબાવો",
+    "tipCancel": "રદ કરવા"
+  },
   "labels": {
-  "NEW": "નવું",
-  "HOT": "હોટ",
-  "PRICE_DROP": "કિંમત ઘટાડો",
-  "FEATURED": "ફીચર્ડ",
-  "VERIFIED": "ચકાસાયેલ",
-  "SOLD": "વેચાઈ ગયું",
-  "UNDER_OFFER": "ઓફર પર",
-  "PREMIUM": "પ્રીમિયમ",
-  "moreCount": "+{{count}} વધુ",
-  "admin": {
-    "title": "પ્રોપર્ટી લેબલ્સ",
-    "subtitle": "આ પ્રોપર્ટી પર દેખાતા લેબલ્સનું સંચાલન કરો",
-    "current": "વર્તમાન લેબલ્સ",
-    "empty": "હજી સુધી કોઈ લેબલ લાગુ કરેલા નથી",
-    "loading": "લેબલ્સ લોડ થઈ રહ્યા છે...",
-    "addNew": "નવું લેબલ ઉમેરો",
-    "selectType": "લેબલ પ્રકાર",
-    "selectPlaceholder": "એક લેબલ પસંદ કરો...",
-    "expiresInDays": "સમાપ્તિ (દિવસોમાં)",
-    "expiresPlaceholder": "દા.ત., 30",
-    "optional": "વૈકલ્પિક",
-    "addButton": "લેબલ ઉમેરો",
-    "adding": "ઉમેરી રહ્યાં છીએ...",
-    "remove": "લેબલ દૂર કરો",
-    "added": "લેબલ સફળતાપૂર્વક ઉમેરાયું",
-    "removed": "લેબલ દૂર કરાયું",
-    "addError": "લેબલ ઉમેરવામાં નિષ્ફળ",
-    "removeError": "લેબલ દૂર કરવામાં નિષ્ફળ"
-  }
-},
+    "NEW": "નવું",
+    "HOT": "હોટ",
+    "PRICE_DROP": "કિંમત ઘટાડો",
+    "FEATURED": "ફીચર્ડ",
+    "VERIFIED": "ચકાસાયેલ",
+    "SOLD": "વેચાઈ ગયું",
+    "UNDER_OFFER": "ઓફર પર",
+    "PREMIUM": "પ્રીમિયમ",
+    "moreCount": "+{{count}} વધુ",
+    "admin": {
+      "title": "પ્રોપર્ટી લેબલ્સ",
+      "subtitle": "આ પ્રોપર્ટી પર દેખાતા લેબલ્સનું સંચાલન કરો",
+      "current": "વર્તમાન લેબલ્સ",
+      "empty": "હજી સુધી કોઈ લેબલ લાગુ કરેલા નથી",
+      "loading": "લેબલ્સ લોડ થઈ રહ્યા છે...",
+      "addNew": "નવું લેબલ ઉમેરો",
+      "selectType": "લેબલ પ્રકાર",
+      "selectPlaceholder": "એક લેબલ પસંદ કરો...",
+      "expiresInDays": "સમાપ્તિ (દિવસોમાં)",
+      "expiresPlaceholder": "દા.ત., 30",
+      "optional": "વૈકલ્પિક",
+      "addButton": "લેબલ ઉમેરો",
+      "adding": "ઉમેરી રહ્યાં છીએ...",
+      "remove": "લેબલ દૂર કરો",
+      "added": "લેબલ સફળતાપૂર્વક ઉમેરાયું",
+      "removed": "લેબલ દૂર કરાયું",
+      "addError": "લેબલ ઉમેરવામાં નિષ્ફળ",
+      "removeError": "લેબલ દૂર કરવામાં નિષ્ફળ"
+    }
+  },
   "passwordStrength": {
-  "weak": "નબળો",
-  "fair": "ઠીક",
-  "good": "સારો",
-  "strong": "મજબૂત"
-},
+    "weak": "નબળો",
+    "fair": "ઠીક",
+    "good": "સારો",
+    "strong": "મજબૂત"
+  },
   "cookies": {
     "banner": {
       "ariaLabel": "કૂકી સંમતિ",
@@ -173,92 +184,92 @@
     }
   },
   "faq": {
-  "categories": {
-    "GETTING_STARTED":  "શરૂઆત કરવી",
-    "VERIFICATION":     "ચકાસણી",
-    "RISK_SCORING":     "જોખમ સ્કોરિંગ",
-    "DATA_SOURCES":     "ડેટા સ્રોતો",
-    "REPORTS_PDF":      "અહેવાલો અને PDF",
-    "ACCOUNT":          "ખાતું",
-    "PRIVACY_SECURITY": "ગોપનીયता અને સુરક્ષા"
-  },
-  "items": {
-    "item1": {
-      "question": "મારી પહેલી મિલકત કેવી રીતે ઉમેરવી?",
-      "answer": "સાઇન ઇન કર્યા બાદ, ડૅશબૉર્ડના ઉપર-જમણે 'મિલકત ઉમેરો' ક્લિક કરો અથવા મિલકત શોધ પૃષ્ઠ પર બટન વાપરો. સરનામું ભરો — OpenStreetMap માંથી મેળ સૂચવીશું. ફક્ત સરનામું અને શહેર જ જરૂરી છે; બાકી બધું પછી ઉમેરી શકાય."
+    "categories": {
+      "GETTING_STARTED": "શરૂઆત કરવી",
+      "VERIFICATION": "ચકાસણી",
+      "RISK_SCORING": "જોખમ સ્કોરિંગ",
+      "DATA_SOURCES": "ડેટા સ્રોતો",
+      "REPORTS_PDF": "અહેવાલો અને PDF",
+      "ACCOUNT": "ખાતું",
+      "PRIVACY_SECURITY": "ગોપનીયતા અને સુરક્ષા"
     },
-    "item2": {
-      "question": "મિલકત ઉમેરવા કઈ માહિતી જોઈએ?",
-      "answer": "જરૂરી: સરનામું અને શહેર. ભલામણ: મિલકત પ્રકાર, બજાર મૂલ્ય, ક્ષેત્ર (sqft), બાંધકામ વર્ષ અને શયનખંડ/સ્નાનઘર. જેટલા વધારે ક્ષેત્ર ભરો, ચકાસણી સ્કોર ઊંચો અને જોખમ મૂલ્યાંકન ચોક્કસ."
-    },
-    "item3": {
-      "question": "મારી મિલકત 'બાકી' અથવા 'અધૂરી' કેમ બતાવે છે?",
-      "answer": "અમે દરેક મિલકત પર 7 ડેટા ગુણવત્તા ચકાસણી ચલાવીએ છીએ (સરનામું, શહેર, રાજ્ય, ZIP, બજાર મૂલ્ય, ક્ષેત્ર, મિલકત પ્રકાર). કોઈ પણ ખૂટે તો સ્થિતિ બાકી રહે. ગૂm ક્ષેત્ર ભરવા 'ચKaSavA pUrnO karo' ક્લિક કરો."
-    },
-    "item4": {
-      "question": "ચकासणী કેvI rIte kAm kare che?",
-      "answer": "ChecKaSaNI svayAmchaLit che ane pUrIrIte DeTa pUrNataAdhArit che — mAnhyal samIkshA nahIM. sarve 7 jarUrI kShetrO bharyA bAd milkat checKAyI jAy che. jo checKAyeLI milkatamAM ferfAr karIne kSetra haTAvo to ferI bAkI thAy che."
-    },
-    "item5": {
-      "question": "joKhma skOr kEvI rIte gaNAtAr thAy?",
-      "answer": "joKhma skOr chAr shreNInO bhArit sarasharI che: vittIya (30%), kAnUnI (30%), paryAvaraNIya (25%) ane saMrachAnAtmak (15%). skOr shrENI: 0–33 OchO, 34–66 madhyam, 67–100 uchO."
-    },
-    "item6": {
-      "question": "joKhma kArd par 'DeTa adhUrO' kem dikhAy che?",
-      "answer": "keTalAk DeTa srotO (mAlikI, kar itihAs, paramAnagI) haL nUmunA DeTa pAcho Ape che kAraN bhAratamAM moTA pAye A DomennO vishvAsapAtra pablik API hun upalabdha nahIM. joKhma injan A ne flagg kare che."
-    },
-    "item7": {
-      "question": "havAI guNavattA DeTa kyAMthi Ave che?",
-      "answer": "AQI mUlyO WAQI (varld er kvAlITI inDeks) API mAMthi Ave che, je bhArat bharmAM CPCB nigarAnI kendrOthi riyal-TaIm rIDig ekaTrA kare che. nakShe par koI kendr vagar shehermAM milkat hoy to 'DeTa nahIM' dikhAvashE."
-    },
-    "item8": {
-      "question": "mAlikI ane kar DeTa vAstvik che?",
-      "answer": "nahIM — AmAM amE spashTa chIe. mAlikI, kar itihAs, jOning, pUr jhOn ane paramAnagInA vibhAgO haL nUmunA DeTa pAcho Ape che. nUmunA DeTa dikhAvtI dareK kArd spashTarIte 'nUmunA DeTa' yA 'Mock' lAbel chhE."
-    },
-    "item9": {
-      "question": "milkat ahevAl kEvI rIte DAunlOD karavO?",
-      "answer": "milkat shOdhemAM koI paN milkat kholO, pachI milkat hIrO kArDnA upar-jamaNe 'ahevAl DAunlOD karO' klik karO. PDF mAM milkatnO avlOkan, joKhma mUlyAnkan, 6 DeTa vibhAgO ane DeTa pUrNatAnO sAr sAmeLa che. taiArImAM 2–4 sekand lAge."
-    },
-    "item10": {
-      "question": "ek ahevAlmAM aneka milkatOnI saraKhAmaNI karI shaKAy?",
-      "answer": "hA. milkat ShOdha pashThe koI paN kArD par hOvar karO ane compare chekbOks klik karO. 2–3 milkatO pasand karO, pachI nIche 'saraKhAmaNI karO' klik karO. saraKhAmaNI pashThe 'saraKhAmaNI DAunlOD karO' klik karO."
-    },
-    "item11": {
-      "question": "mArO khAtO kEvI rIte haTAvavO?",
-      "answer": "tomArA prOfAIl pashThe jAO ane nIche joKhmanA kSetra sudhI skrOl karO. KhAtO haTAvavO tatkal ane kaymI che — cascade delete dvArA tamArI badI milkatO ane itihAs haTAvAy che. koI punaHprApti avadhi nahIM."
-    },
-    "item12": {
-      "question": "pAsavarD bhUlI gayO. shu karavO?",
-      "answer": "lOgin pashThe 'pAsavarD bhUlI gayA' klik karO. nOndAyelO ImEl ApO, 6 aMkanO OTP mOkalIshum. OTP chekAvo ane navo pAsavarD seT karO. Google sAthe sAIn ap karyO hoy to 'Google sAthe jArI rAKho' vAparO."
-    },
-    "item13": {
-      "question": "mArO DeTa tritIya pakShOne ApAvAmAM Ave che?",
-      "answer": "amE vishiShT heTu mATe ThODA bAhya sevAo kOl karIe chIe: havAI guNavattA mATe WAQI (fakt shahernuM nAm), jiOkODing mATe Nominatim (fakt sarAnAmAnI striM), sAIn-in checKASaN mATe Google OAuth. koI paN vyaktigat yA milkat DeTa vechatO nahIM."
-    },
-    "item14": {
-      "question": "mArA pAsavarD kEvI rIte sAchaVAy che?",
-      "answer": "pAsavarD sachaVAyA pehLA BCrypt (strength factor 10) sAthe hesh thAy che. plain-text pAsavarD amE kyArey jotuM nathI ane punaHprApti karI shakAtuM nathI — fakt OTP dvArA rIseT karI shaKAy. fakt Google vAparO to koI pAsavarD sachaVAtuM nathI."
+    "items": {
+      "item1": {
+        "question": "મારી પહેલી મિલકત કેવી રીતે ઉમેરવી?",
+        "answer": "સાઇન ઇન કર્યા બાદ, ડૅશબૉર્ડના ઉપર-જમણે 'મિલકત ઉમેરો' ક્લિક કરો અથવા મિલકત શોધ પૃષ્ઠ પર બટન વાપરો. સરનામું ભરો — OpenStreetMap માંથી મેળ સૂચવીશું. ફક્ત સરનામું અને શહેર જ જરૂરી છે; બાકી બધું પછી ઉમેરી શકાય."
+      },
+      "item2": {
+        "question": "મિલકત ઉમેરવા કઈ માહિતી જોઈએ?",
+        "answer": "જરૂરી: સરનામું અને શહેર. ભલામણ: મિલકત પ્રકાર, બજાર મૂલ્ય, ક્ષેત્ર (sqft), બાંધકામ વર્ષ અને શયનખંડ/સ્નાનઘર. જેટલા વધારે ક્ષેત્ર ભરો, ચકાસણી સ્કોર ઊંચો અને જોખમ મૂલ્યાંકન ચોક્કસ."
+      },
+      "item3": {
+        "question": "મારી મિલકત 'બાકી' અથવા 'અધૂરી' કેમ બતાવે છે?",
+        "answer": "અમે દરેક મિલકત પર 7 ડેટા ગુણવત્તા ચકાસણી ચલાવીએ છીએ (સરનામું, શહેર, રાજ્ય, ZIP, બજાર મૂલ્ય, ક્ષેત્ર, મિલકત પ્રકાર). કોઈ પણ ખૂટે તો સ્થિતિ બાકી રહે. ગૂm ક્ષેત્ર ભરવા 'ચKaSavA pUrnO karo' ક્લિક કરો."
+      },
+      "item4": {
+        "question": "ચકાસણી કેકેવી રીતે કામ કરે છે?",
+        "answer": "ChecKaSaNI svayAmchaLit che ane pUrIrIte DeTa pUrNataAdhArit che — mAnhyal samIkshA nahIM. sarve 7 jarUrI kShetrO bharyA bAd milkat checKAyI jAy che. jo checKAyeLI milkatamAM ferfAr karIne kSetra haTAvo to ferI bAkI thAy che."
+      },
+      "item5": {
+        "question": "joKhma skOr kEvI rIte gaNAtAr thAy?",
+        "answer": "joKhma skOr chAr shreNInO bhArit sarasharI che: vittIya (30%), kAnUnI (30%), paryAvaraNIya (25%) ane saMrachAnAtmak (15%). skOr shrENI: 0–33 OchO, 34–66 madhyam, 67–100 uchO."
+      },
+      "item6": {
+        "question": "joKhma kArd par 'DeTa adhUrO' kem dikhAy che?",
+        "answer": "keTalAk DeTa srotO (mAlikI, kar itihAs, paramAnagI) haL nUmunA DeTa pAcho Ape che kAraN bhAratamAM moTA pAye A DomennO vishvAsapAtra pablik API hun upalabdha nahIM. joKhma injan A ne flagg kare che."
+      },
+      "item7": {
+        "question": "havAI guNavattA DeTa kyAMthi Ave che?",
+        "answer": "AQI mUlyO WAQI (varld er kvAlITI inDeks) API mAMthi Ave che, je bhArat bharmAM CPCB nigarAnI kendrOthi riyal-TaIm rIDig ekaTrA kare che. nakShe par koI kendr vagar shehermAM milkat hoy to 'DeTa nahIM' dikhAvashE."
+      },
+      "item8": {
+        "question": "mAlikI ane kar DeTa vAstvik che?",
+        "answer": "nahIM — AmAM amE spashTa chIe. mAlikI, kar itihAs, jOning, pUr jhOn ane paramAnagInA vibhAgO haL nUmunA DeTa pAcho Ape che. nUmunA DeTa dikhAvtI dareK kArd spashTarIte 'nUmunA DeTa' yA 'Mock' lAbel chhE."
+      },
+      "item9": {
+        "question": "milkat ahevAl kEvI rIte DAunlOD karavO?",
+        "answer": "milkat shOdhemAM koI paN milkat kholO, pachI milkat hIrO kArDnA upar-jamaNe 'ahevAl DAunlOD karO' klik karO. PDF mAM milkatnO avlOkan, joKhma mUlyAnkan, 6 DeTa vibhAgO ane DeTa pUrNatAnO sAr sAmeLa che. taiArImAM 2–4 sekand lAge."
+      },
+      "item10": {
+        "question": "ek ahevAlmAM aneka milkatOnI saraKhAmaNI karI shaKAy?",
+        "answer": "hA. milkat ShOdha pashThe koI paN kArD par hOvar karO ane compare chekbOks klik karO. 2–3 milkatO pasand karO, pachI nIche 'saraKhAmaNI karO' klik karO. saraKhAmaNI pashThe 'saraKhAmaNI DAunlOD karO' klik karO."
+      },
+      "item11": {
+        "question": "mArO khAtO kEvI rIte haTAvavO?",
+        "answer": "tomArA prOfAIl pashThe jAO ane nIche joKhmanA kSetra sudhI skrOl karO. KhAtO haTAvavO tatkal ane kaymI che — cascade delete dvArA tamArI badI milkatO ane itihAs haTAvAy che. koI punaHprApti avadhi nahIM."
+      },
+      "item12": {
+        "question": "pAsavarD bhUlI gayO. shu karavO?",
+        "answer": "lOgin pashThe 'pAsavarD bhUlI gayA' klik karO. nOndAyelO ImEl ApO, 6 aMkanO OTP mOkalIshum. OTP chekAvo ane navo pAsavarD seT karO. Google sAthe sAIn ap karyO hoy to 'Google sAthe jArI rAKho' vAparO."
+      },
+      "item13": {
+        "question": "mArO DeTa tritIya pakShOne ApAvAmAM Ave che?",
+        "answer": "amE vishiShT heTu mATe ThODA bAhya sevAo kOl karIe chIe: havAI guNavattA mATe WAQI (fakt shahernuM nAm), jiOkODing mATe Nominatim (fakt sarAnAmAnI striM), sAIn-in checKASaN mATe Google OAuth. koI paN vyaktigat yA milkat DeTa vechatO nahIM."
+      },
+      "item14": {
+        "question": "mArA pAsavarD kEvI rIte sAchaVAy che?",
+        "answer": "pAsavarD sachaVAyA pehLA BCrypt (strength factor 10) sAthe hesh thAy che. plain-text pAsavarD amE kyArey jotuM nathI ane punaHprApti karI shakAtuM nathI — fakt OTP dvArA rIseT karI shaKAy. fakt Google vAparO to koI pAsavarD sachaVAtuM nathI."
+      }
     }
-  }
-},
-  "aqiScale": {
-  "labels": {
-    "good": "સારું",
-    "satisfactory": "સંતોષજનક",
-    "moderate": "મધ્યમ",
-    "poor": "ખરાબ",
-    "veryPoor": "ઘણું ખરાબ",
-    "severe": "ગંભીર"
   },
-  "descriptions": {
-    "good": "ન્યૂનતમ અસર",
-    "satisfactory": "સંવેદનશીલ લોકોને સ્વાસ લેવામાં સ્હેજ અગવડ",
-    "moderate": "સંવેदनशील જૂથોને સ્વાસ લેवामां अगवड",
-    "poor": "લાંबા સંparkamangane સ્વास लेवामां तकलीफ",
-    "veryPoor": "લાーンga સmpratनमा श्वसन रोग",
-    "severe": "बधाँ पर ગंभीर स्वास्थ्य असर"
-  }
-},
+  "aqiScale": {
+    "labels": {
+      "good": "સારું",
+      "satisfactory": "સંતોષજનક",
+      "moderate": "મધ્યમ",
+      "poor": "ખરાબ",
+      "veryPoor": "ઘણું ખરાબ",
+      "severe": "ગંભીર"
+    },
+    "descriptions": {
+      "good": "ન્યૂનતમ અસર",
+      "satisfactory": "સંવેદનશીલ લોકોને સ્વાસ લેવામાં સ્હેજ અગવડ",
+      "moderate": "સંવેદનશીલ જૂથોને સ્વાસ લેવામાં અગવડ",
+      "poor": "લાંબા સંparkamangane સ્વાસ લેવામાં તકલીફ",
+      "veryPoor": "લાーンga સmpratનમા શ્વસન રોગ",
+      "severe": "બધાઁ પર ગંભીર સ્વાસ્થ્ય અસર"
+    }
+  },
   "nav": {
     "dashboard": "ડૅશબૉર્ડ",
     "propertySearch": "મિલકત શોધ",
@@ -321,7 +332,7 @@
       "builtForTrust": "વિશ્વાસ માટે બનેલ",
       "verifiedListings": "માત્ર ચકાસાયેલ લિસ્ટિંગ્સ",
       "secureByDefault": "ડિફૉલ્ટ રૂપે સુરક્ષિત",
-      "roleBasedAccess": "ભૂમિका-આધારિત પ્રવેશ"
+      "roleBasedAccess": "ભૂમિકા-આધારિત પ્રવેશ"
     },
     "register": {
       "title": "તમારું એકાઉન્ટ બનાવો",
@@ -332,20 +343,20 @@
       "alreadyHaveAccount": "પહેલેથી એકાઉન્ટ છે?",
       "signIn": "સાઇન ઇન કરો",
       "secureByDesign": "ડિઝાઇન દ્વારા સુરક્ષિત",
-      "securityTagline": "JWT પ્રમાણીકરण · BCrypt હૅશિંગ · ભૂમિका-આધારિત પ્રવેશ નિયંત્રण",
+      "securityTagline": "JWT પ્રમાણીકરણ · BCrypt હૅશિંગ · ભૂમિકા-આધારિત પ્રવેશ નિયંત્રણ",
       "fields": {
         "fullName": "પૂરું નામ",
         "email": "ઇમેઇલ",
         "confirm": "પુષ્ટિ",
         "phoneNumber": "ફોન નંબર",
-        "role": "ભૂમિका"
+        "role": "ભૂમિકા"
       },
       "placeholders": {
         "fullName": "John Smith",
         "password": "ઓછામાં ઓછા 8 અક્ષર",
         "confirm": "ફરી દાખલ કરો",
         "phone": "9876543210",
-        "role": "ભૂમિका પસંદ કરો"
+        "role": "ભૂમિકા પસંદ કરો"
       },
       "errors": {
         "fullNameRequired": "પૂરું નામ આવશ્યક છે.",
@@ -354,431 +365,431 @@
         "emailRequired": "વ્યાવસાયિક ઇમેઇલ આવશ્યક છે.",
         "emailInvalid": "કૃપા કરીને માન્ય ઇમેઇલ સરનામું દાખલ કરો.",
         "passwordLong": "પાસવર્ડ 20 અક્ષરથી વધુ ન હોવો જોઈએ.",
-        "confirmRequired": "કૃपया તમારો પાસવર્ડ પુષ્ટિ કરો.",
+        "confirmRequired": "કૃપયા તમારો પાસવર્ડ પુષ્ટિ કરો.",
         "passwordsMismatch": "પાસવર્ડ મેળ ખાતા નથી.",
         "phoneRequired": "ફોન નંબર આવશ્યક છે.",
         "phoneInvalid": "માન્ય 10-અંકનો ભારતીય મોબાઇલ નંબર દાખલ કરો (6–9 થી શરૂ).",
-        "roleRequired": "કૃپया ભૂमिका પસંદ કરો.",
-        "emailExists": "આ ઇમેઇલ સાથે એકાઉन्ट પહેલેથી અસ્તિત્વ ધરાવે છે."
+        "roleRequired": "કૃپયા ભૂમિકા પસંદ કરો.",
+        "emailExists": "આ ઇમેઇલ સાથે એકાઉન્ટ પહેલેથી અસ્તિત્વ ધરાવે છે."
       },
       "toasts": {
         "welcome": "સ્વાગત છે",
-        "welcomeDesc": "તમારું એકાઉन्ट તૈयार છે. રીडायरेक्ट थઈ रहਿઓ…",
-        "emailRegistered": "ઇमेइल पहेलेथी नोंधायेलु छे",
-        "emailRegisteredDesc": "તેने बदले सायन इन करवानो प्रयास करो, अथवा अलग इमेइल वापरो.",
-        "failed": "नोंधणी निष्फळ",
-        "tryAgain": "कृपा करीने फरी प्रयास करो."
+        "welcomeDesc": "તમારું એકાઉન્ટ તૈયાર છે. રીડાયરેક્ટ થઈ રહਿઓ…",
+        "emailRegistered": "ઇમેઇલ પહેલેથી નોંધાયેલુ છે",
+        "emailRegisteredDesc": "તેને બદલે સાયન ઇન કરવાનો પ્રયાસ કરો, અથવા અલગ ઇમેઇલ વાપરો.",
+        "failed": "નોંધણી નિષ્ફળ",
+        "tryAgain": "કૃપા કરીને ફરી પ્રયાસ કરો."
       },
-      "whyPlatform": "આ પ્લ৅टफॉर्म शा माटे",
-      "headline": "मिलकत डयू डिलिजन्स माटे प्रामाणिक साधनो",
+      "whyPlatform": "આ પ્લૅટફૉર્મ શા માટે",
+      "headline": "મિલકત ડયૂ ડિલિજન્સ માટે પ્રામાણિક સાધનો",
       "features": {
-        "verificationFirst": "ચकासणी-प्रथम लिस्टिंग्स",
-        "verificationFirstDesc": "दरेक मिलकत तेने चकासायेली चिह्नित करवामां आवे ते पहेलां सात-बिंदु डेटा-गुणवत्ता एंजिनमांथी पसार थाय छे.",
-        "secure": "डिफॉल्ट रूपे सुरक्षित",
-        "secureDesc": "JWT सत्रो, BCrypt पासवर्ड हेशिंग अने दरेक एन्डपॉइन्ट पर भूमिका-आधारित प्रवेश.",
-        "teams": "वास्तविक टीमो माटे बनेलु",
-        "teamsDesc": "पांच अलग-अलग भूमिकाओ — खरीददार, एजन्ट, कानूनी समीक्षक, नांणाकीय संस्था अने प्रशासक.",
-        "consent": "सहमति-प्रथम विश्लेषण",
-        "consentDesc": "जयां सुधी तमे ऑप्ट इन न करो त्यां सुधी कंई लोड थतुं नथी. कूकी प्राधान्यताओनुं कड़क रीते पालन थाय छे."
+        "verificationFirst": "ચકાસણી-પ્રથમ લિસ્ટિંગ્સ",
+        "verificationFirstDesc": "દરેક મિલકત તેને ચકાસાયેલી ચિહ્નિત કરવામાં આવે તે પહેલાં સાત-બિંદુ ડેટા-ગુણવત્તા એંજિનમાંથી પસાર થાય છે.",
+        "secure": "ડિફૉલ્ટ રૂપે સુરક્ષિત",
+        "secureDesc": "JWT સત્રો, BCrypt પાસવર્ડ હેશિંગ અને દરેક એન્ડપૉઇન્ટ પર ભૂમિકા-આધારિત પ્રવેશ.",
+        "teams": "વાસ્તવિક ટીમો માટે બનેલુ",
+        "teamsDesc": "પાંચ અલગ-અલગ ભૂમિકાઓ — ખરીદદાર, એજન્ટ, કાનૂની સમીક્ષક, નાંણાકીય સંસ્થા અને પ્રશાસક.",
+        "consent": "સહમતિ-પ્રથમ વિશ્લેષણ",
+        "consentDesc": "જયાં સુધી તમે ઑપ્ટ ઇન ન કરો ત્યાં સુધી કંઈ લોડ થતું નથી. કૂકી પ્રાધાન્યતાઓનું કડ઼ક રીતે પાલન થાય છે."
       },
-      "platformOnline": "પ્लॅटफॉर्म ऑनलाइन",
-      "secureBy": "डिझाइन द्वारा सुरक्षित",
-      "learnHow": "केवी रीते जाणो"
+      "platformOnline": "પ્લૅટફૉર્મ ઑનલાઇન",
+      "secureBy": "ડિઝાઇન દ્વારા સુરક્ષિત",
+      "learnHow": "કેવી રીતે જાણો"
     },
     "forgotPassword": {
-      "step1Title": "तमारो पासवर्ड रीसेट करो",
-      "step1Subtitle": "तमारो इमेइल दाखल करो अने अमे 6-अंकनो कोड मोकलीशुं.",
-      "emailLabel": "इमेइल सरनामुं",
-      "sendCode": "कोड मोकलो",
-      "alreadyHaveCode": "मारी पासे पहेलेथी कोड छे",
-      "step2Title": "कोड दाखल करो",
-      "step2Subtitle": "ने मोकल्यो",
-      "verifyCode": "कोड चकासो",
-      "changeEmail": "इमेइल बदलो",
-      "resendCode": "कोड फरी मोकलो",
-      "resendIn": "{{n}}s मां फरी मोकलो",
-      "waitBefore": "फरी मोकलतां पहेलां {{n}}s राहो",
-      "step3Title": "नवो पासवर्ड सेट करो",
-      "step3Subtitle": "ऑछामां ऑछा 8 अक्षर, मोटा-नानां अक्षरो अने एक आंकडो वापरो.",
-      "newPassword": "नवो पासवर्ड",
-      "confirmPassword": "पासवर्ड पुष्टि करो",
-      "resetPassword": "पासवर्ड रीसेट करो",
+      "step1Title": "તમારો પાસવર્ડ રીસેટ કરો",
+      "step1Subtitle": "તમારો ઇમેઇલ દાખલ કરો અને અમે 6-અંકનો કોડ મોકલીશું.",
+      "emailLabel": "ઇમેઇલ સરનામું",
+      "sendCode": "કોડ મોકલો",
+      "alreadyHaveCode": "મારી પાસે પહેલેથી કોડ છે",
+      "step2Title": "કોડ દાખલ કરો",
+      "step2Subtitle": "ને મોકલ્યો",
+      "verifyCode": "કોડ ચકાસો",
+      "changeEmail": "ઇમેઇલ બદલો",
+      "resendCode": "કોડ ફરી મોકલો",
+      "resendIn": "{{n}}s માં ફરી મોકલો",
+      "waitBefore": "ફરી મોકલતાં પહેલાં {{n}}s રાહો",
+      "step3Title": "નવો પાસવર્ડ સેટ કરો",
+      "step3Subtitle": "ઑછામાં ઑછા 8 અક્ષર, મોટા-નાનાં અક્ષરો અને એક આંકડો વાપરો.",
+      "newPassword": "નવો પાસવર્ડ",
+      "confirmPassword": "પાસવર્ડ પુષ્ટિ કરો",
+      "resetPassword": "પાસવર્ડ રીસેટ કરો",
       "requirements": {
-        "length": "ऑछामां ऑछा 8 अक्षर",
-        "case": "मोटा अने नाना अक्षरो",
-        "number": "एक आंकडो समाविष्ट छे",
-        "match": "पासवर्ड मेळ खाय छे"
+        "length": "ઑછામાં ઑછા 8 અક્ષર",
+        "case": "મોટા અને નાના અક્ષરો",
+        "number": "એક આંકડો સમાવિષ્ટ છે",
+        "match": "પાસવર્ડ મેળ ખાય છે"
       },
-      "step4Title": "पासवर्ड अपडेट थयो",
-      "step4Subtitle": "चालु राखवा तमारा नवा पासवर्डथी साइन इन करो.",
-      "backToSignIn": "साइन इन पर पाछा जाओ",
-      "redirectingIn": "{{n}}s मां रीडायरेक्ट थईशुं…",
-      "capsLock": "Caps Lock चालु छे",
-      "pleaseWait": "कृपा करीने राहो",
-      "cooldownDesc": "तमे {{n}}s मां नवो कोड विनंती करी शकशो.",
-      "codeSent": "कोड मोकल्यो",
-      "checkInbox": "6-अंकना कोड माटे तमारुं इनबॉक्स चकासो.",
-      "sendFailed": "कोड मोकली शकायो नहीं",
-      "newCodeSent": "नवो कोड मोकल्यो",
-      "resendFailed": "फरी मोकली शकायो नहीं",
-      "enterSixDigit": "6-अंकनो कोड दाखल करो",
-      "invalidCode": "अमान्य अथवा मुदत पूरी थयेलो कोड",
-      "verifyFailed": "चकासणी निष्फळ",
-      "checkCodeAndRetry": "कृपा करीने कोड चकासो अने फरी प्रयास करो.",
-      "enterNewPassword": "नवो पासवर्ड दाखल करो",
-      "pwdComplexity": "मोटा अक्षर, नाना अक्षर अने एक आंकडो समाविष्ट करो",
-      "confirmYourPassword": "तमारो पासवर्ड पुष्टि करो",
-      "resetFailed": "पासवर्ड रीसेट करी शकायो नहीं",
-      "codeAlreadySent": "कोड पहेलेथी मोकल्यो छे. पहेलां तमारुं इनबॉक्स चकासो.",
-      "enterEmailUsed": "तमे वापरेलो इमेइल दाखल करो",
-      "sentTo": "ने मोकल्यो",
-      "digitAria": "अंक {{n}}"
+      "step4Title": "પાસવર્ડ અપડેટ થયો",
+      "step4Subtitle": "ચાલુ રાખવા તમારા નવા પાસવર્ડથી સાઇન ઇન કરો.",
+      "backToSignIn": "સાઇન ઇન પર પાછા જાઓ",
+      "redirectingIn": "{{n}}s માં રીડાયરેક્ટ થઈશું…",
+      "capsLock": "Caps Lock ચાલુ છે",
+      "pleaseWait": "કૃપા કરીને રાહો",
+      "cooldownDesc": "તમે {{n}}s માં નવો કોડ વિનંતી કરી શકશો.",
+      "codeSent": "કોડ મોકલ્યો",
+      "checkInbox": "6-અંકના કોડ માટે તમારું ઇનબૉક્સ ચકાસો.",
+      "sendFailed": "કોડ મોકલી શકાયો નહીં",
+      "newCodeSent": "નવો કોડ મોકલ્યો",
+      "resendFailed": "ફરી મોકલી શકાયો નહીં",
+      "enterSixDigit": "6-અંકનો કોડ દાખલ કરો",
+      "invalidCode": "અમાન્ય અથવા મુદત પૂરી થયેલો કોડ",
+      "verifyFailed": "ચકાસણી નિષ્ફળ",
+      "checkCodeAndRetry": "કૃપા કરીને કોડ ચકાસો અને ફરી પ્રયાસ કરો.",
+      "enterNewPassword": "નવો પાસવર્ડ દાખલ કરો",
+      "pwdComplexity": "મોટા અક્ષર, નાના અક્ષર અને એક આંકડો સમાવિષ્ટ કરો",
+      "confirmYourPassword": "તમારો પાસવર્ડ પુષ્ટિ કરો",
+      "resetFailed": "પાસવર્ડ રીસેટ કરી શકાયો નહીં",
+      "codeAlreadySent": "કોડ પહેલેથી મોકલ્યો છે. પહેલાં તમારું ઇનબૉક્સ ચકાસો.",
+      "enterEmailUsed": "તમે વાપરેલો ઇમેઇલ દાખલ કરો",
+      "sentTo": "ને મોકલ્યો",
+      "digitAria": "અંક {{n}}"
     },
     "errors": {
-      "emailRequired": "तमारो इमेइल दाखल करो",
-      "emailInvalid": "मान्य इमेइल सरनामुं दाखल करो",
-      "passwordRequired": "तमारो पासवर्ड दाखल करो",
-      "passwordLength": "ऑछामां ऑछा 8 अक्षर",
-      "fieldErrors": "कृपा करीने तमारी विगतो चकासो",
-      "someFieldsNeedAttention": "केटलाक ક્ષेत्रो पर ध्यान आपवानुं छे.",
-      "signInFailed": "साइन इन निष्फळ",
-      "checkCredentials": "कृपा करीने तमारी ओळखपत्र चकासो अने फरी प्रयास करो.",
-      "passwordLetter": "एक अक्षर समाविष्ट होवो जोईए",
-      "passwordNumber": "एक आंकडो समाविष्ट होवो जोईए"
+      "emailRequired": "તમારો ઇમેઇલ દાખલ કરો",
+      "emailInvalid": "માન્ય ઇમેઇલ સરનામું દાખલ કરો",
+      "passwordRequired": "તમારો પાસવર્ડ દાખલ કરો",
+      "passwordLength": "ઑછામાં ઑછા 8 અક્ષર",
+      "fieldErrors": "કૃપા કરીને તમારી વિગતો ચકાસો",
+      "someFieldsNeedAttention": "કેટલાક ક્ષેત્રો પર ધ્યાન આપવાનું છે.",
+      "signInFailed": "સાઇન ઇન નિષ્ફળ",
+      "checkCredentials": "કૃપા કરીને તમારી ઓળખપત્ર ચકાસો અને ફરી પ્રયાસ કરો.",
+      "passwordLetter": "એક અક્ષર સમાવિષ્ટ હોવો જોઈએ",
+      "passwordNumber": "એક આંકડો સમાવિષ્ટ હોવો જોઈએ"
     }
   },
   "dashboard": {
     "greetings": {
-      "morning": "शुभ सवार",
-      "afternoon": "शुभ बपोर",
-      "evening": "शुभ संध्या"
+      "morning": "શુભ સવાર",
+      "afternoon": "શુભ બપોર",
+      "evening": "શુભ સંધ્યા"
     },
     "adminBanner": {
-  "title": "એડમિન મોડ — પ્લેટફોર્મ ઓવરવ્યૂ",
-  "description": "તમે પ્લેટફોર્મ પર બધી પ્રોપર્ટી અને વપરાશકર્તાઓ જોઈ રહ્યા છો. આગામી અપડેટમાં એક સમર્પિત એડમિન ડેશબોર્ડ આવશે.",
-  "badge": "Admin"
-},
-    "subtitle": "एक नजरमां तमारो पोर्टफोलियो",
-    "platformOverview": "प्लॅटफॉर्म अवलोकन",
-    "pageTitle": "ড৅শবো়র্ড | Real Estate Due Diligence Agent",
-    "refreshed": "ড৅শবো়র্ড আপডেট হয়েছে",
+      "title": "એડમિન મોડ — પ્લેટફોર્મ ઓવરવ્યૂ",
+      "description": "તમે પ્લેટફોર્મ પર બધી પ્રોપર્ટી અને વપરાશકર્તાઓ જોઈ રહ્યા છો. આગામી અપડેટમાં એક સમર્પિત એડમિન ડેશબોર્ડ આવશે.",
+      "badge": "Admin"
+    },
+    "subtitle": "એક નજરમાં તમારો પોર્ટફોલિયો",
+    "platformOverview": "પ્લૅટફૉર્મ અવલોકન",
+    "pageTitle": "ડૅશબોર્ડ | Real Estate Due Diligence Agent",
+    "refreshed": "ડૅશબોર્ડ આપડેટ હયેછે",
     "stats": {
-      "totalProperties": "कुल मिलकतो",
-      "verified": "चकासायेली",
-      "pending": "बाकी",
-      "platformUsers": "प्लॅटफॉर्म वापरकर्ताओ",
-      "plusThisWeek": "+{{count}} आ अठवाडिए",
-      "ofTotal": "कुलना {{pct}}%",
-      "awaitingVerification": "चकासणीनी प्रतीक्षा",
-      "allCaughtUp": "बधुं पूर्ण छे",
-      "activeIn30Days": "30 दिवसमां {{n}} सक्रिय",
-      "noPropertiesAdded": "कोई मिलकत ऊमेरायेली नथी",
-      "nothingToVerify": "हजु चकासवा कंई नथी"
+      "totalProperties": "કુલ મિલકતો",
+      "verified": "ચકાસાયેલી",
+      "pending": "બાકી",
+      "platformUsers": "પ્લૅટફૉર્મ વાપરકર્તાઓ",
+      "plusThisWeek": "+{{count}} આ અઠવાડિએ",
+      "ofTotal": "કુલના {{pct}}%",
+      "awaitingVerification": "ચકાસણીની પ્રતીક્ષા",
+      "allCaughtUp": "બધું પૂર્ણ છે",
+      "activeIn30Days": "30 દિવસમાં {{n}} સક્રિય",
+      "noPropertiesAdded": "કોઈ મિલકત ઊમેરાયેલી નથી",
+      "nothingToVerify": "હજુ ચકાસવા કંઈ નથી"
     },
     "empty": {
-      "title": "हजु कोई मिलकत नथी",
-      "description": "ચकासणी परिणामो अने पोर्टफोलियो अंतर्दृष्टि जोवा तमारी पहेली मिलकत ऊमेरो.",
-      "addFirst": "तमारी पहेली मिलकत ऊमेरो"
+      "title": "હજુ કોઈ મિલકત નથી",
+      "description": "ચકાસણી પરિણામો અને પોર્ટફોલિયો અંતર્દૃષ્ટિ જોવા તમારી પહેલી મિલકત ઊમેરો.",
+      "addFirst": "તમારી પહેલી મિલકત ઊમેરો"
     },
-    "refresh": "ताजुं करो",
+    "refresh": "તાજું કરો",
     "errors": {
-      "unauthorized": "तमारी पासे ते पेज एक्सेस करवानी परवानगी नथी.",
-      "couldntLoad": "ড৅শবো়র্ড লোড করা গেল না",
-      "pleaseRefresh": "कृपा करीने पेज रिफ्रेश करो अथवा फरी प्रयास करो.",
-      "unableToLoadStats": "आंकडाशास्त्र लोड करवामां असमर्थ. कृपा करीने पेज रिफ्रेश करो."
+      "unauthorized": "તમારી પાસે તે પેજ એક્સેસ કરવાની પરવાનગી નથી.",
+      "couldntLoad": "ડૅશબોર્ડ લોડ કરા ગેલ ના",
+      "pleaseRefresh": "કૃપા કરીને પેજ રિફ્રેશ કરો અથવા ફરી પ્રયાસ કરો.",
+      "unableToLoadStats": "આંકડાશાસ્ત્ર લોડ કરવામાં અસમર્થ. કૃપા કરીને પેજ રિફ્રેશ કરો."
     }
   },
   "hero": {
     "portfolio": {
-      "label": "पोर्टफोलियो मूल्य",
-      "citiesCount_one": "{{count}} शहेर",
-      "citiesCount_other": "{{count}} शहेरो",
-      "acrossProperties_one": "{{count}} मिलकतमां",
-      "acrossProperties_other": "{{count}} मिलकतोमां",
-      "topAsset": "शीर्ष संपत्ति"
+      "label": "પોર્ટફોલિયો મૂલ્ય",
+      "citiesCount_one": "{{count}} શહેર",
+      "citiesCount_other": "{{count}} શહેરો",
+      "acrossProperties_one": "{{count}} મિલકતમાં",
+      "acrossProperties_other": "{{count}} મિલકતોમાં",
+      "topAsset": "શીર્ષ સંપત્તિ"
     },
     "verification": {
-      "label": "ચकासणी",
-      "allVerified": "बधी चकासायेली",
-      "noPropertiesYet": "हजु कोई मिलकत नथी",
-      "portfolioComplete": "पोर्टफोलियो पूर्ण",
-      "pendingCount_one": "{{count}} बाकी",
-      "pendingCount_other": "{{count}} बाकी"
+      "label": "ચકાસણી",
+      "allVerified": "બધી ચકાસાયેલી",
+      "noPropertiesYet": "હજુ કોઈ મિલકત નથી",
+      "portfolioComplete": "પોર્ટફોલિયો પૂર્ણ",
+      "pendingCount_one": "{{count}} બાકી",
+      "pendingCount_other": "{{count}} બાકી"
     },
     "aqi": {
-      "label": "हवाई गुणवत्ता",
-      "live": "जीवंत",
-      "fetchingLive": "जीवंत डेटा मेळवी रह्या छीए...",
-      "addPropertyToSee": "जीवंत हवाई गुणवत्ता जोवा मिलकत ऊमेरो"
+      "label": "હવાઈ ગુણવત્તા",
+      "live": "જીવંત",
+      "fetchingLive": "જીવંત ડેટા મેળવી રહ્યા છીએ...",
+      "addPropertyToSee": "જીવંત હવાઈ ગુણવત્તા જોવા મિલકત ઊમેરો"
     }
   },
   "trend": {
-    "title": "समय जतां पोर्टफोलियो मूल्य",
-    "dataPointsInWindow_one": "पसंद करेली विंडोमां {{count}} डेटा बिंदु",
-    "dataPointsInWindow_other": "पसंद करेली विंडोमां {{count}} डेटा बिंदुओ",
-    "deltaVsAgo": "{{days}}d पहेलांनी तुलनामां {{sign}}{{pct}}%",
-    "noChange": "कोई फेरफार नथी",
+    "title": "સમય જતાં પોર્ટફોલિયો મૂલ્ય",
+    "dataPointsInWindow_one": "પસંદ કરેલી વિંડોમાં {{count}} ડેટા બિંદુ",
+    "dataPointsInWindow_other": "પસંદ કરેલી વિંડોમાં {{count}} ડેટા બિંદુઓ",
+    "deltaVsAgo": "{{days}}d પહેલાંની તુલનામાં {{sign}}{{pct}}%",
+    "noChange": "કોઈ ફેરફાર નથી",
     "empty": {
-      "title": "ट्रेकिंग आजथी शरू",
-      "description": "तमारो पोर्टफोलियो मूल्य ट्रेन्ड जोवा काल पाछा आवो."
+      "title": "ટ્રેકિંગ આજથી શરૂ",
+      "description": "તમારો પોર્ટફોલિયો મૂલ્ય ટ્રેન્ડ જોવા કાલ પાછા આવો."
     },
     "error": {
-      "couldntLoad": "ट्रेन्ड डेटा लोड करी शकायो नहीं."
+      "couldntLoad": "ટ્રેન્ડ ડેટા લોડ કરી શકાયો નહીં."
     },
     "tooltip": {
-      "propertiesCount_one": "{{count}} मिलकत",
-      "propertiesCount_other": "{{count}} मिलकतो",
-      "verifiedCount_one": "{{count}} चकासायेली",
-      "verifiedCount_other": "{{count}} चकासायेली"
+      "propertiesCount_one": "{{count}} મિલકત",
+      "propertiesCount_other": "{{count}} મિલકતો",
+      "verifiedCount_one": "{{count}} ચકાસાયેલી",
+      "verifiedCount_other": "{{count}} ચકાસાયેલી"
     }
   },
   "breakdown": {
-    "title": "पोर्टफोलियो विश्लेषण",
-    "subtitle": "मिलकत प्रकार प्रमाणे",
+    "title": "પોર્ટફોલિયો વિશ્લેષણ",
+    "subtitle": "મિલકત પ્રકાર પ્રમાણે",
     "empty": {
-      "title": "हजु कोई डेटा नथी",
-      "description": "विश्लेषण जोवा मिलकतो ऊमेरो"
+      "title": "હજુ કોઈ ડેટા નથી",
+      "description": "વિશ્લેષણ જોવા મિલકતો ઊમેરો"
     },
     "tooltip": {
-      "propertyCount_one": "{{count}} मिलकत",
-      "propertyCount_other": "{{count}} मिलकतो",
-      "valueLabel": "मूल्य"
+      "propertyCount_one": "{{count}} મિલકત",
+      "propertyCount_other": "{{count}} મિલકતો",
+      "valueLabel": "મૂલ્ય"
     }
   },
   "map": {
-    "title": "पोर्टफोलियो भूगोळ",
+    "title": "પોર્ટફોલિયો ભૂગોળ",
     "status": {
       "unknown": "અજ્ઞાત",
-      "loading": "नकशो लोड थई रह्यो छे...",
-      "noPropertiesYet": "हजु कोई मिलकत नथी",
-      "mappedOfTotal": "{{total}} मांथी {{mapped}} मेप थयेली",
-      "pendingCount_one": "{{count}} बाकी",
-      "pendingCount_other": "{{count}} बाकी"
+      "loading": "નકશો લોડ થઈ રહ્યો છે...",
+      "noPropertiesYet": "હજુ કોઈ મિલકત નથી",
+      "mappedOfTotal": "{{total}} માંથી {{mapped}} મેપ થયેલી",
+      "pendingCount_one": "{{count}} બાકી",
+      "pendingCount_other": "{{count}} બાકી"
     },
-    "zoomHint": "ज़ूम माटे +/− वापरो",
-    "retryGeocoding": "जिओकोडिंग फरी प्रयास करो",
-    "geocoding": "जिओकोडिंग...",
-    "viewDetails": "विगतो जुओ",
+    "zoomHint": "જ઼ૂમ માટે +/− વાપરો",
+    "retryGeocoding": "જિઓકોડિંગ ફરી પ્રયાસ કરો",
+    "geocoding": "જિઓકોડિંગ...",
+    "viewDetails": "વિગતો જુઓ",
     "empty": {
-      "noMappedTitle": "हजु कोई मेप थयेली मिलकत नथी",
-      "noMappedDesc": "तेमने नकशा पर जोवा एड्रेस सूचनाओनो उपयोग करीने मिलकतो ऊमेरो.",
-      "noCoordsTitle": "हजु कोई निर्देशांक पकडायेला नथी",
-      "noCoordsDesc": "मिलकतो अस्तित्व ધरावे छे पण जिओकोडिंगनी जरूर छे. प्रशासको ऊपर ट्रिगर करी शके छे."
+      "noMappedTitle": "હજુ કોઈ મેપ થયેલી મિલકત નથી",
+      "noMappedDesc": "તેમને નકશા પર જોવા એડ્રેસ સૂચનાઓનો ઉપયોગ કરીને મિલકતો ઊમેરો.",
+      "noCoordsTitle": "હજુ કોઈ નિર્દેશાંક પકડાયેલા નથી",
+      "noCoordsDesc": "મિલકતો અસ્તિત્વ ધરાવે છે પણ જિઓકોડિંગની જરૂર છે. પ્રશાસકો ઊપર ટ્રિગર કરી શકે છે."
     },
     "error": {
-      "couldntLoad": "नकशो डेटा लोड करी शकायो नहीं."
+      "couldntLoad": "નકશો ડેટા લોડ કરી શકાયો નહીં."
     },
     "toasts": {
-      "geocodedCount_one": "{{count}} मिलकत जिओकोड थई",
-      "geocodedCount_other": "{{count}} मिलकतो जिओकोड थई",
-      "reloadingMap": "नकशो पुनः लोड थई रह्यो छे...",
-      "noNewLocations": "कोई नवां स्थानो मळ्यां नहीं",
-      "tooVague": "बाकी एड्रेस जिओकोड करवा माटे वधुं અस्पष्ट हशे.",
-      "geocodingFailed": "जिओकोडिंग निष्फळ",
-      "tryAgainLater": "कृपा करीने बाद मां फरी प्रयास करो."
+      "geocodedCount_one": "{{count}} મિલકત જિઓકોડ થઈ",
+      "geocodedCount_other": "{{count}} મિલકતો જિઓકોડ થઈ",
+      "reloadingMap": "નકશો પુનઃ લોડ થઈ રહ્યો છે...",
+      "noNewLocations": "કોઈ નવાં સ્થાનો મળ્યાં નહીં",
+      "tooVague": "બાકી એડ્રેસ જિઓકોડ કરવા માટે વધું અસ્પષ્ટ હશે.",
+      "geocodingFailed": "જિઓકોડિંગ નિષ્ફળ",
+      "tryAgainLater": "કૃપા કરીને બાદ માં ફરી પ્રયાસ કરો."
     }
   },
   "recommendations": {
     "general1": "કાનૂની સમીક્ષા માટે હંમેશા લાયકાત ધરાવતા મિલકત વકીલની સલાહ લો.",
-"general2": "સબ-રજિસ્ટ્રાર કચેરીમાંથી સત્તાવાર એન્કમ્બ્રન્સ પ્રમાણપત્ર મેળવો.",
-"general3": "સ્થાનિક નગરપાલિકા પાસે મિલકત કરની ચુકવણીની ચકાસણી કરો.",
-"general4": "પ્રમાણિત સ્ટ્રક્ચરલ સર્વેયર દ્વારા મિલકતનું સ્થળ પર નિરીક્ષણ કરાવો.",
-"general5": "તમામ દસ્તાવેજોની સરકારી કચેરીના મૂળ રેકોર્ડ સાથે ચકાસણી કરો.",
+    "general2": "સબ-રજિસ્ટ્રાર કચેરીમાંથી સત્તાવાર એન્કમ્બ્રન્સ પ્રમાણપત્ર મેળવો.",
+    "general3": "સ્થાનિક નગરપાલિકા પાસે મિલકત કરની ચુકવણીની ચકાસણી કરો.",
+    "general4": "પ્રમાણિત સ્ટ્રક્ચરલ સર્વેયર દ્વારા મિલકતનું સ્થળ પર નિરીક્ષણ કરાવો.",
+    "general5": "તમામ દસ્તાવેજોની સરકારી કચેરીના મૂળ રેકોર્ડ સાથે ચકાસણી કરો.",
     "items": {
-  "incompleteData": {
-    "title": "{{address}} પર {{fieldCount}} ફીલ્ડ ખૂટે છે",
-    "description": "verification score અને risk assessment સુધારવા ખૂટતાં ફીલ્ડ ભરો.",
-    "actionLabel": "મિલકત જુઓ"
-  },
-  "missingPhoto": {
-    "title": "{{count}} મિલકતોમાં ફોટો નથી",
-    "description": "ફોટો ઉમેરવાથી search results અને PDF reports માં મિલકત ઓળખવી સહેલી બને છે.",
-    "actionLabel": "ફોટો ઉમેરો"
-  },
-  "missingArea": {
-    "title": "{{count}} મિલકતોમાં area ડેટા નથી",
-    "description": "ચોક્કસ risk scoring અને price-per-sqft ગણતરી માટે area (sqft) જરૂરી છે.",
-    "actionLabel": "વિગતો ઉમેરો"
-  },
-  "diversePortfolio": {
-    "title": "પોર્ટફોલિઓ {{count}} શહેરોમાં ફેલાયેલો છે",
-    "description": "તમારી મિલકતો ઘણા શહેરોમાં છે. સ્થળ-વિશિષ્ટ risk factors ની સમીક્ષા કરો.",
-    "actionLabel": "બધા જુઓ"
-  },
-  "allVerified": {
-    "title": "બધી મિલકતો ચકાસાઈ ગઈ",
-    "description": "તમારા પોર્ટફોલિઓની દરેક મિલકત બધી verification checks પાસ કરી ચૂકી છે. ડેટા સંપૂર્ણ છે.",
-    "actionLabel": "પોર્ટફોલિઓ જુઓ"
-  },
-  "pendingVerification": {
-    "title": "{{count}} મિલકતો ચકાસણીની રાહ જોઈ રહી છે",
-    "description": "pending મિલકતો પર ખૂટતાં ફીલ્ડ ભરો અને verified તરીકે ચિહ્નિત કરો.",
-    "actionLabel": "pending જુઓ"
-  }
-},
-    "title": "भलामणो",
-    "actionsCount_one": "तमारो पोर्टफोलियो सुधारवा {{count}} क्रिया",
-    "actionsCount_other": "तमारो पोर्टफोलियो सुधारवा {{count}} क्रियाओ",
-    "urgentCount_one": "{{count}} जरूरी",
-    "urgentCount_other": "{{count}} जरूरी",
-    "dismiss": "बरखास्त करो",
-    "showLess": "ऑछुं बतावो",
-    "showMore_one": "{{count}} वधु बतावो",
-    "showMore_other": "{{count}} वधु बतावो",
+      "incompleteData": {
+        "title": "{{address}} પર {{fieldCount}} ફીલ્ડ ખૂટે છે",
+        "description": "verification score અને risk assessment સુધારવા ખૂટતાં ફીલ્ડ ભરો.",
+        "actionLabel": "મિલકત જુઓ"
+      },
+      "missingPhoto": {
+        "title": "{{count}} મિલકતોમાં ફોટો નથી",
+        "description": "ફોટો ઉમેરવાથી search results અને PDF reports માં મિલકત ઓળખવી સહેલી બને છે.",
+        "actionLabel": "ફોટો ઉમેરો"
+      },
+      "missingArea": {
+        "title": "{{count}} મિલકતોમાં area ડેટા નથી",
+        "description": "ચોક્કસ risk scoring અને price-per-sqft ગણતરી માટે area (sqft) જરૂરી છે.",
+        "actionLabel": "વિગતો ઉમેરો"
+      },
+      "diversePortfolio": {
+        "title": "પોર્ટફોલિઓ {{count}} શહેરોમાં ફેલાયેલો છે",
+        "description": "તમારી મિલકતો ઘણા શહેરોમાં છે. સ્થળ-વિશિષ્ટ risk factors ની સમીક્ષા કરો.",
+        "actionLabel": "બધા જુઓ"
+      },
+      "allVerified": {
+        "title": "બધી મિલકતો ચકાસાઈ ગઈ",
+        "description": "તમારા પોર્ટફોલિઓની દરેક મિલકત બધી verification checks પાસ કરી ચૂકી છે. ડેટા સંપૂર્ણ છે.",
+        "actionLabel": "પોર્ટફોલિઓ જુઓ"
+      },
+      "pendingVerification": {
+        "title": "{{count}} મિલકતો ચકાસણીની રાહ જોઈ રહી છે",
+        "description": "pending મિલકતો પર ખૂટતાં ફીલ્ડ ભરો અને verified તરીકે ચિહ્નિત કરો.",
+        "actionLabel": "pending જુઓ"
+      }
+    },
+    "title": "ભલામણો",
+    "actionsCount_one": "તમારો પોર્ટફોલિયો સુધારવા {{count}} ક્રિયા",
+    "actionsCount_other": "તમારો પોર્ટફોલિયો સુધારવા {{count}} ક્રિયાઓ",
+    "urgentCount_one": "{{count}} જરૂરી",
+    "urgentCount_other": "{{count}} જરૂરી",
+    "dismiss": "બરખાસ્ત કરો",
+    "showLess": "ઑછું બતાવો",
+    "showMore_one": "{{count}} વધુ બતાવો",
+    "showMore_other": "{{count}} વધુ બતાવો",
     "severity": {
-      "urgent": "जरूरी",
-      "action": "ক্রিয়া",
-      "onTrack": "ट्रेक पर",
-      "tip": "टिप"
+      "urgent": "જરૂરી",
+      "action": "ક્રિયા",
+      "onTrack": "ટ્રેક પર",
+      "tip": "ટિપ"
     }
   },
   "activity": {
-    "title": "ताजेतरनी प्रवृत्ति",
-    "subtitle": "प्लॅटफॉर्म पर ताजेतरनी क्रियाओ",
-    "live": "जीवंत",
-    "byActor": "{{name}} द्वारा",
-    "showAll": "बधुं बतावो",
-    "viewAllProperties": "बधी मिलकतो जुओ",
+    "title": "તાજેતરની પ્રવૃત્તિ",
+    "subtitle": "પ્લૅટફૉર્મ પર તાજેતરની ક્રિયાઓ",
+    "live": "જીવંત",
+    "byActor": "{{name}} દ્વારા",
+    "showAll": "બધું બતાવો",
+    "viewAllProperties": "બધી મિલકતો જુઓ",
     "filters": {
-      "all": "बधा",
-      "added": "ऊमेरायेली",
-      "verified": "ચकासायेली",
-      "updated": "अपडेट थयेली"
+      "all": "બધા",
+      "added": "ઊમેરાયેલી",
+      "verified": "ચકાસાયેલી",
+      "updated": "અપડેટ થયેલી"
     },
     "types": {
-      "propertyAdded": "मिलकत ऊमेरायी",
-      "propertyVerified": "मिलकत ચकासायी",
-      "propertyUpdated": "मिलकत अपडेट थई"
+      "propertyAdded": "મિલકત ઊમેરાયી",
+      "propertyVerified": "મિલકત ચકાસાયી",
+      "propertyUpdated": "મિલકત અપડેટ થઈ"
     },
     "empty": {
-      "noActivity": "हजु कोई प्रवृत्ति नथी",
-      "addProperties": "अहीं प्रवृत्ति जोवा मिलकतो ऊमेरो",
-      "noFiltered": "ताजेतरनी घटनाओमां कोई {{filter}} प्रवृत्ति नथी"
+      "noActivity": "હજુ કોઈ પ્રવૃત્તિ નથી",
+      "addProperties": "અહીં પ્રવૃત્તિ જોવા મિલકતો ઊમેરો",
+      "noFiltered": "તાજેતરની ઘટનાઓમાં કોઈ {{filter}} પ્રવૃત્તિ નથી"
     }
   },
   "recentTable": {
-    "title": "ताजेतरनी मिलकतो",
-    "subtitle": "प्लॅटफॉर्म पर नवीनतम उमेरणाओ",
+    "title": "તાજેતરની મિલકતો",
+    "subtitle": "પ્લૅટફૉર્મ પર નવીનતમ ઉમેરણાઓ",
     "columns": {
-      "address": "સरनामुं",
-      "type": "प्रकार",
-      "status": "स्थिति",
-      "missingFields": "खूटतां ক্ষেत्रो"
+      "address": "સરનામું",
+      "type": "પ્રકાર",
+      "status": "સ્થિતિ",
+      "missingFields": "ખૂટતાં ક્ષેત્રો"
     },
-    "missingCount_one": "{{count}} खूटतुं",
-    "missingCount_other": "{{count}} खूटतां",
-    "noneMissing": "कोई नहीं",
+    "missingCount_one": "{{count}} ખૂટતું",
+    "missingCount_other": "{{count}} ખૂટતાં",
+    "noneMissing": "કોઈ નહીં",
     "empty": {
-      "title": "कोई मिलकत मળी नहीं",
-      "description": "अहीं जोवा मिलकत ऊमेरो."
+      "title": "કોઈ મિલકત મળી નહીં",
+      "description": "અહીં જોવા મિલકત ઊમેરો."
     },
     "error": {
-      "title": "मिलकतो लोड करी शकायो नहीं",
-      "description": "फरी प्रयास करवा कृपा करीने पेज रिफ्रेश करो."
+      "title": "મિલકતો લોડ કરી શકાયો નહીં",
+      "description": "ફરી પ્રયાસ કરવા કૃપા કરીને પેજ રિફ્રેશ કરો."
     }
   },
   "property": {
-    "addProperty": "मिलकत ऊमेरो",
-    "addFirstProperty": "तमारी पहेली मिलकत ऊमेरो",
+    "addProperty": "મિલકત ઊમેરો",
+    "addFirstProperty": "તમારી પહેલી મિલકત ઊમેરો",
     "pdf": {
-      "downloadReport": "अहेवाल डाउनलोड करो",
-      "generating": "तैयार थई रह्यो छे...",
-      "buttonTooltip": "PDF अहेवाल डाउनलोड करो",
-      "preparing": "PDF एंजिन तैयार थई रह्युं छे...",
-      "downloaded": "अहेवाल डाउनलोड थयो",
-      "savedTo": "{{filename}} तमारा डाउनलोड फोल्डरमां सचवायो.",
-      "loadFailed": "मिलकत डेटा लोड करी शकायो नहीं",
-      "downloadFailed": "डाउनलोड निष्फळ",
-      "generateFailed": "अहेवाल तैयार करी शकायो नहीं. फरी प्रयास करो."
+      "downloadReport": "અહેવાલ ડાઉનલોડ કરો",
+      "generating": "તૈયાર થઈ રહ્યો છે...",
+      "buttonTooltip": "PDF અહેવાલ ડાઉનલોડ કરો",
+      "preparing": "PDF એંજિન તૈયાર થઈ રહ્યું છે...",
+      "downloaded": "અહેવાલ ડાઉનલોડ થયો",
+      "savedTo": "{{filename}} તમારા ડાઉનલોડ ફોલ્ડરમાં સચવાયો.",
+      "loadFailed": "મિલકત ડેટા લોડ કરી શકાયો નહીં",
+      "downloadFailed": "ડાઉનલોડ નિષ્ફળ",
+      "generateFailed": "અહેવાલ તૈયાર કરી શકાયો નહીં. ફરી પ્રયાસ કરો."
     },
     "search": {
-      "title": "मिलकत शोध",
-      "placeholder": "पेजो, मिलकतो, क्रियाओ शोधो...",
-      "loadingPortfolio": "पोर्टफोलियो लोड थई रह्यो छे...",
-      "readyToIndex": "तमारी पहेली मिलकत ઇन्डेक्स करवा तैयार",
-      "live": "जीवंत",
-      "propertiesIndexed": "{{n}} {{unit}} ઇन्डेक्स थयेली",
-      "propertyUnit": "मिलकत",
-      "propertiesUnit": "मिलकतो",
-      "citiesCovered": "{{n}} {{unit}} आवरायेली",
-      "cityUnit": "शहेर",
-      "citiesUnit": "शहेरो",
-      "synced": "सिंक थयेली",
-      "highRisk": "{{n}} उच्च जोखम",
-      "noPropertiesFound": "कोई मिलकत मळी नहीं",
-      "trySearching": "शहेरनुं नाम, सरनामुं अथवा ZIP कोड द्वारा शोधवाનો प्रयास करो — अथवा तमारी पहेली मिलकत ऊमेरो.",
-      "noMatches": "कोई परिणाम नहीं",
-      "tryDifferent": "अलग शहेर, सरनामुं अथवा ZIP कोड प्रयास करो.",
-      "searchFailed": "शोध निष्फळ",
-      "tryAgain": "कृपा करीने थोडी वार बाद फरी प्रयास करो.",
-      "couldntLoad": "मिलकतो लोड करी शकायो नहीं",
-      "pleaseRefresh": "कृपा करीने पेज रिफ्रेश करो.",
-      "found": "{{n}} {{unit}} मळ्यां",
-      "ofTotal": "({{n}} मांथी)",
-      "pageTitle": "मिलकत शोध | Real Estate Due Diligence",
-      "ariaLabel": "मिलकत शोध",
-      "clearSearch": "शोध साफ करो",
-      "searching": "शोधी रह्या छे...",
-      "searchButton": "शोधो",
-      "searchingFor": "\"{{query}}\" माटे शोधी रह्या છे...",
-      "noMatchesFor": "\"{{query}}\" माटे कोई परिणाम नहीं",
-      "tryDifferentHint": "अलग शहेर, सरनामुं अथवा ZIP प्रयास करो",
-      "matchCount_one": "{{count}} परिणाम",
-      "matchCount_other": "{{count}} परिणामो",
-      "untitledProperty": "शीर्षक विनानी मिलकत",
-      "locationUnknown": "स्थान अज्ञात",
-      "valueLabel": "मूल्य",
-      "seeAllResults_one": "बधां {{count}} परिणाम जुओ",
-      "seeAllResults_other": "बधां {{count}} परिणामो जुओ",
-      "kbNavigate": "नेविगेट करो",
-      "kbSelect": "पसंद करो",
-      "kbClose": "बंध करो"
+      "title": "મિલકત શોધ",
+      "placeholder": "પેજો, મિલકતો, ક્રિયાઓ શોધો...",
+      "loadingPortfolio": "પોર્ટફોલિયો લોડ થઈ રહ્યો છે...",
+      "readyToIndex": "તમારી પહેલી મિલકત ઇન્ડેક્સ કરવા તૈયાર",
+      "live": "જીવંત",
+      "propertiesIndexed": "{{n}} {{unit}} ઇન્ડેક્સ થયેલી",
+      "propertyUnit": "મિલકત",
+      "propertiesUnit": "મિલકતો",
+      "citiesCovered": "{{n}} {{unit}} આવરાયેલી",
+      "cityUnit": "શહેર",
+      "citiesUnit": "શહેરો",
+      "synced": "સિંક થયેલી",
+      "highRisk": "{{n}} ઉચ્ચ જોખમ",
+      "noPropertiesFound": "કોઈ મિલકત મળી નહીં",
+      "trySearching": "શહેરનું નામ, સરનામું અથવા ZIP કોડ દ્વારા શોધવાનો પ્રયાસ કરો — અથવા તમારી પહેલી મિલકત ઊમેરો.",
+      "noMatches": "કોઈ પરિણામ નહીં",
+      "tryDifferent": "અલગ શહેર, સરનામું અથવા ZIP કોડ પ્રયાસ કરો.",
+      "searchFailed": "શોધ નિષ્ફળ",
+      "tryAgain": "કૃપા કરીને થોડી વાર બાદ ફરી પ્રયાસ કરો.",
+      "couldntLoad": "મિલકતો લોડ કરી શકાયો નહીં",
+      "pleaseRefresh": "કૃપા કરીને પેજ રિફ્રેશ કરો.",
+      "found": "{{n}} {{unit}} મળ્યાં",
+      "ofTotal": "({{n}} માંથી)",
+      "pageTitle": "મિલકત શોધ | Real Estate Due Diligence",
+      "ariaLabel": "મિલકત શોધ",
+      "clearSearch": "શોધ સાફ કરો",
+      "searching": "શોધી રહ્યા છે...",
+      "searchButton": "શોધો",
+      "searchingFor": "\"{{query}}\" માટે શોધી રહ્યા છે...",
+      "noMatchesFor": "\"{{query}}\" માટે કોઈ પરિણામ નહીં",
+      "tryDifferentHint": "અલગ શહેર, સરનામું અથવા ZIP પ્રયાસ કરો",
+      "matchCount_one": "{{count}} પરિણામ",
+      "matchCount_other": "{{count}} પરિણામો",
+      "untitledProperty": "શીર્ષક વિનાની મિલકત",
+      "locationUnknown": "સ્થાન અજ્ઞાત",
+      "valueLabel": "મૂલ્ય",
+      "seeAllResults_one": "બધાં {{count}} પરિણામ જુઓ",
+      "seeAllResults_other": "બધાં {{count}} પરિણામો જુઓ",
+      "kbNavigate": "નેવિગેટ કરો",
+      "kbSelect": "પસંદ કરો",
+      "kbClose": "બંધ કરો"
     },
     "addModal": {
-      "title": "नवी मिलकत ऊमेरो",
-      "subtitle": "मूळभूतथी शरू करो — बाकी कोईपण समये पूर्ण करी शकाय",
-      "closeAria": "बंध करो",
-      "verification": "ચकासणी",
-      "optional": "वैकल्पिक",
-      "poweredBy": "OpenStreetMap द्वारा संचालित",
+      "title": "નવી મિલકત ઊમેરો",
+      "subtitle": "મૂળભૂતથી શરૂ કરો — બાકી કોઈપણ સમયે પૂર્ણ કરી શકાય",
+      "closeAria": "બંધ કરો",
+      "verification": "ચકાસણી",
+      "optional": "વૈકલ્પિક",
+      "poweredBy": "OpenStreetMap દ્વારા સંચાલિત",
       "banner": {
-        "requiredPrefix": "माત्र",
-        "requiredSuffix": "जरूरी छे",
-        "address": "सरनामुं",
-        "city": "शहेर",
-        "requiredConnector": "अने",
-        "hint": "बाकीनी विगतो गमे त्यारे ऊमेरो — मिलकतो बनाव्या बाद पूर्ण करी शकाय."
+        "requiredPrefix": "માત્ર",
+        "requiredSuffix": "જરૂરી છે",
+        "address": "સરનામું",
+        "city": "શહેર",
+        "requiredConnector": "અને",
+        "hint": "બાકીની વિગતો ગમે ત્યારે ઊમેરો — મિલકતો બનાવ્યા બાદ પૂર્ણ કરી શકાય."
       },
       "sections": {
-        "location": "स्थान",
-        "locationSub": "आ मिलकत क्यां छे?",
-        "propertyDetails": "मिलकत विगतो",
-        "propertyDetailsSub": "अमने वर्गीकृत करवामां अने मूल्य आपवामां मदद करो",
-        "extraDetails": "अतिरिक्त विगतो",
-        "extraDetailsSub": "वैकल्पिक — अहेवालो अने सरखामणीमां मदद करे",
-        "photo": "छायाचित्र",
-        "photoSub": "फोटो ऊमेरो अथवा अमे स्मार्ट placeholder वापरीशुं"
+        "location": "સ્થાન",
+        "locationSub": "આ મિલકત ક્યાં છે?",
+        "propertyDetails": "મિલકત વિગતો",
+        "propertyDetailsSub": "અમને વર્ગીકૃત કરવામાં અને મૂલ્ય આપવામાં મદદ કરો",
+        "extraDetails": "અતિરિક્ત વિગતો",
+        "extraDetailsSub": "વૈકલ્પિક — અહેવાલો અને સરખામણીમાં મદદ કરે",
+        "photo": "છાયાચિત્ર",
+        "photoSub": "ફોટો ઊમેરો અથવા અમે સ્માર્ટ placeholder વાપરીશું"
       },
       "fields": {
-        "streetAddress": "शेरी सरनामुं",
-        "city": "शहेर",
-        "state": "राज्य",
-        "pinCode": "PIN कोड",
-        "propertyType": "मिलकत प्रकार",
-        "area": "विस्तार",
-        "marketValue": "बाजार मूल्य",
-        "yearBuilt": "बांधकामनुं वर्ष",
-        "bedrooms": "शयनखंड",
-        "bathrooms": "स्नानखंड",
-        "stories": "माळा",
-        "propertyPhoto": "मिलकत छायाचित्र"
+        "streetAddress": "શેરી સરનામું",
+        "city": "શહેર",
+        "state": "રાજ્ય",
+        "pinCode": "PIN કોડ",
+        "propertyType": "મિલકત પ્રકાર",
+        "area": "વિસ્તાર",
+        "marketValue": "બાજાર મૂલ્ય",
+        "yearBuilt": "બાંધકામનું વર્ષ",
+        "bedrooms": "શયનખંડ",
+        "bathrooms": "સ્નાનખંડ",
+        "stories": "માળા",
+        "propertyPhoto": "મિલકત છાયાચિત્ર"
       },
       "placeholders": {
-        "address": "सरनामुं टाइप करवानुं शरू करो...",
-        "city": "शहेर पसंद करो अथवा टाइप करो",
-        "state": "राज्य पसंद करो",
+        "address": "સરનામું ટાઇપ કરવાનું શરૂ કરો...",
+        "city": "શહેર પસંદ કરો અથવા ટાઇપ કરો",
+        "state": "રાજ્ય પસંદ કરો",
         "pinCode": "560001",
-        "propertyType": "मिलकत प्रकार पसंद करो",
+        "propertyType": "મિલકત પ્રકાર પસંદ કરો",
         "area": "1800",
         "marketValue": "15000000",
         "yearBuilt": "2015",
@@ -787,454 +798,454 @@
         "stories": "2"
       },
       "hints": {
-        "characters": "{{count}} अक्षरो",
-        "sqft": "चोरस फीट",
-        "inr": "ભारतीय रुपिया",
-        "photoPlaceholder": "आने अवगणो अने अमे मिलकत प्रकारनां आधारे placeholder वापरीशुं."
+        "characters": "{{count}} અક્ષરો",
+        "sqft": "ચોરસ ફીટ",
+        "inr": "ભારતીય રુપિયા",
+        "photoPlaceholder": "આને અવગણો અને અમે મિલકત પ્રકારનાં આધારે placeholder વાપરીશું."
       },
       "types": {
-        "residentialLabel": "आवासीय",
-        "residentialDesc": "घर, फ्लॅट, बंगलो",
-        "commercialLabel": "व्यावसायिक",
-        "commercialDesc": "ऑफिस, खुदरो, होटल",
-        "industrialLabel": "ઔद्योगिक",
-        "industrialDesc": "गोदाम, कारखानो",
-        "landLabel": "जमीन",
-        "landDesc": "प्लॉट, खेती",
-        "mixedUseLabel": "मिश्रित उपयोग",
-        "mixedUseDesc": "आवासीय + व्यावसायिक"
+        "residentialLabel": "આવાસીય",
+        "residentialDesc": "ઘર, ફ્લૅટ, બંગલો",
+        "commercialLabel": "વ્યાવસાયિક",
+        "commercialDesc": "ઑફિસ, ખુદરો, હોટલ",
+        "industrialLabel": "ઔદ્યોગિક",
+        "industrialDesc": "ગોદામ, કારખાનો",
+        "landLabel": "જમીન",
+        "landDesc": "પ્લૉટ, ખેતી",
+        "mixedUseLabel": "મિશ્રિત ઉપયોગ",
+        "mixedUseDesc": "આવાસીય + વ્યાવસાયિક"
       },
       "errors": {
-        "addressRequired": "सरनामुं जरूरी छे",
-        "addressLength": "सरनामुं ऑछामां ऑछा 6 अक्षरनुं होवुं जोईए",
-        "cityRequired": "शहेर जरूरी छे",
-        "pinInvalid": "PIN बरोबर 6 अंकनुं होवुं जोईए",
-        "areaInvalid": "विस्तार 0 थी वधारे होवो जोईए",
-        "valueInvalid": "मूल्य 0 थी वधारे होवुं जोईए",
-        "yearRange": "वर्ष 1800 थी {{max}} वच्चे होवुं जोईए",
-        "cannotBeNegative": "ऋणात्मक न होई शके",
-        "storiesRange": "माळा 1 थी 200 वच्चे होवा जोईए",
-        "formHasErrors": "फॉर्ममां ভूलो छे",
-        "reviewFields": "कृपा करीने नीचे हाइलाइट थयेला क्षेत्रो तपासो.",
-        "couldntAdd": "मिलकत ऊमेरी शकायी नहीं",
-        "tryAgainMoment": "कृपा करीने थोडी वार बाद फरी प्रयास करो."
+        "addressRequired": "સરનામું જરૂરી છે",
+        "addressLength": "સરનામું ઑછામાં ઑછા 6 અક્ષરનું હોવું જોઈએ",
+        "cityRequired": "શહેર જરૂરી છે",
+        "pinInvalid": "PIN બરોબર 6 અંકનું હોવું જોઈએ",
+        "areaInvalid": "વિસ્તાર 0 થી વધારે હોવો જોઈએ",
+        "valueInvalid": "મૂલ્ય 0 થી વધારે હોવું જોઈએ",
+        "yearRange": "વર્ષ 1800 થી {{max}} વચ્ચે હોવું જોઈએ",
+        "cannotBeNegative": "ઋણાત્મક ન હોઈ શકે",
+        "storiesRange": "માળા 1 થી 200 વચ્ચે હોવા જોઈએ",
+        "formHasErrors": "ફૉર્મમાં ભૂલો છે",
+        "reviewFields": "કૃપા કરીને નીચે હાઇલાઇટ થયેલા ક્ષેત્રો તપાસો.",
+        "couldntAdd": "મિલકત ઊમેરી શકાયી નહીં",
+        "tryAgainMoment": "કૃપા કરીને થોડી વાર બાદ ફરી પ્રયાસ કરો."
       },
       "toasts": {
-        "addedVerified": "मिलकत ऊमेरायी अने पूरेपूरी चकासायी",
-        "addedVerifiedDesc": "बधी 7 डेटा गुणवत्ता ચकासणीओ पास थई.",
-        "added": "मिलकत ऊमेरायी",
-        "addedDesc_one": "बाद मां पूरेपूरी चकासवा {{count}} वधु क्षेत्र पूर्ण करो.",
-        "addedDesc_other": "बाद मां पूरेपूरी चकासवा {{count}} वधु क्षेत्रो पूर्ण करो."
+        "addedVerified": "મિલકત ઊમેરાયી અને પૂરેપૂરી ચકાસાયી",
+        "addedVerifiedDesc": "બધી 7 ડેટા ગુણવત્તા ચકાસણીઓ પાસ થઈ.",
+        "added": "મિલકત ઊમેરાયી",
+        "addedDesc_one": "બાદ માં પૂરેપૂરી ચકાસવા {{count}} વધુ ક્ષેત્ર પૂર્ણ કરો.",
+        "addedDesc_other": "બાદ માં પૂરેપૂરી ચકાસવા {{count}} વધુ ક્ષેત્રો પૂર્ણ કરો."
       },
       "footer": {
-        "willBeVerified": "तुरंत चकासाशे",
-        "fieldsToVerification_one": "पूर्ण चकासणी माटे {{count}} क्षेत्र",
-        "fieldsToVerification_other": "पूर्ण चकासणी माटे {{count}} क्षेत्रो",
-        "cancel": "रद्द करो",
-        "saving": "सचवाई रह्युं छे",
-        "addProperty": "मिलकत ऊमेरो"
+        "willBeVerified": "તુરંત ચકાસાશે",
+        "fieldsToVerification_one": "પૂર્ણ ચકાસણી માટે {{count}} ક્ષેત્ર",
+        "fieldsToVerification_other": "પૂર્ણ ચકાસણી માટે {{count}} ક્ષેત્રો",
+        "cancel": "રદ્દ કરો",
+        "saving": "સચવાઈ રહ્યું છે",
+        "addProperty": "મિલકત ઊમેરો"
       }
     },
     "editModal": {
-      "title": "मिलकत संपादित करो",
+      "title": "મિલકત સંપાદિત કરો",
       "sections": {
-        "photoSub": "मिलकत फोटो अपडेट करो अथवा ऊमेरो"
+        "photoSub": "મિલકત ફોટો અપડેટ કરો અથવા ઊમેરો"
       },
       "placeholders": {
         "address": "742 Evergreen Terrace"
       },
       "banner": {
-        "allPassed": "बधी डेटा गुणवत्ता ચकासणीओ पास थई",
-        "awayFromVerification_one": "पूर्ण चकासणीथी {{count}} क्षेत्र दूर",
-        "awayFromVerification_other": "पूर्ण चकासणीथी {{count}} क्षेत्रो दूर",
-        "hint": "आ मिलकतने चकासायेली चिह्नित करवा बधां क्षेत्रो पूर्ण करो."
+        "allPassed": "બધી ડેટા ગુણવત્તા ચકાસણીઓ પાસ થઈ",
+        "awayFromVerification_one": "પૂર્ણ ચકાસણીથી {{count}} ક્ષેત્ર દૂર",
+        "awayFromVerification_other": "પૂર્ણ ચકાસણીથી {{count}} ક્ષેત્રો દૂર",
+        "hint": "આ મિલકતને ચકાસાયેલી ચિહ્નિત કરવા બધાં ક્ષેત્રો પૂર્ણ કરો."
       },
       "toasts": {
-        "verified": "मिलकत चकासायी",
-        "changesSaved": "फेरफारो सचवाया",
-        "stillNeeded_one": "ચकासणी माटे {{count}} क्षेत्र हजु जरूरी.",
-        "stillNeeded_other": "ચकासणी माटे {{count}} क्षेत्रो हजु जरूरी.",
-        "saveFailed": "फेरफारो सचवी शकायो नहीं"
+        "verified": "મિલકત ચકાસાયી",
+        "changesSaved": "ફેરફારો સચવાયા",
+        "stillNeeded_one": "ચકાસણી માટે {{count}} ક્ષેત્ર હજુ જરૂરી.",
+        "stillNeeded_other": "ચકાસણી માટે {{count}} ક્ષેત્રો હજુ જરૂરી.",
+        "saveFailed": "ફેરફારો સચવી શકાયો નહીં"
       },
       "footer": {
-        "willMarkVerified": "सचवाथी आ ચकासायेली चिह्नित थशे",
-        "saveChanges": "फेरफारो सचवो",
-        "fieldsToVerification_one": "पूर्ण चकासणी माटे {{count}} क्षेत्र",
-        "fieldsToVerification_other": "पूर्ण चकासणी माटे {{count}} क्षेत्रो"
+        "willMarkVerified": "સચવાથી આ ચકાસાયેલી ચિહ્નિત થશે",
+        "saveChanges": "ફેરફારો સચવો",
+        "fieldsToVerification_one": "પૂર્ણ ચકાસણી માટે {{count}} ક્ષેત્ર",
+        "fieldsToVerification_other": "પૂર્ણ ચકાસણી માટે {{count}} ક્ષેત્રો"
       }
     },
     "aggregation": {
       "enums": {
         "taxStatus": {
-          "PAID": "ভ्यो छे",
-          "PENDING": "बाकी",
-          "OVERDUE": "मुदत वीती गई"
+          "PAID": "ભ્યો છે",
+          "PENDING": "બાકી",
+          "OVERDUE": "મુદત વીતી ગઈ"
         },
         "permitType": {
-          "BUILDING": "बांधकाम",
-          "RENOVATION": "नवीनीकरण",
-          "OCCUPANCY": "वसवाट",
-          "DEMOLITION": "तोडफोड",
-          "ELECTRICAL": "विद्युत",
-          "PLUMBING": "प्लम्बिंग"
+          "BUILDING": "બાંધકામ",
+          "RENOVATION": "નવીનીકરણ",
+          "OCCUPANCY": "વસવાટ",
+          "DEMOLITION": "તોડફોડ",
+          "ELECTRICAL": "વિદ્યુત",
+          "PLUMBING": "પ્લમ્બિંગ"
         },
         "permitStatus": {
-          "APPROVED": "मंजूर",
-          "PENDING": "बाकी",
-          "EXPIRED": "मुदत पूरी",
-          "REJECTED": "नकार्यो"
+          "APPROVED": "મંજૂર",
+          "PENDING": "બાકી",
+          "EXPIRED": "મુદત પૂરી",
+          "REJECTED": "નકાર્યો"
         },
         "buildingType": {
-  "CONCRETE": "કોંક્રિટ",
-  "STEEL": "સ્ટીલ",
-  "WOOD": "લાકડું",
-  "BRICK": "ઈંટ"
-},
-"condition": {
-  "EXCELLENT": "ઉત્કૃષ્ટ",
-  "GOOD": "સારું",
-  "FAIR": "ઠીક",
-  "POOR": "ખરાબ"
-},
-"soilType": {
-  "BLACK_COTTON": "કાળી માટી",
-  "RED_SOIL": "લાલ માટી",
-  "ALLUVIAL": "કાંપ માટી",
-  "LATERITE": "લેટેરાઇટ",
-  "SANDY": "રેતાળ",
-  "CLAYEY": "ચીકણી માટી"
-}
+          "CONCRETE": "કોંક્રિટ",
+          "STEEL": "સ્ટીલ",
+          "WOOD": "લાકડું",
+          "BRICK": "ઈંટ"
+        },
+        "condition": {
+          "EXCELLENT": "ઉત્કૃષ્ટ",
+          "GOOD": "સારું",
+          "FAIR": "ઠીક",
+          "POOR": "ખરાબ"
+        },
+        "soilType": {
+          "BLACK_COTTON": "કાળી માટી",
+          "RED_SOIL": "લાલ માટી",
+          "ALLUVIAL": "કાંપ માટી",
+          "LATERITE": "લેટેરાઇટ",
+          "SANDY": "રેતાળ",
+          "CLAYEY": "ચીકણી માટી"
+        }
       },
       "completeness": {
-        "title": "डेटा पूर्णता",
-        "subtitle": "6 डेटा स्रोतोमां एकत्रीकरण स्वास्थ्य",
-        "refreshAria": "एकत्रीकरण ताजुं करो",
-        "refreshTitle": "बधा स्रोतो ताजा करो",
-        "overallStatus": "समग्र स्थिति",
-        "coverage": "आवरण",
-        "liveSources_one": "जीवंत स्रोत",
-        "liveSources_other": "जीवंत स्रोतो",
-        "mockSources_one": "नमूना स्रोत",
-        "mockSources_other": "नमूना स्रोतो",
-        "unavailable": "अनुपलब्ध",
-        "dataSources": "डेटा स्रोतो",
-        "totalCount": "{{n}} कुल",
-        "latestFetch": "छेल्लो मेळवेलो:",
-        "oldest": "सौथी जूनो:",
-        "duration": "अवधि:",
-        "overallOk": "बधा स्रोतो उपलब्ध",
-        "overallPartial": "आंशिक डेटा",
-        "overallDegraded": "खराब — केटलाक स्रोतो बंध",
-        "overallLoading": "लोड थई रह्युं छे",
-        "statusEmpty": "खालुं",
-        "statusDown": "बंध",
+        "title": "ડેટા પૂર્ણતા",
+        "subtitle": "6 ડેટા સ્રોતોમાં એકત્રીકરણ સ્વાસ્થ્ય",
+        "refreshAria": "એકત્રીકરણ તાજું કરો",
+        "refreshTitle": "બધા સ્રોતો તાજા કરો",
+        "overallStatus": "સમગ્ર સ્થિતિ",
+        "coverage": "આવરણ",
+        "liveSources_one": "જીવંત સ્રોત",
+        "liveSources_other": "જીવંત સ્રોતો",
+        "mockSources_one": "નમૂના સ્રોત",
+        "mockSources_other": "નમૂના સ્રોતો",
+        "unavailable": "અનુપલબ્ધ",
+        "dataSources": "ડેટા સ્રોતો",
+        "totalCount": "{{n}} કુલ",
+        "latestFetch": "છેલ્લો મેળવેલો:",
+        "oldest": "સૌથી જૂનો:",
+        "duration": "અવધિ:",
+        "overallOk": "બધા સ્રોતો ઉપલબ્ધ",
+        "overallPartial": "આંશિક ડેટા",
+        "overallDegraded": "ખરાબ — કેટલાક સ્રોતો બંધ",
+        "overallLoading": "લોડ થઈ રહ્યું છે",
+        "statusEmpty": "ખાલું",
+        "statusDown": "બંધ",
         "sources": {
-          "ownership": "मालिकी नोंध",
-          "taxHistory": "नगरपालिका कर नोंधो",
-          "zoning": "झोनिंग प्राधिकरण",
-          "floodZone": "पूर जोखम मूल्यांकन",
-          "permits": "परवानगी डेटाबेस",
-          "environmental": "पर्यावरण निगरानी"
+          "ownership": "માલિકી નોંધ",
+          "taxHistory": "નગરપાલિકા કર નોંધો",
+          "zoning": "ઝોનિંગ પ્રાધિકરણ",
+          "floodZone": "પૂર જોખમ મૂલ્યાંકન",
+          "permits": "પરવાનગી ડેટાબેસ",
+          "environmental": "પર્યાવરણ નિગરાની"
         }
       },
       "environmental": {
-        "title": "पर्यावरण",
-        "subtitle": "हवाई गुणवत्ता अने आसपासनुं वातावरण",
-        "emptyLabel": "पर्यावरण डेटा",
-        "aqi": "हवाई गुणवत्ता सूचकांक",
-        "mainPollutant": "मुख्य प्रदूषक",
-        "nearestStation": "नजीकनुं निगरानी केन्द्र",
-        "measured": "{{ago}} माप्यो",
-        "greenCover": "लीलो आवरण",
-        "noiseLevel": "अवाजनुं स्तर",
-        "soilType": "माटीनो प्रकार",
-        "industrialZone": "ઔद्योगिक झोन",
-        "nearby": "नजीक",
-        "notNearby": "नजीक नहीं"
+        "title": "પર્યાવરણ",
+        "subtitle": "હવાઈ ગુણવત્તા અને આસપાસનું વાતાવરણ",
+        "emptyLabel": "પર્યાવરણ ડેટા",
+        "aqi": "હવાઈ ગુણવત્તા સૂચકાંક",
+        "mainPollutant": "મુખ્ય પ્રદૂષક",
+        "nearestStation": "નજીકનું નિગરાની કેન્દ્ર",
+        "measured": "{{ago}} માપ્યો",
+        "greenCover": "લીલો આવરણ",
+        "noiseLevel": "અવાજનું સ્તર",
+        "soilType": "માટીનો પ્રકાર",
+        "industrialZone": "ઔદ્યોગિક ઝોન",
+        "nearby": "નજીક",
+        "notNearby": "નજીક નહીં"
       },
       "flood": {
-        "title": "पूर जोखम",
-        "subtitle": "पूर झोन वर्गीकरण अने इतिहास",
-        "emptyLabel": "पूर डेटा",
-        "zone": "झोन",
-        "insuranceRecommended": "पूर विमो भलामण करायो",
-        "insuranceNotMandatory": "पूर विमो ફरजियात नथी",
-        "basedOn": "{{agency}} नां आधारे",
-        "regionalHazard": "क्षेत्रीय जोखम डेटा",
-        "nearestWater": "नजीकनुं जळाशय",
-        "distance": "अंतर",
-        "lastFlood": "छेल्लो मोटो पूर:"
+        "title": "પૂર જોખમ",
+        "subtitle": "પૂર ઝોન વર્ગીકરણ અને ઇતિહાસ",
+        "emptyLabel": "પૂર ડેટા",
+        "zone": "ઝોન",
+        "insuranceRecommended": "પૂર વિમો ભલામણ કરાયો",
+        "insuranceNotMandatory": "પૂર વિમો ફરજિયાત નથી",
+        "basedOn": "{{agency}} નાં આધારે",
+        "regionalHazard": "ક્ષેત્રીય જોખમ ડેટા",
+        "nearestWater": "નજીકનું જળાશય",
+        "distance": "અંતર",
+        "lastFlood": "છેલ્લો મોટો પૂર:"
       },
       "zoning": {
-        "title": "झोनिंग माहिती",
-        "subtitle": "जमीन उपयोग वर्गीकरण अने बांधकाम नियमो",
-        "emptyLabel": "झोनिंग माहिती",
-        "zoneCode": "झोन कोड",
-        "category": "श्रेणी",
-        "maxFar": "मહत्तम FAR",
-        "groundCoverage": "जमीन आवरण",
-        "maxHeight": "मહत्તम ऊंचाई",
-        "allowedUses": "अनुमत उपयोगो",
-        "restrictedUses": "प्रतिबंधित उपयोगो",
-        "referencePlan": "संदर्भ योजना"
+        "title": "ઝોનિંગ માહિતી",
+        "subtitle": "જમીન ઉપયોગ વર્ગીકરણ અને બાંધકામ નિયમો",
+        "emptyLabel": "ઝોનિંગ માહિતી",
+        "zoneCode": "ઝોન કોડ",
+        "category": "શ્રેણી",
+        "maxFar": "મહત્તમ FAR",
+        "groundCoverage": "જમીન આવરણ",
+        "maxHeight": "મહત્તમ ઊંચાઈ",
+        "allowedUses": "અનુમત ઉપયોગો",
+        "restrictedUses": "પ્રતિબંધિત ઉપયોગો",
+        "referencePlan": "સંદર્ભ યોજના"
       },
       "section": {
-        "waiting": "डेटानी प्रतीक्षामां...",
-        "errorTitle": "विभाग अस्थायी रूपे अनुपलब्ध",
-        "errorReason": "बाह्य डेटा स्रोत सुधी पहोंची शकायुं नहीं. थोडी वार बाद फरी प्रयास करो.",
-        "emptyTitle": "कोई {{item}} उपलब्ध नथी",
-        "emptyReason": "आ मिलकत माटे हजु कोई नोंध अस्तित्व ध्राव्ती नथी.",
-        "dataFallback": "डेटा"
+        "waiting": "ડેટાની પ્રતીક્ષામાં...",
+        "errorTitle": "વિભાગ અસ્થાયી રૂપે અનુપલબ્ધ",
+        "errorReason": "બાહ્ય ડેટા સ્રોત સુધી પહોંચી શકાયું નહીં. થોડી વાર બાદ ફરી પ્રયાસ કરો.",
+        "emptyTitle": "કોઈ {{item}} ઉપલબ્ધ નથી",
+        "emptyReason": "આ મિલકત માટે હજુ કોઈ નોંધ અસ્તિત્વ ધ્રાવ્તી નથી.",
+        "dataFallback": "ડેટા"
       },
       "badge": {
-        "mock": "नमूना"
+        "mock": "નમૂના"
       },
       "ownership": {
-        "title": "मालिकी",
-        "subtitle": "वर्तमान मालिक अने नोंधणी विगतो",
-        "emptyLabel": "मालिकी नोंधो",
-        "currentOwner": "वर्तमान मालिक",
-        "coOwners": "सह-मालिकો:",
-        "ownershipType": "मालिकीनो प्रकार",
-        "registrationNo": "नोंधणी नं.",
-        "registeredOn": "नोंधणी तारीख",
-        "subRegistrar": "सब-रजिस्ट्रार कार्यालय",
-        "registeredValue": "नोंधायेलुं मूल्य",
-        "stampDuty": "ચूकवेलो સ्टाम्प ड्यूटी"
+        "title": "માલિકી",
+        "subtitle": "વર્તમાન માલિક અને નોંધણી વિગતો",
+        "emptyLabel": "માલિકી નોંધો",
+        "currentOwner": "વર્તમાન માલિક",
+        "coOwners": "સહ-માલિકો:",
+        "ownershipType": "માલિકીનો પ્રકાર",
+        "registrationNo": "નોંધણી નં.",
+        "registeredOn": "નોંધણી તારીખ",
+        "subRegistrar": "સબ-રજિસ્ટ્રાર કાર્યાલય",
+        "registeredValue": "નોંધાયેલું મૂલ્ય",
+        "stampDuty": "ચૂકવેલો સ્ટામ્પ ડ્યૂટી"
       },
       "permits": {
-        "title": "परवानगीओ अने मंजूरीओ",
-        "subtitle": "बांधकाम, वसवाट अने नवीनीकरण परवानगीओ",
-        "emptyLabel": "परवानगीओ",
-        "issued": "जारी:",
-        "expires": "मुदत:",
-        "noRecords": "आ मिलकत माटे कोई परवानगी नोंधायेली नथी."
+        "title": "પરવાનગીઓ અને મંજૂરીઓ",
+        "subtitle": "બાંધકામ, વસવાટ અને નવીનીકરણ પરવાનગીઓ",
+        "emptyLabel": "પરવાનગીઓ",
+        "issued": "જારી:",
+        "expires": "મુદત:",
+        "noRecords": "આ મિલકત માટે કોઈ પરવાનગી નોંધાયેલી નથી."
       },
       "tax": {
-        "title": "मिलकत कर इतिहास",
-        "subtitle": "मूल्यांकन अने ઓचुकवणी नोंधो",
-        "emptyLabel": "कर नोंधो",
-        "year": "वर्ष",
-        "assessedValue": "मूल्यांकित मूल्य",
-        "taxDue": "बाकी कर",
-        "status": "स्थिति",
-        "receipt": "रसीद",
-        "noRecords": "आ मिलकत माटे कोई कर नोंधो उपलब्ध नथी."
+        "title": "મિલકત કર ઇતિહાસ",
+        "subtitle": "મૂલ્યાંકન અને ઓચુકવણી નોંધો",
+        "emptyLabel": "કર નોંધો",
+        "year": "વર્ષ",
+        "assessedValue": "મૂલ્યાંકિત મૂલ્ય",
+        "taxDue": "બાકી કર",
+        "status": "સ્થિતિ",
+        "receipt": "રસીદ",
+        "noRecords": "આ મિલકત માટે કોઈ કર નોંધો ઉપલબ્ધ નથી."
       }
     },
     "quickImage": {
-      "addPhoto": "फोटो ऊमेरो",
-      "updatePhoto": "फोटो अपडेट करो",
-      "closeAria": "बंध करो",
-      "cancel": "रद्द करो",
-      "saving": "सचवाई रह्युं छे",
-      "removePhoto": "फोटो दूर करो",
-      "savePhoto": "फोटो सचवो",
-      "saveChanges": "फेरफारो सचवो",
-      "noChanges": "कोई फेरफार नहीं",
-      "removedTitle": "फोटो दूर थयो",
-      "removedDesc": "मिलकत हवे placeholder बतावशे.",
-      "updatedTitle": "फोटो अपडेट थयो",
-      "updatedDesc": "तमारो मिलकत फोटो सचवाई गयो.",
-      "updateFailed": "फोटो अपडेट करी शकायो नहीं",
-      "tryAgainMoment": "कृपा करीने थोडी वार बाद फरी प्रयास करो.",
-      "stagedWarningTitle": "फोटो दूर करवा तैयार",
-      "stagedWarningDesc": "पुष्टि करवा <1>फोटो दूर करो</1> क्लिक करो, अथवा वर्तमान फोटो राखवा <3>रद्द करो</3>.",
-      "replaceHint": "वर्तमान फोटो बदलो, अथवा placeholder वापरवा तेने दूर करो.",
-      "addHint": "शोध परिणामोमां आ मिलकत ओळखवामां मदद माटे फोटो ऊमेरो."
+      "addPhoto": "ફોટો ઊમેરો",
+      "updatePhoto": "ફોટો અપડેટ કરો",
+      "closeAria": "બંધ કરો",
+      "cancel": "રદ્દ કરો",
+      "saving": "સચવાઈ રહ્યું છે",
+      "removePhoto": "ફોટો દૂર કરો",
+      "savePhoto": "ફોટો સચવો",
+      "saveChanges": "ફેરફારો સચવો",
+      "noChanges": "કોઈ ફેરફાર નહીં",
+      "removedTitle": "ફોટો દૂર થયો",
+      "removedDesc": "મિલકત હવે placeholder બતાવશે.",
+      "updatedTitle": "ફોટો અપડેટ થયો",
+      "updatedDesc": "તમારો મિલકત ફોટો સચવાઈ ગયો.",
+      "updateFailed": "ફોટો અપડેટ કરી શકાયો નહીં",
+      "tryAgainMoment": "કૃપા કરીને થોડી વાર બાદ ફરી પ્રયાસ કરો.",
+      "stagedWarningTitle": "ફોટો દૂર કરવા તૈયાર",
+      "stagedWarningDesc": "પુષ્ટિ કરવા <1>ફોટો દૂર કરો</1> ક્લિક કરો, અથવા વર્તમાન ફોટો રાખવા <3>રદ્દ કરો</3>.",
+      "replaceHint": "વર્તમાન ફોટો બદલો, અથવા placeholder વાપરવા તેને દૂર કરો.",
+      "addHint": "શોધ પરિણામોમાં આ મિલકત ઓળખવામાં મદદ માટે ફોટો ઊમેરો."
     },
     "saveComparison": {
-      "closeAria": "बंध करो",
-      "titleSave": "सरखामणी सचवो",
-      "titleSaved": "सरखामणी सचवाई!",
-      "subtitleSave_one": "आ {{count}} मिलकत सरखामणी तमारा एकाउन्टमां सचवो.",
-      "subtitleSave_other": "आ {{count}} मिलकत सरखामणी तमारा एकाउन्टमां सचवो.",
-      "subtitleSaved": "तमे आ सरखामणी तमारी सचवेली यादीमांथी गमे त्यारे लोड करी शकशो.",
-      "nameLabel": "नाम",
-      "namePlaceholder": "दा.त. मुंबई वि. पुणे सरखामणी",
-      "nameRequired": "नाम जरूरी छे",
-      "nameMin": "नाम ऑछामां ऑछा 3 अक्षरनुं होवुं जोईए",
-      "nameMax": "नाम 100 अक्षरथी वधी न शके",
-      "notesLabel": "नोंधो",
-      "notesOptional": "(वैकल्पिक)",
-      "notesPlaceholder": "आ सरखामणी विशे कोई नोंधो ऊमेरो...",
-      "notesMax": "नोंधो 1000 अक्षरथी वधी न शके",
-      "propertiesCount_one": "{{count}} मिलकत आ सरखामणीमां सचवाशे",
-      "propertiesCount_other": "{{count}} मिलकतो आ सरखामणीमां सचवाशे",
-      "cancel": "रद्द करो",
-      "saveButton": "सरखामणी सचवो",
-      "saving": "सचवाई रह्युं छे...",
-      "tipEsc": "टिप: दबाओ",
-      "tipEscSuffix": "रद्द करवा",
-      "closingAuto": "आपमेळे बंध थई रह्युं छे..."
+      "closeAria": "બંધ કરો",
+      "titleSave": "સરખામણી સચવો",
+      "titleSaved": "સરખામણી સચવાઈ!",
+      "subtitleSave_one": "આ {{count}} મિલકત સરખામણી તમારા એકાઉન્ટમાં સચવો.",
+      "subtitleSave_other": "આ {{count}} મિલકત સરખામણી તમારા એકાઉન્ટમાં સચવો.",
+      "subtitleSaved": "તમે આ સરખામણી તમારી સચવેલી યાદીમાંથી ગમે ત્યારે લોડ કરી શકશો.",
+      "nameLabel": "નામ",
+      "namePlaceholder": "દા.ત. મુંબઈ વિ. પુણે સરખામણી",
+      "nameRequired": "નામ જરૂરી છે",
+      "nameMin": "નામ ઑછામાં ઑછા 3 અક્ષરનું હોવું જોઈએ",
+      "nameMax": "નામ 100 અક્ષરથી વધી ન શકે",
+      "notesLabel": "નોંધો",
+      "notesOptional": "(વૈકલ્પિક)",
+      "notesPlaceholder": "આ સરખામણી વિશે કોઈ નોંધો ઊમેરો...",
+      "notesMax": "નોંધો 1000 અક્ષરથી વધી ન શકે",
+      "propertiesCount_one": "{{count}} મિલકત આ સરખામણીમાં સચવાશે",
+      "propertiesCount_other": "{{count}} મિલકતો આ સરખામણીમાં સચવાશે",
+      "cancel": "રદ્દ કરો",
+      "saveButton": "સરખામણી સચવો",
+      "saving": "સચવાઈ રહ્યું છે...",
+      "tipEsc": "ટિપ: દબાઓ",
+      "tipEscSuffix": "રદ્દ કરવા",
+      "closingAuto": "આપમેળે બંધ થઈ રહ્યું છે..."
     },
     "logout": {
-      "closeAria": "बंध करो",
-      "title": "साइन आउट करवा तैयार छो?",
-      "subtitle": "तमारा ড৅शबोर्ड अने मिलकत डेटा एक्सेस करवा तमारे फरीथी लॉग इन करवुं पडशे.",
-      "activeBadge": "सक्रिय",
-      "signedInFallback": "साइन इन छे",
-      "fallbackUser": "वापरकर्ता",
-      "stayIn": "साइन इन रहो",
-      "confirm": "हां, लॉग आउट करो",
-      "signingOut": "साइन आउट थई रह्या छे…",
-      "tipEsc": "टिप: दबाओ",
-      "tipEscSuffix": "रद्द करवा"
+      "closeAria": "બંધ કરો",
+      "title": "સાઇન આઉટ કરવા તૈયાર છો?",
+      "subtitle": "તમારા ડૅશબોર્ડ અને મિલકત ડેટા એક્સેસ કરવા તમારે ફરીથી લૉગ ઇન કરવું પડશે.",
+      "activeBadge": "સક્રિય",
+      "signedInFallback": "સાઇન ઇન છે",
+      "fallbackUser": "વાપરકર્તા",
+      "stayIn": "સાઇન ઇન રહો",
+      "confirm": "હાં, લૉગ આઉટ કરો",
+      "signingOut": "સાઇન આઉટ થઈ રહ્યા છે…",
+      "tipEsc": "ટિપ: દબાઓ",
+      "tipEscSuffix": "રદ્દ કરવા"
     },
     "detailPage": {
-      "pageTitle": "मिलकत विगतो | Real Estate Due Diligence Agent",
-      "couldNotLoad": "मिलकत विगतो लोड करी शकायो नहीं",
-      "notFound": "मिलकत मळी नहीं",
-      "mayBeRemoved": "तेने दूर करवामां आव्यो हशे."
+      "pageTitle": "મિલકત વિગતો | Real Estate Due Diligence Agent",
+      "couldNotLoad": "મિલકત વિગતો લોડ કરી શકાયો નહીં",
+      "notFound": "મિલકત મળી નહીં",
+      "mayBeRemoved": "તેને દૂર કરવામાં આવ્યો હશે."
     },
     "propertyTypes": {
-      "COMMERCIAL": "व्यावसायिक",
-      "RESIDENTIAL": "आवासीय",
-      "INDUSTRIAL": "ઔद्योगिक",
-      "LAND": "जमीन",
-      "MIXED_USE": "मिश्रित उपयोग",
-      "AGRICULTURAL": "कृषि"
+      "COMMERCIAL": "વ્યાવસાયિક",
+      "RESIDENTIAL": "આવાસીય",
+      "INDUSTRIAL": "ઔદ્યોગિક",
+      "LAND": "જમીન",
+      "MIXED_USE": "મિશ્રિત ઉપયોગ",
+      "AGRICULTURAL": "કૃષિ"
     },
     "filter": {
-      "filter": "फिल्टर",
-      "clearFilters": "फिल्टर साफ करो",
-      "noMatchFilters": "कोई मिलकत तमारा फिल्टर साथे मेळ खाती नथी",
-      "tryRemoving": "केटलाक फिल्टर दूर करवानो अथवा बधा साफ करवानो प्रयास करो",
-      "title": "फिल्टर",
-      "subtitle": "तमारी मिलकत यादी परिष्कृत करो",
-      "activeCount_one": "{{count}} फिल्टर सक्रिय",
-      "activeCount_other": "{{count}} फिल्टर सक्रिय",
-      "resetFilters": "फिल्टर ரीसेट करो",
-      "matching": "मेळ खाती",
-      "viewProperties_one": "{{count}} मिलकत जुओ",
-      "viewProperties_other": "{{count}} मिलकतो जुओ",
+      "filter": "ફિલ્ટર",
+      "clearFilters": "ફિલ્ટર સાફ કરો",
+      "noMatchFilters": "કોઈ મિલકત તમારા ફિલ્ટર સાથે મેળ ખાતી નથી",
+      "tryRemoving": "કેટલાક ફિલ્ટર દૂર કરવાનો અથવા બધા સાફ કરવાનો પ્રયાસ કરો",
+      "title": "ફિલ્ટર",
+      "subtitle": "તમારી મિલકત યાદી પરિષ્કૃત કરો",
+      "activeCount_one": "{{count}} ફિલ્ટર સક્રિય",
+      "activeCount_other": "{{count}} ફિલ્ટર સક્રિય",
+      "resetFilters": "ફિલ્ટર ரીસેટ કરો",
+      "matching": "મેળ ખાતી",
+      "viewProperties_one": "{{count}} મિલકત જુઓ",
+      "viewProperties_other": "{{count}} મિલકતો જુઓ",
       "sections": {
-        "propertyType": "मिलकत प्रकार",
-        "city": "शहेर",
-        "priceRange": "ભाव श्रेणी",
-        "dataQuality": "डेटा गुणवत्ता",
-        "sortBy": "क्रम"
+        "propertyType": "મિલકત પ્રકાર",
+        "city": "શહેર",
+        "priceRange": "ભાવ શ્રેણી",
+        "dataQuality": "ડેટા ગુણવત્તા",
+        "sortBy": "ક્રમ"
       },
-      "activeLabel": "सक्रिय",
-      "chipMinPrice": "न्यूनतम: {{value}}",
-      "chipMaxPrice": "अधिकतम: {{value}}",
-      "chipSort": "क्रम: {{label}}",
-      "chipRemove": "{{label}} दूर करो",
-      "noTypesYet": "हजु डेटामां कोई प्रकार नथी",
-      "noCitiesYet": "हजु डेटामां कोई शहेर नथी",
-      "minPrice": "न्यूनतम (₹)",
-      "maxPrice": "अधिकतम (₹)",
-      "anyPrice": "कोईपण",
-      "highestInDb": "डेटाबेसमां सौथी ऊंचुं: {{amount}}",
-      "verifiedOnly": "मात्र चकासायेली",
-      "verifiedOnlyDesc": "बधी गुणवत्ता ७चकासणीओ पास करेली मिलकतो बतावो",
-      "toggleVerified": "मात्र-चकासायेली फिल्टर टॉगल करो",
-      "highRiskOnly": "मात्र उच्च जोखम",
-      "highRiskDesc": "66 थी वधारे जोखम स्कोर वाली मिलकतो बतावो",
-      "toggleHighRisk": "उच्च जोखम फिल्टर टॉगल करो",
+      "activeLabel": "સક્રિય",
+      "chipMinPrice": "ન્યૂનતમ: {{value}}",
+      "chipMaxPrice": "અધિકતમ: {{value}}",
+      "chipSort": "ક્રમ: {{label}}",
+      "chipRemove": "{{label}} દૂર કરો",
+      "noTypesYet": "હજુ ડેટામાં કોઈ પ્રકાર નથી",
+      "noCitiesYet": "હજુ ડેટામાં કોઈ શહેર નથી",
+      "minPrice": "ન્યૂનતમ (₹)",
+      "maxPrice": "અધિકતમ (₹)",
+      "anyPrice": "કોઈપણ",
+      "highestInDb": "ડેટાબેસમાં સૌથી ઊંચું: {{amount}}",
+      "verifiedOnly": "માત્ર ચકાસાયેલી",
+      "verifiedOnlyDesc": "બધી ગુણવત્તા ચકાસણીઓ પાસ કરેલી મિલકતો બતાવો",
+      "toggleVerified": "માત્ર-ચકાસાયેલી ફિલ્ટર ટૉગલ કરો",
+      "highRiskOnly": "માત્ર ઉચ્ચ જોખમ",
+      "highRiskDesc": "66 થી વધારે જોખમ સ્કોર વાલી મિલકતો બતાવો",
+      "toggleHighRisk": "ઉચ્ચ જોખમ ફિલ્ટર ટૉગલ કરો",
       "sortOptions": {
-        "recent": "ताजेतरमां ऊमेरायेली",
-        "priceAsc": "ভाव: ऑछाथी वधारे",
-        "priceDesc": "ভाव: वधारेथी ऑछो",
-        "alpha": "वर्णक्रम (A–Z)",
-        "riskDesc": "सौथी वधारे जोखम पहेलां"
+        "recent": "તાજેતરમાં ઊમેરાયેલી",
+        "priceAsc": "ભાવ: ઑછાથી વધારે",
+        "priceDesc": "ભાવ: વધારેથી ઑછો",
+        "alpha": "વર્ણક્રમ (A–Z)",
+        "riskDesc": "સૌથી વધારે જોખમ પહેલાં"
       }
     },
     "card": {
       "riskAnalyzeTooltip": "સંપૂર્ણ જોખમ વિશ્લેષણ જોવા માટે ક્લિક કરો",
-      "verified": "ચकासायेली",
-      "pending": "बाकी",
-      "incomplete": "अधूरुं",
-      "marketValue": "बाजार मूल्य",
-      "completeToVerify": "ચकासवा पूर्ण करो",
-      "missing": "खूटतुं:",
-      "addPhoto": "फोटो ऊमेरो",
-      "changePhoto": "फोटो बदलो",
-      "lowRisk": "ऑछो जोखम",
-      "mediumRisk": "मध्यम जोखम",
-      "highRisk": "उच्च जोखम",
-      "unknownAddress": "अज्ञात सरनामुं",
-      "propertyFallback": "मिलकत",
-      "addToCompare": "सरखामणीमां ऊमेरो",
-      "removeFromCompare": "सरखामणीमांथी दूर करो",
-      "maxCompareReached": "सरखामणी माटे वधुमां वधु 3 मिलकतो",
-      "verifiedTooltip": "ચकासायेली — बधी {{n}} डेटा गुणवत्ता ČKaSaणीओ पास",
-      "pendingTooltip": "बाकी — {{total}} मांथी {{passed}} ţचकासणीओ पास.\nखूटतुं: {{missing}}",
+      "verified": "ચકાસાયેલી",
+      "pending": "બાકી",
+      "incomplete": "અધૂરું",
+      "marketValue": "બાજાર મૂલ્ય",
+      "completeToVerify": "ચકાસવા પૂર્ણ કરો",
+      "missing": "ખૂટતું:",
+      "addPhoto": "ફોટો ઊમેરો",
+      "changePhoto": "ફોટો બદલો",
+      "lowRisk": "ઑછો જોખમ",
+      "mediumRisk": "મધ્યમ જોખમ",
+      "highRisk": "ઉચ્ચ જોખમ",
+      "unknownAddress": "અજ્ઞાત સરનામું",
+      "propertyFallback": "મિલકત",
+      "addToCompare": "સરખામણીમાં ઊમેરો",
+      "removeFromCompare": "સરખામણીમાંથી દૂર કરો",
+      "maxCompareReached": "સરખામણી માટે વધુમાં વધુ 3 મિલકતો",
+      "verifiedTooltip": "ચકાસાયેલી — બધી {{n}} ડેટા ગુણવત્તા ČKaSaણીઓ પાસ",
+      "pendingTooltip": "બાકી — {{total}} માંથી {{passed}} ţચકાસણીઓ પાસ.\nખૂટતું: {{missing}}",
       "bedroomsShort": "{{n}} BR",
       "bathroomsShort": "{{n}} BA",
-      "riskScoreTooltip": "जोखम स्कोर: {{score}}/100",
-      "moreItems": "+{{n}} वधारे",
-      "photoPending": "फोटो बाकी",
+      "riskScoreTooltip": "જોખમ સ્કોર: {{score}}/100",
+      "moreItems": "+{{n}} વધારે",
+      "photoPending": "ફોટો બાકી",
       "criticalRisk": "ગંભીર જોખમ",
-"riskScoreTooltipFull": "જોખમ: {{level}} ({{score}}/100) — સંપૂર્ણ વિશ્લેષણ માટે ક્લિક કરો",
-"riskScoreClickTooltip": "સંપૂર્ણ જોખમ વિશ્લેષણ માટે ક્લિક કરો",
-"riskBadgeAria": "સંપૂર્ણ જોખમ વિશ્લેષણ જુઓ: {{level}}"
+      "riskScoreTooltipFull": "જોખમ: {{level}} ({{score}}/100) — સંપૂર્ણ વિશ્લેષણ માટે ક્લિક કરો",
+      "riskScoreClickTooltip": "સંપૂર્ણ જોખમ વિશ્લેષણ માટે ક્લિક કરો",
+      "riskBadgeAria": "સંપૂર્ણ જોખમ વિશ્લેષણ જુઓ: {{level}}"
     },
     "risk": {
       "spectrum": {
-  "risk": "જોખમ",
-  "outOf": "100 માંથી",
-  "recalculate": "ફરીથી ગણતરી કરો",
-  "recalculating": "ફરીથી ગણતરી થઈ રહી છે…"
-},
-      "title": "जोखम मूल्यांकन",
-      "subtitle": "वास्तविक एकत्रित डेटानां आधारे",
-      "unavailable": "जोखम स्कोर अनुपलब्ध",
-      "couldntLoad": "जोखम स्कोर लोड करी शकायो नहीं",
-      "categoryBreakdown": "श्रेणी विश्लेषण",
-      "weight": "भार {{pct}}",
-      "factorsCount": "जोखम कारको · {{n}}",
-      "incompleteNote": "केटलाक डेटा स्रोतोए नमूना अथवा अनुपलब्ध डेटा पाछो आप्यो. वधारे वास्तविक डेटा उपलब्ध थतां स्कोर सुधरी शके.",
+        "risk": "જોખમ",
+        "outOf": "100 માંથી",
+        "recalculate": "ફરીથી ગણતરી કરો",
+        "recalculating": "ફરીથી ગણતરી થઈ રહી છે…"
+      },
+      "title": "જોખમ મૂલ્યાંકન",
+      "subtitle": "વાસ્તવિક એકત્રિત ડેટાનાં આધારે",
+      "unavailable": "જોખમ સ્કોર અનુપલબ્ધ",
+      "couldntLoad": "જોખમ સ્કોર લોડ કરી શકાયો નહીં",
+      "categoryBreakdown": "શ્રેણી વિશ્લેષણ",
+      "weight": "ભાર {{pct}}",
+      "factorsCount": "જોખમ કારકો · {{n}}",
+      "incompleteNote": "કેટલાક ડેટા સ્રોતોએ નમૂના અથવા અનુપલબ્ધ ડેટા પાછો આપ્યો. વધારે વાસ્તવિક ડેટા ઉપલબ્ધ થતાં સ્કોર સુધરી શકે.",
       "categories": {
-        "financial": "नांणाकीय",
-        "legal": "कानूनी",
-        "environmental": "पर्यावरण",
-        "structural": "संरचनात्मक"
+        "financial": "નાંણાકીય",
+        "legal": "કાનૂની",
+        "environmental": "પર્યાવરણ",
+        "structural": "સંરચનાત્મક"
       }
     },
     "building": {
-      "title": "इमारत माहिती",
-      "subtitle": "तमे प्रदान करेली संरचनात्मक विगतो",
-      "storiesCount_one": "{{count}} माळो",
-      "storiesCount_other": "{{count}} माळा",
-      "emptyTitle": "कोई इमारत विगतो ऊमेरायेली नथी",
-      "emptyDesc": "जोखम स्कोरिंग ताकात सुधारवा संरचना प्रकार, बांधकाम वर्ष, शयनखंड अने वधारे ऊमेरो.",
-      "addDetails": "इमारत विगतो ऊमेरो"
+      "title": "ઇમારત માહિતી",
+      "subtitle": "તમે પ્રદાન કરેલી સંરચનાત્મક વિગતો",
+      "storiesCount_one": "{{count}} માળો",
+      "storiesCount_other": "{{count}} માળા",
+      "emptyTitle": "કોઈ ઇમારત વિગતો ઊમેરાયેલી નથી",
+      "emptyDesc": "જોખમ સ્કોરિંગ તાકાત સુધારવા સંરચના પ્રકાર, બાંધકામ વર્ષ, શયનખંડ અને વધારે ઊમેરો.",
+      "addDetails": "ઇમારત વિગતો ઊમેરો"
     },
     "details": {
       "generateReport": "અહેવાલ બનાવો",
-"generateReportTooltip": "આ મિલકત માટે સંપૂર્ણ ડ્યુ ડિલિજન્સ અહેવાલ બનાવો",
-"quickPdf": "ઝડપી PDF",
-"quickPdfTooltip": "ઝડપી ક્લાયન્ટ-સાઇડ PDF સારાંશ ડાઉનલોડ કરો",
-      "verifiedProperty": "ČKaサyeli मिलकत",
-      "pendingVerification": "ČKaसणी बाकी",
-      "active": "सक्रिय",
-      "userProvided": "वापरकर्ता द्वारा",
-      "editDetails": "विगतो संपादित करो",
-      "estimatedMarketValue": "अनुमानित बाजार मूल्य",
-      "yearBuilt": "बांधकामनुं वर्ष",
-      "stories": "माळा",
-      "lotSize": "प्लॉट साइझ",
-      "zoning": "झोनिंग",
-      "beds": "शयनखंड",
-      "baths": "स्नानखंड",
-      "sqft": "चो.फी.",
-      "type": "प्रकार",
-      "pricePerSqft": "किंमत/चो.फी.",
-      "editProperty": "मिलकत संपादित करो",
-      "backToSearch": "शोध पर पाछा जाओ",
-      "monthlyEst": "અनु. {{amount}}/मास",
-      "getPrequalified": "पूर्व-योग्यता मेळवो"
+      "generateReportTooltip": "આ મિલકત માટે સંપૂર્ણ ડ્યુ ડિલિજન્સ અહેવાલ બનાવો",
+      "quickPdf": "ઝડપી PDF",
+      "quickPdfTooltip": "ઝડપી ક્લાયન્ટ-સાઇડ PDF સારાંશ ડાઉનલોડ કરો",
+      "verifiedProperty": "ČKaサyeli મિલકત",
+      "pendingVerification": "ČKaસણી બાકી",
+      "active": "સક્રિય",
+      "userProvided": "વાપરકર્તા દ્વારા",
+      "editDetails": "વિગતો સંપાદિત કરો",
+      "estimatedMarketValue": "અનુમાનિત બાજાર મૂલ્ય",
+      "yearBuilt": "બાંધકામનું વર્ષ",
+      "stories": "માળા",
+      "lotSize": "પ્લૉટ સાઇઝ",
+      "zoning": "ઝોનિંગ",
+      "beds": "શયનખંડ",
+      "baths": "સ્નાનખંડ",
+      "sqft": "ચો.ફી.",
+      "type": "પ્રકાર",
+      "pricePerSqft": "કિંમત/ચો.ફી.",
+      "editProperty": "મિલકત સંપાદિત કરો",
+      "backToSearch": "શોધ પર પાછા જાઓ",
+      "monthlyEst": "અનુ. {{amount}}/માસ",
+      "getPrequalified": "પૂર્વ-યોગ્યતા મેળવો"
     },
     "comparison": {
-      "title": "मिलकत सरखामणी",
-      "subtitle": "{{n}} {{unit}}नुं बाजु-बाजु विश्लेषण · मात्र वास्तविक डेटा",
-      "pageTitle": "मिलकत सरखामणी | Real Estate Due Diligence Agent",
-      "couldNotLoad": "सरखामणी लोड करी शकायो नहीं",
-      "pleaseGoBack": "कृपा करीने पाछा जाओ अने फरी प्रयास करो.",
-      "loadFailed": "सरखामणी डेटा लोड करवामां निष्फळ",
-      "selectHelper": "मिलकत शोध पर जाओ, दरेक कार्ड पर सरखामणी ček बॉक्सनो उपयोग करीने 2–3 मिलकतो पसंद करो, पछी \"सरखामणी\" क्लिक करो.",
-      "backToSearch": "मिलकत शोध पर पाछा जाओ",
+      "title": "મિલકત સરખામણી",
+      "subtitle": "{{n}} {{unit}}નું બાજુ-બાજુ વિશ્લેષણ · માત્ર વાસ્તવિક ડેટા",
+      "pageTitle": "મિલકત સરખામણી | Real Estate Due Diligence Agent",
+      "couldNotLoad": "સરખામણી લોડ કરી શકાયો નહીં",
+      "pleaseGoBack": "કૃપા કરીને પાછા જાઓ અને ફરી પ્રયાસ કરો.",
+      "loadFailed": "સરખામણી ડેટા લોડ કરવામાં નિષ્ફળ",
+      "selectHelper": "મિલકત શોધ પર જાઓ, દરેક કાર્ડ પર સરખામણી ček બૉક્સનો ઉપયોગ કરીને 2–3 મિલકતો પસંદ કરો, પછી \"સરખામણી\" ક્લિક કરો.",
+      "backToSearch": "મિલકત શોધ પર પાછા જાઓ",
       "empty": {
         "heroTitle": "મિલકતોની બાજુ બાજુ સરખામણી કરો",
         "heroSubtitle": "નાણાકીય, જોખમ સ્કોર, ચકાસણી સ્થિતિ અને પર્યાવરણીય ડેટા — બધું એક જ જગ્યાએ ગોઠવેલું. શરૂ કરવા માટે 2 અથવા 3 મિલકતો પસંદ કરો.",
@@ -1255,549 +1266,582 @@
         "step3Title": "તરત જ સરખાવો",
         "step3Desc": "નીચેની બારમાં સરખાવો ક્લિક કરો — સંપૂર્ણ વિશ્લેષણ અહીં જુઓ."
       },
-      "metricHeader": "माप",
-      "propertyUnit": "मिलकत",
-      "propertiesUnit": "मिलकतो",
-      "mySaved": "मारी सचवेली",
-      "saveComparison": "सरखामणी सचवो",
-      "goToSearch": "मिलकत शोध पर जाओ",
-      "selectAtLeast2": "सरखामणी करवा ऑछामां ऑछी 2 मिलकतो पसंद करो",
-      "compareLabel": "सरखामणी",
-      "selectedCount": "3 मांथी {{count}} पसंद",
-      "compareCount_one": "{{count}} मिलकत सरखावो",
-      "compareCount_other": "{{count}} मिलकतो सरखावो",
-      "selectMinimum": "— ऑछामां ऑछी 2 पसंद करो",
-      "removeProperty": "{{address}} दूर करो",
+      "metricHeader": "માપ",
+      "propertyUnit": "મિલકત",
+      "propertiesUnit": "મિલકતો",
+      "mySaved": "મારી સચવેલી",
+      "saveComparison": "સરખામણી સચવો",
+      "goToSearch": "મિલકત શોધ પર જાઓ",
+      "selectAtLeast2": "સરખામણી કરવા ઑછામાં ઑછી 2 મિલકતો પસંદ કરો",
+      "compareLabel": "સરખામણી",
+      "selectedCount": "3 માંથી {{count}} પસંદ",
+      "compareCount_one": "{{count}} મિલકત સરખાવો",
+      "compareCount_other": "{{count}} મિલકતો સરખાવો",
+      "selectMinimum": "— ઑછામાં ઑછી 2 પસંદ કરો",
+      "removeProperty": "{{address}} દૂર કરો",
       "sections": {
-        "financial": "नांणाकीय",
-        "propertyDetails": "मिलकत विगतो",
-        "riskAssessment": "जोखम मूल्यांकन",
-        "dataQuality": "डेटा गुणवत्ता",
-        "integrationSources": "एकीकरण डेटा स्रोतो",
-        "environmental": "पर्यावरण"
+        "financial": "નાંણાકીય",
+        "propertyDetails": "મિલકત વિગતો",
+        "riskAssessment": "જોખમ મૂલ્યાંકન",
+        "dataQuality": "ડેટા ગુણવત્તા",
+        "integrationSources": "એકીકરણ ડેટા સ્રોતો",
+        "environmental": "પર્યાવરણ"
       },
       "metrics": {
-        "marketValue": "बाजार मूल्य",
-        "area": "विस्तार",
-        "pricePerSqft": "किंमत / चो.फी.",
-        "lotSize": "प्लॉट साइझ",
-        "yearBuilt": "बांधकामनुं वर्ष",
-        "type": "प्रकार",
-        "bedrooms": "शयनखंड",
-        "bathrooms": "स्नानखंड",
-        "stories": "माळा",
-        "condition": "स्थिति",
-        "structureType": "संरचना प्रकार",
-        "zoning": "झोनिंग",
-        "overallRisk": "समग्र जोखम",
-        "financialRisk": "नांणाकीय जोखम",
-        "legalRisk": "कानूनी जोखम",
-        "environmentalRisk": "पर्यावरण जोखम",
-        "structuralRisk": "संरचनात्मक जोखम",
-        "verification": "ČKaसणी",
-        "ownership": "मालिकी",
-        "taxHistory": "कर इतिहास",
-        "floodZone": "पूर झोन",
-        "permits": "परवानगीओ",
+        "marketValue": "બાજાર મૂલ્ય",
+        "area": "વિસ્તાર",
+        "pricePerSqft": "કિંમત / ચો.ફી.",
+        "lotSize": "પ્લૉટ સાઇઝ",
+        "yearBuilt": "બાંધકામનું વર્ષ",
+        "type": "પ્રકાર",
+        "bedrooms": "શયનખંડ",
+        "bathrooms": "સ્નાનખંડ",
+        "stories": "માળા",
+        "condition": "સ્થિતિ",
+        "structureType": "સંરચના પ્રકાર",
+        "zoning": "ઝોનિંગ",
+        "overallRisk": "સમગ્ર જોખમ",
+        "financialRisk": "નાંણાકીય જોખમ",
+        "legalRisk": "કાનૂની જોખમ",
+        "environmentalRisk": "પર્યાવરણ જોખમ",
+        "structuralRisk": "સંરચનાત્મક જોખમ",
+        "verification": "ČKaસણી",
+        "ownership": "માલિકી",
+        "taxHistory": "કર ઇતિહાસ",
+        "floodZone": "પૂર ઝોન",
+        "permits": "પરવાનગીઓ",
         "aqi": "AQI",
-        "floodRisk": "पूर जोखम",
-        "nearIndustrial": "ઔद्योगिक झोन नजीक"
+        "floodRisk": "પૂર જોખમ",
+        "nearIndustrial": "ઔદ્યોગિક ઝોન નજીક"
       },
       "risk": {
-        "low": "ऑछो जोखम",
-        "medium": "मध्यम जोखम",
-        "high": "उच्च जोखम"
+        "low": "ઑછો જોખમ",
+        "medium": "મધ્યમ જોખમ",
+        "high": "ઉચ્ચ જોખમ"
       },
       "status": {
-        "live": "जीवंत",
-        "cached": "केश थयेली",
-        "sample": "नमूना",
-        "unavailable": "अनुपलब्ध",
-        "timedOut": "समय पूरो",
-        "error": "ভूल",
-        "noData": "कोई डेटा नहीं"
+        "live": "જીવંત",
+        "cached": "કેશ થયેલી",
+        "sample": "નમૂના",
+        "unavailable": "અનુપલબ્ધ",
+        "timedOut": "સમય પૂરો",
+        "error": "ભૂલ",
+        "noData": "કોઈ ડેટા નહીં"
       },
       "legend": {
-        "title": "दंतकथा",
-        "best": "सर्वश्रेष्ठ मूल्य",
-        "worst": "सौथी खराब मूल्य",
-        "middle": "मध्य",
-        "note": "सरखामणीओ सापेक्ष छे — कोई बाह्य बेंचमार्क वापरायो नथी"
+        "title": "દંતકથા",
+        "best": "સર્વશ્રેષ્ઠ મૂલ્ય",
+        "worst": "સૌથી ખરાબ મૂલ્ય",
+        "middle": "મધ્ય",
+        "note": "સરખામણીઓ સાપેક્ષ છે — કોઈ બાહ્ય બેંચમાર્ક વાપરાયો નથી"
       }
     }
   },
   "profile": {
-    "title": "एकाउन्ट व्यवस्थापन",
-    "subtitle": "तमारी व्यावसायिक ओळख अने एप्लिकेशन सुरक्षा नियंत्रित करो.",
-    "pageTitle": "प्रोफाइल | Real Estate Due Diligence Agent",
-    "fallbackUser": "वापरकर्ता",
+    "title": "એકાઉન્ટ વ્યવસ્થાપન",
+    "subtitle": "તમારી વ્યાવસાયિક ઓળખ અને એપ્લિકેશન સુરક્ષા નિયંત્રિત કરો.",
+    "pageTitle": "પ્રોફાઇલ | Real Estate Due Diligence Agent",
+    "fallbackUser": "વાપરકર્તા",
     "sections": {
-      "accountDetails": "एकाउन्ट विगतो",
-      "accountDetailsSubtitle": "प्राथमिक संपर्क अने संगठनात्मक माहिती.",
-      "security": "सुरक्षा अने प्रवेश",
-      "securitySubtitle": "तमारी प्रमाणीकरण पद्धतिओ अने सुरक्षा प्रोटोकॉल संचालित करो.",
-      "dangerZone": "जोखमी ক্ষेत्र",
-      "dangerZoneSubtitle": "अपरिवर्तनीय क्रियाओ. कृपा करीने सावधानीथी आगळ वधो."
+      "accountDetails": "એકાઉન્ટ વિગતો",
+      "accountDetailsSubtitle": "પ્રાથમિક સંપર્ક અને સંગઠનાત્મક માહિતી.",
+      "security": "સુરક્ષા અને પ્રવેશ",
+      "securitySubtitle": "તમારી પ્રમાણીકરણ પદ્ધતિઓ અને સુરક્ષા પ્રોટોકૉલ સંચાલિત કરો.",
+      "dangerZone": "જોખમી ક્ષેત્ર",
+      "dangerZoneSubtitle": "અપરિવર્તનીય ક્રિયાઓ. કૃપા કરીને સાવધાનીથી આગળ વધો."
     },
     "fields": {
-      "fullName": "पूरुं नाम",
-      "email": "इमेइल सरनामुं",
-      "phone": "फोन",
-      "signInMethod": "साइन-इन पद्धति",
-      "accessLevel": "प्रवेश स्तर",
-      "memberSince": "सभ्ย बन्या थी"
+      "fullName": "પૂરું નામ",
+      "email": "ઇમેઇલ સરનામું",
+      "phone": "ફોન",
+      "signInMethod": "સાઇન-ઇન પદ્ધતિ",
+      "accessLevel": "પ્રવેશ સ્તર",
+      "memberSince": "સભ્ย બન્યા થી"
     },
     "placeholders": {
-      "fullName": "तमारुं पूरुं नाम",
-      "phone": "10-अंकनो मोबाइल"
+      "fullName": "તમારું પૂરું નામ",
+      "phone": "10-અંકનો મોબાઇલ"
     },
     "actions": {
-      "editProfile": "प्रोफाइल संपादित करो",
-      "cancel": "रद्द करो",
-      "saveChanges": "फेरफारो सचवो",
-      "saving": "सचवाई रह्युं छे...",
-      "changePassword": "पासवर्ड बदलो",
-      "deleteAccount": "एकाउन्ट दूर करो"
+      "editProfile": "પ્રોફાઇલ સંપાદિત કરો",
+      "cancel": "રદ્દ કરો",
+      "saveChanges": "ફેરફારો સચવો",
+      "saving": "સચવાઈ રહ્યું છે...",
+      "changePassword": "પાસવર્ડ બદલો",
+      "deleteAccount": "એકાઉન્ટ દૂર કરો"
     },
     "password": {
-      "title": "एकाउन्ट पासवर्ड",
-      "description": "तमारुं एकाउन्ट सुरक्षित राखवा गमे त्यारे तमारो पासवर्ड अपडेट करो.",
-      "googleOnly": "तमे Google थी साइन इन करो छो. कोई पासवर्ड सेट नथी."
+      "title": "એકાઉન્ટ પાસવર્ડ",
+      "description": "તમારું એકાઉન્ટ સુરક્ષિત રાખવા ગમે ત્યારે તમારો પાસવર્ડ અપડેટ કરો.",
+      "googleOnly": "તમે Google થી સાઇન ઇન કરો છો. કોઈ પાસવર્ડ સેટ નથી."
     },
     "delete": {
-      "title": "आ एकाउन्ट काढो",
-      "description": "तमारी प्रोफाइल, तमे ऊमेरेली बधी मिलकतो अने बधो सत्र डेटा कायमी दूर थई जाय. आ पूर्ववत् थई शकतुं नथी."
+      "title": "આ એકાઉન્ટ કાઢો",
+      "description": "તમારી પ્રોફાઇલ, તમે ઊમેરેલી બધી મિલકતો અને બધો સત્ર ડેટા કાયમી દૂર થઈ જાય. આ પૂર્વવત્ થઈ શકતું નથી."
     },
     "signOutAll": {
-      "title": "बधां उपकरणोमांथी साइन आउट करो",
-      "description": "દरेक जग्याए — फोन, ટेब्लेट अने अन्य ब्राउझर — तमारो सत्र समाप्त करो. जो तमे तमारुं उपकरण शेर कर्युं होय अथवा एकने एक्सेस गुमाव्यो होय तो ઉपयोगी.",
-      "button": "दरेक जग्याए साइन आउट करो"
+      "title": "બધાં ઉપકરણોમાંથી સાઇન આઉટ કરો",
+      "description": "દરેક જગ્યાએ — ફોન, ટેબ્લેટ અને અન્ય બ્રાઉઝર — તમારો સત્ર સમાપ્ત કરો. જો તમે તમારું ઉપકરણ શેર કર્યું હોય અથવા એકને એક્સેસ ગુમાવ્યો હોય તો ઉપયોગી.",
+      "button": "દરેક જગ્યાએ સાઇન આઉટ કરો"
     },
     "roles": {
-      "BUYER": "ख़रीददार",
-      "REAL_ESTATE_AGENT": "रियल एस्टेट एजन्ट",
-      "LEGAL_REVIEWER": "कानूनी समीक्षक",
-      "FINANCIAL_INSTITUTION": "नांणाकीय संस्था",
-      "ADMIN": "प्रशासक"
+      "BUYER": "ખ઼રીદદાર",
+      "REAL_ESTATE_AGENT": "રિયલ એસ્ટેટ એજન્ટ",
+      "LEGAL_REVIEWER": "કાનૂની સમીક્ષક",
+      "FINANCIAL_INSTITUTION": "નાંણાકીય સંસ્થા",
+      "ADMIN": "પ્રશાસક"
     },
     "roleTaglines": {
-      "BUYER": "मिलकत ख़रीददार · डयू डिलिजन्स",
-      "REAL_ESTATE_AGENT": "रियल एस्टेट व्यावसायिक · बाजार निपुण",
-      "LEGAL_REVIEWER": "कानूनी सलाहकार · अनुपालन समीक्षा",
-      "FINANCIAL_INSTITUTION": "नांणाकीय संस्था · संपत्ति मूल्यांकन",
-      "ADMIN": "सिस्टम प्रशासक · पूर्ण प्रवेश"
+      "BUYER": "મિલકત ખ઼રીદદાર · ડયૂ ડિલિજન્સ",
+      "REAL_ESTATE_AGENT": "રિયલ એસ્ટેટ વ્યાવસાયિક · બાજાર નિપુણ",
+      "LEGAL_REVIEWER": "કાનૂની સલાહકાર · અનુપાલન સમીક્ષા",
+      "FINANCIAL_INSTITUTION": "નાંણાકીય સંસ્થા · સંપત્તિ મૂલ્યાંકન",
+      "ADMIN": "સિસ્ટમ પ્રશાસક · પૂર્ણ પ્રવેશ"
     },
     "authProvider": {
-      "LOCAL": "इमेइल + पासवर्ड",
+      "LOCAL": "ઇમેઇલ + પાસવર્ડ",
       "GOOGLE": "Google",
-      "LOCAL_AND_GOOGLE": "इमेइल + Google"
+      "LOCAL_AND_GOOGLE": "ઇમેઇલ + Google"
     },
-    "locked": "लॉक",
-    "verified": "ČKaसायेली {{role}}",
+    "locked": "લૉક",
+    "verified": "ČKaસાયેલી {{role}}",
     "errors": {
-      "nameValidation": "3–100 अक्षर, मात्र अक्षरो अने जग्या",
-      "phoneValidation": "10 अंक, 6–9 थी शरू",
-      "couldntLoad": "प्रोफाइल लोड करी शकायो नहीं",
-      "pleaseRefresh": "कृपा करीने पेज रिफ्रेश करो.",
-      "unableToLoad": "प्रोफाइल लोड करवामां असमर्थ. कृपा करीने पेज रिफ्रेश करो.",
-      "updateFailed": "अपडेट निष्फळ"
+      "nameValidation": "3–100 અક્ષર, માત્ર અક્ષરો અને જગ્યા",
+      "phoneValidation": "10 અંક, 6–9 થી શરૂ",
+      "couldntLoad": "પ્રોફાઇલ લોડ કરી શકાયો નહીં",
+      "pleaseRefresh": "કૃપા કરીને પેજ રિફ્રેશ કરો.",
+      "unableToLoad": "પ્રોફાઇલ લોડ કરવામાં અસમર્થ. કૃપા કરીને પેજ રિફ્રેશ કરો.",
+      "updateFailed": "અપડેટ નિષ્ફળ"
     },
     "success": {
-      "profileUpdated": "प्रोफाइल अपडेट थई",
-      "changesSaved": "तमारा फेरफारो सचवाई गया."
+      "profileUpdated": "પ્રોફાઇલ અપડેટ થઈ",
+      "changesSaved": "તમારા ફેરફારો સચવાઈ ગયા."
     }
   },
   "deleteAccount": {
-    "title": "एकाउन्ट काढो",
-    "subtitle": "आ क्रिया पूर्ववत् थई शकती नथी.",
-    "impactTitle": "नीचेनुं कायमी काढवामां आवशे:",
+    "title": "એકાઉન્ટ કાઢો",
+    "subtitle": "આ ક્રિયા પૂર્વવત્ થઈ શકતી નથી.",
+    "impactTitle": "નીચેનું કાયમી કાઢવામાં આવશે:",
     "impact": {
-      "account": "तमारुं एकाउन्ट अने प्रोफाइल",
-      "properties": "तमे ऊमेरेली बधी मिलकतो",
-      "sessions": "तमारो बधो सत्र डेटा"
+      "account": "તમારું એકાઉન્ટ અને પ્રોફાઇલ",
+      "properties": "તમે ઊમેરેલી બધી મિલકતો",
+      "sessions": "તમારો બધો સત્ર ડેટા"
     },
-    "passwordLabel": "तमारो पासवर्ड दाखल करो",
-    "passwordPlaceholder": "वर्तमान पासवर्ड",
-    "emailLabel": "पुष्टि माटे तमारो इमेइल टाइप करो",
-    "typeToConfirmPrefix": "टाइप करो",
-    "typeToConfirmSuffix": "पुष्टि करवा",
-    "deleteButton": "एकाउन्ट काढो",
+    "passwordLabel": "તમારો પાસવર્ડ દાખલ કરો",
+    "passwordPlaceholder": "વર્તમાન પાસવર્ડ",
+    "emailLabel": "પુષ્ટિ માટે તમારો ઇમેઇલ ટાઇપ કરો",
+    "typeToConfirmPrefix": "ટાઇપ કરો",
+    "typeToConfirmSuffix": "પુષ્ટિ કરવા",
+    "deleteButton": "એકાઉન્ટ કાઢો",
     "toasts": {
-      "confirmRequired": "पुष्टि जरूरी छे",
-      "typeExactly": "आ क्रिया पुष्टि करवा बरोबर DELETE टाइप करो.",
-      "passwordRequired": "पासवर्ड जरूरी छे",
-      "emailRequired": "इमेइल जरूरी छे",
-      "enterPasswordToConfirm": "पुष्टि करवा तमारो पासवर्ड दाखल करो.",
-      "enterEmailToConfirm": "पुष्टि करवा तमारो इमेइल दाखल करो.",
-      "accountDeleted": "एकाउन्ट काढवामां आव्युं",
-      "redirecting": "तमने थोडी वार मां रीडायरेक्ट करवामां आवशे.",
-      "couldNotDelete": "एकाउन्ट काढी शकायो नहीं",
-      "tryAgainMoment": "कृपा करीने थोडी वार बाद फरी प्रयास करो.",
-      "tryAgain": "कृपा करीने फरी प्रयास करो."
+      "confirmRequired": "પુષ્ટિ જરૂરી છે",
+      "typeExactly": "આ ક્રિયા પુષ્ટિ કરવા બરોબર DELETE ટાઇપ કરો.",
+      "passwordRequired": "પાસવર્ડ જરૂરી છે",
+      "emailRequired": "ઇમેઇલ જરૂરી છે",
+      "enterPasswordToConfirm": "પુષ્ટિ કરવા તમારો પાસવર્ડ દાખલ કરો.",
+      "enterEmailToConfirm": "પુષ્ટિ કરવા તમારો ઇમેઇલ દાખલ કરો.",
+      "accountDeleted": "એકાઉન્ટ કાઢવામાં આવ્યું",
+      "redirecting": "તમને થોડી વાર માં રીડાયરેક્ટ કરવામાં આવશે.",
+      "couldNotDelete": "એકાઉન્ટ કાઢી શકાયો નહીં",
+      "tryAgainMoment": "કૃપા કરીને થોડી વાર બાદ ફરી પ્રયાસ કરો.",
+      "tryAgain": "કૃપા કરીને ફરી પ્રયાસ કરો."
     }
   },
   "changePassword": {
-    "title": "पासवर्ड बदलो",
-    "subtitle": "तमारो एकाउन्ट पासवर्ड अपडेट करो",
-    "currentLabel": "वर्तमान पासवर्ड",
-    "currentPlaceholder": "वर्तमान पासवर्ड दाखल करो",
-    "newLabel": "नवो पासवर्ड",
-    "newPlaceholder": "ऑछामां ऑछा 8 अक्षर",
-    "confirmLabel": "नवो पासवर्ड पुष्टि करो",
-    "confirmPlaceholder": "नवो पासवर्ड फरी दाखल करो",
-    "submit": "पासवर्ड बदलो",
-    "saving": "सचवाई रह्युं छे...",
+    "title": "પાસવર્ડ બદલો",
+    "subtitle": "તમારો એકાઉન્ટ પાસવર્ડ અપડેટ કરો",
+    "currentLabel": "વર્તમાન પાસવર્ડ",
+    "currentPlaceholder": "વર્તમાન પાસવર્ડ દાખલ કરો",
+    "newLabel": "નવો પાસવર્ડ",
+    "newPlaceholder": "ઑછામાં ઑછા 8 અક્ષર",
+    "confirmLabel": "નવો પાસવર્ડ પુષ્ટિ કરો",
+    "confirmPlaceholder": "નવો પાસવર્ડ ફરી દાખલ કરો",
+    "submit": "પાસવર્ડ બદલો",
+    "saving": "સચવાઈ રહ્યું છે...",
     "errors": {
-      "currentRequired": "वर्तमान पासवर्ड जरूरी छे",
-      "newRequired": "नवो पासवर्ड जरूरी छे"
+      "currentRequired": "વર્તમાન પાસવર્ડ જરૂરી છે",
+      "newRequired": "નવો પાસવર્ડ જરૂરી છે"
     },
     "toasts": {
-      "samePassword": "एकसरखो पासवर्ड",
-      "samePasswordDesc": "नवो पासवर्ड तमारा वर्तमान पासवर्डथी अलग होवो जोईए.",
-      "success": "पासवर्ड बदलायो",
-      "successDesc": "तमे तमारा नवा पासवर्डथी साइन इन करी शकशो.",
-      "failed": "फेरफार निष्फळ"
+      "samePassword": "એકસરખો પાસવર્ડ",
+      "samePasswordDesc": "નવો પાસવર્ડ તમારા વર્તમાન પાસવર્ડથી અલગ હોવો જોઈએ.",
+      "success": "પાસવર્ડ બદલાયો",
+      "successDesc": "તમે તમારા નવા પાસવર્ડથી સાઇન ઇન કરી શકશો.",
+      "failed": "ફેરફાર નિષ્ફળ"
     }
   },
   "signOutAll": {
-    "title": "बधां उपकरणोमांथी साइन आउट करशो?",
-    "subtitle": "आ तमारा आ एकाउन्टथी हाल साइन इन करेलां दरेक उपकरण पर तमारो सत्र समाप्त करशे.",
-    "confirmButton": "हां, दरेक जग्याए साइन आउट करो",
-    "processing": "दरेक जग्याए साइन आउट थई रह्या छे…",
-    "tipEsc": "टिप: दबाओ",
-    "tipEscSuffix": "रद्द करवा",
-    "useIfPrefix": "जो उपयोग करो:",
-    "useIfBody": "तमारुं एकाउन्ट ख़तरामां होय, तमे तमारुं उपकरण शेर कर्युं होय, अथवा ক्यांक लॉग आउट करवानुं भूली गया होय.",
+    "title": "બધાં ઉપકરણોમાંથી સાઇન આઉટ કરશો?",
+    "subtitle": "આ તમારા આ એકાઉન્ટથી હાલ સાઇન ઇન કરેલાં દરેક ઉપકરણ પર તમારો સત્ર સમાપ્ત કરશે.",
+    "confirmButton": "હાં, દરેક જગ્યાએ સાઇન આઉટ કરો",
+    "processing": "દરેક જગ્યાએ સાઇન આઉટ થઈ રહ્યા છે…",
+    "tipEsc": "ટિપ: દબાઓ",
+    "tipEscSuffix": "રદ્દ કરવા",
+    "useIfPrefix": "જો ઉપયોગ કરો:",
+    "useIfBody": "તમારું એકાઉન્ટ ખતરામાં હોય, તમે તમારું ઉપકરણ શેર કર્યું હોય, અથવા ક્યાંક લૉગ આઉટ કરવાનું ભૂલી ગયા હોય.",
     "impact": {
       "endSessions": {
-        "title": "बधा सक्रिय सत्रो समाप्त थशे",
-        "description": "फोन, ટेब्लेट, अन्य ब्राउझर — दरेक जग्याए जयां तमे साइन इन छो"
+        "title": "બધા સક્રિય સત્રો સમાપ્ત થશે",
+        "description": "ફોન, ટેબ્લેટ, અન્ય બ્રાઉઝર — દરેક જગ્યાએ જયાં તમે સાઇન ઇન છો"
       },
       "logoutHere": {
-        "title": "तमे अहींथी पण लॉग आउट थशो",
-        "description": "ĉalु राखवा तमारे फरी साइन इन करवुं पडशे"
+        "title": "તમે અહીંથી પણ લૉગ આઉટ થશો",
+        "description": "ĉalુ રાખવા તમારે ફરી સાઇન ઇન કરવું પડશે"
       }
     },
     "toasts": {
-      "signedOutTitle": "दरेक जग्याए साइन आउट थयां",
-      "signedOutDesc": "तमारा बधा सक्रिय सत्रो समाप्त थई गया.",
-      "failedTitle": "साइन आउट करी शकायो नहीं"
+      "signedOutTitle": "દરેક જગ્યાએ સાઇન આઉટ થયાં",
+      "signedOutDesc": "તમારા બધા સક્રિય સત્રો સમાપ્ત થઈ ગયા.",
+      "failedTitle": "સાઇન આઉટ કરી શકાયો નહીં"
     }
   },
   "avatar": {
     "aria": {
-      "changePhoto": "प्रोफाइल फोटो बदलो",
-      "photoOptions": "फोटो विकल्पो"
+      "changePhoto": "પ્રોફાઇલ ફોટો બદલો",
+      "photoOptions": "ફોટો વિકલ્પો"
     },
     "menu": {
-      "upload": "फोटो અपलोड करो",
-      "change": "फोटो बदलो",
-      "remove": "फोटो दूर करो",
-      "fileHint": "JPG, PNG, WebP · वधुमां वधु 5 MB"
+      "upload": "ફોટો અપલોડ કરો",
+      "change": "ફોટો બદલો",
+      "remove": "ફોટો દૂર કરો",
+      "fileHint": "JPG, PNG, WebP · વધુમાં વધુ 5 MB"
     },
     "preview": {
-      "title": "Preview अने अपलोड",
+      "title": "Preview અને અપલોડ",
       "alt": "Preview",
       "fileSizeKB": "{{size}} KB",
-      "upload": "फोटो अपलोड करो",
-      "uploading": "अपलोड थई रह्युं छे..."
+      "upload": "ફોટો અપલોડ કરો",
+      "uploading": "અપલોડ થઈ રહ્યું છે..."
     },
     "toasts": {
-      "invalidFile": "अमान्य फाइल",
-      "photoUpdated": "प्रोफाइल फोटो अपडेट थयो",
-      "uploadFailed": "अपलोड निष्फळ",
-      "photoRemoved": "प्रोफाइल फोटो दूर थयो",
-      "removeFailed": "फोटो दूर करवामां निष्फळ"
+      "invalidFile": "અમાન્ય ફાઇલ",
+      "photoUpdated": "પ્રોફાઇલ ફોટો અપડેટ થયો",
+      "uploadFailed": "અપલોડ નિષ્ફળ",
+      "photoRemoved": "પ્રોફાઇલ ફોટો દૂર થયો",
+      "removeFailed": "ફોટો દૂર કરવામાં નિષ્ફળ"
     }
   },
   "settings": {
-    "title": "सेटिंग्स",
+    "title": "સેટિંગ્સ",
     "language": {
-      "sectionTitle": "ভाषा",
-      "sectionSubtitle": "ઇन्टरफेस माटे तमारी पसंदीदा भाषा पसंद करो.",
-      "label": "ঈन्टरफेस भाषा",
-      "selectPlaceholder": "भाषा पसंद करो",
-      "saved": "ভाषा अपडेट थई",
-      "savedDescription": "ईन्टरफेस भाषा {{language}} मां बदलाई गई."
+      "sectionTitle": "ભાષા",
+      "sectionSubtitle": "ઇન્ટરફેસ માટે તમારી પસંદીદા ભાષા પસંદ કરો.",
+      "label": "ઈન્ટરફેસ ભાષા",
+      "selectPlaceholder": "ભાષા પસંદ કરો",
+      "saved": "ભાષા અપડેટ થઈ",
+      "savedDescription": "ઈન્ટરફેસ ભાષા {{language}} માં બદલાઈ ગઈ."
     }
   },
   "commandPalette": {
-    "searchPlaceholder": "पेजो, मिलकतो अथवा क्रियाओ शोधो...",
-    "ariaLabel": "Command palette शोध",
-    "searchingProperties": "मिलकतो शोधी रह्या छे...",
-    "clear": "साफ करो",
-    "recentSearchLabel": "ताजेतरनी शोध",
+    "searchPlaceholder": "પેજો, મિલકતો અથવા ક્રિયાઓ શોધો...",
+    "ariaLabel": "Command palette શોધ",
+    "searchingProperties": "મિલકતો શોધી રહ્યા છે...",
+    "clear": "સાફ કરો",
+    "recentSearchLabel": "તાજેતરની શોધ",
     "sections": {
-      "recent": "ताजेतरनी",
-      "pages": "पेजो",
-      "properties": "मिलकतो",
-      "propertiesSubtitle": "डेटाबेसमांथी जीवंत",
-      "actions": "क्रियाओ"
+      "recent": "તાજેતરની",
+      "pages": "પેજો",
+      "properties": "મિલકતો",
+      "propertiesSubtitle": "ડેટાબેસમાંથી જીવંત",
+      "actions": "ક્રિયાઓ"
     },
     "empty": {
-      "title": "\u201C{{query}}\u201D माटे कोई परिणाम नहीं",
-      "hint": "पेज नाम, मिलकत सरनामुं अथवा क्रिया माटे शोधवानो प्रयास करो"
+      "title": "“{{query}}” માટે કોઈ પરિણામ નહીં",
+      "hint": "પેજ નામ, મિલકત સરનામું અથવા ક્રિયા માટે શોધવાનો પ્રયાસ કરો"
     },
     "kbd": {
-      "navigate": "नेविगेट",
-      "select": "पसंद करो",
-      "close": "बंध करो",
+      "navigate": "નેવિગેટ",
+      "select": "પસંદ કરો",
+      "close": "બંધ કરો",
       "esc": "esc"
     },
     "pages": {
-      "dashboard": { "label": "ড৅शबोर्ड", "description": "पोर्टफोलियो अवलोकन अने KPIs" },
-      "search": { "label": "मिलकत शोध", "description": "मिलकतो शोधो अने ČKaसो" },
-      "diligence": { "label": "डयू डिलिजन्स", "description": "गहन ČKaसणी वर्कफ्लो" },
-      "risk": { "label": "जोखम मूल्यांकन", "description": "जोखम स्कोर अने चेतावनीओ" },
-      "compare": { "label": "मिलकत सरखामणी", "description": "बाजु-बाजु विश्लेषण" },
-      "reports": { "label": "अहेवालो", "description": "तैयार PDF अहेवालो" },
-      "notifications": { "label": "सूचनाओ", "description": "चेतावनीओ अने प्रवृत्ति फीड" },
-      "audit": { "label": "ऑडिट लॉग्स", "description": "दरेक क्रिया, टाइमस्टॅम्प" },
-      "profile": { "label": "मारी प्रोफाइल", "description": "एकाउन्ट अने प्राधान्यताओ" }
+      "dashboard": {
+        "label": "ડૅશબોર્ડ",
+        "description": "પોર્ટફોલિયો અવલોકન અને KPIs"
+      },
+      "search": {
+        "label": "મિલકત શોધ",
+        "description": "મિલકતો શોધો અને ČKaસો"
+      },
+      "diligence": {
+        "label": "ડયૂ ડિલિજન્સ",
+        "description": "ગહન ČKaસણી વર્કફ્લો"
+      },
+      "risk": {
+        "label": "જોખમ મૂલ્યાંકન",
+        "description": "જોખમ સ્કોર અને ચેતાવનીઓ"
+      },
+      "compare": {
+        "label": "મિલકત સરખામણી",
+        "description": "બાજુ-બાજુ વિશ્લેષણ"
+      },
+      "reports": {
+        "label": "અહેવાલો",
+        "description": "તૈયાર PDF અહેવાલો"
+      },
+      "notifications": {
+        "label": "સૂચનાઓ",
+        "description": "ચેતાવનીઓ અને પ્રવૃત્તિ ફીડ"
+      },
+      "audit": {
+        "label": "ઑડિટ લૉગ્સ",
+        "description": "દરેક ક્રિયા, ટાઇમસ્ટૅમ્પ"
+      },
+      "profile": {
+        "label": "મારી પ્રોફાઇલ",
+        "description": "એકાઉન્ટ અને પ્રાધાન્યતાઓ"
+      }
     },
     "actions": {
-      "addProperty": { "label": "नवी मिलकत ऊमेरो", "description": "नवुं लिस्टिंग नोंधो" },
-      "logout": { "label": "लॉग आउट", "description": "तमारो सत्र समाप्त करो" }
+      "addProperty": {
+        "label": "નવી મિલકત ઊમેરો",
+        "description": "નવું લિસ્ટિંગ નોંધો"
+      },
+      "logout": {
+        "label": "લૉગ આઉટ",
+        "description": "તમારો સત્ર સમાપ્ત કરો"
+      }
     }
   },
   "navbar": {
-    "toggleSidebar": "सायडबार टॉगल करो",
-    "openCommandPalette": "Command palette खोलो",
-    "userMenu": "वापरकर्ता मेनु",
-    "signedIn": "साइन इन छे",
-    "myProfile": "मारी प्रोफाइल",
-    "logOut": "लॉग आउट"
+    "toggleSidebar": "સાયડબાર ટૉગલ કરો",
+    "openCommandPalette": "Command palette ખોલો",
+    "userMenu": "વાપરકર્તા મેનુ",
+    "signedIn": "સાઇન ઇન છે",
+    "myProfile": "મારી પ્રોફાઇલ",
+    "logOut": "લૉગ આઉટ"
   },
   "emptyState": {
-    "defaultTitle": "हजु अहीं कंई नथी",
-    "defaultDescription": "तमारुं पहेलुं आइटम ऊमेरीने शरू करो."
+    "defaultTitle": "હજુ અહીં કંઈ નથી",
+    "defaultDescription": "તમારું પહેલું આઇટમ ઊમેરીને શરૂ કરો."
   },
   "support": {
     "hero": {
-      "title": "आपणे केवी रीते मदद करी शकीए?",
-      "subtitle": "सामान्य प्रश्नोना जवाबो अने अमारा सुधी पहोंचवानी सीधी रीतो. जो तमने जे जोईए ते मळे नहीं, तो अमने इमेइल करो अने अमे व्यावसायिक दिवसोमां 48 कलाकमां जवाब आपीशुं.",
-      "searchPlaceholder": "लेखो, प्रश्नो, सुविधाओ शोधो...",
-      "statusOperational": "बधी सिस्टम चालु छे"
+      "title": "આપણે કેવી રીતે મદદ કરી શકીએ?",
+      "subtitle": "સામાન્ય પ્રશ્નોના જવાબો અને અમારા સુધી પહોંચવાની સીધી રીતો. જો તમને જે જોઈએ તે મળે નહીં, તો અમને ઇમેઇલ કરો અને અમે વ્યાવસાયિક દિવસોમાં 48 કલાકમાં જવાબ આપીશું.",
+      "searchPlaceholder": "લેખો, પ્રશ્નો, સુવિધાઓ શોધો...",
+      "statusOperational": "બધી સિસ્ટમ ચાલુ છે"
     },
     "contact": {
-      "eyebrow": "संपर्क करो",
-      "title": "सीधो संपर्क करो",
-      "subtitle": "सौथी योग्य विकल्प पसंद करो — क्लिक करवाथी पूर्व-ভरेली विषय रेखा साथे तमारो इमेइल ক্লायन्ट खुलशे.",
-      "openEmail": "इमेइल खोलो",
+      "eyebrow": "સંપર્ક કરો",
+      "title": "સીધો સંપર્ક કરો",
+      "subtitle": "સૌથી યોગ્ય વિકલ્પ પસંદ કરો — ક્લિક કરવાથી પૂર્વ-ભરેલી વિષય રેખા સાથે તમારો ઇમેઇલ ક્લાયન્ટ ખુલશે.",
+      "openEmail": "ઇમેઇલ ખોલો",
       "general": {
-        "title": "सामान्य प्रश्न",
-        "description": "प्रोड्क्ट सहाय, एकाउन्ट प्रश्नो, अथवा जरूरी न होय तेवुं अन्य कंई.",
-        "subject": "सहाय विनंती — Due Diligence Platform",
-        "body": "हाय टीम,\n\nमारो एक प्रश्न छे:\n\n"
+        "title": "સામાન્ય પ્રશ્ન",
+        "description": "પ્રોડ્ક્ટ સહાય, એકાઉન્ટ પ્રશ્નો, અથવા જરૂરી ન હોય તેવું અન્ય કંઈ.",
+        "subject": "સહાય વિનંતી — Due Diligence Platform",
+        "body": "હાય ટીમ,\n\nમારો એક પ્રશ્ન છે:\n\n"
       },
       "bug": {
-        "title": "ভूल नोंधाओ",
-        "description": "कंई अपेक्षा प्रमाणे काम नथी करतुं? तमे शुं जोयुं अने शुं जोवानी अपेक्षा हती ते अमने जणावो.",
-        "subject": "ভूल अहेवाल — Due Diligence Platform",
-        "body": "में शुं कर्युं:\n\nमारी अपेक्षा:\n\nवास्तवमां शुं थयुं:\n\nब्राउझर अने आवृत्ति:\n\n"
+        "title": "ભૂલ નોંધાઓ",
+        "description": "કંઈ અપેક્ષા પ્રમાણે કામ નથી કરતું? તમે શું જોયું અને શું જોવાની અપેક્ષા હતી તે અમને જણાવો.",
+        "subject": "ભૂલ અહેવાલ — Due Diligence Platform",
+        "body": "મેં શું કર્યું:\n\nમારી અપેક્ષા:\n\nવાસ્તવમાં શું થયું:\n\nબ્રાઉઝર અને આવૃત્તિ:\n\n"
       },
       "feature": {
-        "title": "सुविधा विनंती",
-        "description": "एवो विचार छे जे प्लॅटफॉर्मने सुधारशे? अमे दरेक संदेश वांचीए छीए.",
-        "subject": "सुविधा विनंती — Due Diligence Platform",
-        "body": "मारे जोवुं गमशे:\n\nआ शा माटे मदद करशे:\n\n"
+        "title": "સુવિધા વિનંતી",
+        "description": "એવો વિચાર છે જે પ્લૅટફૉર્મને સુધારશે? અમે દરેક સંદેશ વાંચીએ છીએ.",
+        "subject": "સુવિધા વિનંતી — Due Diligence Platform",
+        "body": "મારે જોવું ગમશે:\n\nઆ શા માટે મદદ કરશે:\n\n"
       }
     },
     "faq": {
-      "eyebrow": "ज्ञान आधार",
-      "title": "वारंवार पूछातां प्रश्नो",
-      "allCategory": "बधा",
-      "articleCount_one": "{{count}} लेख",
-      "articleCount_other": "{{count}} लेखो",
+      "eyebrow": "જ્ઞાન આધાર",
+      "title": "વારંવાર પૂછાતાં પ્રશ્નો",
+      "allCategory": "બધા",
+      "articleCount_one": "{{count}} લેખ",
+      "articleCount_other": "{{count}} લેખો",
       "noResults": {
-        "title": "तमारी शोध साथे कोई लेख मेळ खातो नथी",
-        "hint": "अलग कीवर्ड प्रयास करो अथवा बधा लेखो जोवा फिल्टर साफ करो.",
-        "emailButton": "અमने आ प्रश्न इमेइल करो",
-        "emailSubjectPrefix": "सहाय:",
-        "emailSubjectFallback": "FAQ मां ना होय तेवो प्रश्न"
+        "title": "તમારી શોધ સાથે કોઈ લેખ મેળ ખાતો નથી",
+        "hint": "અલગ કીવર્ડ પ્રયાસ કરો અથવા બધા લેખો જોવા ફિલ્ટર સાફ કરો.",
+        "emailButton": "અમને આ પ્રશ્ન ઇમેઇલ કરો",
+        "emailSubjectPrefix": "સહાય:",
+        "emailSubjectFallback": "FAQ માં ના હોય તેવો પ્રશ્ન"
       }
     },
     "response": {
-      "eyebrow": "जवाब समय",
-      "headline": "48 कलाकमां",
-      "description": "अमे व्यावसायिक दिवसो (सो-शु) पर इमेइलनो जवाब आपीए छीए. जटिल समस्याओमां वधारे समय लागी शके — अमे हमेशां पहेलां पहोंचना स्वीकार करीए छीए."
+      "eyebrow": "જવાબ સમય",
+      "headline": "48 કલાકમાં",
+      "description": "અમે વ્યાવસાયિક દિવસો (સો-શુ) પર ઇમેઇલનો જવાબ આપીએ છીએ. જટિલ સમસ્યાઓમાં વધારે સમય લાગી શકે — અમે હમેશાં પહેલાં પહોંચના સ્વીકાર કરીએ છીએ."
     },
     "direct": {
-      "eyebrow": "सीधो इमेइल",
-      "headline": "टीमनो संपर्क करो"
+      "eyebrow": "સીધો ઇમેઇલ",
+      "headline": "ટીમનો સંપર્ક કરો"
     },
     "related": {
-      "eyebrow": "संबंधित",
-      "title": "वधारे संसाधनो",
+      "eyebrow": "સંબંધિત",
+      "title": "વધારે સંસાધનો",
       "security": {
-        "title": "सुरक्षा",
-        "description": "अमे तमारो डेटा केवी रीते સुरक्षित रखीए छीए — शुं बन्युं छे अने शुं नियोजित छे तेनो पूर्ण ख़ुलासो."
+        "title": "સુરક્ષા",
+        "description": "અમે તમારો ડેટા કેવી રીતે સુરક્ષિત રખીએ છીએ — શું બન્યું છે અને શું નિયોજિત છે તેનો પૂર્ણ ખ઼ુલાસો."
       },
       "source": {
-        "title": "स्रोत कोड",
-        "description": "GitHub पर ओपन-सोर्स. समस्याओ नोंधाओ, कोड वांचो, अथवा योगदान करो."
+        "title": "સ્રોત કોડ",
+        "description": "GitHub પર ઓપન-સોર્સ. સમસ્યાઓ નોંધાઓ, કોડ વાંચો, અથવા યોગદાન કરો."
       }
     },
     "footer": {
-      "note": "आ सहाय पेज जीवंत चेट, टिकट सिस्टम, अथवा स्वचालित हेल्पडेस्क नथी. आ प्लॅटफॉर्म बनावनारी टीम सुधीनी सीधी रेखा छे. अमे दरेक इमेइल वांचीए छीए अने व्यक्तिगत रूपे जवाब आपीए छीए."
+      "note": "આ સહાય પેજ જીવંત ચેટ, ટિકટ સિસ્ટમ, અથવા સ્વચાલિત હેલ્પડેસ્ક નથી. આ પ્લૅટફૉર્મ બનાવનારી ટીમ સુધીની સીધી રેખા છે. અમે દરેક ઇમેઇલ વાંચીએ છીએ અને વ્યક્તિગત રૂપે જવાબ આપીએ છીએ."
     }
   },
   "savedComparisons": {
-    "pageTitle": "सचवेली सरखामणीओ | Real Estate Due Diligence Agent",
-    "title": "सचवेली सरखामणीओ",
-    "countLabel_one": "{{count}} सचवेली सरखामणी",
-    "countLabel_other": "{{count}} सचवेली सरखामणीओ",
-    "searchPlaceholder": "नाम अथवा नोंधो द्वारा शोधो...",
-    "emptyTitle": "हजु कोई सचवेली सरखामणी नथी",
-    "emptyDesc": "मिलकत सरखामणीमां जाओ, 2–3 मिलकतो पसंद करो, अने \"सरखामणी सचवो\" क्लिक करो.",
-    "startComparing": "मिलकतो सरखावानुं शरू करो",
-    "noResults": "\"{{query}}\" माटे कोई परिणाम नहीं",
-    "propertyCount_one": "{{count}} मिलकत",
-    "propertyCount_other": "{{count}} मिलकतो",
-    "savedOn": "{{date}} ए सचवायी",
-    "updatedOn": "{{date}} ए अपडेट थई",
-    "deleteAria": "{{name}} काढो",
-    "loadComparison": "सरखामणी लोड करो"
+    "pageTitle": "સચવેલી સરખામણીઓ | Real Estate Due Diligence Agent",
+    "title": "સચવેલી સરખામણીઓ",
+    "countLabel_one": "{{count}} સચવેલી સરખામણી",
+    "countLabel_other": "{{count}} સચવેલી સરખામણીઓ",
+    "searchPlaceholder": "નામ અથવા નોંધો દ્વારા શોધો...",
+    "emptyTitle": "હજુ કોઈ સચવેલી સરખામણી નથી",
+    "emptyDesc": "મિલકત સરખામણીમાં જાઓ, 2–3 મિલકતો પસંદ કરો, અને \"સરખામણી સચવો\" ક્લિક કરો.",
+    "startComparing": "મિલકતો સરખાવાનું શરૂ કરો",
+    "noResults": "\"{{query}}\" માટે કોઈ પરિણામ નહીં",
+    "propertyCount_one": "{{count}} મિલકત",
+    "propertyCount_other": "{{count}} મિલકતો",
+    "savedOn": "{{date}} એ સચવાયી",
+    "updatedOn": "{{date}} એ અપડેટ થઈ",
+    "deleteAria": "{{name}} કાઢો",
+    "loadComparison": "સરખામણી લોડ કરો"
   },
   "savedSheet": {
-    "ariaLabel": "सचवेली सरखामणीओ",
-    "savedCount_one": "{{count}} सचवेली",
-    "savedCount_other": "{{count}} सचवेली",
-    "loading": "सचवेली सरखामणीओ लोड थई रही छे...",
-    "emptyHint": "मिलकतो सरखावो अने तेमने अहीं राखवा \"सरखामणी सचवो\" क्लिक करो.",
-    "load": "लोड करो",
-    "viewAll": "बधी सचवेली सरखामणीओ जुओ →"
+    "ariaLabel": "સચવેલી સરખામણીઓ",
+    "savedCount_one": "{{count}} સચવેલી",
+    "savedCount_other": "{{count}} સચવેલી",
+    "loading": "સચવેલી સરખામણીઓ લોડ થઈ રહી છે...",
+    "emptyHint": "મિલકતો સરખાવો અને તેમને અહીં રાખવા \"સરખામણી સચવો\" ક્લિક કરો.",
+    "load": "લોડ કરો",
+    "viewAll": "બધી સચવેલી સરખામણીઓ જુઓ →"
   },
   "marketChart": {
-    "title": "बाजार मूल्य ट्रेन्ड",
-    "subtitle": "6-मासनो અनुमानित ट्रेन्ड · मात्र सांकेतिक",
-    "estimatedBadge": "अनुमानित डेटा",
-    "propertyLabel": "मिलकत {{letter}}"
+    "title": "બાજાર મૂલ્ય ટ્રેન્ડ",
+    "subtitle": "6-માસનો અનુમાનિત ટ્રેન્ડ · માત્ર સાંકેતિક",
+    "estimatedBadge": "અનુમાનિત ડેટા",
+    "propertyLabel": "મિલકત {{letter}}"
   },
   "common": {
-    "loading": "लोड थई रह्युं छे...",
-    "error": "कंई ভूल थई",
-    "retry": "फरी प्रयास करो",
-    "save": "सचवो",
-    "cancel": "रद्द करो",
-    "delete": "काढो",
-    "edit": "संपादित करो",
-    "close": "बंध करो",
-    "back": "पाछा",
-    "next": "आगळ",
-    "confirm": "पुष्टि करो",
-    "yes": "हां",
-    "no": "ना",
-    "search": "शोधो",
-    "filter": "फिल्टर",
-    "clear": "साफ करो",
-    "clearAll": "बधुं साफ करो",
-    "apply": "लागु करो",
-    "refresh": "ताजुं करो",
-    "download": "डाउनलोड करो",
-    "upload": "अपलोड करो",
-    "submit": "मोकलो",
-    "noData": "कोई डेटा उपलब्ध नथी",
-    "justNow": "अत्यारे",
-    "minutesAgo": "{{n}}m पहेलां",
-    "hoursAgo": "{{n}}h पहेलां",
-    "daysAgo": "{{n}}d पहेलां",
-    "secondsAgo": "{{n}}s पहेलां",
-    "syncedAgo": "सिंक थयेली",
+    "loading": "લોડ થઈ રહ્યું છે...",
+    "error": "કંઈ ભૂલ થઈ",
+    "retry": "ફરી પ્રયાસ કરો",
+    "save": "સચવો",
+    "cancel": "રદ્દ કરો",
+    "delete": "કાઢો",
+    "edit": "સંપાદિત કરો",
+    "close": "બંધ કરો",
+    "back": "પાછા",
+    "next": "આગળ",
+    "confirm": "પુષ્ટિ કરો",
+    "yes": "હાં",
+    "no": "ના",
+    "search": "શોધો",
+    "filter": "ફિલ્ટર",
+    "clear": "સાફ કરો",
+    "clearAll": "બધું સાફ કરો",
+    "apply": "લાગુ કરો",
+    "refresh": "તાજું કરો",
+    "download": "ડાઉનલોડ કરો",
+    "upload": "અપલોડ કરો",
+    "submit": "મોકલો",
+    "noData": "કોઈ ડેટા ઉપલબ્ધ નથી",
+    "justNow": "અત્યારે",
+    "minutesAgo": "{{n}}m પહેલાં",
+    "hoursAgo": "{{n}}h પહેલાં",
+    "daysAgo": "{{n}}d પહેલાં",
+    "secondsAgo": "{{n}}s પહેલાં",
+    "syncedAgo": "સિંક થયેલી",
     "breadcrumbLabel": "Breadcrumb",
     "breadcrumbs": {
-      "details": "विगतो"
+      "details": "વિગતો"
     }
   },
   "pages": {
     "dueDiligence": {
-      "title": "ड्युू डिलिजन्स ड৅শबो়र्ड टूंक ही आवशे",
-      "description": "तमारी बधी मिलकतोनी ड्युू डिलिजन्स स्थितिनुं एकत्रित दृश्य अहीं दर्शाशे."
+      "title": "ડ્યુૂ ડિલિજન્સ ડૅશબોર્ડ ટૂંક સમયમાં આવશે",
+      "description": "તમારી બધી મિલકતોની ડ્યુૂ ડિલિજન્સ સ્થિતિનું એકત્રિત દૃશ્ય અહીં દર્શાશે."
     },
     "riskAssessment": {
-      "title": "जोखम मूल्यांकन अवलोकन टूंक ही आवशे",
-      "description": "पोर्टफोलियो-व्यापी जोखम विश्लेषण अने प्राथमिकता क्रिया आइटमो अहीं दर्शाशे."
+      "title": "જોખમ મૂલ્યાંકન અવલોકન ટૂંક સમયમાં આવશે",
+      "description": "પોર્ટફોલિયો-વ્યાપી જોખમ વિશ્લેષણ અને પ્રાથમિકતા ક્રિયા આઇટમો અહીં દર્શાશે."
     },
     "reports": {
-      "title": "अहेवालो टूंक ही आवशे",
-      "description": "पोर्टफोलियो अहेवालो, जोखम सारांश अने ड्युू डिलिजन्स दस्तावेजो तैयार करो. आ सुविधा विकास हेठळ छे."
+      "title": "અહેવાલો ટૂંક સમયમાં આવશે",
+      "description": "પોર્ટફોલિયો અહેવાલો, જોખમ સારાંશ અને ડ્યુૂ ડિલિજન્સ દસ્તાવેજો તૈયાર કરો. આ સુવિધા વિકાસ હેઠળ છે."
     },
     "notifications": {
-      "title": "तमे बधे अद्यतन छो",
-      "description": "कोई नवी सूचना नथी. जयारे मिलकतोने ध्यान आपवानी जरूर पडशे अथवा अहेवालो तैयार थशे ત्यारे अमे જANAvIShUM."
+      "title": "તમે બધે અદ્યતન છો",
+      "description": "કોઈ નવી સૂચના નથી. જયારે મિલકતોને ધ્યાન આપવાની જરૂર પડશે અથવા અહેવાલો તૈયાર થશે ત્યારે અમે જANAvIShUM."
     },
     "auditLogs": {
-      "title": "हजु कोई ऑडिट नोंध नथी",
-      "description": "अनुपालन अने सुरक्षा समीक्षा माटे सिस्टम क्रियाओ अने वापरकर्ता प्रवृत्ति अहीं ट्रेक थशे."
+      "title": "હજુ કોઈ ઑડિટ નોંધ નથી",
+      "description": "અનુપાલન અને સુરક્ષા સમીક્ષા માટે સિસ્ટમ ક્રિયાઓ અને વાપરકર્તા પ્રવૃત્તિ અહીં ટ્રેક થશે."
     }
   },
   "completeProfile": {
-  "title": "એક વધુ પગલું",
-  "subtitle": "તમારા અનુભવને વ્યક્તિગત બનાવવા માટે અમને તમારા વિશે થોડું જણાવો.",
-  "signedInAs": "{{name}} તરીકે સાઇન ઇન કર્યું",
-  "roleLabel": "હું એક છું...",
-  "phoneLabel": "ફોન નંબર",
-  "phonePlaceholder": "98765 43210",
-  "phoneHelp": "અમે તેનો ઉપયોગ ફક્ત મહત્વપૂર્ણ એકાઉન્ટ સૂચનાઓ માટે કરીશું.",
-  "submit": "સેટઅપ પૂર્ણ કરો",
-  "creating": "તમારું એકાઉન્ટ બનાવવામાં આવી રહ્યું છે…",
-  "terms": "ચાલુ રાખીને, તમે અમારી સેવાની શરતો અને ગોપનીયતા નીતિ સાથે સંમત થાઓ છો.",
-  "notYou": "તમે નથી?",
-  "signOut": "સાઇન આઉટ",
-  "signOutAria": "સાઇન આઉટ કરો અને બંધ કરો",
-  "signOutTitle": "સાઇન આઉટ",
-  "confirmSignOut": "સાઇન આઉટ કરીને પાછા જવું? તમારી પ્રગતિ ખોવાઈ જશે.",
-  "defaultName": "મિત્ર",
-  "roles": {
-    "buyer": {
-      "label": "ખરીદનાર / વ્યક્તિ",
-      "description": "મિલકતો ખરીદવા માંગે છે"
+    "title": "એક વધુ પગલું",
+    "subtitle": "તમારા અનુભવને વ્યક્તિગત બનાવવા માટે અમને તમારા વિશે થોડું જણાવો.",
+    "signedInAs": "{{name}} તરીકે સાઇન ઇન કર્યું",
+    "roleLabel": "હું એક છું...",
+    "phoneLabel": "ફોન નંબર",
+    "phonePlaceholder": "98765 43210",
+    "phoneHelp": "અમે તેનો ઉપયોગ ફક્ત મહત્વપૂર્ણ એકાઉન્ટ સૂચનાઓ માટે કરીશું.",
+    "submit": "સેટઅપ પૂર્ણ કરો",
+    "creating": "તમારું એકાઉન્ટ બનાવવામાં આવી રહ્યું છે…",
+    "terms": "ચાલુ રાખીને, તમે અમારી સેવાની શરતો અને ગોપનીયતા નીતિ સાથે સંમત થાઓ છો.",
+    "notYou": "તમે નથી?",
+    "signOut": "સાઇન આઉટ",
+    "signOutAria": "સાઇન આઉટ કરો અને બંધ કરો",
+    "signOutTitle": "સાઇન આઉટ",
+    "confirmSignOut": "સાઇન આઉટ કરીને પાછા જવું? તમારી પ્રગતિ ખોવાઈ જશે.",
+    "defaultName": "મિત્ર",
+    "roles": {
+      "buyer": {
+        "label": "ખરીદનાર / વ્યક્તિ",
+        "description": "મિલકતો ખરીદવા માંગે છે"
+      },
+      "agent": {
+        "label": "રિયલ એસ્ટેટ એજન્ટ",
+        "description": "મિલકત યાદીઓનું સંચાલન"
+      },
+      "legal": {
+        "label": "કાનૂની સમીક્ષક",
+        "description": "કાનૂની દસ્તાવેજોની સમીક્ષા"
+      },
+      "financial": {
+        "label": "નાણાકીય સંસ્થા",
+        "description": "બેંક / ધિરાણ ભાગીદાર"
+      }
     },
-    "agent": {
-      "label": "રિયલ એસ્ટેટ એજન્ટ",
-      "description": "મિલકત યાદીઓનું સંચાલન"
-    },
-    "legal": {
-      "label": "કાનૂની સમીક્ષક",
-      "description": "કાનૂની દસ્તાવેજોની સમીક્ષા"
-    },
-    "financial": {
-      "label": "નાણાકીય સંસ્થા",
-      "description": "બેંક / ધિરાણ ભાગીદાર"
+    "toasts": {
+      "sessionExpired": {
+        "title": "સત્ર સમાપ્ત થયું",
+        "description": "ચાલુ રાખવા માટે કૃપા કરીને ફરીથી સાઇન ઇન કરો."
+      },
+      "signedOut": {
+        "title": "તમે સાઇન આઉટ થઈ ગયા છો",
+        "description": "ગમે ત્યારે ફરીથી સાઇન ઇન કરો."
+      },
+      "roleRequired": {
+        "title": "ભૂમિકા જરૂરી",
+        "description": "ચાલુ રાખવા માટે કૃપા કરીને એક ભૂમિકા પસંદ કરો."
+      },
+      "invalidPhone": {
+        "title": "અમાન્ય ફોન નંબર",
+        "description": "6-9 થી શરૂ થતો 10-અંકનો ભારતીય મોબાઇલ દાખલ કરો."
+      },
+      "welcome": {
+        "title": "પ્લેટફોર્મ પર સ્વાગત છે, {{name}}",
+        "description": "તમારું એકાઉન્ટ તૈયાર છે. તમારા ડેશબોર્ડ પર રીડાયરેક્ટ કરવામાં આવી રહ્યું છે."
+      },
+      "signupFailed": {
+        "title": "સાઇનઅપ પૂર્ણ થઈ શક્યું નથી",
+        "description": "થોડી વારમાં ફરીથી પ્રયાસ કરો."
+      }
     }
   },
-  "toasts": {
-    "sessionExpired": {
-      "title": "સત્ર સમાપ્ત થયું",
-      "description": "ચાલુ રાખવા માટે કૃપા કરીને ફરીથી સાઇન ઇન કરો."
-    },
-    "signedOut": {
-      "title": "તમે સાઇન આઉટ થઈ ગયા છો",
-      "description": "ગમે ત્યારે ફરીથી સાઇન ઇન કરો."
-    },
-    "roleRequired": {
-      "title": "ભૂમિકા જરૂરી",
-      "description": "ચાલુ રાખવા માટે કૃપા કરીને એક ભૂમિકા પસંદ કરો."
-    },
-    "invalidPhone": {
-      "title": "અમાન્ય ફોન નંબર",
-      "description": "6-9 થી શરૂ થતો 10-અંકનો ભારતીય મોબાઇલ દાખલ કરો."
-    },
-    "welcome": {
-      "title": "પ્લેટફોર્મ પર સ્વાગત છે, {{name}}",
-      "description": "તમારું એકાઉન્ટ તૈયાર છે. તમારા ડેશબોર્ડ પર રીડાયરેક્ટ કરવામાં આવી રહ્યું છે."
-    },
-    "signupFailed": {
-      "title": "સાઇનઅપ પૂર્ણ થઈ શક્યું નથી",
-      "description": "થોડી વારમાં ફરીથી પ્રયાસ કરો."
-    }
-  }
-},
-"searchableSelect": {
-  "searchPlaceholder": "શોધવા માટે લખો...",
-  "noMatches": "\"{{query}}\" માટે કોઈ મેચ નથી",
-  "usePrefix": "વાપરો"
-},
+  "searchableSelect": {
+    "searchPlaceholder": "શોધવા માટે લખો...",
+    "noMatches": "\"{{query}}\" માટે કોઈ મેચ નથી",
+    "usePrefix": "વાપરો"
+  },
   "otpVerification": {
     "title": "તમારો ઇમેઇલ ચકાસો",
     "subtitle": "અમે 6-અંકનો કોડ મોકલ્યો છે",
@@ -1828,155 +1872,206 @@
       "resendFailed": "કોડ ફરી મોકલી શકાયો નથી"
     }
   },
-"notification": {
-  "title": "સૂચનાઓ",
-  "subtitle": "{{count}} સૂચનાઓ",
-  "subtitleEmpty": "હજી સૂચનાઓ નથી",
-  "unread": "અવાંચ્યું",
-  "markAllRead": "બધું વાંચ્યું ચિહ્નિત કરો",
-  "clearAll": "બધું સાફ કરો",
-  "delete": "સૂચના ભૂંસો",
-  "bell": "સૂચનાઓ",
-  "filter": {
-    "all": "બધું",
+  "notification": {
+    "title": "સૂચનાઓ",
+    "subtitle": "{{count}} સૂચનાઓ",
+    "subtitleEmpty": "હજી સૂચનાઓ નથી",
     "unread": "અવાંચ્યું",
-    "reportReady": "અહેવાલ",
-    "riskAlert": "ચેતવણી",
-    "system": "સિસ્ટમ"
-  },
-  "group": {
-    "today": "આજ",
-    "yesterday": "ગઈકાલ",
-    "earlier": "આ અઠવાડિયે",
-    "older": "જૂનું"
-  },
-  "empty": {
-    "title": "કોઈ સૂચના નથી",
-    "description": "તમે બધું જોઈ લીધું. અહેવાલ પૂર્ણ થતાં અથવા ચેતવણી આવતાં અહીં દેખાશે.",
-    "filteredTitle": "મળતી સૂચના નથી",
-    "filteredDescription": "અન્ય સૂચના જોવા માટે અલગ ફિલ્ટર અજમાવો."
-  },
-  "clearAllConfirm": {
-    "title": "બધી સૂચનાઓ સાફ કરશો?",
-    "description": "આ તમારી બધી સૂચનાઓ કાયમ માટે ભૂંસી નાખશે. આ ક્રિયા પૂર્વવત્ કરી શકાશે નહીં.",
-    "confirm": "બધું સાફ કરો"
-  },
-  "pagination": {
-    "showing": "{{total}} માંથી {{from}}–{{to}} દર્શાવ્યું",
-    "prev": "પાછળ",
-    "next": "આગળ"
-  },
-  "toast": {
-    "view": "જુઓ",
-    "markReadFailed": "વાંચ્યું ચિહ્નિત કરવામાં નિષ્ફળ",
-    "markAllReadFailed": "બધું વાંચ્યું ચિહ્નિત કરવામાં નિષ્ફળ",
-    "markedAllRead": "બધી સૂચનાઓ વાંચ્યું ચિહ્નિત થઈ",
-    "deleteFailed": "સૂચના ભૂંસવામાં નિષ્ફળ",
-    "cleared": "બધી સૂચનાઓ સાફ થઈ",
-    "clearFailed": "સૂચનાઓ સાફ કરવામાં નિષ્ફળ"
-  },
-  "preferences": {
-    "title": "સૂચના પ્રાધાન્યો",
-    "description": "ક્યારે અને કઈ રીતે સૂચનાઓ મળે તે પસંદ કરો.",
-    "type": "પ્રકાર",
-    "email": "ઈમેઈલ",
-    "inApp": "એપ્પમાં",
-    "push": "પુશ",
-    "reportReady": "અહેવાલ તૈયાર",
-    "riskAlert": "જોખમ ચેતવણી",
-    "priceChange": "ભાવ ફેરફાર",
-    "system": "સિસ્ટમ",
-    "save": "પ્રાધાન્ય સાચવો",
-    "saving": "સાચવી રહ્યા છીએ…",
-    "saved": "પ્રાધાન્ય સચવાયા",
-    "saveFailed": "પ્રાધાન્ય સાચવવામાં નિષ્ફળ"
-  },
-  "types": {
-    "REPORT_READY": "અહેવાલ તૈયાર",
-    "RISK_ALERT": "જોખમ ચેતવણી",
-    "PRICE_CHANGE": "ભાવ ફેરફાર",
-    "SYSTEM": "સિસ્ટમ"
-  }
-,
-  "report": {
-  "card": {
-    "untitled": "ડ્યુ ડિલિજન્સ રિપોર્ટ",
-    "moreActions": "વધુ ક્રિયાઓ",
-    "delete": "રિપોર્ટ કાઢી નાખો",
-    "risk": "જોખમ",
-    "sections": "{{count}} વિભાગો",
-    "copyLink": "લિંક કૉપિ કરો",
-    "copyId": "રિપોર્ટ ID કૉપિ કરો",
-    "linkCopied": "લિંક ક્લિપબોર્ડ પર કૉપિ થઈ",
-    "idCopied": "રિપોર્ટ ID કૉપિ થયો",
-    "copyFailed": "કૉપિ નિષ્ફળ"
-  },
-  "status": {
-    "pending": "બાકી",
-    "generating": "બનાવવામાં આવી રહ્યું છે",
-    "completed": "પૂર્ણ",
-    "failed": "નિષ્ફળ"
-  },
-  "print": {
-    "loading": "પ્રિન્ટ વ્યૂ તૈયાર થઈ રહ્યું છે…",
-    "loadFailed": "અહેવાલ લોડ કરવામાં નિષ્ફળ",
-    "notFound": "અહેવાલ મળ્યો નથી",
-    "screenHeader": "અહેવાલ #{{id}} માટે પ્રિન્ટ પૂર્વાવલોકન",
-    "printNow": "હમણાં પ્રિન્ટ કરો",
-    "footer": "અહેવાલ #{{id}} · સંસ્કરણ {{version}} · Real Estate Due Diligence Agent દ્વારા બનાવેલ · {{email}}"
-  },
-  "list": {
-    "title": "મારા રિપોર્ટ્સ",
-    "heading": "ડ્યુ ડિલિજન્સ રિપોર્ટ્સ",
-    "subheading": "તમારી બધી મિલકતોમાં તૈયાર કરેલા રિપોર્ટ્સ.",
-    "backToDashboard": "ડેશબોર્ડ",
-    "refresh": "રિફ્રેશ કરો",
-    "generateNew": "નવો બનાવો",
-    "searchPlaceholder": "શીર્ષક અથવા સરનામા દ્વારા શોધો…",
-    "deleted": "રિપોર્ટ કાઢી નાખવામાં આવ્યો",
-    "deleteFailed": "રિપોર્ટ કાઢી નાખવામાં નિષ્ફળ",
-    "errorTitle": "રિપોર્ટ્સ લોડ કરવામાં નિષ્ફળ",
-    "tryAgain": "ફરી પ્રયાસ કરો",
-    "stat": {
-      "total": "કુલ",
-      "completed": "પૂર્ણ",
-      "inProgress": "પ્રગતિમાં",
-      "failed": "નિષ્ફળ"
-    },
+    "markAllRead": "બધું વાંચ્યું ચિહ્નિત કરો",
+    "clearAll": "બધું સાફ કરો",
+    "delete": "સૂચના ભૂંસો",
+    "bell": "સૂચનાઓ",
     "filter": {
-      "all": "બધા"
+      "all": "બધું",
+      "unread": "અવાંચ્યું",
+      "reportReady": "અહેવાલ",
+      "riskAlert": "ચેતવણી",
+      "system": "સિસ્ટમ"
+    },
+    "group": {
+      "today": "આજ",
+      "yesterday": "ગઈકાલ",
+      "earlier": "આ અઠવાડિયે",
+      "older": "જૂનું"
     },
     "empty": {
-      "title": "હજી સુધી કોઈ રિપોર્ટ્સ નથી",
-      "body": "અહીં જોવા માટે તમારો પહેલો ડ્યુ ડિલિજન્સ રિપોર્ટ બનાવો. રિપોર્ટ્સ મિલકતના ડેટા, જોખમ વિશ્લેષણ, નાણાકીય અને ભલામણોને એકસાથે જોડે છે.",
-      "cta": "મિલકતો બ્રાઉઝ કરો"
+      "title": "કોઈ સૂચના નથી",
+      "description": "તમે બધું જોઈ લીધું. અહેવાલ પૂર્ણ થતાં અથવા ચેતવણી આવતાં અહીં દેખાશે.",
+      "filteredTitle": "મળતી સૂચના નથી",
+      "filteredDescription": "અન્ય સૂચના જોવા માટે અલગ ફિલ્ટર અજમાવો."
     },
-    "filtered": {
-      "title": "તમારા ફિલ્ટર સાથે કોઈ રિપોર્ટ્સ મેળ ખાતા નથી",
-      "body": "તમારી શોધ અથવા સ્થિતિ ફિલ્ટરને સમાયોજિત કરવાનો પ્રયાસ કરો.",
-      "clear": "ફિલ્ટર સાફ કરો"
+    "clearAllConfirm": {
+      "title": "બધી સૂચનાઓ સાફ કરશો?",
+      "description": "આ તમારી બધી સૂચનાઓ કાયમ માટે ભૂંસી નાખશે. આ ક્રિયા પૂર્વવત્ કરી શકાશે નહીં.",
+      "confirm": "બધું સાફ કરો"
     },
     "pagination": {
       "showing": "{{total}} માંથી {{from}}–{{to}} દર્શાવ્યું",
-      "prev": "પાછલું",
-      "next": "આગલું"
+      "prev": "પાછળ",
+      "next": "આગળ"
     },
-    "deleteModal": {
-      "title": "આ રિપોર્ટ કાઢી નાખવો?",
-      "body": "આ કાયમી ધોરણે \"{{title}}\" અને તેના બધા વિભાગોને કાઢી નાખશે. આ ક્રિયા પૂર્વવત્ કરી શકાતી નથી.",
-      "confirmPrompt": "પુષ્ટિ કરવા DELETE ટાઇપ કરો",
-      "confirm": "રિપોર્ટ કાઢી નાખો"
+    "toast": {
+      "view": "જુઓ",
+      "markReadFailed": "વાંચ્યું ચિહ્નિત કરવામાં નિષ્ફળ",
+      "markAllReadFailed": "બધું વાંચ્યું ચિહ્નિત કરવામાં નિષ્ફળ",
+      "markedAllRead": "બધી સૂચનાઓ વાંચ્યું ચિહ્નિત થઈ",
+      "deleteFailed": "સૂચના ભૂંસવામાં નિષ્ફળ",
+      "cleared": "બધી સૂચનાઓ સાફ થઈ",
+      "clearFailed": "સૂચનાઓ સાફ કરવામાં નિષ્ફળ"
+    },
+    "preferences": {
+      "title": "સૂચના પ્રાધાન્યો",
+      "description": "ક્યારે અને કઈ રીતે સૂચનાઓ મળે તે પસંદ કરો.",
+      "type": "પ્રકાર",
+      "email": "ઈમેઈલ",
+      "inApp": "એપ્પમાં",
+      "push": "પુશ",
+      "reportReady": "અહેવાલ તૈયાર",
+      "riskAlert": "જોખમ ચેતવણી",
+      "priceChange": "ભાવ ફેરફાર",
+      "system": "સિસ્ટમ",
+      "save": "પ્રાધાન્ય સાચવો",
+      "saving": "સાચવી રહ્યા છીએ…",
+      "saved": "પ્રાધાન્ય સચવાયા",
+      "saveFailed": "પ્રાધાન્ય સાચવવામાં નિષ્ફળ"
+    },
+    "types": {
+      "REPORT_READY": "અહેવાલ તૈયાર",
+      "RISK_ALERT": "જોખમ ચેતવણી",
+      "PRICE_CHANGE": "ભાવ ફેરફાર",
+      "SYSTEM": "સિસ્ટમ"
+    },
+    "report": {
+      "card": {
+        "untitled": "ડ્યુ ડિલિજન્સ રિપોર્ટ",
+        "moreActions": "વધુ ક્રિયાઓ",
+        "delete": "રિપોર્ટ કાઢી નાખો",
+        "risk": "જોખમ",
+        "sections": "{{count}} વિભાગો",
+        "copyLink": "લિંક કૉપિ કરો",
+        "copyId": "રિપોર્ટ ID કૉપિ કરો",
+        "linkCopied": "લિંક ક્લિપબોર્ડ પર કૉપિ થઈ",
+        "idCopied": "રિપોર્ટ ID કૉપિ થયો",
+        "copyFailed": "કૉપિ નિષ્ફળ"
+      },
+      "status": {
+        "pending": "બાકી",
+        "generating": "બનાવવામાં આવી રહ્યું છે",
+        "completed": "પૂર્ણ",
+        "failed": "નિષ્ફળ"
+      },
+      "print": {
+        "loading": "પ્રિન્ટ વ્યૂ તૈયાર થઈ રહ્યું છે…",
+        "loadFailed": "અહેવાલ લોડ કરવામાં નિષ્ફળ",
+        "notFound": "અહેવાલ મળ્યો નથી",
+        "screenHeader": "અહેવાલ #{{id}} માટે પ્રિન્ટ પૂર્વાવલોકન",
+        "printNow": "હમણાં પ્રિન્ટ કરો",
+        "footer": "અહેવાલ #{{id}} · સંસ્કરણ {{version}} · Real Estate Due Diligence Agent દ્વારા બનાવેલ · {{email}}"
+      },
+      "list": {
+        "title": "મારા રિપોર્ટ્સ",
+        "heading": "ડ્યુ ડિલિજન્સ રિપોર્ટ્સ",
+        "subheading": "તમારી બધી મિલકતોમાં તૈયાર કરેલા રિપોર્ટ્સ.",
+        "backToDashboard": "ડેશબોર્ડ",
+        "refresh": "રિફ્રેશ કરો",
+        "generateNew": "નવો બનાવો",
+        "searchPlaceholder": "શીર્ષક અથવા સરનામા દ્વારા શોધો…",
+        "deleted": "રિપોર્ટ કાઢી નાખવામાં આવ્યો",
+        "deleteFailed": "રિપોર્ટ કાઢી નાખવામાં નિષ્ફળ",
+        "errorTitle": "રિપોર્ટ્સ લોડ કરવામાં નિષ્ફળ",
+        "tryAgain": "ફરી પ્રયાસ કરો",
+        "stat": {
+          "total": "કુલ",
+          "completed": "પૂર્ણ",
+          "inProgress": "પ્રગતિમાં",
+          "failed": "નિષ્ફળ"
+        },
+        "filter": {
+          "all": "બધા"
+        },
+        "empty": {
+          "title": "હજી સુધી કોઈ રિપોર્ટ્સ નથી",
+          "body": "અહીં જોવા માટે તમારો પહેલો ડ્યુ ડિલિજન્સ રિપોર્ટ બનાવો. રિપોર્ટ્સ મિલકતના ડેટા, જોખમ વિશ્લેષણ, નાણાકીય અને ભલામણોને એકસાથે જોડે છે.",
+          "cta": "મિલકતો બ્રાઉઝ કરો"
+        },
+        "filtered": {
+          "title": "તમારા ફિલ્ટર સાથે કોઈ રિપોર્ટ્સ મેળ ખાતા નથી",
+          "body": "તમારી શોધ અથવા સ્થિતિ ફિલ્ટરને સમાયોજિત કરવાનો પ્રયાસ કરો.",
+          "clear": "ફિલ્ટર સાફ કરો"
+        },
+        "pagination": {
+          "showing": "{{total}} માંથી {{from}}–{{to}} દર્શાવ્યું",
+          "prev": "પાછલું",
+          "next": "આગલું"
+        },
+        "deleteModal": {
+          "title": "આ રિપોર્ટ કાઢી નાખવો?",
+          "body": "આ કાયમી ધોરણે \"{{title}}\" અને તેના બધા વિભાગોને કાઢી નાખશે. આ ક્રિયા પૂર્વવત્ કરી શકાતી નથી.",
+          "confirmPrompt": "પુષ્ટિ કરવા DELETE ટાઇપ કરો",
+          "confirm": "રિપોર્ટ કાઢી નાખો"
+        }
+      },
+      "versionHistory": {
+        "title": "આવૃત્તિ ઇતિહાસ",
+        "subtitle": "{{address}}",
+        "loading": "આવૃત્તિઓ લોડ થઈ રહી છે…",
+        "error": "આવૃત્તિ ઇતિહાસ લોડ કરવામાં નિષ્ફળ.",
+        "empty": "આ મિલકત માટે કોઈ આવૃત્તિ મળી નથી.",
+        "current": "વર્તમાન",
+        "view": "જુઓ"
+      }
     }
   },
-  "versionHistory": {
-  "title": "આવૃત્તિ ઇતિહાસ",
-  "subtitle": "{{address}}",
-  "loading": "આવૃત્તિઓ લોડ થઈ રહી છે…",
-  "error": "આવૃત્તિ ઇતિહાસ લોડ કરવામાં નિષ્ફળ.",
-  "empty": "આ મિલકત માટે કોઈ આવૃત્તિ મળી નથી.",
-  "current": "વર્તમાન",
-  "view": "જુઓ"
-}
-}
-}
+  "export": {
+    "pdf": "પીડીએફ દસ્તાવેજ",
+    "excel": "એક્સેલ વર્કબુક",
+    "generating": "નિકાસ જનરેટ થઈ રહી છે...",
+    "download": "અહેવાલ નિકાસ કરો",
+    "preview": "પૂર્વાવલોકન દસ્તાવેજ",
+    "bulk": "બલ્ક નિકાસ",
+    "history": "નિકાસ ઇતિહાસ",
+    "fileSize": "ફાઇલ કદ",
+    "fileName": "ફાઇલ નામ",
+    "date": "જનરેટ તારીખ",
+    "estimatedPages": "અંદાજિત પૃષ્ઠો",
+    "pages": "પૃષ્ઠો",
+    "sections": "વિભાગો",
+    "modules": "મોડ્યુલો",
+    "status": "સ્થિતિ",
+    "summaryTitle": "કાર્યકારી સારાંશ પૂર્વાવલોકન",
+    "includedSections": "સમાવિષ્ટ અહેવાલ મોડ્યુલો",
+    "loadingHistory": "નિકાસ ઇતિહાસ લોડ થઈ રહ્યો છે...",
+    "noHistory": "હજી સુધી કોઈ નિકાસ ઇતિહાસ નથી",
+    "noHistoryDesc": "PDF અથવા Excel ફોર્મેટમાં નિકાસ કરાયેલા અહેવાલો અહીં આર્કાઇવ કરવામાં આવશે.",
+    "bulkPdf": "બલ્ક ઝિપ નિકાસ (PDF)",
+    "bulkExcel": "બલ્ક એક્સેલ (Excel)",
+    "format": {
+      "pdf": "PDF",
+      "excel": "EXCEL",
+      "label": "ફોર્મેટ",
+      "select": "નિકાસ ફોર્મેટ પસંદ કરો",
+      "pdfDesc": "કવર અને ગ્રાફિક્સ સાથેનો સંપૂર્ણ અહેવાલ",
+      "excelDesc": "મલ્ટિ-શીટ સ્ટ્રક્ચર્ડ ડેટાસેટ"
+    },
+    "progress": {
+      "label": "પ્રગતિ",
+      "preparing": "દસ્તાવેજ લેઆઉટ તૈયાર થઈ રહ્યું છે...",
+      "fetching": "જોખમ ડેટા પ્રાપ્ત થઈ રહ્યો છે...",
+      "rendering": "ગ્રાફિક્સ રેન્ડર થઈ રહ્યા છે...",
+      "finalizing": "ડાઉનલોડ શરૂ થઈ રહ્યું છે..."
+    },
+    "ready": {
+      "title": "નિકાસ તૈયાર છે",
+      "message": "નિકાસ સફળતાપૂર્વક પૂર્ણ થઈ!"
+    },
+    "error": {
+      "title": "નિકાસ ભૂલ",
+      "failed": "નિકાસ ફાઇલ જનરેટ કરવામાં નિષ્ફળ."
+    },
+    "success": {
+      "pdf": "પીડીએફ નિકાસ તૈયાર છે",
+      "excel": "એક્સેલ નિકાસ તૈયાર છે",
+      "bulk": "બલ્ક નિકાસ તૈયાર છે"
+    }
+  }
 }

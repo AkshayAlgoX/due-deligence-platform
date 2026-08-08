@@ -1,68 +1,79 @@
 {
   "risk": {
-  "badge": { "ariaLabel": "خطرے کی سطح: {{level}}" },
-  "levels": {
-    "LOW": "کم", "MEDIUM": "درمیانہ", "HIGH": "زیادہ", "CRITICAL": "سنگین", "UNKNOWN": "نامعلوم"
-  },
-  "categories": {
-    "FLOOD": "سیلاب", "LEGAL": "قانونی", "TAX": "ٹیکس", "ZONING": "زوننگ",
-    "ENVIRONMENTAL": "ماحولیاتی", "MARKET": "مارکیٹ"
-  },
-  "gauge": {
-    "outOf": "100 میں سے",
-    "ariaLabel": "خطرے کا سکور: 100 میں سے {{score}}، {{level}}",
-    "deltaWorse": "بیس لائن کے مقابلے میں",
-    "deltaBetter": "بیس لائن کے مقابلے میں",
-    "recalculate": "دوبارہ حساب لگائیں",
-    "recalculating": "دوبارہ حساب ہو رہا ہے...",
-    "recalculateAria": "تازہ ترین ڈیٹا کے ساتھ خطرے کا دوبارہ حساب لگائیں"
-  },
-  "radar": {
-    "seriesName": "خطرے کا سکور",
-    "helperText": "ہر محور ایک زمرہ سکور دکھاتا ہے (0–100)۔ کم بہتر ہے۔",
-    "tooltipScore": "سکور", "tooltipWeight": "وزن"
-  },
-  "factor": {
-    "weight": "وزن: {{weight}}",
-    "explanation": "تجزیہ",
-    "recommendation": "سفارش",
-    "dataSource": "ڈیٹا کا ذریعہ",
-    "dataUncertain": "سکور ڈیٹا کی غیر یقینی کی جرمانہ کی عکاسی کرتا ہے",
-    "toggleAria": "{{category}} تفصیلات ٹوگل کریں"
-  },
-  "explain": {
-    "title": "خطرے کی سکورنگ کیسے کام کرتی ہے",
-    "subtitle": "شفاف، اصول پر مبنی سکورنگ — کوئی بلیک باکس AI نہیں",
-    "howItWorks": "مجموعی سکور کا حساب کیسے لگایا جاتا ہے",
-    "description": "ہر جائیداد کا 6 زمروں میں تجزیہ کیا جاتا ہے۔ ہر زمرے کو 0–100 سکور ملتا ہے (زیادہ = زیادہ خطرہ)۔ مجموعی سکور ایک وزنی مجموعہ ہے — زیادہ وزن والے زمرے (سیلاب 25% کی طرح) حتمی سکور پر زیادہ اثر ڈالتے ہیں۔",
-    "categoryWeights": "زمرہ وزن",
-    "levelThresholds": "خطرے کی سطحیں",
-    "dataHonesty": {
-      "title": "ڈیٹا کے ذرائع کے بارے میں",
-      "body": "جب ڈیٹا کا ذریعہ دستیاب نہ ہو تو ہم صفر خطرے کو فرض کرنے کے بجائے غیر یقینی کی جرمانہ لاگو کرتے ہیں۔ گمشدہ معلومات خود ایک خطرے کا عنصر ہے — ہم اسے آپ سے چھپائیں گے نہیں۔"
-    }
-  },
-  "page": {
-    "backToProperty": "پراپرٹی پر واپس جائیں",
-"bedShort": "BR",
-"topRisksTitle": "اہم رسک عوامل",
-"topRisksDesc": "وہ عوامل جو مجموعی رسک اسکور پر سب سے زیادہ اثر ڈالتے ہیں",
-"methodology": "طریقۂ کار",
-"footerDisclaimer": "رسک اسکور 6 زمروں میں شفاف وزن کی بنیاد پر شمار کیا جاتا ہے۔ یہ فیصلہ سازی میں مدد دینے والا آلہ ہے، مالی مشورہ نہیں۔",
-    "title": "خطرے کا تجزیہ",
-    "loading": "جائیداد کے خطرے کا تجزیہ کیا جا رہا ہے...",
-    "errorTitle": "خطرے کا تجزیہ لوڈ کرنے سے قاصر",
-    "goBack": "واپس جائیں",
-    "backAria": "پچھلے صفحے پر واپس جائیں",
-    "overallScore": "مجموعی خطرے کا سکور",
-    "categoryBreakdown": "زمرہ تقسیم",
-    "categoryBreakdownDesc": "تمام 6 خطرے کے عوامل بصری۔ بڑا علاقہ = زیادہ مجموعی خطرہ۔",
-    "factorsTitle": "خطرے کے عوامل",
-    "factorsSubtitle": "خطرے کے تعاون کے مطابق ترتیب دیا گیا۔ مکمل تجزیہ دیکھنے کے لیے کسی بھی کارڈ پر کلک کریں۔",
-    "generateReport": "رپورٹ بنائیں",
-    "dataWarningTitle": "کچھ ڈیٹا ذرائع دستیاب نہیں ہیں",
-    "dataWarningBody": "6 میں سے {{count}} ڈیٹا فراہم کنندگان تک نہیں پہنچا جا سکا۔ جہاں ڈیٹا غائب تھا، سکورز محتاط تخمینے کی عکاسی کرتے ہیں۔"
-  },
+    "badge": {
+      "ariaLabel": "خطرے کی سطح: {{level}}"
+    },
+    "levels": {
+      "LOW": "کم",
+      "MEDIUM": "درمیانہ",
+      "HIGH": "زیادہ",
+      "CRITICAL": "سنگین",
+      "UNKNOWN": "نامعلوم"
+    },
+    "categories": {
+      "FLOOD": "سیلاب",
+      "LEGAL": "قانونی",
+      "TAX": "ٹیکس",
+      "ZONING": "زوننگ",
+      "ENVIRONMENTAL": "ماحولیاتی",
+      "MARKET": "مارکیٹ"
+    },
+    "gauge": {
+      "outOf": "100 میں سے",
+      "ariaLabel": "خطرے کا سکور: 100 میں سے {{score}}، {{level}}",
+      "deltaWorse": "بیس لائن کے مقابلے میں",
+      "deltaBetter": "بیس لائن کے مقابلے میں",
+      "recalculate": "دوبارہ حساب لگائیں",
+      "recalculating": "دوبارہ حساب ہو رہا ہے...",
+      "recalculateAria": "تازہ ترین ڈیٹا کے ساتھ خطرے کا دوبارہ حساب لگائیں"
+    },
+    "radar": {
+      "seriesName": "خطرے کا سکور",
+      "helperText": "ہر محور ایک زمرہ سکور دکھاتا ہے (0–100)۔ کم بہتر ہے۔",
+      "tooltipScore": "سکور",
+      "tooltipWeight": "وزن"
+    },
+    "factor": {
+      "weight": "وزن: {{weight}}",
+      "explanation": "تجزیہ",
+      "recommendation": "سفارش",
+      "dataSource": "ڈیٹا کا ذریعہ",
+      "dataUncertain": "سکور ڈیٹا کی غیر یقینی کی جرمانہ کی عکاسی کرتا ہے",
+      "toggleAria": "{{category}} تفصیلات ٹوگل کریں"
+    },
+    "explain": {
+      "title": "خطرے کی سکورنگ کیسے کام کرتی ہے",
+      "subtitle": "شفاف، اصول پر مبنی سکورنگ — کوئی بلیک باکس AI نہیں",
+      "howItWorks": "مجموعی سکور کا حساب کیسے لگایا جاتا ہے",
+      "description": "ہر جائیداد کا 6 زمروں میں تجزیہ کیا جاتا ہے۔ ہر زمرے کو 0–100 سکور ملتا ہے (زیادہ = زیادہ خطرہ)۔ مجموعی سکور ایک وزنی مجموعہ ہے — زیادہ وزن والے زمرے (سیلاب 25% کی طرح) حتمی سکور پر زیادہ اثر ڈالتے ہیں۔",
+      "categoryWeights": "زمرہ وزن",
+      "levelThresholds": "خطرے کی سطحیں",
+      "dataHonesty": {
+        "title": "ڈیٹا کے ذرائع کے بارے میں",
+        "body": "جب ڈیٹا کا ذریعہ دستیاب نہ ہو تو ہم صفر خطرے کو فرض کرنے کے بجائے غیر یقینی کی جرمانہ لاگو کرتے ہیں۔ گمشدہ معلومات خود ایک خطرے کا عنصر ہے — ہم اسے آپ سے چھپائیں گے نہیں۔"
+      }
+    },
+    "page": {
+      "backToProperty": "پراپرٹی پر واپس جائیں",
+      "bedShort": "BR",
+      "topRisksTitle": "اہم رسک عوامل",
+      "topRisksDesc": "وہ عوامل جو مجموعی رسک اسکور پر سب سے زیادہ اثر ڈالتے ہیں",
+      "methodology": "طریقۂ کار",
+      "footerDisclaimer": "رسک اسکور 6 زمروں میں شفاف وزن کی بنیاد پر شمار کیا جاتا ہے۔ یہ فیصلہ سازی میں مدد دینے والا آلہ ہے، مالی مشورہ نہیں۔",
+      "title": "خطرے کا تجزیہ",
+      "loading": "جائیداد کے خطرے کا تجزیہ کیا جا رہا ہے...",
+      "errorTitle": "خطرے کا تجزیہ لوڈ کرنے سے قاصر",
+      "goBack": "واپس جائیں",
+      "backAria": "پچھلے صفحے پر واپس جائیں",
+      "overallScore": "مجموعی خطرے کا سکور",
+      "categoryBreakdown": "زمرہ تقسیم",
+      "categoryBreakdownDesc": "تمام 6 خطرے کے عوامل بصری۔ بڑا علاقہ = زیادہ مجموعی خطرہ۔",
+      "factorsTitle": "خطرے کے عوامل",
+      "factorsSubtitle": "خطرے کے تعاون کے مطابق ترتیب دیا گیا۔ مکمل تجزیہ دیکھنے کے لیے کسی بھی کارڈ پر کلک کریں۔",
+      "generateReport": "رپورٹ بنائیں",
+      "dataWarningTitle": "کچھ ڈیٹا ذرائع دستیاب نہیں ہیں",
+      "dataWarningBody": "6 میں سے {{count}} ڈیٹا فراہم کنندگان تک نہیں پہنچا جا سکا۔ جہاں ڈیٹا غائب تھا، سکورز محتاط تخمینے کی عکاسی کرتے ہیں۔"
+    },
     "history": {
       "sectionTitle": "خطرے کی تاریخ",
       "sectionSubtitle": "دیکھیں کہ اس جائیداد کا خطرے کا پروفائل کیسے تبدیل ہوا ہے",
@@ -96,57 +107,57 @@
       "timeHoursAgo": "{{count}} گھنٹے پہلے",
       "timeDaysAgo": "{{count}} دن پہلے"
     }
-},
+  },
   "logoutModal": {
-  "title": "سائن آؤٹ کرنے کے لیے تیار؟",
-  "description": "اپنے ڈیش بورڈ اور پراپرٹی ڈیٹا تک رسائی کے لیے آپ کو دوبارہ لاگ ان کرنا ہوگا۔",
-  "staySignedIn": "سائن ان رہیں",
-  "confirm": "ہاں، لاگ آؤٹ کریں",
-  "signingOut": "سائن آؤٹ ہو رہا ہے…",
-  "close": "بند کریں",
-  "signedIn": "سائن ان",
-  "active": "فعال",
-  "fallbackUser": "صارف",
-  "tip": "ٹپ: دبائیں",
-  "tipCancel": "منسوخ کرنے کے لیے"
-},
+    "title": "سائن آؤٹ کرنے کے لیے تیار؟",
+    "description": "اپنے ڈیش بورڈ اور پراپرٹی ڈیٹا تک رسائی کے لیے آپ کو دوبارہ لاگ ان کرنا ہوگا۔",
+    "staySignedIn": "سائن ان رہیں",
+    "confirm": "ہاں، لاگ آؤٹ کریں",
+    "signingOut": "سائن آؤٹ ہو رہا ہے…",
+    "close": "بند کریں",
+    "signedIn": "سائن ان",
+    "active": "فعال",
+    "fallbackUser": "صارف",
+    "tip": "ٹپ: دبائیں",
+    "tipCancel": "منسوخ کرنے کے لیے"
+  },
   "labels": {
-  "NEW": "نیا",
-  "HOT": "ہاٹ",
-  "PRICE_DROP": "قیمت میں کمی",
-  "FEATURED": "فیچرڈ",
-  "VERIFIED": "تصدیق شدہ",
-  "SOLD": "فروخت ہو گیا",
-  "UNDER_OFFER": "آفر پر",
-  "PREMIUM": "پریمیم",
-  "moreCount": "+{{count}} مزید",
-  "admin": {
-    "title": "پراپرٹی لیبلز",
-    "subtitle": "اس پراپرٹی پر دکھائے جانے والے لیبلز کا نظم کریں",
-    "current": "موجودہ لیبلز",
-    "empty": "ابھی تک کوئی لیبل لاگو نہیں",
-    "loading": "لیبلز لوڈ ہو رہے ہیں...",
-    "addNew": "نیا لیبل شامل کریں",
-    "selectType": "لیبل کی قسم",
-    "selectPlaceholder": "ایک لیبل منتخب کریں...",
-    "expiresInDays": "میعاد (دنوں میں)",
-    "expiresPlaceholder": "مثلاً، 30",
-    "optional": "اختیاری",
-    "addButton": "لیبل شامل کریں",
-    "adding": "شامل کیا جا رہا ہے...",
-    "remove": "لیبل ہٹائیں",
-    "added": "لیبل کامیابی سے شامل ہو گیا",
-    "removed": "لیبل ہٹا دیا گیا",
-    "addError": "لیبل شامل کرنے میں ناکامی",
-    "removeError": "لیبل ہٹانے میں ناکامی"
-  }
-},
+    "NEW": "نیا",
+    "HOT": "ہاٹ",
+    "PRICE_DROP": "قیمت میں کمی",
+    "FEATURED": "فیچرڈ",
+    "VERIFIED": "تصدیق شدہ",
+    "SOLD": "فروخت ہو گیا",
+    "UNDER_OFFER": "آفر پر",
+    "PREMIUM": "پریمیم",
+    "moreCount": "+{{count}} مزید",
+    "admin": {
+      "title": "پراپرٹی لیبلز",
+      "subtitle": "اس پراپرٹی پر دکھائے جانے والے لیبلز کا نظم کریں",
+      "current": "موجودہ لیبلز",
+      "empty": "ابھی تک کوئی لیبل لاگو نہیں",
+      "loading": "لیبلز لوڈ ہو رہے ہیں...",
+      "addNew": "نیا لیبل شامل کریں",
+      "selectType": "لیبل کی قسم",
+      "selectPlaceholder": "ایک لیبل منتخب کریں...",
+      "expiresInDays": "میعاد (دنوں میں)",
+      "expiresPlaceholder": "مثلاً، 30",
+      "optional": "اختیاری",
+      "addButton": "لیبل شامل کریں",
+      "adding": "شامل کیا جا رہا ہے...",
+      "remove": "لیبل ہٹائیں",
+      "added": "لیبل کامیابی سے شامل ہو گیا",
+      "removed": "لیبل ہٹا دیا گیا",
+      "addError": "لیبل شامل کرنے میں ناکامی",
+      "removeError": "لیبل ہٹانے میں ناکامی"
+    }
+  },
   "passwordStrength": {
-  "weak": "کمزور",
-  "fair": "ٹھیک",
-  "good": "اچھا",
-  "strong": "مضبوط"
-},
+    "weak": "کمزور",
+    "fair": "ٹھیک",
+    "good": "اچھا",
+    "strong": "مضبوط"
+  },
   "cookies": {
     "banner": {
       "ariaLabel": "کوکی رضامندی",
@@ -173,92 +184,92 @@
     }
   },
   "faq": {
-  "categories": {
-    "GETTING_STARTED": "شروع کرنا",
-    "VERIFICATION": "تصدیق",
-    "RISK_SCORING": "خطرے کی اسکورنگ",
-    "DATA_SOURCES": "ڈیٹا ذرائع",
-    "REPORTS_PDF": "رپورٹس اور PDF",
-    "ACCOUNT": "اکاؤنٹ",
-    "PRIVACY_SECURITY": "رازداری اور سیکیورٹی"
-  },
-  "items": {
-    "item1": {
-      "question": "میں اپنی پہلی جائیداد کیسے شامل کروں؟",
-      "answer": "Sign in کرنے کے بعد، dashboard کے اوپر دائیں جانب موجود \"Add property\" پر کلک کریں، یا property search page پر موجود button استعمال کریں۔ پتہ درج کریں — ہم OpenStreetMap سے ملتے جلتے پتے خودکار طور پر تجویز کریں گے۔ صرف address اور city ضروری ہیں؛ باقی معلومات بعد میں بھی شامل کی جا سکتی ہیں۔"
+    "categories": {
+      "GETTING_STARTED": "شروع کرنا",
+      "VERIFICATION": "تصدیق",
+      "RISK_SCORING": "خطرے کی اسکورنگ",
+      "DATA_SOURCES": "ڈیٹا ذرائع",
+      "REPORTS_PDF": "رپورٹس اور PDF",
+      "ACCOUNT": "اکاؤنٹ",
+      "PRIVACY_SECURITY": "رازداری اور سیکیورٹی"
     },
-    "item2": {
-      "question": "جائیداد شامل کرنے کے لیے مجھے کون سی معلومات درکار ہیں؟",
-      "answer": "ضروری: address اور city۔ تجویز کردہ: property type، market value، area (sqft)، year built، اور bedrooms/bathrooms۔ جتنے زیادہ fields آپ پُر کریں گے، اتنا ہی verification score بہتر ہوگا اور risk assessment زیادہ درست ہوگا۔"
-    },
-    "item3": {
-      "question": "میری جائیداد \"Pending\" یا \"Incomplete\" کیوں ظاہر ہو رہی ہے؟",
-      "answer": "ہم ہر جائیداد پر 7 data quality checks چلاتے ہیں (address، city، state، ZIP، market value، area، property type)۔ ان میں سے کوئی بھی چیز موجود نہ ہو تو status pending رہتا ہے۔ Missing fields بھرنے کے لیے کسی بھی pending card پر \"Complete to verify\" پر کلک کریں۔"
-    },
-    "item4": {
-      "question": "تصدیق کیسے کام کرتی ہے؟",
-      "answer": "تصدیق خودکار ہے اور مکمل طور پر data completeness پر مبنی ہے — manual review پر نہیں۔ جب آپ تمام 7 ضروری fields مکمل کر دیتے ہیں، تو جائیداد verified ہو جاتی ہے۔ اگر verified جائیداد میں سے کوئی field ہٹا دیں، تو وہ دوبارہ pending ہو جاتی ہے۔"
-    },
-    "item5": {
-      "question": "Risk score کیسے نکالا جاتا ہے؟",
-      "answer": "Risk score چار زمروں کے weighted average پر مبنی ہے: Financial (30%)، Legal (30%)، Environmental (25%)، اور Structural (15%)۔ مثال کے طور پر، unverified status legal risk بڑھاتا ہے، high AQI environmental risk بڑھاتا ہے، اور condition \"Poor\" structural risk بڑھاتی ہے۔ Score ranges: 0–33 Low, 34–66 Medium, 67–100 High۔ مکمل اصول source code میں درج ہیں۔"
-    },
-    "item6": {
-      "question": "Risk card پر \"data incomplete\" کیوں دکھائی دیتا ہے؟",
-      "answer": "کچھ data sources جیسے ownership، tax history، اور permits فی الحال sample data واپس کرتے ہیں، کیونکہ بھارت میں ان شعبوں کے لیے قابلِ اعتماد public APIs ابھی بڑے پیمانے پر دستیاب نہیں ہیں۔ Risk engine یہ اشارہ اس لیے دیتا ہے تاکہ آپ کو معلوم ہو کہ real data کے ساتھ score زیادہ درست ہوگا۔"
-    },
-    "item7": {
-      "question": "Air quality data کہاں سے آتا ہے؟",
-      "answer": "AQI values WAQI (World Air Quality Index) API سے آتی ہیں، جو بھارت بھر کے CPCB monitoring stations سے real-time readings جمع کرتی ہے۔ اگر آپ کی property ایسے شہر میں ہے جہاں قریب کوئی station موجود نہیں، تو یہ حصہ \"No data\" کے طور پر ظاہر ہوگا۔"
-    },
-    "item8": {
-      "question": "کیا ownership اور tax data حقیقی ہے؟",
-      "answer": "نہیں — ہم اس بارے میں واضح ہیں۔ Ownership، tax history، zoning، flood zone، اور permits والے حصے فی الحال sample data دکھاتے ہیں۔ بھارت میں ان شعبوں کے لیے قابلِ اعتماد public APIs ابھی بڑے پیمانے پر موجود نہیں ہیں۔ Sample data دکھانے والے ہر card کو interface میں واضح طور پر نشان زد کیا جاتا ہے۔"
-    },
-    "item9": {
-      "question": "میں property report کیسے download کروں؟",
-      "answer": "Property search میں کسی بھی property کو کھولیں، پھر property hero card کے اوپر دائیں طرف \"Download report\" پر کلک کریں۔ PDF میں property overview، risk assessment، تمام 6 data sections، اور data completeness summary شامل ہوتی ہے۔ عام طور پر اسے بننے میں 2–4 سیکنڈ لگتے ہیں۔"
-    },
-    "item10": {
-      "question": "کیا میں ایک ہی report میں کئی properties کا موازنہ کر سکتا ہوں؟",
-      "answer": "جی ہاں۔ Property search page پر کسی بھی card پر hover کریں اور ظاہر ہونے والے compare checkbox پر کلک کریں۔ 2–3 properties منتخب کریں، پھر نیچے موجود bar میں \"Compare\" پر کلک کریں۔ Comparison page پر \"Download comparison\" پر کلک کرنے سے تمام properties کے ساتھ side-by-side landscape PDF حاصل ہوگا۔"
-    },
-    "item11": {
-      "question": "میں اپنا account کیسے delete کروں؟",
-      "answer": "اپنے profile page پر جائیں اور نیچے موجود danger zone تک scroll کریں۔ Account deletion فوری اور مستقل ہے — آپ کی تمام properties اور history ہماری database سے cascade delete کے ذریعے ہٹا دی جاتی ہیں۔ کوئی recovery period نہیں ہے۔"
-    },
-    "item12": {
-      "question": "میں اپنا password بھول گیا ہوں۔ مجھے کیا کرنا چاہیے؟",
-      "answer": "Login page پر \"Forgot password\" پر کلک کریں۔ اپنی registered email درج کریں اور ہم آپ کو 6-digit OTP بھیجیں گے۔ OTP verify کریں، پھر نیا password مقرر کریں۔ OTP ایک ہی بار استعمال ہوتے ہیں اور جلد expire ہو جاتے ہیں۔ اگر آپ نے Google کے ذریعے sign up کیا ہے تو \"Continue with Google\" استعمال کریں — reset کرنے کے لیے کوئی password موجود نہیں ہوتا۔"
-    },
-    "item13": {
-      "question": "کیا میرا data third parties کے ساتھ شیئر کیا جاتا ہے؟",
-      "answer": "ہم چند محدود external services کو خاص مقاصد کے لیے استعمال کرتے ہیں: air quality کے لیے WAQI (صرف city name)، geocoding کے لیے Nominatim (صرف address string)، اور sign-in verification کے لیے Google OAuth۔ مکمل تفصیلات /security page پر موجود ہیں۔ کسی بھی personal یا property data کو کسی کو فروخت نہیں کیا جاتا۔"
-    },
-    "item14": {
-      "question": "میرے passwords کیسے محفوظ کیے جاتے ہیں؟",
-      "answer": "Passwords کو محفوظ کرنے سے پہلے BCrypt (strength factor 10) کے ذریعے hash کیا جاتا ہے۔ ہم آپ کا plain-text password کبھی نہیں دیکھتے اور اسے recover بھی نہیں کر سکتے — صرف OTP کے ذریعے reset کیا جا سکتا ہے۔ اگر آپ صرف Google کے ساتھ sign in کرتے ہیں، تو کوئی password محفوظ ہی نہیں کیا جاتا۔"
+    "items": {
+      "item1": {
+        "question": "میں اپنی پہلی جائیداد کیسے شامل کروں؟",
+        "answer": "Sign in کرنے کے بعد، dashboard کے اوپر دائیں جانب موجود \"Add property\" پر کلک کریں، یا property search page پر موجود button استعمال کریں۔ پتہ درج کریں — ہم OpenStreetMap سے ملتے جلتے پتے خودکار طور پر تجویز کریں گے۔ صرف address اور city ضروری ہیں؛ باقی معلومات بعد میں بھی شامل کی جا سکتی ہیں۔"
+      },
+      "item2": {
+        "question": "جائیداد شامل کرنے کے لیے مجھے کون سی معلومات درکار ہیں؟",
+        "answer": "ضروری: address اور city۔ تجویز کردہ: property type، market value، area (sqft)، year built، اور bedrooms/bathrooms۔ جتنے زیادہ fields آپ پُر کریں گے، اتنا ہی verification score بہتر ہوگا اور risk assessment زیادہ درست ہوگا۔"
+      },
+      "item3": {
+        "question": "میری جائیداد \"Pending\" یا \"Incomplete\" کیوں ظاہر ہو رہی ہے؟",
+        "answer": "ہم ہر جائیداد پر 7 data quality checks چلاتے ہیں (address، city، state، ZIP، market value، area، property type)۔ ان میں سے کوئی بھی چیز موجود نہ ہو تو status pending رہتا ہے۔ Missing fields بھرنے کے لیے کسی بھی pending card پر \"Complete to verify\" پر کلک کریں۔"
+      },
+      "item4": {
+        "question": "تصدیق کیسے کام کرتی ہے؟",
+        "answer": "تصدیق خودکار ہے اور مکمل طور پر data completeness پر مبنی ہے — manual review پر نہیں۔ جب آپ تمام 7 ضروری fields مکمل کر دیتے ہیں، تو جائیداد verified ہو جاتی ہے۔ اگر verified جائیداد میں سے کوئی field ہٹا دیں، تو وہ دوبارہ pending ہو جاتی ہے۔"
+      },
+      "item5": {
+        "question": "Risk score کیسے نکالا جاتا ہے؟",
+        "answer": "Risk score چار زمروں کے weighted average پر مبنی ہے: Financial (30%)، Legal (30%)، Environmental (25%)، اور Structural (15%)۔ مثال کے طور پر، unverified status legal risk بڑھاتا ہے، high AQI environmental risk بڑھاتا ہے، اور condition \"Poor\" structural risk بڑھاتی ہے۔ Score ranges: 0–33 Low, 34–66 Medium, 67–100 High۔ مکمل اصول source code میں درج ہیں۔"
+      },
+      "item6": {
+        "question": "Risk card پر \"data incomplete\" کیوں دکھائی دیتا ہے؟",
+        "answer": "کچھ data sources جیسے ownership، tax history، اور permits فی الحال sample data واپس کرتے ہیں، کیونکہ بھارت میں ان شعبوں کے لیے قابلِ اعتماد public APIs ابھی بڑے پیمانے پر دستیاب نہیں ہیں۔ Risk engine یہ اشارہ اس لیے دیتا ہے تاکہ آپ کو معلوم ہو کہ real data کے ساتھ score زیادہ درست ہوگا۔"
+      },
+      "item7": {
+        "question": "Air quality data کہاں سے آتا ہے؟",
+        "answer": "AQI values WAQI (World Air Quality Index) API سے آتی ہیں، جو بھارت بھر کے CPCB monitoring stations سے real-time readings جمع کرتی ہے۔ اگر آپ کی property ایسے شہر میں ہے جہاں قریب کوئی station موجود نہیں، تو یہ حصہ \"No data\" کے طور پر ظاہر ہوگا۔"
+      },
+      "item8": {
+        "question": "کیا ownership اور tax data حقیقی ہے؟",
+        "answer": "نہیں — ہم اس بارے میں واضح ہیں۔ Ownership، tax history، zoning، flood zone، اور permits والے حصے فی الحال sample data دکھاتے ہیں۔ بھارت میں ان شعبوں کے لیے قابلِ اعتماد public APIs ابھی بڑے پیمانے پر موجود نہیں ہیں۔ Sample data دکھانے والے ہر card کو interface میں واضح طور پر نشان زد کیا جاتا ہے۔"
+      },
+      "item9": {
+        "question": "میں property report کیسے download کروں؟",
+        "answer": "Property search میں کسی بھی property کو کھولیں، پھر property hero card کے اوپر دائیں طرف \"Download report\" پر کلک کریں۔ PDF میں property overview، risk assessment، تمام 6 data sections، اور data completeness summary شامل ہوتی ہے۔ عام طور پر اسے بننے میں 2–4 سیکنڈ لگتے ہیں۔"
+      },
+      "item10": {
+        "question": "کیا میں ایک ہی report میں کئی properties کا موازنہ کر سکتا ہوں؟",
+        "answer": "جی ہاں۔ Property search page پر کسی بھی card پر hover کریں اور ظاہر ہونے والے compare checkbox پر کلک کریں۔ 2–3 properties منتخب کریں، پھر نیچے موجود bar میں \"Compare\" پر کلک کریں۔ Comparison page پر \"Download comparison\" پر کلک کرنے سے تمام properties کے ساتھ side-by-side landscape PDF حاصل ہوگا۔"
+      },
+      "item11": {
+        "question": "میں اپنا account کیسے delete کروں؟",
+        "answer": "اپنے profile page پر جائیں اور نیچے موجود danger zone تک scroll کریں۔ Account deletion فوری اور مستقل ہے — آپ کی تمام properties اور history ہماری database سے cascade delete کے ذریعے ہٹا دی جاتی ہیں۔ کوئی recovery period نہیں ہے۔"
+      },
+      "item12": {
+        "question": "میں اپنا password بھول گیا ہوں۔ مجھے کیا کرنا چاہیے؟",
+        "answer": "Login page پر \"Forgot password\" پر کلک کریں۔ اپنی registered email درج کریں اور ہم آپ کو 6-digit OTP بھیجیں گے۔ OTP verify کریں، پھر نیا password مقرر کریں۔ OTP ایک ہی بار استعمال ہوتے ہیں اور جلد expire ہو جاتے ہیں۔ اگر آپ نے Google کے ذریعے sign up کیا ہے تو \"Continue with Google\" استعمال کریں — reset کرنے کے لیے کوئی password موجود نہیں ہوتا۔"
+      },
+      "item13": {
+        "question": "کیا میرا data third parties کے ساتھ شیئر کیا جاتا ہے؟",
+        "answer": "ہم چند محدود external services کو خاص مقاصد کے لیے استعمال کرتے ہیں: air quality کے لیے WAQI (صرف city name)، geocoding کے لیے Nominatim (صرف address string)، اور sign-in verification کے لیے Google OAuth۔ مکمل تفصیلات /security page پر موجود ہیں۔ کسی بھی personal یا property data کو کسی کو فروخت نہیں کیا جاتا۔"
+      },
+      "item14": {
+        "question": "میرے passwords کیسے محفوظ کیے جاتے ہیں؟",
+        "answer": "Passwords کو محفوظ کرنے سے پہلے BCrypt (strength factor 10) کے ذریعے hash کیا جاتا ہے۔ ہم آپ کا plain-text password کبھی نہیں دیکھتے اور اسے recover بھی نہیں کر سکتے — صرف OTP کے ذریعے reset کیا جا سکتا ہے۔ اگر آپ صرف Google کے ساتھ sign in کرتے ہیں، تو کوئی password محفوظ ہی نہیں کیا جاتا۔"
+      }
     }
-  }
-},
-  "aqiScale": {
-  "labels": {
-    "good": "اچھا",
-    "satisfactory": "اطمینان بخش",
-    "moderate": "معتدل",
-    "poor": "خراب",
-    "veryPoor": "بہت خراب",
-    "severe": "شدید"
   },
-  "descriptions": {
-    "good": "کم سے کم اثر",
-    "satisfactory": "حساس لوگوں کو سانس لینے میں ہلکی تکلیف",
-    "moderate": "حساس گروہوں کو سانس لینے میں تکلیف",
-    "poor": "طویل نمائش پر سانس لینے میں تکلیف",
-    "veryPoor": "طویل نمائش پر سانس کی بیماری",
-    "severe": "سب پر سنگین صحت کا اثر"
-  }
-},
+  "aqiScale": {
+    "labels": {
+      "good": "اچھا",
+      "satisfactory": "اطمینان بخش",
+      "moderate": "معتدل",
+      "poor": "خراب",
+      "veryPoor": "بہت خراب",
+      "severe": "شدید"
+    },
+    "descriptions": {
+      "good": "کم سے کم اثر",
+      "satisfactory": "حساس لوگوں کو سانس لینے میں ہلکی تکلیف",
+      "moderate": "حساس گروہوں کو سانس لینے میں تکلیف",
+      "poor": "طویل نمائش پر سانس لینے میں تکلیف",
+      "veryPoor": "طویل نمائش پر سانس کی بیماری",
+      "severe": "سب پر سنگین صحت کا اثر"
+    }
+  },
   "nav": {
     "dashboard": "ڈیش بورڈ",
     "propertySearch": "جائیداد کی تلاش",
@@ -454,10 +465,10 @@
       "evening": "شام بخیر"
     },
     "adminBanner": {
-  "title": "ایڈمن موڈ — پلیٹ فارم کا جائزہ",
-  "description": "آپ پلیٹ فارم پر تمام پراپرٹیز اور صارفین دیکھ رہے ہیں۔ اگلے اپ ڈیٹ میں ایک مخصوص ایڈمن ڈیش بورڈ آئے گا۔",
-  "badge": "Admin"
-},
+      "title": "ایڈمن موڈ — پلیٹ فارم کا جائزہ",
+      "description": "آپ پلیٹ فارم پر تمام پراپرٹیز اور صارفین دیکھ رہے ہیں۔ اگلے اپ ڈیٹ میں ایک مخصوص ایڈمن ڈیش بورڈ آئے گا۔",
+      "badge": "Admin"
+    },
     "subtitle": "ایک نظر میں آپ کا پورٹ فولیو",
     "platformOverview": "پلیٹ فارم کا جائزہ",
     "pageTitle": "ڈیش بورڈ | Real Estate Due Diligence Agent",
@@ -580,42 +591,42 @@
   },
   "recommendations": {
     "general1": "قانونی جانچ کے لیے ہمیشہ کسی مستند رئیل اسٹیٹ وکیل سے مشورہ کریں۔",
-"general2": "سب رجسٹرار کے دفتر سے سرکاری Encumbrance Certificate حاصل کریں۔",
-"general3": "مقامی میونسپل اتھارٹی سے پراپرٹی ٹیکس کی ادائیگی کی تصدیق کریں۔",
-"general4": "مصدقہ اسٹرکچرل سروےر سے سائٹ کا معائنہ کروائیں۔",
-"general5": "تمام دستاویزات کو متعلقہ سرکاری دفاتر کے اصل ریکارڈ سے ملا کر تصدیق کریں۔",
+    "general2": "سب رجسٹرار کے دفتر سے سرکاری Encumbrance Certificate حاصل کریں۔",
+    "general3": "مقامی میونسپل اتھارٹی سے پراپرٹی ٹیکس کی ادائیگی کی تصدیق کریں۔",
+    "general4": "مصدقہ اسٹرکچرل سروےر سے سائٹ کا معائنہ کروائیں۔",
+    "general5": "تمام دستاویزات کو متعلقہ سرکاری دفاتر کے اصل ریکارڈ سے ملا کر تصدیق کریں۔",
     "items": {
-  "incompleteData": {
-    "title": "{{address}} پر {{fieldCount}} خانے غائب ہیں",
-    "description": "verification score اور risk assessment بہتر بنانے کے لیے غائب خانے پُر کریں۔",
-    "actionLabel": "جائیداد دیکھیں"
-  },
-  "missingPhoto": {
-    "title": "{{count}} جائیدادوں میں تصویر نہیں",
-    "description": "تصویر شامل کرنے سے search results اور PDF رپورٹس میں جائیداد پہچاننا آسان ہو جاتا ہے۔",
-    "actionLabel": "تصویر شامل کریں"
-  },
-  "missingArea": {
-    "title": "{{count}} جائیدادوں میں area ڈیٹا نہیں",
-    "description": "درست risk scoring اور price-per-sqft کے لیے area (sqft) ضروری ہے۔",
-    "actionLabel": "تفصیل شامل کریں"
-  },
-  "diversePortfolio": {
-    "title": "پورٹ فولیو {{count}} شہروں میں پھیلا ہوا ہے",
-    "description": "آپ کی جائیدادیں کئی شہروں میں ہیں۔ مقام کے مطابق risk عوامل کا جائزہ لیں۔",
-    "actionLabel": "سب دیکھیں"
-  },
-  "allVerified": {
-    "title": "تمام جائیدادیں تصدیق شدہ",
-    "description": "آپ کے پورٹ فولیو کی ہر جائیداد نے تمام verification checks پاس کر لیں۔ ڈیٹا مکمل ہے۔",
-    "actionLabel": "پورٹ فولیو دیکھیں"
-  },
-  "pendingVerification": {
-    "title": "{{count}} جائیدادیں تصدیق کی منتظر ہیں",
-    "description": "pending جائیدادوں پر غائب خانے پُر کریں اور انہیں verified کریں۔",
-    "actionLabel": "pending دیکھیں"
-  }
-},
+      "incompleteData": {
+        "title": "{{address}} پر {{fieldCount}} خانے غائب ہیں",
+        "description": "verification score اور risk assessment بہتر بنانے کے لیے غائب خانے پُر کریں۔",
+        "actionLabel": "جائیداد دیکھیں"
+      },
+      "missingPhoto": {
+        "title": "{{count}} جائیدادوں میں تصویر نہیں",
+        "description": "تصویر شامل کرنے سے search results اور PDF رپورٹس میں جائیداد پہچاننا آسان ہو جاتا ہے۔",
+        "actionLabel": "تصویر شامل کریں"
+      },
+      "missingArea": {
+        "title": "{{count}} جائیدادوں میں area ڈیٹا نہیں",
+        "description": "درست risk scoring اور price-per-sqft کے لیے area (sqft) ضروری ہے۔",
+        "actionLabel": "تفصیل شامل کریں"
+      },
+      "diversePortfolio": {
+        "title": "پورٹ فولیو {{count}} شہروں میں پھیلا ہوا ہے",
+        "description": "آپ کی جائیدادیں کئی شہروں میں ہیں۔ مقام کے مطابق risk عوامل کا جائزہ لیں۔",
+        "actionLabel": "سب دیکھیں"
+      },
+      "allVerified": {
+        "title": "تمام جائیدادیں تصدیق شدہ",
+        "description": "آپ کے پورٹ فولیو کی ہر جائیداد نے تمام verification checks پاس کر لیں۔ ڈیٹا مکمل ہے۔",
+        "actionLabel": "پورٹ فولیو دیکھیں"
+      },
+      "pendingVerification": {
+        "title": "{{count}} جائیدادیں تصدیق کی منتظر ہیں",
+        "description": "pending جائیدادوں پر غائب خانے پُر کریں اور انہیں verified کریں۔",
+        "actionLabel": "pending دیکھیں"
+      }
+    },
     "title": "سفارشات",
     "actionsCount_one": "آپ کے پورٹ فولیو کو بہتر بنانے کے لیے {{count}} قدم",
     "actionsCount_other": "آپ کے پورٹ فولیو کو بہتر بنانے کے لیے {{count}} اقدامات",
@@ -885,25 +896,25 @@
           "REJECTED": "مسترد شدہ"
         },
         "buildingType": {
-  "CONCRETE": "کنکریٹ",
-  "STEEL": "اسٹیل",
-  "WOOD": "لکڑی",
-  "BRICK": "اینٹ"
-},
-"condition": {
-  "EXCELLENT": "بہترین",
-  "GOOD": "اچھا",
-  "FAIR": "ٹھیک",
-  "POOR": "خراب"
-},
-"soilType": {
-  "BLACK_COTTON": "کالی مٹی",
-  "RED_SOIL": "سرخ مٹی",
-  "ALLUVIAL": "جلوڑ مٹی",
-  "LATERITE": "لیٹرائٹ",
-  "SANDY": "ریتلی",
-  "CLAYEY": "چکنی مٹی"
-}
+          "CONCRETE": "کنکریٹ",
+          "STEEL": "اسٹیل",
+          "WOOD": "لکڑی",
+          "BRICK": "اینٹ"
+        },
+        "condition": {
+          "EXCELLENT": "بہترین",
+          "GOOD": "اچھا",
+          "FAIR": "ٹھیک",
+          "POOR": "خراب"
+        },
+        "soilType": {
+          "BLACK_COTTON": "کالی مٹی",
+          "RED_SOIL": "سرخ مٹی",
+          "ALLUVIAL": "جلوڑ مٹی",
+          "LATERITE": "لیٹرائٹ",
+          "SANDY": "ریتلی",
+          "CLAYEY": "چکنی مٹی"
+        }
       },
       "completeness": {
         "title": "ڈیٹا کی تکمیل",
@@ -1166,17 +1177,17 @@
       "moreItems": "+{{n}} مزید",
       "photoPending": "تصویر زیرِ التواء",
       "criticalRisk": "سنگین خطرہ",
-"riskScoreTooltipFull": "خطرہ: {{level}} ({{score}}/100) — مکمل تجزیہ کے لیے کلک کریں",
-"riskScoreClickTooltip": "مکمل خطرہ تجزیہ کے لیے کلک کریں",
-"riskBadgeAria": "مکمل خطرہ تجزیہ دیکھیں: {{level}}"
+      "riskScoreTooltipFull": "خطرہ: {{level}} ({{score}}/100) — مکمل تجزیہ کے لیے کلک کریں",
+      "riskScoreClickTooltip": "مکمل خطرہ تجزیہ کے لیے کلک کریں",
+      "riskBadgeAria": "مکمل خطرہ تجزیہ دیکھیں: {{level}}"
     },
     "risk": {
       "spectrum": {
-  "risk": "رسک",
-  "outOf": "/100",
-  "recalculate": "دوبارہ حساب کریں",
-  "recalculating": "دوبارہ حساب کیا جا رہا ہے..."
-},
+        "risk": "رسک",
+        "outOf": "/100",
+        "recalculate": "دوبارہ حساب کریں",
+        "recalculating": "دوبارہ حساب کیا جا رہا ہے..."
+      },
       "title": "خطرے کا جائزہ",
       "subtitle": "حقیقی aggregated data کی بنیاد پر",
       "unavailable": "خطرے کا اسکور دستیاب نہیں",
@@ -1203,9 +1214,9 @@
     },
     "details": {
       "generateReport": "رپورٹ تیار کریں",
-"generateReportTooltip": "اس پراپرٹی کے لیے مکمل ڈیو ڈلیجنس رپورٹ تیار کریں",
-"quickPdf": "فوری PDF",
-"quickPdfTooltip": "مختصر کلائنٹ سائیڈ PDF خلاصہ ڈاؤن لوڈ کریں",
+      "generateReportTooltip": "اس پراپرٹی کے لیے مکمل ڈیو ڈلیجنس رپورٹ تیار کریں",
+      "quickPdf": "فوری PDF",
+      "quickPdfTooltip": "مختصر کلائنٹ سائیڈ PDF خلاصہ ڈاؤن لوڈ کریں",
       "verifiedProperty": "تصدیق شدہ جائیداد",
       "pendingVerification": "تصدیق زیرِ التواء",
       "active": "فعال",
@@ -1408,67 +1419,67 @@
     }
   },
   "completeProfile": {
-  "title": "ایک اور قدم",
-  "subtitle": "اپنے تجربے کو ذاتی نوعیت کا بنانے کے لیے ہمیں اپنے بارے میں کچھ بتائیں۔",
-  "signedInAs": "{{name}} کے طور پر سائن ان کیا گیا",
-  "roleLabel": "میں ایک ہوں...",
-  "phoneLabel": "فون نمبر",
-  "phonePlaceholder": "98765 43210",
-  "phoneHelp": "ہم اسے صرف اہم اکاؤنٹ اطلاعات کے لیے استعمال کریں گے۔",
-  "submit": "سیٹ اپ مکمل کریں",
-  "creating": "آپ کا اکاؤنٹ بنایا جا رہا ہے…",
-  "terms": "جاری رکھ کر، آپ ہماری سروس کی شرائط اور رازداری کی پالیسی سے متفق ہیں۔",
-  "notYou": "آپ نہیں؟",
-  "signOut": "سائن آؤٹ",
-  "signOutAria": "سائن آؤٹ کریں اور بند کریں",
-  "signOutTitle": "سائن آؤٹ",
-  "confirmSignOut": "سائن آؤٹ کر کے واپس جانا ہے؟ آپ کی پیش رفت ضائع ہو جائے گی۔",
-  "defaultName": "دوست",
-  "roles": {
-    "buyer": {
-      "label": "خریدار / فرد",
-      "description": "جائیدادیں خریدنے کے خواہاں"
+    "title": "ایک اور قدم",
+    "subtitle": "اپنے تجربے کو ذاتی نوعیت کا بنانے کے لیے ہمیں اپنے بارے میں کچھ بتائیں۔",
+    "signedInAs": "{{name}} کے طور پر سائن ان کیا گیا",
+    "roleLabel": "میں ایک ہوں...",
+    "phoneLabel": "فون نمبر",
+    "phonePlaceholder": "98765 43210",
+    "phoneHelp": "ہم اسے صرف اہم اکاؤنٹ اطلاعات کے لیے استعمال کریں گے۔",
+    "submit": "سیٹ اپ مکمل کریں",
+    "creating": "آپ کا اکاؤنٹ بنایا جا رہا ہے…",
+    "terms": "جاری رکھ کر، آپ ہماری سروس کی شرائط اور رازداری کی پالیسی سے متفق ہیں۔",
+    "notYou": "آپ نہیں؟",
+    "signOut": "سائن آؤٹ",
+    "signOutAria": "سائن آؤٹ کریں اور بند کریں",
+    "signOutTitle": "سائن آؤٹ",
+    "confirmSignOut": "سائن آؤٹ کر کے واپس جانا ہے؟ آپ کی پیش رفت ضائع ہو جائے گی۔",
+    "defaultName": "دوست",
+    "roles": {
+      "buyer": {
+        "label": "خریدار / فرد",
+        "description": "جائیدادیں خریدنے کے خواہاں"
+      },
+      "agent": {
+        "label": "رئیل اسٹیٹ ایجنٹ",
+        "description": "پراپرٹی کی فہرستوں کا انتظام"
+      },
+      "legal": {
+        "label": "قانونی جائزہ کار",
+        "description": "قانونی دستاویزات کا جائزہ"
+      },
+      "financial": {
+        "label": "مالیاتی ادارہ",
+        "description": "بینک / قرض دینے والا شراکت دار"
+      }
     },
-    "agent": {
-      "label": "رئیل اسٹیٹ ایجنٹ",
-      "description": "پراپرٹی کی فہرستوں کا انتظام"
-    },
-    "legal": {
-      "label": "قانونی جائزہ کار",
-      "description": "قانونی دستاویزات کا جائزہ"
-    },
-    "financial": {
-      "label": "مالیاتی ادارہ",
-      "description": "بینک / قرض دینے والا شراکت دار"
+    "toasts": {
+      "sessionExpired": {
+        "title": "سیشن ختم ہو گیا",
+        "description": "جاری رکھنے کے لیے براہ کرم دوبارہ سائن ان کریں۔"
+      },
+      "signedOut": {
+        "title": "آپ سائن آؤٹ ہو گئے ہیں",
+        "description": "کسی بھی وقت دوبارہ سائن ان کریں۔"
+      },
+      "roleRequired": {
+        "title": "کردار درکار ہے",
+        "description": "جاری رکھنے کے لیے براہ کرم ایک کردار منتخب کریں۔"
+      },
+      "invalidPhone": {
+        "title": "غلط فون نمبر",
+        "description": "6-9 سے شروع ہونے والا 10 ہندسوں کا ہندوستانی موبائل درج کریں۔"
+      },
+      "welcome": {
+        "title": "پلیٹ فارم پر خوش آمدید، {{name}}",
+        "description": "آپ کا اکاؤنٹ تیار ہے۔ آپ کے ڈیش بورڈ پر ری ڈائریکٹ کیا جا رہا ہے۔"
+      },
+      "signupFailed": {
+        "title": "سائن اپ مکمل نہیں ہو سکا",
+        "description": "کچھ دیر بعد دوبارہ کوشش کریں۔"
+      }
     }
   },
-  "toasts": {
-    "sessionExpired": {
-      "title": "سیشن ختم ہو گیا",
-      "description": "جاری رکھنے کے لیے براہ کرم دوبارہ سائن ان کریں۔"
-    },
-    "signedOut": {
-      "title": "آپ سائن آؤٹ ہو گئے ہیں",
-      "description": "کسی بھی وقت دوبارہ سائن ان کریں۔"
-    },
-    "roleRequired": {
-      "title": "کردار درکار ہے",
-      "description": "جاری رکھنے کے لیے براہ کرم ایک کردار منتخب کریں۔"
-    },
-    "invalidPhone": {
-      "title": "غلط فون نمبر",
-      "description": "6-9 سے شروع ہونے والا 10 ہندسوں کا ہندوستانی موبائل درج کریں۔"
-    },
-    "welcome": {
-      "title": "پلیٹ فارم پر خوش آمدید، {{name}}",
-      "description": "آپ کا اکاؤنٹ تیار ہے۔ آپ کے ڈیش بورڈ پر ری ڈائریکٹ کیا جا رہا ہے۔"
-    },
-    "signupFailed": {
-      "title": "سائن اپ مکمل نہیں ہو سکا",
-      "description": "کچھ دیر بعد دوبارہ کوشش کریں۔"
-    }
-  }
-},
   "deleteAccount": {
     "title": "اکاؤنٹ حذف کریں",
     "subtitle": "یہ کارروائی واپس نہیں ہو سکتی۔",
@@ -1597,7 +1608,7 @@
       "actions": "اقدامات"
     },
     "empty": {
-      "title": "\u201C{{query}}\u201D کے لیے کوئی مطابقت نہیں",
+      "title": "“{{query}}” کے لیے کوئی مطابقت نہیں",
       "hint": "کسی صفحے کا نام، جائیداد کا پتہ، یا کوئی کارروائی تلاش کرنے کی کوشش کریں"
     },
     "kbd": {
@@ -1827,9 +1838,9 @@
     }
   },
   "searchableSelect": {
-  "searchPlaceholder": "تلاش کرنے کے لیے ٹائپ کریں...",
-  "noMatches": "\"{{query}}\" کے لیے کوئی مماثلت نہیں",
-  "usePrefix": "استعمال کریں"
+    "searchPlaceholder": "تلاش کرنے کے لیے ٹائپ کریں...",
+    "noMatches": "\"{{query}}\" کے لیے کوئی مماثلت نہیں",
+    "usePrefix": "استعمال کریں"
   },
   "otpVerification": {
     "title": "اپنا ای میل تصدیق کریں",
@@ -1861,156 +1872,206 @@
       "resendFailed": "کوڈ دوبارہ نہیں بھیجا جا سکا"
     }
   },
-  
-"notification": {
-  "title": "اطلاعات",
-  "subtitle": "{{count}} اطلاعات",
-  "subtitleEmpty": "ابھی تک کوئی اطلاع نہیں",
-  "unread": "غیر پڑھا",
-  "markAllRead": "سب کو پڑھا ہوا نشان کریں",
-  "clearAll": "سب صاف کریں",
-  "delete": "اطلاع حذف کریں",
-  "bell": "اطلاعات",
-  "filter": {
-    "all": "سب",
+  "notification": {
+    "title": "اطلاعات",
+    "subtitle": "{{count}} اطلاعات",
+    "subtitleEmpty": "ابھی تک کوئی اطلاع نہیں",
     "unread": "غیر پڑھا",
-    "reportReady": "رپورٹس",
-    "riskAlert": "الرٹ",
-    "system": "سسٹم"
-  },
-  "group": {
-    "today": "آج",
-    "yesterday": "کل",
-    "earlier": "اس ہفتے",
-    "older": "پرانا"
-  },
-  "empty": {
-    "title": "کوئی اطلاع نہیں",
-    "description": "آپ نے سب دیکھ لیا۔ جب رپورٹس مکمل ہوں یا الرٹ آئیں تو یہاں دکھے گا۔",
-    "filteredTitle": "ملتی جلتی اطلاعات نہیں",
-    "filteredDescription": "دیگر اطلاعات دیکھنے کے لیے مختلف فلٹر آزمائیں۔"
-  },
-  "clearAllConfirm": {
-    "title": "تمام اطلاعات صاف کریں؟",
-    "description": "یہ آپ کی تمام اطلاعات مستقل طور پر حذف کر دے گا۔ یہ عمل واپس نہیں کیا جا سکتا۔",
-    "confirm": "سب صاف کریں"
-  },
-  "pagination": {
-    "showing": "{{total}} میں سے {{from}}–{{to}} دکھا رہا ہے",
-    "prev": "پچھلا",
-    "next": "اگلا"
-  },
-  "toast": {
-    "view": "دیکھیں",
-    "markReadFailed": "پڑھا ہوا نشان کرنے میں ناکامی",
-    "markAllReadFailed": "سب پڑھا ہوا نشان کرنے میں ناکامی",
-    "markedAllRead": "تمام اطلاعات پڑھی ہوئی نشان کر دی گئیں",
-    "deleteFailed": "اطلاع حذف کرنے میں ناکامی",
-    "cleared": "تمام اطلاعات صاف ہو گئیں",
-    "clearFailed": "اطلاعات صاف کرنے میں ناکامی"
-  },
-  "preferences": {
-    "title": "اطلاع کی ترجیحات",
-    "description": "چنیں کہ آپ کب اور کیسے اطلاعات حاصل کرتے ہیں۔",
-    "type": "قسم",
-    "email": "ای میل",
-    "inApp": "ایپ میں",
-    "push": "پش",
-    "reportReady": "رپورٹ تیار",
-    "riskAlert": "خطرے کا الرٹ",
-    "priceChange": "قیمت تبدیلی",
-    "system": "سسٹم",
-    "save": "ترجیحات محفوظ کریں",
-    "saving": "محفوظ ہو رہا ہے…",
-    "saved": "ترجیحات محفوظ ہو گئیں",
-    "saveFailed": "ترجیحات محفوظ کرنے میں ناکامی"
-  },
-  "types": {
-    "REPORT_READY": "رپورٹ تیار",
-    "RISK_ALERT": "خطرے کا الرٹ",
-    "PRICE_CHANGE": "قیمت تبدیلی",
-    "SYSTEM": "سسٹم"
-  }
-,
-  "report": {
-  "card": {
-    "untitled": "ڈیو ڈیلیجنس رپورٹ",
-    "moreActions": "مزید کارروائیاں",
-    "delete": "رپورٹ حذف کریں",
-    "risk": "خطرہ",
-    "sections": "{{count}} حصے",
-    "copyLink": "لنک کاپی کریں",
-    "copyId": "رپورٹ ID کاپی کریں",
-    "linkCopied": "لنک کلپ بورڈ پر کاپی ہو گیا",
-    "idCopied": "رپورٹ ID کاپی ہو گیا",
-    "copyFailed": "کاپی ناکام"
-  },
-  "status": {
-    "pending": "زیر التوا",
-    "generating": "بنائی جا رہی ہے",
-    "completed": "مکمل",
-    "failed": "ناکام"
-  },
-  "print": {
-    "loading": "پرنٹ ویو تیار کیا جا رہا ہے…",
-    "loadFailed": "رپورٹ لوڈ کرنے میں ناکام",
-    "notFound": "رپورٹ نہیں ملی",
-    "screenHeader": "رپورٹ #{{id}} کے لیے پرنٹ پیش نظارہ",
-    "printNow": "ابھی پرنٹ کریں",
-    "footer": "رپورٹ #{{id}} · ورژن {{version}} · Real Estate Due Diligence Agent کے ذریعے تیار · {{email}}"
-  },
-  "list": {
-    "title": "میری رپورٹس",
-    "heading": "ڈیو ڈیلیجنس رپورٹس",
-    "subheading": "آپ کی تمام جائیدادوں میں تیار کردہ رپورٹس۔",
-    "backToDashboard": "ڈیش بورڈ",
-    "refresh": "ریفریش کریں",
-    "generateNew": "نئی بنائیں",
-    "searchPlaceholder": "عنوان یا پتے سے تلاش کریں…",
-    "deleted": "رپورٹ حذف کر دی گئی",
-    "deleteFailed": "رپورٹ حذف کرنے میں ناکامی",
-    "errorTitle": "رپورٹس لوڈ کرنے میں ناکامی",
-    "tryAgain": "دوبارہ کوشش کریں",
-    "stat": {
-      "total": "کل",
-      "completed": "مکمل",
-      "inProgress": "پیش رفت میں",
-      "failed": "ناکام"
-    },
+    "markAllRead": "سب کو پڑھا ہوا نشان کریں",
+    "clearAll": "سب صاف کریں",
+    "delete": "اطلاع حذف کریں",
+    "bell": "اطلاعات",
     "filter": {
-      "all": "تمام"
+      "all": "سب",
+      "unread": "غیر پڑھا",
+      "reportReady": "رپورٹس",
+      "riskAlert": "الرٹ",
+      "system": "سسٹم"
+    },
+    "group": {
+      "today": "آج",
+      "yesterday": "کل",
+      "earlier": "اس ہفتے",
+      "older": "پرانا"
     },
     "empty": {
-      "title": "ابھی تک کوئی رپورٹ نہیں",
-      "body": "یہاں دیکھنے کے لیے اپنی پہلی ڈیو ڈیلیجنس رپورٹ بنائیں۔ رپورٹس جائیداد کے ڈیٹا، خطرے کے تجزیے، مالیات اور سفارشات کو یکجا کرتی ہیں۔",
-      "cta": "جائیدادیں براؤز کریں"
+      "title": "کوئی اطلاع نہیں",
+      "description": "آپ نے سب دیکھ لیا۔ جب رپورٹس مکمل ہوں یا الرٹ آئیں تو یہاں دکھے گا۔",
+      "filteredTitle": "ملتی جلتی اطلاعات نہیں",
+      "filteredDescription": "دیگر اطلاعات دیکھنے کے لیے مختلف فلٹر آزمائیں۔"
     },
-    "filtered": {
-      "title": "آپ کے فلٹرز سے کوئی رپورٹ میل نہیں کھاتی",
-      "body": "اپنی تلاش یا حیثیت کے فلٹر کو ایڈجسٹ کرنے کی کوشش کریں۔",
-      "clear": "فلٹرز صاف کریں"
+    "clearAllConfirm": {
+      "title": "تمام اطلاعات صاف کریں؟",
+      "description": "یہ آپ کی تمام اطلاعات مستقل طور پر حذف کر دے گا۔ یہ عمل واپس نہیں کیا جا سکتا۔",
+      "confirm": "سب صاف کریں"
     },
     "pagination": {
       "showing": "{{total}} میں سے {{from}}–{{to}} دکھا رہا ہے",
       "prev": "پچھلا",
       "next": "اگلا"
     },
-    "deleteModal": {
-      "title": "یہ رپورٹ حذف کریں؟",
-      "body": "یہ مستقل طور پر \"{{title}}\" اور اس کے تمام حصوں کو حذف کر دے گا۔ اس عمل کو واپس نہیں لیا جا سکتا۔",
-      "confirmPrompt": "تصدیق کے لیے DELETE ٹائپ کریں",
-      "confirm": "رپورٹ حذف کریں"
+    "toast": {
+      "view": "دیکھیں",
+      "markReadFailed": "پڑھا ہوا نشان کرنے میں ناکامی",
+      "markAllReadFailed": "سب پڑھا ہوا نشان کرنے میں ناکامی",
+      "markedAllRead": "تمام اطلاعات پڑھی ہوئی نشان کر دی گئیں",
+      "deleteFailed": "اطلاع حذف کرنے میں ناکامی",
+      "cleared": "تمام اطلاعات صاف ہو گئیں",
+      "clearFailed": "اطلاعات صاف کرنے میں ناکامی"
+    },
+    "preferences": {
+      "title": "اطلاع کی ترجیحات",
+      "description": "چنیں کہ آپ کب اور کیسے اطلاعات حاصل کرتے ہیں۔",
+      "type": "قسم",
+      "email": "ای میل",
+      "inApp": "ایپ میں",
+      "push": "پش",
+      "reportReady": "رپورٹ تیار",
+      "riskAlert": "خطرے کا الرٹ",
+      "priceChange": "قیمت تبدیلی",
+      "system": "سسٹم",
+      "save": "ترجیحات محفوظ کریں",
+      "saving": "محفوظ ہو رہا ہے…",
+      "saved": "ترجیحات محفوظ ہو گئیں",
+      "saveFailed": "ترجیحات محفوظ کرنے میں ناکامی"
+    },
+    "types": {
+      "REPORT_READY": "رپورٹ تیار",
+      "RISK_ALERT": "خطرے کا الرٹ",
+      "PRICE_CHANGE": "قیمت تبدیلی",
+      "SYSTEM": "سسٹم"
+    },
+    "report": {
+      "card": {
+        "untitled": "ڈیو ڈیلیجنس رپورٹ",
+        "moreActions": "مزید کارروائیاں",
+        "delete": "رپورٹ حذف کریں",
+        "risk": "خطرہ",
+        "sections": "{{count}} حصے",
+        "copyLink": "لنک کاپی کریں",
+        "copyId": "رپورٹ ID کاپی کریں",
+        "linkCopied": "لنک کلپ بورڈ پر کاپی ہو گیا",
+        "idCopied": "رپورٹ ID کاپی ہو گیا",
+        "copyFailed": "کاپی ناکام"
+      },
+      "status": {
+        "pending": "زیر التوا",
+        "generating": "بنائی جا رہی ہے",
+        "completed": "مکمل",
+        "failed": "ناکام"
+      },
+      "print": {
+        "loading": "پرنٹ ویو تیار کیا جا رہا ہے…",
+        "loadFailed": "رپورٹ لوڈ کرنے میں ناکام",
+        "notFound": "رپورٹ نہیں ملی",
+        "screenHeader": "رپورٹ #{{id}} کے لیے پرنٹ پیش نظارہ",
+        "printNow": "ابھی پرنٹ کریں",
+        "footer": "رپورٹ #{{id}} · ورژن {{version}} · Real Estate Due Diligence Agent کے ذریعے تیار · {{email}}"
+      },
+      "list": {
+        "title": "میری رپورٹس",
+        "heading": "ڈیو ڈیلیجنس رپورٹس",
+        "subheading": "آپ کی تمام جائیدادوں میں تیار کردہ رپورٹس۔",
+        "backToDashboard": "ڈیش بورڈ",
+        "refresh": "ریفریش کریں",
+        "generateNew": "نئی بنائیں",
+        "searchPlaceholder": "عنوان یا پتے سے تلاش کریں…",
+        "deleted": "رپورٹ حذف کر دی گئی",
+        "deleteFailed": "رپورٹ حذف کرنے میں ناکامی",
+        "errorTitle": "رپورٹس لوڈ کرنے میں ناکامی",
+        "tryAgain": "دوبارہ کوشش کریں",
+        "stat": {
+          "total": "کل",
+          "completed": "مکمل",
+          "inProgress": "پیش رفت میں",
+          "failed": "ناکام"
+        },
+        "filter": {
+          "all": "تمام"
+        },
+        "empty": {
+          "title": "ابھی تک کوئی رپورٹ نہیں",
+          "body": "یہاں دیکھنے کے لیے اپنی پہلی ڈیو ڈیلیجنس رپورٹ بنائیں۔ رپورٹس جائیداد کے ڈیٹا، خطرے کے تجزیے، مالیات اور سفارشات کو یکجا کرتی ہیں۔",
+          "cta": "جائیدادیں براؤز کریں"
+        },
+        "filtered": {
+          "title": "آپ کے فلٹرز سے کوئی رپورٹ میل نہیں کھاتی",
+          "body": "اپنی تلاش یا حیثیت کے فلٹر کو ایڈجسٹ کرنے کی کوشش کریں۔",
+          "clear": "فلٹرز صاف کریں"
+        },
+        "pagination": {
+          "showing": "{{total}} میں سے {{from}}–{{to}} دکھا رہا ہے",
+          "prev": "پچھلا",
+          "next": "اگلا"
+        },
+        "deleteModal": {
+          "title": "یہ رپورٹ حذف کریں؟",
+          "body": "یہ مستقل طور پر \"{{title}}\" اور اس کے تمام حصوں کو حذف کر دے گا۔ اس عمل کو واپس نہیں لیا جا سکتا۔",
+          "confirmPrompt": "تصدیق کے لیے DELETE ٹائپ کریں",
+          "confirm": "رپورٹ حذف کریں"
+        }
+      },
+      "versionHistory": {
+        "title": "ورژن کی تاریخ",
+        "subtitle": "{{address}}",
+        "loading": "ورژنز لوڈ ہو رہے ہیں…",
+        "error": "ورژن کی تاریخ لوڈ کرنے میں ناکامی۔",
+        "empty": "اس جائیداد کے لیے کوئی ورژن نہیں ملا۔",
+        "current": "موجودہ",
+        "view": "دیکھیں"
+      }
     }
   },
-  "versionHistory": {
-  "title": "ورژن کی تاریخ",
-  "subtitle": "{{address}}",
-  "loading": "ورژنز لوڈ ہو رہے ہیں…",
-  "error": "ورژن کی تاریخ لوڈ کرنے میں ناکامی۔",
-  "empty": "اس جائیداد کے لیے کوئی ورژن نہیں ملا۔",
-  "current": "موجودہ",
-  "view": "دیکھیں"
-}
-}
-}
+  "export": {
+    "pdf": "پی ڈی ایف دستاویز",
+    "excel": "ایکسل ورک بک",
+    "generating": "برآمد تیار ہو رہی ہے...",
+    "download": "رپورٹ برآمد کریں",
+    "preview": "پیش نظارہ دستاویز",
+    "bulk": "بلک برآمد",
+    "history": "برآمد کی ہسٹری",
+    "fileSize": "فائل کا سائز",
+    "fileName": "فائل کا نام",
+    "date": "تاریخ",
+    "estimatedPages": "صفحات",
+    "pages": "صفحات",
+    "sections": "حصے",
+    "modules": "ماڈیولز",
+    "status": "حالت",
+    "summaryTitle": "خلاصہ پیش نظارہ",
+    "includedSections": "ماڈیولز",
+    "loadingHistory": "ہسٹری لوڈ ہو رہی ہے...",
+    "noHistory": "کوئی برآمد ہسٹری نہیں",
+    "noHistoryDesc": "برآمد شدہ رپورٹس یہاں محفوظ کی جائیں گی۔",
+    "bulkPdf": "بلک ZIP (PDF)",
+    "bulkExcel": "بلک Excel",
+    "format": {
+      "pdf": "PDF",
+      "excel": "EXCEL",
+      "label": "فارمیٹ",
+      "select": "فارمیٹ منتخب کریں",
+      "pdfDesc": "مکمل رپورٹ",
+      "excelDesc": "ڈیٹا سیٹ"
+    },
+    "progress": {
+      "label": "پیش رفت",
+      "preparing": "تیاری ہو رہی ہے...",
+      "fetching": "ڈیٹا حاصل کیا جا رہا ہے...",
+      "rendering": "رینڈر ہو رہا ہے...",
+      "finalizing": "ڈاؤن لوڈ شروع ہو رہا ہے..."
+    },
+    "ready": {
+      "title": "برآمد تیار ہے",
+      "message": "کامیابی سے مکمل ہو گیا!"
+    },
+    "error": {
+      "title": "خرابی",
+      "failed": "ناکام ہو گیا۔"
+    },
+    "success": {
+      "pdf": "PDF تیار ہے",
+      "excel": "Excel تیار ہے",
+      "bulk": "بلک برآمد تیار ہے"
+    }
+  }
 }
