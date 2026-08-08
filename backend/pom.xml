@@ -205,6 +205,13 @@
             <version>7.2.5</version>
         </dependency>
 
+        <!-- JFreeChart for embedded charts (bars, donuts) in PDF reports -->
+        <dependency>
+            <groupId>org.jfree</groupId>
+            <artifactId>jfreechart</artifactId>
+            <version>1.5.4</version>
+        </dependency>
+
         <!-- Apache POI for Excel -->
         <dependency>
             <groupId>org.apache.poi</groupId>

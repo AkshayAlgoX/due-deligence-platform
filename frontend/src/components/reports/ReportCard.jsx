@@ -1,391 +1,416 @@
-// frontend/src/components/reports/ReportCard.jsx
+// src/components/reports/ReportCard.jsx
+// ---------------------------------------------------------------------------
+// Premium report list row — risk badge + inline hover actions + relative time
+// Matches Linear/Vercel/Stripe dashboard density and hierarchy.
+// ---------------------------------------------------------------------------
+
 "use client";
 
-import { motion } from "framer-motion";
+import { useState, useCallback, useRef, useEffect } from "react";
+import { motion, AnimatePresence } from "framer-motion";
 import {
-  Activity,
-  AlertCircle,
-  ArrowUpRight,
-  Calendar,
-  Copy,
   FileText,
-  Link2,
   Loader2,
-  MapPin,
-  MoreVertical,
+  AlertCircle,
+  Clock,
+  MoreHorizontal,
   Trash2,
+  RefreshCw,
+  Copy,
+  ExternalLink,
 } from "lucide-react";
-import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { useEffect, useLayoutEffect, useRef, useState } from "react";
-import { createPortal } from "react-dom";
-import { useTranslation } from "react-i18next";
-import { toast } from "sonner";
+import RiskScoreBadge from "@/components/reports/RiskScoreBadge";
+import InlineActions from "@/components/reports/InlineActions";
+import { formatRelativeTime, formatAbsoluteDate } from "@/utils/formatDate";
 
-import {
-  formatReportDateShort,
-  formatVersion,
-  getStatusMeta,
-} from "@/utils/reportUtils";
-import { getRiskLevelMeta } from "@/utils/riskUtils";
+// ---------------------------------------------------------------------------
+// Status config
+// ---------------------------------------------------------------------------
+
+const STATUS_CONFIG = {
+  COMPLETED: {
+    label: "Completed",
+    dot: "bg-emerald-400",
+    text: "text-emerald-400",
+    bg: "bg-emerald-500/10",
+    border: "border-emerald-500/20",
+    pulse: false,
+  },
+  GENERATING: {
+    label: "Generating",
+    dot: "bg-blue-400",
+    text: "text-blue-400",
+    bg: "bg-blue-500/10",
+    border: "border-blue-500/20",
+    pulse: true,
+  },
+  PENDING: {
+    label: "Pending",
+    dot: "bg-amber-400",
+    text: "text-amber-400",
+    bg: "bg-amber-500/10",
+    border: "border-amber-500/20",
+    pulse: true,
+  },
+  FAILED: {
+    label: "Failed",
+    dot: "bg-red-400",
+    text: "text-red-400",
+    bg: "bg-red-500/10",
+    border: "border-red-500/20",
+    pulse: false,
+  },
+};
+
+// ---------------------------------------------------------------------------
+// Main component
+// ---------------------------------------------------------------------------
 
 /**
- * ReportCard — dense list item for the My Reports page.
- *
- * Design principles (Linear / Vercel / Notion tier):
- *  - Entire card is the click target (no redundant "View" button)
- *  - Kebab menu contains ONLY secondary actions (Copy Link, Copy ID, Delete)
- *  - stopPropagation() on kebab prevents double navigation
- *  - Hover reveals ArrowUpRight indicator (subtle "navigate away" hint)
- *  - Kebab uses buttons + router.push (never nested <a>)
- *  - Kebab dropdown is portaled to document.body to escape stacking contexts
- *    created by parent hover transforms (Session 22 fix)
+ * @param {{
+ *   report: {
+ *     id: number,
+ *     title: string,
+ *     propertyAddress: string,
+ *     status: "PENDING"|"GENERATING"|"COMPLETED"|"FAILED",
+ *     version: number,
+ *     riskScoreSnapshot: number|null,
+ *     riskLevelSnapshot: "LOW"|"MEDIUM"|"HIGH"|"CRITICAL"|null,
+ *     sectionCount: number,
+ *     createdAt: string,
+ *     updatedAt: string,
+ *     errorMessage: string|null,
+ *   },
+ *   onDownloadPdf: (reportId: number, filename: string) => Promise<void>,
+ *   onDownloadExcel: (reportId: number, filename: string) => Promise<void>,
+ *   onDelete: (reportId: number) => void,
+ *   onRegenerate: (reportId: number) => void,
+ *   isExporting?: boolean,
+ *   animationDelay?: number,
+ * }} props
  */
-export default function ReportCard({ report, onDelete, deleting = false }) {
-  const { t } = useTranslation();
+export default function ReportCard({
+  report,
+  onDownloadPdf,
+  onDownloadExcel,
+  onDelete,
+  onRegenerate,
+  isExporting = false,
+  animationDelay = 0,
+}) {
   const router = useRouter();
-
   const [menuOpen, setMenuOpen] = useState(false);
-  const [menuPos, setMenuPos] = useState({ top: 0, left: 0 });
   const menuRef = useRef(null);
-  const buttonRef = useRef(null);
+  const menuButtonRef = useRef(null);
 
-  // Close menu on outside click — checks BOTH button and portal menu
-  useEffect(() => {
-    if (!menuOpen) return;
-    const handler = (e) => {
-      const clickedButton = buttonRef.current?.contains(e.target);
-      const clickedMenu = menuRef.current?.contains(e.target);
-      if (!clickedButton && !clickedMenu) {
-        setMenuOpen(false);
-      }
-    };
-    document.addEventListener("mousedown", handler);
-    return () => document.removeEventListener("mousedown", handler);
-  }, [menuOpen]);
-
-  // Close menu on Esc
-  useEffect(() => {
-    if (!menuOpen) return;
-    const handler = (e) => {
-      if (e.key === "Escape") setMenuOpen(false);
-    };
-    document.addEventListener("keydown", handler);
-    return () => document.removeEventListener("keydown", handler);
-  }, [menuOpen]);
-
-  // Calculate portal position based on button location
-  useLayoutEffect(() => {
-    if (!menuOpen || !buttonRef.current) return;
-    const rect = buttonRef.current.getBoundingClientRect();
-    const MENU_WIDTH = 208; // w-52 = 13rem = 208px
-    setMenuPos({
-      top: rect.bottom + 6, // 6px gap below button
-      left: rect.right - MENU_WIDTH, // right-align to button
-    });
-  }, [menuOpen]);
-
-  // Reposition on scroll / resize while menu is open
-  useEffect(() => {
-    if (!menuOpen) return;
-    const reposition = () => {
-      if (!buttonRef.current) return;
-      const rect = buttonRef.current.getBoundingClientRect();
-      const MENU_WIDTH = 208;
-      setMenuPos({
-        top: rect.bottom + 6,
-        left: rect.right - MENU_WIDTH,
-      });
-    };
-    window.addEventListener("scroll", reposition, true);
-    window.addEventListener("resize", reposition);
-    return () => {
-      window.removeEventListener("scroll", reposition, true);
-      window.removeEventListener("resize", reposition);
-    };
-  }, [menuOpen]);
-
-  const statusMeta = getStatusMeta(report.status);
+  const statusCfg = STATUS_CONFIG[report.status] ?? STATUS_CONFIG.PENDING;
   const isCompleted = report.status === "COMPLETED";
   const isFailed = report.status === "FAILED";
-  const isInProgress =
-    report.status === "PENDING" || report.status === "GENERATING";
+  const isProcessing = report.status === "PENDING" || report.status === "GENERATING";
 
-  const hasRiskSnapshot =
-    report.riskScoreSnapshot != null && report.riskLevelSnapshot != null;
-  const riskMeta = hasRiskSnapshot
-    ? getRiskLevelMeta(report.riskLevelSnapshot)
-    : null;
-
-  // ── Kebab action handlers ──────────────────────────────────
-  const handleMenuToggle = (e) => {
-    e.preventDefault();
-    e.stopPropagation();
-    setMenuOpen((v) => !v);
-  };
-
-  const handleCopyLink = (e) => {
-    e.preventDefault();
-    e.stopPropagation();
-    setMenuOpen(false);
-    try {
-      const url = `${window.location.origin}/reports/${report.id}`;
-      navigator.clipboard.writeText(url);
-      toast.success(t("report.card.linkCopied", "Link copied to clipboard"));
-    } catch (err) {
-      console.error("Copy link failed:", err);
-      toast.error(t("report.card.copyFailed", "Failed to copy"));
+  // ── Context menu close on outside click ──────────────────────────────
+  useEffect(() => {
+    if (!menuOpen) return;
+    function handleClick(e) {
+      if (
+        menuRef.current &&
+        !menuRef.current.contains(e.target) &&
+        menuButtonRef.current &&
+        !menuButtonRef.current.contains(e.target)
+      ) {
+        setMenuOpen(false);
+      }
     }
-  };
+    document.addEventListener("mousedown", handleClick);
+    return () => document.removeEventListener("mousedown", handleClick);
+  }, [menuOpen]);
 
-  const handleCopyId = (e) => {
-    e.preventDefault();
-    e.stopPropagation();
-    setMenuOpen(false);
-    try {
-      navigator.clipboard.writeText(String(report.id));
-      toast.success(t("report.card.idCopied", "Report ID copied"));
-    } catch (err) {
-      console.error("Copy ID failed:", err);
-      toast.error(t("report.card.copyFailed", "Failed to copy"));
+  useEffect(() => {
+    if (!menuOpen) return;
+    function handleKey(e) {
+      if (e.key === "Escape") setMenuOpen(false);
     }
-  };
+    document.addEventListener("keydown", handleKey);
+    return () => document.removeEventListener("keydown", handleKey);
+  }, [menuOpen]);
 
-  const handleDelete = (e) => {
-    e.preventDefault();
-    e.stopPropagation();
-    setMenuOpen(false);
-    if (typeof onDelete === "function") {
-      onDelete(report);
-    }
-  };
+  // ── Navigation ────────────────────────────────────────────────────────
+  const handleRowClick = useCallback(() => {
+    if (isCompleted) router.push(`/reports/${report.id}`);
+  }, [isCompleted, router, report.id]);
 
-  // ── The whole card is a Link (completed) or a div (in-progress/failed) ──
-  const CardWrapper = isCompleted ? Link : "div";
-  const wrapperProps = isCompleted ? { href: `/reports/${report.id}` } : {};
+  const handleKeyDown = useCallback(
+    (e) => {
+      if (e.key === "Enter" || e.key === " ") {
+        e.preventDefault();
+        handleRowClick();
+      }
+    },
+    [handleRowClick]
+  );
 
-   return (
+  // ── Menu open handler ────────────────────────────────────────────────
+  const handleMenuOpen = useCallback(() => {
+    setMenuOpen((o) => !o);
+  }, []);
+
+  // ── Row icon ─────────────────────────────────────────────────────────
+  const RowIcon = isFailed
+    ? AlertCircle
+    : isProcessing
+    ? Loader2
+    : FileText;
+
+  const iconClass = isFailed
+    ? "text-red-400"
+    : isProcessing
+    ? "text-blue-400 animate-spin"
+    : "text-slate-400";
+
+  // ── Timestamps ───────────────────────────────────────────────────────
+  const relativeTime = formatRelativeTime(report.createdAt);
+  const absoluteTime = formatAbsoluteDate(report.createdAt);
+  const updatedRelative = report.updatedAt ? formatRelativeTime(report.updatedAt) : null;
+
+  // ── Address display ───────────────────────────────────────────────────
+  // Title is "Due Diligence: {address}" — extract address after colon for
+  // cleaner display, or fall back to propertyAddress
+  const displayAddress = report.propertyAddress || report.title || "Unknown property";
+  const displayTitle = report.title || `Report #${report.id}`;
+
+  return (
     <motion.div
-      layout
       initial={{ opacity: 0, y: 6 }}
       animate={{ opacity: 1, y: 0 }}
-      exit={{ opacity: 0, y: -6 }}
-      transition={{ duration: 0.2 }}
+      transition={{ duration: 0.2, delay: animationDelay, ease: "easeOut" }}
+      // `group` enables child group-hover: selectors
       className={`
-        group relative rounded-xl border transition-all duration-200
-        ${isCompleted
-          ? "border-gray-200 dark:border-[#30363d] bg-white dark:bg-[#161b22] hover:border-gray-300 dark:hover:border-[#484f58] hover:shadow-sm hover:-translate-y-[1px]"
-          : isFailed
-          ? "border-red-200 dark:border-red-500/25 bg-red-50/30 dark:bg-red-500/5"
-          : "border-blue-200 dark:border-blue-500/25 bg-blue-50/30 dark:bg-blue-500/5"
-        }
-        ${deleting ? "opacity-50 pointer-events-none" : ""}
+        group relative flex items-center gap-4 px-5 py-4
+        rounded-xl border
+        bg-slate-900/50 hover:bg-slate-900/80
+        border-slate-800/60 hover:border-slate-700/80
+        transition-all duration-150 cursor-default
+        ${isCompleted ? "cursor-pointer" : ""}
+        focus:outline-none focus-visible:ring-2 focus-visible:ring-emerald-500/40
       `}
+      onClick={handleRowClick}
+      onKeyDown={handleKeyDown}
+      tabIndex={isCompleted ? 0 : undefined}
+      role={isCompleted ? "link" : undefined}
+      aria-label={isCompleted ? `View report: ${displayTitle}` : displayTitle}
     >
-      <div className="flex items-start gap-4 p-5">
-        {/* ── LEFT + MIDDLE wrapped in Link (navigable content) ── */}
-        <CardWrapper
-          {...wrapperProps}
-          className={`flex items-start gap-4 flex-1 min-w-0 ${
-            isCompleted ? "cursor-pointer" : ""
-          }`}
-        >
-          {/* ── Left: Status icon ── */}
-          <div
-            className="w-11 h-11 rounded-lg flex items-center justify-center flex-shrink-0 transition-transform group-hover:scale-105"
-            style={{
-              backgroundColor: `${statusMeta.color}15`,
-            }}
-          >
-            {isInProgress && (
-              <Loader2
-                className="w-5 h-5 animate-spin"
-                style={{ color: statusMeta.color }}
-                strokeWidth={2}
-              />
-            )}
-            {isCompleted && (
-              <FileText
-                className="w-5 h-5"
-                style={{ color: statusMeta.color }}
-                strokeWidth={2}
-              />
-            )}
-            {isFailed && (
-              <AlertCircle
-                className="w-5 h-5"
-                style={{ color: statusMeta.color }}
-                strokeWidth={2}
-              />
-            )}
-          </div>
+      {/* ── Left: Row icon ────────────────────────────────────────────── */}
+      <div
+        className="flex-shrink-0 flex items-center justify-center w-9 h-9 rounded-lg bg-slate-800/60 border border-slate-700/40"
+        aria-hidden="true"
+      >
+        <RowIcon size={16} strokeWidth={1.75} className={iconClass} />
+      </div>
 
-          {/* ── Middle: Content ── */}
-          <div className="flex-1 min-w-0">
-            {/* Row 1: Title + version + status */}
-            <div className="flex items-center gap-2.5 flex-wrap mb-1.5">
-              <h3 className="text-[15px] font-bold text-gray-900 dark:text-[#e6edf3] leading-tight truncate">
-                {report.title ||
-                  t("report.card.untitled", "Due Diligence Report")}
-              </h3>
-              {report.version != null && (
-                <span className="text-[11px] font-bold text-gray-400 dark:text-[#6e7681] tabular-nums flex-shrink-0">
-                  {formatVersion(report.version)}
-                </span>
-              )}
-              <span
-                className={`
-                  inline-flex items-center gap-1.5 px-2 py-0.5 rounded-full
-                  text-[10px] font-bold uppercase tracking-widest flex-shrink-0
-                  ${statusMeta.bg} ${statusMeta.text} border ${statusMeta.border}
-                `}
-              >
-                <span
-                  className={`w-1 h-1 rounded-full ${statusMeta.dot} ${
-                    isInProgress ? "animate-pulse" : ""
-                  }`}
-                />
-                {t(statusMeta.labelKey, statusMeta.defaultLabel)}
-              </span>
-            </div>
+      {/* ── Centre: Title + meta ─────────────────────────────────────── */}
+      <div className="flex-1 min-w-0">
+        {/* Title row */}
+        <div className="flex items-center gap-2.5 flex-wrap">
+          <span className="text-sm font-semibold text-slate-100 truncate leading-tight">
+            {displayAddress}
+          </span>
 
-            {/* Row 2: Property address + generated date */}
-            <div className="flex items-center gap-3 flex-wrap text-xs text-gray-500 dark:text-[#7d8590] mb-2.5">
-              {report.propertyAddress && (
-                <span className="inline-flex items-center gap-1 min-w-0">
-                  <MapPin className="w-3 h-3 flex-shrink-0" strokeWidth={2} />
-                  <span className="truncate max-w-[280px]">
-                    {report.propertyAddress}
-                  </span>
-                </span>
-              )}
-              {report.createdAt && (
-                <span className="inline-flex items-center gap-1 flex-shrink-0">
-                  <Calendar className="w-3 h-3" strokeWidth={2} />
-                  {formatReportDateShort(report.createdAt)}
-                </span>
-              )}
-            </div>
+          {/* Version badge */}
+          <span className="flex-shrink-0 text-[10px] font-medium text-slate-500 bg-slate-800/60 border border-slate-700/40 px-1.5 py-0.5 rounded">
+            v{report.version ?? 1}
+          </span>
 
-            {/* Row 3: Meta chips */}
-            <div className="flex items-center gap-2 flex-wrap">
-              {hasRiskSnapshot && (
-                <span
-                  className="inline-flex items-center gap-1.5 px-2 py-0.5 rounded-md text-[11px] font-semibold tabular-nums"
-                  style={{
-                    backgroundColor: `${riskMeta.solid}15`,
-                    color: riskMeta.solid,
-                  }}
-                >
-                  <Activity className="w-3 h-3" strokeWidth={2.25} />
-                  {t("report.card.risk", "Risk")}{" "}
-                  {Number(report.riskScoreSnapshot).toFixed(1)}
-                </span>
-              )}
-              {report.sectionCount != null && (
-                <span className="inline-flex items-center gap-1.5 px-2 py-0.5 rounded-md text-[11px] font-semibold text-gray-600 dark:text-[#c9d1d9] bg-gray-100 dark:bg-[#21262d]">
-                  <FileText className="w-3 h-3" strokeWidth={2.25} />
-                  {t("report.card.sections", "{{count}} sections", {
-                    count: report.sectionCount,
-                  })}
-                </span>
-              )}
-              {isFailed && report.errorMessage && (
-                <span
-                  className="inline-flex items-center gap-1.5 px-2 py-0.5 rounded-md text-[11px] font-medium text-red-700 dark:text-red-400 bg-red-100 dark:bg-red-500/15 max-w-[300px] truncate"
-                  title={report.errorMessage}
-                >
-                  <AlertCircle
-                    className="w-3 h-3 flex-shrink-0"
-                    strokeWidth={2.25}
-                  />
-                  <span className="truncate">{report.errorMessage}</span>
-                </span>
-              )}
-            </div>
-          </div>
-        </CardWrapper>
+          {/* Status pill */}
+          <StatusPill status={report.status} config={statusCfg} />
+        </div>
 
-        {/* ── RIGHT: Hover indicator + Kebab — OUTSIDE the Link ── */}
-        <div className="flex items-center gap-1 flex-shrink-0">
-          {/* Subtle "navigate away" indicator */}
-          {isCompleted && (
-            <div
-              className="opacity-0 group-hover:opacity-100 transition-opacity duration-200 pr-1"
-              aria-hidden="true"
-            >
-              <ArrowUpRight
-                className="w-4 h-4 text-gray-400 dark:text-[#7d8590]"
-                strokeWidth={2.25}
-              />
-            </div>
+        {/* Meta row */}
+        <div className="flex items-center gap-3 mt-1.5 flex-wrap">
+          {/* Section count (if completed) */}
+          {isCompleted && report.sectionCount > 0 && (
+            <span className="text-xs text-slate-500">
+              {report.sectionCount} sections
+            </span>
           )}
 
-          {/* Kebab — completely outside Link, no more router bar flash */}
-          <div className="relative">
-            <button
-              ref={buttonRef}
-              type="button"
-              onClick={handleMenuToggle}
-              aria-label={t("report.card.moreActions", "More actions")}
-              aria-expanded={menuOpen}
-              className="p-1.5 rounded-lg text-gray-400 dark:text-[#6e7681] hover:text-gray-700 dark:hover:text-[#e6edf3] hover:bg-gray-100 dark:hover:bg-[#21262d] transition-colors"
-            >
-              <MoreVertical className="w-4 h-4" strokeWidth={2.25} />
-            </button>
+          {/* Error message (if failed) */}
+          {isFailed && report.errorMessage && (
+            <span className="text-xs text-red-400/80 truncate max-w-xs">
+              {report.errorMessage}
+            </span>
+          )}
 
-            {/* Portaled dropdown */}
-            {menuOpen && typeof window !== "undefined" && createPortal(
-              <motion.div
-                ref={menuRef}
-                initial={{ opacity: 0, scale: 0.95, y: -4 }}
-                animate={{ opacity: 1, scale: 1, y: 0 }}
-                transition={{ duration: 0.12 }}
-                style={{
-                  position: "fixed",
-                  top: menuPos.top,
-                  left: menuPos.left,
-                }}
-                className="z-[9999] w-52 rounded-xl border border-gray-200 dark:border-[#30363d] bg-white dark:bg-[#161b22] shadow-xl overflow-hidden py-1"
-              >
-                {/* Copy Link */}
-                <button
-                  type="button"
-                  onClick={handleCopyLink}
-                  className="w-full flex items-center gap-2.5 px-3 py-2 text-[13px] text-gray-700 dark:text-[#e6edf3] hover:bg-gray-50 dark:hover:bg-[#1c2129] transition-colors text-left"
-                >
-                  <Link2 className="w-3.5 h-3.5" strokeWidth={2} />
-                  {t("report.card.copyLink", "Copy link")}
-                </button>
+          {/* Timestamp */}
+          <span
+            className="flex items-center gap-1 text-xs text-slate-500"
+            title={absoluteTime}
+          >
+            <Clock size={10} strokeWidth={1.75} aria-hidden="true" />
+            <time dateTime={report.createdAt}>{relativeTime}</time>
+          </span>
 
-                {/* Copy Report ID */}
-                <button
-                  type="button"
-                  onClick={handleCopyId}
-                  className="w-full flex items-center gap-2.5 px-3 py-2 text-[13px] text-gray-700 dark:text-[#e6edf3] hover:bg-gray-50 dark:hover:bg-[#1c2129] transition-colors text-left"
-                >
-                  <Copy className="w-3.5 h-3.5" strokeWidth={2} />
-                  {t("report.card.copyId", "Copy report ID")}
-                </button>
-
-                {/* Divider */}
-                <div className="my-1 h-px bg-gray-100 dark:bg-[#30363d]" />
-
-                {/* Delete */}
-                <button
-                  type="button"
-                  onClick={handleDelete}
-                  className="w-full flex items-center gap-2.5 px-3 py-2 text-[13px] text-red-600 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-500/10 transition-colors text-left"
-                >
-                  <Trash2 className="w-3.5 h-3.5" strokeWidth={2} />
-                  {t("report.card.delete", "Delete report")}
-                </button>
-              </motion.div>,
-              document.body
-            )}
-          </div>
+          {/* Updated (if different from created) */}
+          {updatedRelative && updatedRelative !== relativeTime && (
+            <span className="text-xs text-slate-600">
+              Updated {updatedRelative}
+            </span>
+          )}
         </div>
       </div>
+
+      {/* ── Right: Risk badge + inline actions ───────────────────────── */}
+      <div className="flex-shrink-0 flex items-center gap-3">
+        {/* Risk score badge */}
+        <RiskScoreBadge
+          score={report.riskScoreSnapshot}
+          level={report.riskLevelSnapshot}
+          status={report.status}
+          size="md"
+        />
+
+        {/* Inline hover actions — always in DOM, opacity toggled via group-hover */}
+        <InlineActions
+          report={report}
+          onDownloadPdf={onDownloadPdf}
+          onDownloadExcel={onDownloadExcel}
+          onMenuOpen={handleMenuOpen}
+          isExporting={isExporting}
+        />
+      </div>
+
+      {/* ── Context menu (tertiary actions) ──────────────────────────── */}
+      <AnimatePresence>
+        {menuOpen && (
+          <motion.div
+            ref={menuRef}
+            initial={{ opacity: 0, scale: 0.95, y: -4 }}
+            animate={{ opacity: 1, scale: 1, y: 0 }}
+            exit={{ opacity: 0, scale: 0.95, y: -4 }}
+            transition={{ duration: 0.12 }}
+            className="
+              absolute right-4 top-full mt-1.5 z-50
+              w-52 rounded-xl overflow-hidden
+              bg-slate-900 border border-slate-700/80
+              shadow-2xl shadow-black/50
+            "
+            role="menu"
+            aria-label="Report options"
+          >
+            {/* View */}
+            {isCompleted && (
+              <ContextMenuItem
+                icon={ExternalLink}
+                label="View report"
+                onClick={() => {
+                  setMenuOpen(false);
+                  router.push(`/reports/${report.id}`);
+                }}
+              />
+            )}
+
+            {/* Regenerate */}
+            {(isFailed || isCompleted) && onRegenerate && (
+              <ContextMenuItem
+                icon={RefreshCw}
+                label="Regenerate"
+                onClick={() => {
+                  setMenuOpen(false);
+                  onRegenerate(report.id);
+                }}
+              />
+            )}
+
+            {/* Copy ID */}
+            <ContextMenuItem
+              icon={Copy}
+              label="Copy report ID"
+              onClick={() => {
+                navigator.clipboard
+                  ?.writeText(String(report.id))
+                  .catch(() => {});
+                setMenuOpen(false);
+              }}
+            />
+
+            {/* Divider */}
+            <div className="h-px bg-slate-800/80 my-1" aria-hidden="true" />
+
+            {/* Delete */}
+            {onDelete && (
+              <ContextMenuItem
+                icon={Trash2}
+                label="Delete report"
+                variant="danger"
+                onClick={() => {
+                  setMenuOpen(false);
+                  onDelete(report.id);
+                }}
+              />
+            )}
+          </motion.div>
+        )}
+      </AnimatePresence>
     </motion.div>
+  );
+}
+
+// ---------------------------------------------------------------------------
+// StatusPill sub-component
+// ---------------------------------------------------------------------------
+
+function StatusPill({ status, config }) {
+  return (
+    <span
+      className={`
+        flex-shrink-0 inline-flex items-center gap-1.5 px-2 py-0.5 rounded-md
+        text-[11px] font-medium border
+        ${config.bg} ${config.border} ${config.text}
+      `}
+      aria-label={`Status: ${config.label}`}
+    >
+      {/* Dot */}
+      <span className="relative flex items-center justify-center w-1.5 h-1.5 flex-shrink-0">
+        {config.pulse && (
+          <span
+            className={`absolute inline-flex w-full h-full rounded-full opacity-50 animate-ping ${config.dot}`}
+            aria-hidden="true"
+          />
+        )}
+        <span
+          className={`relative inline-flex w-1.5 h-1.5 rounded-full ${config.dot}`}
+          aria-hidden="true"
+        />
+      </span>
+      {config.label}
+    </span>
+  );
+}
+
+// ---------------------------------------------------------------------------
+// ContextMenuItem sub-component
+// ---------------------------------------------------------------------------
+
+function ContextMenuItem({ icon: Icon, label, onClick, variant = "default" }) {
+  return (
+    <button
+      type="button"
+      role="menuitem"
+      onClick={onClick}
+      className={`
+        flex items-center gap-3 w-full px-3.5 py-2.5
+        text-sm text-left
+        transition-colors duration-100
+        focus:outline-none focus-visible:bg-slate-800/60
+        ${
+          variant === "danger"
+            ? "text-red-400 hover:text-red-300 hover:bg-red-500/8"
+            : "text-slate-300 hover:text-white hover:bg-slate-800/60"
+        }
+      `}
+    >
+      <Icon size={14} strokeWidth={1.75} aria-hidden="true" />
+      {label}
+    </button>
   );
 }
