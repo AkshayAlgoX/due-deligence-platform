@@ -17,7 +17,8 @@ import {
 } from "lucide-react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useLayoutEffect, useRef, useState } from "react";
+import { createPortal } from "react-dom";
 import { useTranslation } from "react-i18next";
 import { toast } from "sonner";
 
@@ -37,18 +38,25 @@ import { getRiskLevelMeta } from "@/utils/riskUtils";
  *  - stopPropagation() on kebab prevents double navigation
  *  - Hover reveals ArrowUpRight indicator (subtle "navigate away" hint)
  *  - Kebab uses buttons + router.push (never nested <a>)
+ *  - Kebab dropdown is portaled to document.body to escape stacking contexts
+ *    created by parent hover transforms (Session 22 fix)
  */
 export default function ReportCard({ report, onDelete, deleting = false }) {
   const { t } = useTranslation();
   const router = useRouter();
-  const [menuOpen, setMenuOpen] = useState(false);
-  const menuRef = useRef(null);
 
-  // Close menu on outside click
+  const [menuOpen, setMenuOpen] = useState(false);
+  const [menuPos, setMenuPos] = useState({ top: 0, left: 0 });
+  const menuRef = useRef(null);
+  const buttonRef = useRef(null);
+
+  // Close menu on outside click — checks BOTH button and portal menu
   useEffect(() => {
     if (!menuOpen) return;
     const handler = (e) => {
-      if (menuRef.current && !menuRef.current.contains(e.target)) {
+      const clickedButton = buttonRef.current?.contains(e.target);
+      const clickedMenu = menuRef.current?.contains(e.target);
+      if (!clickedButton && !clickedMenu) {
         setMenuOpen(false);
       }
     };
@@ -64,6 +72,37 @@ export default function ReportCard({ report, onDelete, deleting = false }) {
     };
     document.addEventListener("keydown", handler);
     return () => document.removeEventListener("keydown", handler);
+  }, [menuOpen]);
+
+  // Calculate portal position based on button location
+  useLayoutEffect(() => {
+    if (!menuOpen || !buttonRef.current) return;
+    const rect = buttonRef.current.getBoundingClientRect();
+    const MENU_WIDTH = 208; // w-52 = 13rem = 208px
+    setMenuPos({
+      top: rect.bottom + 6, // 6px gap below button
+      left: rect.right - MENU_WIDTH, // right-align to button
+    });
+  }, [menuOpen]);
+
+  // Reposition on scroll / resize while menu is open
+  useEffect(() => {
+    if (!menuOpen) return;
+    const reposition = () => {
+      if (!buttonRef.current) return;
+      const rect = buttonRef.current.getBoundingClientRect();
+      const MENU_WIDTH = 208;
+      setMenuPos({
+        top: rect.bottom + 6,
+        left: rect.right - MENU_WIDTH,
+      });
+    };
+    window.addEventListener("scroll", reposition, true);
+    window.addEventListener("resize", reposition);
+    return () => {
+      window.removeEventListener("scroll", reposition, true);
+      window.removeEventListener("resize", reposition);
+    };
   }, [menuOpen]);
 
   const statusMeta = getStatusMeta(report.status);
@@ -278,9 +317,10 @@ export default function ReportCard({ report, onDelete, deleting = false }) {
               </div>
             )}
 
-            {/* Kebab menu — buttons only, no nested <a> */}
-            <div className="relative" ref={menuRef}>
+            {/* Kebab menu — button stays here, dropdown portaled to body */}
+            <div className="relative">
               <button
+                ref={buttonRef}
                 type="button"
                 onClick={handleMenuToggle}
                 aria-label={t("report.card.moreActions", "More actions")}
@@ -290,18 +330,25 @@ export default function ReportCard({ report, onDelete, deleting = false }) {
                 <MoreVertical className="w-4 h-4" strokeWidth={2.25} />
               </button>
 
-              {menuOpen && (
+              {/* Portaled dropdown — escapes parent stacking contexts */}
+              {menuOpen && typeof window !== "undefined" && createPortal(
                 <motion.div
+                  ref={menuRef}
                   initial={{ opacity: 0, scale: 0.95, y: -4 }}
                   animate={{ opacity: 1, scale: 1, y: 0 }}
                   transition={{ duration: 0.12 }}
-                  className="absolute right-0 top-full mt-1.5 z-20 w-52 rounded-lg border border-gray-200 dark:border-[#30363d] bg-white dark:bg-[#161b22] shadow-lg overflow-hidden py-1"
+                  style={{
+                    position: "fixed",
+                    top: menuPos.top,
+                    left: menuPos.left,
+                  }}
+                  className="z-[9999] w-52 rounded-xl border border-gray-200 dark:border-[#30363d] bg-white dark:bg-[#161b22] shadow-xl overflow-hidden py-1"
                 >
                   {/* Copy Link */}
                   <button
                     type="button"
                     onClick={handleCopyLink}
-                    className="w-full flex items-center gap-2.5 px-3 py-2 text-[13px] text-gray-700 dark:text-[#e6edf3] hover:bg-gray-50 dark:hover:bg-[#21262d] transition-colors text-left"
+                    className="w-full flex items-center gap-2.5 px-3 py-2 text-[13px] text-gray-700 dark:text-[#e6edf3] hover:bg-gray-50 dark:hover:bg-[#1c2129] transition-colors text-left"
                   >
                     <Link2 className="w-3.5 h-3.5" strokeWidth={2} />
                     {t("report.card.copyLink", "Copy link")}
@@ -311,7 +358,7 @@ export default function ReportCard({ report, onDelete, deleting = false }) {
                   <button
                     type="button"
                     onClick={handleCopyId}
-                    className="w-full flex items-center gap-2.5 px-3 py-2 text-[13px] text-gray-700 dark:text-[#e6edf3] hover:bg-gray-50 dark:hover:bg-[#21262d] transition-colors text-left"
+                    className="w-full flex items-center gap-2.5 px-3 py-2 text-[13px] text-gray-700 dark:text-[#e6edf3] hover:bg-gray-50 dark:hover:bg-[#1c2129] transition-colors text-left"
                   >
                     <Copy className="w-3.5 h-3.5" strokeWidth={2} />
                     {t("report.card.copyId", "Copy report ID")}
@@ -329,7 +376,8 @@ export default function ReportCard({ report, onDelete, deleting = false }) {
                     <Trash2 className="w-3.5 h-3.5" strokeWidth={2} />
                     {t("report.card.delete", "Delete report")}
                   </button>
-                </motion.div>
+                </motion.div>,
+                document.body
               )}
             </div>
           </div>
