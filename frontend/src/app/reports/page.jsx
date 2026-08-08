@@ -7,6 +7,7 @@ import {
   ArrowLeft,
   ChevronLeft,
   ChevronRight,
+  ClockIcon,
   FileText,
   Filter,
   Loader2,
@@ -27,7 +28,6 @@ import reportService from "@/services/reportService";
 import ReportCard from "@/components/reports/ReportCard";
 import ReportSkeleton from "@/components/reports/ReportSkeleton";
 import ExportProgressModal from "@/components/export/ExportProgressModal";
-import ExportHistoryList from "@/components/export/ExportHistoryList";
 import { useExport } from "@/hooks/useExport";
 import { Archive, CheckSquare, Square } from "lucide-react";
 
@@ -59,22 +59,15 @@ export default function MyReportsPage() {
     progressStage,
     progressPercent,
     exportFormat,
-
-    historyData,
-    isHistoryLoading,
-
     downloadBulk,
-    fetchHistory,
-    downloadFromHistoryItem,
   } = useExport();
 
-  // ── Fetch on mount + when page/filter changes ──
+  // ── Fetch on mount + when page changes ──
   const loadReports = useCallback(() => {
     fetchList({ page, size: PAGE_SIZE, sort: "createdAt,desc" }).catch((err) => {
       console.error("Failed to load reports:", err);
     });
-    fetchHistory(0, 10);
-  }, [fetchList, fetchHistory, page]);
+  }, [fetchList, page]);
 
   useEffect(() => {
     loadReports();
@@ -206,6 +199,7 @@ export default function MyReportsPage() {
           </div>
 
           <div className="flex items-center gap-2 flex-wrap">
+            {/* Bulk export buttons — shown when reports selected */}
             {selectedReportIds.length > 0 && (
               <div className="flex items-center gap-2">
                 <button
@@ -225,6 +219,7 @@ export default function MyReportsPage() {
               </div>
             )}
 
+            {/* Refresh */}
             <button
               onClick={loadReports}
               disabled={listLoading}
@@ -237,16 +232,28 @@ export default function MyReportsPage() {
               />
               {t("report.list.refresh", "Refresh")}
             </button>
+
+            {/* Issue 5 — Export History navigation link */}
             <Link
-  href="/dashboard/property-search"
-  className="group relative inline-flex items-center gap-2 overflow-hidden rounded-xl bg-gradient-to-br from-[#22C55E] to-[#16a34a] px-5 py-2.5 text-sm font-bold text-white shadow-[0_10px_30px_rgba(34,197,94,0.4)] transition-all hover:scale-[1.03] hover:shadow-[0_15px_40px_rgba(34,197,94,0.55)] active:scale-[0.97]"
->
-  <span className="absolute inset-0 -translate-x-full bg-gradient-to-r from-transparent via-white/25 to-transparent transition-transform duration-1000 group-hover:translate-x-full" />
-  <Plus className="w-4 h-4 relative z-10" strokeWidth={2.5} />
-  <span className="relative z-10">
-    {t("report.list.generateNew", "Generate new")}
-  </span>
-</Link>
+              href="/reports/export-history"
+              className="inline-flex items-center gap-1.5 px-3 py-2 rounded-lg text-xs font-semibold text-gray-700 dark:text-[#e6edf3] border border-gray-200 dark:border-[#30363d] hover:bg-gray-50 dark:hover:bg-[#1c2129] transition-all duration-200"
+            >
+              <ClockIcon className="w-3.5 h-3.5 text-gray-400 dark:text-[#7d8590]" strokeWidth={2} />
+              {t("export.history.link", "Export History")}
+              <ChevronRight className="w-3 h-3 text-gray-400 dark:text-[#7d8590]" strokeWidth={2} />
+            </Link>
+
+            {/* Generate new */}
+            <Link
+              href="/dashboard/property-search"
+              className="group relative inline-flex items-center gap-2 overflow-hidden rounded-xl bg-gradient-to-br from-[#22C55E] to-[#16a34a] px-5 py-2.5 text-sm font-bold text-white shadow-[0_10px_30px_rgba(34,197,94,0.4)] transition-all hover:scale-[1.03] hover:shadow-[0_15px_40px_rgba(34,197,94,0.55)] active:scale-[0.97]"
+            >
+              <span className="absolute inset-0 -translate-x-full bg-gradient-to-r from-transparent via-white/25 to-transparent transition-transform duration-1000 group-hover:translate-x-full" />
+              <Plus className="w-4 h-4 relative z-10" strokeWidth={2.5} />
+              <span className="relative z-10">
+                {t("report.list.generateNew", "Generate new")}
+              </span>
+            </Link>
           </div>
         </motion.div>
 
@@ -445,7 +452,7 @@ export default function MyReportsPage() {
       </div>
 
       {/* ══════════════════════════════════════════════════════════
-          DELETE CONFIRMATION MODAL (inline for now)
+          DELETE CONFIRMATION MODAL
       ══════════════════════════════════════════════════════════ */}
       <AnimatePresence>
         {reportToDelete && (
@@ -478,7 +485,7 @@ export default function MyReportsPage() {
                   <p className="text-sm text-gray-600 dark:text-[#c9d1d9] leading-relaxed">
                     {t(
                       "report.list.deleteModal.body",
-                      "This will permanently delete “{{title}}” and all its sections. This action cannot be undone.",
+                      "This will permanently delete "{{title}}" and all its sections. This action cannot be undone.",
                       {
                         title:
                           reportToDelete.title ||
@@ -528,20 +535,7 @@ export default function MyReportsPage() {
         )}
       </AnimatePresence>
 
-      {/* ══════════════════════════════════════════════════════════
-          EXPORT HISTORY SECTION
-      ══════════════════════════════════════════════════════════ */}
-      <div className="mt-12 pt-8 border-t border-gray-200 dark:border-[#30363d]">
-        <ExportHistoryList
-          history={historyData?.content || []}
-          isLoading={isHistoryLoading}
-          page={historyData?.number || 0}
-          totalPages={historyData?.totalPages || 1}
-          onPageChange={(p) => fetchHistory(p, 10)}
-          onDownloadItem={(id, name) => downloadFromHistoryItem(id, name)}
-        />
-      </div>
-
+      {/* Export Progress Modal — stays on this page */}
       <ExportProgressModal
         isOpen={isGenerating}
         stage={progressStage}
@@ -602,15 +596,15 @@ function EmptyState() {
         )}
       </p>
       <Link
-  href="/dashboard/property-search"
-  className="group relative inline-flex items-center gap-2 overflow-hidden rounded-xl bg-gradient-to-br from-[#22C55E] to-[#16a34a] px-5 py-2.5 text-sm font-bold text-white shadow-[0_10px_30px_rgba(34,197,94,0.4)] transition-all hover:scale-[1.03] hover:shadow-[0_15px_40px_rgba(34,197,94,0.55)] active:scale-[0.97]"
->
-  <span className="absolute inset-0 -translate-x-full bg-gradient-to-r from-transparent via-white/25 to-transparent transition-transform duration-1000 group-hover:translate-x-full" />
-  <Sparkles className="w-4 h-4 relative z-10" strokeWidth={2.5} />
-  <span className="relative z-10">
-    {t("report.list.empty.cta", "Browse properties")}
-  </span>
-</Link>
+        href="/dashboard/property-search"
+        className="group relative inline-flex items-center gap-2 overflow-hidden rounded-xl bg-gradient-to-br from-[#22C55E] to-[#16a34a] px-5 py-2.5 text-sm font-bold text-white shadow-[0_10px_30px_rgba(34,197,94,0.4)] transition-all hover:scale-[1.03] hover:shadow-[0_15px_40px_rgba(34,197,94,0.55)] active:scale-[0.97]"
+      >
+        <span className="absolute inset-0 -translate-x-full bg-gradient-to-r from-transparent via-white/25 to-transparent transition-transform duration-1000 group-hover:translate-x-full" />
+        <Sparkles className="w-4 h-4 relative z-10" strokeWidth={2.5} />
+        <span className="relative z-10">
+          {t("report.list.empty.cta", "Browse properties")}
+        </span>
+      </Link>
     </motion.div>
   );
 }
