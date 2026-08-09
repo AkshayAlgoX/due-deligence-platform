@@ -65,7 +65,7 @@ public class SecurityConfig {
                     "img-src 'self' data: https:; " +
                     "script-src 'self' 'unsafe-inline' https://accounts.google.com; " +
                     "style-src 'self' 'unsafe-inline'; " +
-                    "connect-src 'self' https://accounts.google.com; " +
+                    "connect-src 'self' http://localhost:8080 https://accounts.google.com; " +
                     "frame-src https://accounts.google.com"
                 ))
             )
@@ -182,7 +182,7 @@ public class SecurityConfig {
 
         cors.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS"));
         cors.setAllowedHeaders(List.of("*"));
-        cors.setExposedHeaders(List.of("Authorization"));
+        cors.setExposedHeaders(List.of("Authorization", "Content-Type", "Cache-Control"));
         cors.setAllowCredentials(true);
         cors.setMaxAge(3600L);  // cache preflight 1 hour
 

@@ -58,18 +58,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             @NonNull FilterChain filterChain)
             throws ServletException, IOException {
 
-        final String authHeader = request.getHeader("Authorization");
-        final String tokenParam = request.getParameter("token");
-        final String cookieToken = getCookieValue(request, "auth_token");
-
-        String jwt = null;
-        if (authHeader != null && authHeader.startsWith("Bearer ")) {
-            jwt = authHeader.substring(7);
-        } else if (tokenParam != null && !tokenParam.isBlank()) {
-            jwt = tokenParam;
-        } else if (cookieToken != null && !cookieToken.isBlank()) {
-            jwt = cookieToken;
-        }
+        String jwt = resolveToken(request);
 
         if (jwt == null) {
             filterChain.doFilter(request, response);
@@ -132,6 +121,23 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
                     "TOKEN_ERROR",
                     "Authentication failed.");
         }
+    }
+
+    private String resolveToken(HttpServletRequest request) {
+        String bearerToken = request.getHeader("Authorization");
+        if (bearerToken != null && bearerToken.startsWith("Bearer ")) {
+            return bearerToken.substring(7);
+        }
+
+        if (request.getRequestURI().startsWith("/api/sse/")) {
+            String queryToken = request.getParameter("token");
+            if (queryToken != null && !queryToken.isBlank()) {
+                return queryToken;
+            }
+        }
+
+        String cookieToken = getCookieValue(request, "auth_token");
+        return cookieToken != null && !cookieToken.isBlank() ? cookieToken : null;
     }
 
     private String getCookieValue(HttpServletRequest request, String name) {

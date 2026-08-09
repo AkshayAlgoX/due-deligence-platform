@@ -42,8 +42,14 @@ export function subscribeToNotifications(onNotification) {
 
 function getSseUrl() {
   const token = getToken();
-  if (!token) return API_ROUTES.SSE_NOTIFICATIONS;
-  const url = new URL(API_ROUTES.SSE_NOTIFICATIONS, window.location.origin);
+  if (!token) return null;
+
+  const baseUrl =
+    process.env.NEXT_PUBLIC_API_URL ||
+    process.env.NEXT_PUBLIC_BACKEND_URL ||
+    "http://localhost:8080";
+
+  const url = new URL(API_ROUTES.SSE_NOTIFICATIONS, baseUrl);
   url.searchParams.set("token", token);
   return url.toString();
 }
@@ -57,6 +63,8 @@ function openConnection() {
 
   try {
     const url = getSseUrl();
+    if (!url) return;
+
     eventSource = new EventSource(url, { withCredentials: true });
 
     eventSource.addEventListener("notification", (event) => {
