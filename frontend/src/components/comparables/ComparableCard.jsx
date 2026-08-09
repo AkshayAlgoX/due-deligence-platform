@@ -6,7 +6,6 @@ import { formatINR } from "@/utils/currency";
 import SimilarityBadge from "./SimilarityBadge";
 import BetterDealIndicator from "./BetterDealIndicator";
 
-/** Individual comparable-property card, used in the comparables grid/list. */
 export default function ComparableCard({ comparable, subjectPricePerSqft }) {
   const { t } = useTranslation();
   if (!comparable) return null;
@@ -31,7 +30,7 @@ export default function ComparableCard({ comparable, subjectPricePerSqft }) {
         {distanceKm != null && (
           <span className="inline-flex items-center gap-1 text-[11px] font-semibold text-gray-500 dark:text-[#7d8590]">
             <MapPin className="h-3 w-3" strokeWidth={2} />
-            {t("comparable.distanceKm", { km: distanceKm.toFixed(1) })}
+            {t("report.comparable.distanceKm", { km: distanceKm.toFixed(1) })}
           </span>
         )}
       </div>
@@ -74,7 +73,7 @@ export default function ComparableCard({ comparable, subjectPricePerSqft }) {
 
       {pricePerSqft != null && (
         <p className="mt-2 text-[11px] font-semibold text-gray-400 dark:text-[#6e7681]">
-          {t("comparable.pricePerSqft")}: ₹{pricePerSqft.toLocaleString("en-IN")}
+          {t("report.comparable.pricePerSqft")}: ₹{pricePerSqft.toLocaleString("en-IN")}
         </p>
       )}
     </div>
