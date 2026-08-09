@@ -5,7 +5,6 @@ import { formatINR } from "@/utils/currency";
 import SimilarityBadge from "./SimilarityBadge";
 import BetterDealIndicator from "./BetterDealIndicator";
 
-/** Side-by-side table view of all comparable properties. */
 export default function ComparableTable({ comparables, subjectPricePerSqft }) {
   const { t } = useTranslation();
 
@@ -18,22 +17,22 @@ export default function ComparableTable({ comparables, subjectPricePerSqft }) {
           <thead>
             <tr className="border-b-2 border-gray-200 dark:border-[#30363d] bg-gray-50 dark:bg-[#1c2128]">
               <th className="px-4 py-3 text-left text-[10px] font-black uppercase tracking-widest text-gray-400 dark:text-[#6e7681]">
-                {t("comparable.table.address")}
+                {t("report.comparable.table.address")}
               </th>
               <th className="px-4 py-3 text-center text-[10px] font-black uppercase tracking-widest text-gray-400 dark:text-[#6e7681]">
-                {t("comparable.table.similarity")}
+                {t("report.comparable.table.similarity")}
               </th>
               <th className="px-4 py-3 text-center text-[10px] font-black uppercase tracking-widest text-gray-400 dark:text-[#6e7681]">
-                {t("comparable.table.distance")}
+                {t("report.comparable.table.distance")}
               </th>
               <th className="px-4 py-3 text-center text-[10px] font-black uppercase tracking-widest text-gray-400 dark:text-[#6e7681]">
-                {t("comparable.table.value")}
+                {t("report.comparable.table.value")}
               </th>
               <th className="px-4 py-3 text-center text-[10px] font-black uppercase tracking-widest text-gray-400 dark:text-[#6e7681]">
-                {t("comparable.pricePerSqft")}
+                {t("report.comparable.pricePerSqft")}
               </th>
               <th className="px-4 py-3 text-center text-[10px] font-black uppercase tracking-widest text-gray-400 dark:text-[#6e7681]">
-                {t("comparable.table.beds")}
+                {t("report.comparable.table.beds")}
               </th>
             </tr>
           </thead>

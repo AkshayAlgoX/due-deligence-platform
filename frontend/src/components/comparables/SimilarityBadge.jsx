@@ -5,21 +5,21 @@ import { Sparkles, CircleCheck, Circle } from "lucide-react";
 
 const LEVEL_META = {
   VERY_SIMILAR: {
-    key: "comparable.similarity.verySimilar",
+    key: "report.comparable.similarity.verySimilar",
     color: "text-green-700 dark:text-green-400",
     bg: "bg-green-50 dark:bg-[#0d2818]",
     ring: "ring-green-200 dark:ring-green-900/50",
     icon: Sparkles,
   },
   SIMILAR: {
-    key: "comparable.similarity.similar",
+    key: "report.comparable.similarity.similar",
     color: "text-[#16a34a] dark:text-green-400",
     bg: "bg-[#edf7f3] dark:bg-[#0d2818]",
     ring: "ring-green-100 dark:ring-green-900/30",
     icon: CircleCheck,
   },
   SOMEWHAT_SIMILAR: {
-    key: "comparable.similarity.somewhatSimilar",
+    key: "report.comparable.similarity.somewhatSimilar",
     color: "text-gray-600 dark:text-[#7d8590]",
     bg: "bg-gray-50 dark:bg-[#1c2128]",
     ring: "ring-gray-200 dark:ring-[#30363d]",
@@ -27,7 +27,6 @@ const LEVEL_META = {
   },
 };
 
-/** Small pill showing similarity level + numeric score (0-100). */
 export default function SimilarityBadge({ level, score, size = "sm" }) {
   const { t } = useTranslation();
   const meta = LEVEL_META[level] ?? LEVEL_META.SOMEWHAT_SIMILAR;

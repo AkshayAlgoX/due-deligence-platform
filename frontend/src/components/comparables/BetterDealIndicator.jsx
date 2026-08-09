@@ -3,11 +3,6 @@
 import { useTranslation } from "react-i18next";
 import { TrendingDown, TrendingUp } from "lucide-react";
 
-/**
- * Shows how a comparable property's price-per-sqft compares to the
- * subject property's price-per-sqft — flags a "better deal" when the
- * comparable is meaningfully cheaper per sqft.
- */
 export default function BetterDealIndicator({ comparablePricePerSqft, subjectPricePerSqft }) {
   const { t } = useTranslation();
 
@@ -16,7 +11,7 @@ export default function BetterDealIndicator({ comparablePricePerSqft, subjectPri
   }
 
   const diffPct = ((comparablePricePerSqft - subjectPricePerSqft) / subjectPricePerSqft) * 100;
-  const isBetterDeal = diffPct <= -5; // at least 5% cheaper per sqft
+  const isBetterDeal = diffPct <= -5;
   const isPricier = diffPct >= 5;
 
   if (!isBetterDeal && !isPricier) return null;
@@ -35,8 +30,8 @@ export default function BetterDealIndicator({ comparablePricePerSqft, subjectPri
         <TrendingUp className="h-2.5 w-2.5" strokeWidth={2.5} />
       )}
       {isBetterDeal
-        ? t("comparable.betterDealBy", { pct: Math.abs(Math.round(diffPct)) })
-        : t("comparable.pricierBy", { pct: Math.round(diffPct) })}
+        ? t("report.comparable.betterDealBy", { pct: Math.abs(Math.round(diffPct)) })
+        : t("report.comparable.pricierBy", { pct: Math.round(diffPct) })}
     </span>
   );
 }
