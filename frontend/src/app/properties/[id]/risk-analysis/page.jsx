@@ -12,6 +12,7 @@ import {
   Loader2,
   MapPin,
   Maximize2,
+  IndianRupee,
 } from "lucide-react";
 import Link from "next/link";
 import { useParams, useRouter } from "next/navigation";
@@ -31,6 +32,16 @@ import RiskExplainability from "@/components/risk/RiskExplainability";
 import RiskFactorCard from "@/components/risk/RiskFactorCard";
 import RiskHistorySection from "@/components/risk/RiskHistorySection";
 import RiskSpectrum from "@/components/risk/RiskSpectrum";
+
+// Category color tokens (used across radar, contributors, factors)
+const CATEGORY_COLORS = {
+  FLOOD:         { solid: "#3B82F6", bg: "bg-blue-500/15 dark:bg-blue-500/15",     border: "border-blue-400/30",    text: "text-blue-600 dark:text-blue-400" },
+  LEGAL:         { solid: "#A855F7", bg: "bg-purple-500/15 dark:bg-purple-500/15", border: "border-purple-400/30",  text: "text-purple-600 dark:text-purple-400" },
+  TAX:           { solid: "#F59E0B", bg: "bg-amber-500/15 dark:bg-amber-500/15",   border: "border-amber-400/30",   text: "text-amber-600 dark:text-amber-400" },
+  ZONING:        { solid: "#6366F1", bg: "bg-indigo-500/15 dark:bg-indigo-500/15", border: "border-indigo-400/30",  text: "text-indigo-600 dark:text-indigo-400" },
+  ENVIRONMENTAL: { solid: "#22C55E", bg: "bg-green-500/15 dark:bg-green-500/15",   border: "border-green-400/30",   text: "text-green-600 dark:text-green-400" },
+  MARKET:        { solid: "#F43F5E", bg: "bg-rose-500/15 dark:bg-rose-500/15",     border: "border-rose-400/30",    text: "text-rose-600 dark:text-rose-400" },
+};
 
 export default function RiskAnalysisPage() {
   const { t } = useTranslation();
@@ -112,16 +123,26 @@ export default function RiskAnalysisPage() {
 
   if (!breakdown) return null;
 
-  const overallMeta = getRiskLevelMeta(breakdown.overallLevel);
   const propertyThumbnail = propertyInfo ? getPropertyImage(propertyInfo) : null;
+
+  // Data source availability
+  const totalSources = 6;
+  const unavailableCount = breakdown.unavailableProviderCount || 0;
+  const availableSources = Math.max(0, totalSources - unavailableCount);
+
+  // Last calculated timestamp
+  const lastCalculatedAt =
+    breakdown.calculatedAt ||
+    breakdown.updatedAt ||
+    (history?.history?.[history.history.length - 1]?.calculatedAt);
 
   return (
     <div className="min-h-screen bg-white dark:bg-[#0d1117]">
       {/* ════════════════════════════════════════════════════════
-          BREADCRUMB HEADER
+          BREADCRUMB
       ════════════════════════════════════════════════════════ */}
       <div className="border-b border-gray-200 dark:border-[#30363d]">
-        <div className="max-w-5xl mx-auto px-6 py-3 flex items-center gap-2 text-sm">
+        <div className="max-w-6xl mx-auto px-6 py-3 flex items-center gap-2 text-sm">
           <button
             onClick={() => router.back()}
             className="inline-flex items-center gap-1 text-gray-500 dark:text-[#7d8590] hover:text-gray-900 dark:hover:text-[#e6edf3] transition-colors"
@@ -136,98 +157,119 @@ export default function RiskAnalysisPage() {
         </div>
       </div>
 
-      <div className="max-w-5xl mx-auto px-6 py-8">
+      <div className="max-w-6xl mx-auto px-6 py-8">
         {/* ════════════════════════════════════════════════════════
-            PROPERTY CONTEXT STRIP
+            PROPERTY HERO CARD
         ════════════════════════════════════════════════════════ */}
         {propertyInfo && (
           <motion.div
             initial={{ opacity: 0, y: -8 }}
             animate={{ opacity: 1, y: 0 }}
-            className="mb-8 flex gap-4 items-center"
+            className="mb-6 rounded-2xl border border-gray-200 dark:border-[#30363d] bg-white dark:bg-[#161b22] shadow-sm overflow-hidden"
           >
-            <div className="w-32 h-32 rounded-xl overflow-hidden flex-shrink-0 bg-gray-100 dark:bg-[#161b22] border border-gray-200 dark:border-[#30363d]">
-              {propertyThumbnail ? (
-                <img
-                  src={propertyThumbnail}
-                  alt={propertyInfo.address}
-                  className="w-full h-full object-cover"
-                />
-              ) : (
-                <PropertyImagePlaceholder
-                  propertyType={propertyInfo.propertyType}
-                />
-              )}
-            </div>
-
-            <div className="flex-1 min-w-0">
-              <h1 className="text-xl font-bold text-gray-900 dark:text-[#e6edf3] tracking-tight truncate">
-                {propertyInfo.address}
-              </h1>
-              <div className="flex items-center gap-1.5 text-sm text-gray-500 dark:text-[#7d8590] mt-0.5">
-                <MapPin className="w-3.5 h-3.5 flex-shrink-0" strokeWidth={2} />
-                <span className="truncate">
-                  {propertyInfo.city}
-                  {propertyInfo.state && `, ${propertyInfo.state}`}
-                  {propertyInfo.zipCode && ` ${propertyInfo.zipCode}`}
-                </span>
-              </div>
-
-              <div className="flex items-center gap-4 mt-2 text-sm">
-                {propertyInfo.marketValue != null && (
-                  <span className="font-bold text-gray-900 dark:text-[#e6edf3]">
-                    {formatINR(propertyInfo.marketValue)}
-                  </span>
-                )}
-                {propertyInfo.area && (
-                  <span className="inline-flex items-center gap-1 text-gray-600 dark:text-[#c9d1d9]">
-                    <Maximize2 className="w-3.5 h-3.5" strokeWidth={2} />
-                    {propertyInfo.area.toLocaleString()}{" "}
-                    {t("property.details.sqft", "sq ft")}
-                  </span>
-                )}
-                {propertyInfo.bedrooms && (
-                  <span className="inline-flex items-center gap-1 text-gray-600 dark:text-[#c9d1d9]">
-                    <Bed className="w-3.5 h-3.5" strokeWidth={2} />
-                    {propertyInfo.bedrooms} {t("risk.page.bedShort", "BR")}
-                  </span>
-                )}
-                {propertyInfo.propertyType && (
-                  <span className="inline-flex items-center gap-1 text-gray-600 dark:text-[#c9d1d9]">
-                    <Building2 className="w-3.5 h-3.5" strokeWidth={2} />
-                    {propertyInfo.propertyType}
-                  </span>
+            <div className="p-5 flex flex-col sm:flex-row gap-5">
+              {/* Photo */}
+              <div className="w-full sm:w-36 h-36 rounded-xl overflow-hidden flex-shrink-0 bg-gray-100 dark:bg-[#1c2128] border border-gray-200 dark:border-[#30363d] ring-1 ring-black/5 dark:ring-white/5">
+                {propertyThumbnail ? (
+                  <img
+                    src={propertyThumbnail}
+                    alt={propertyInfo.address}
+                    className="w-full h-full object-cover"
+                  />
+                ) : (
+                  <PropertyImagePlaceholder
+                    propertyType={propertyInfo.propertyType}
+                  />
                 )}
               </div>
-            </div>
 
-            <Link
-  href={`/properties/${propertyId}/generate-report`}
-  className="group relative hidden sm:inline-flex items-center gap-2 overflow-hidden rounded-xl bg-gradient-to-br from-[#22C55E] to-[#16a34a] px-5 py-2.5 text-sm font-bold text-white shadow-[0_10px_30px_rgba(34,197,94,0.4)] transition-all hover:scale-[1.03] hover:shadow-[0_15px_40px_rgba(34,197,94,0.55)] active:scale-[0.97] flex-shrink-0"
->
-  <span className="absolute inset-0 -translate-x-full bg-gradient-to-r from-transparent via-white/25 to-transparent transition-transform duration-1000 group-hover:translate-x-full" />
-  <FileText className="w-4 h-4 relative z-10" strokeWidth={2.5} />
-  <span className="relative z-10">
-    {t("risk.page.generateReport", "Generate Report")}
-  </span>
-</Link>
+              {/* Details */}
+              <div className="flex-1 min-w-0 flex flex-col justify-between">
+                <div>
+                  <h1 className="text-2xl font-bold text-gray-900 dark:text-[#e6edf3] tracking-tight leading-tight">
+                    {propertyInfo.address}
+                  </h1>
+                  <div className="flex items-center gap-1.5 text-sm text-gray-500 dark:text-[#7d8590] mt-1">
+                    <MapPin className="w-3.5 h-3.5 flex-shrink-0" strokeWidth={2} />
+                    <span className="truncate">
+                      {propertyInfo.city}
+                      {propertyInfo.state && `, ${propertyInfo.state}`}
+                      {propertyInfo.zipCode && ` ${propertyInfo.zipCode}`}
+                    </span>
+                  </div>
+                </div>
+
+                {/* Metadata pills with filled icon tiles */}
+                <div className="flex flex-wrap items-center gap-2 mt-4">
+                  {propertyInfo.marketValue != null && (
+                    <MetaPill
+                      icon={IndianRupee}
+                      iconBg="bg-green-500/15"
+                      iconColor="text-green-600 dark:text-green-400"
+                      value={formatINR(propertyInfo.marketValue)}
+                    />
+                  )}
+                  {propertyInfo.area && (
+                    <MetaPill
+                      icon={Maximize2}
+                      iconBg="bg-blue-500/15"
+                      iconColor="text-blue-600 dark:text-blue-400"
+                      value={`${propertyInfo.area.toLocaleString()} ${t("property.details.sqft", "sqft")}`}
+                    />
+                  )}
+                  {propertyInfo.bedrooms && (
+                    <MetaPill
+                      icon={Bed}
+                      iconBg="bg-purple-500/15"
+                      iconColor="text-purple-600 dark:text-purple-400"
+                      value={`${propertyInfo.bedrooms} ${t("risk.page.bedShort", "BR")}`}
+                    />
+                  )}
+                  {propertyInfo.propertyType && (
+                    <MetaPill
+                      icon={Building2}
+                      iconBg="bg-amber-500/15"
+                      iconColor="text-amber-600 dark:text-amber-400"
+                      value={propertyInfo.propertyType}
+                    />
+                  )}
+                </div>
+              </div>
+
+              {/* Generate Report CTA */}
+              <div className="flex sm:items-center">
+                <Link
+                  href={`/properties/${propertyId}/generate-report`}
+                  className="group relative inline-flex items-center gap-2 overflow-hidden rounded-xl bg-gradient-to-br from-[#22C55E] to-[#16a34a] px-5 py-2.5 text-sm font-bold text-white shadow-[0_10px_30px_rgba(34,197,94,0.35)] transition-all hover:scale-[1.03] hover:shadow-[0_15px_40px_rgba(34,197,94,0.5)] active:scale-[0.97] flex-shrink-0"
+                >
+                  <span className="absolute inset-0 -translate-x-full bg-gradient-to-r from-transparent via-white/25 to-transparent transition-transform duration-1000 group-hover:translate-x-full" />
+                  <FileText className="w-4 h-4 relative z-10" strokeWidth={2.5} />
+                  <span className="relative z-10">
+                    {t("risk.page.generateReport", "Generate Report")}
+                  </span>
+                </Link>
+              </div>
+            </div>
           </motion.div>
         )}
 
         {/* ════════════════════════════════════════════════════════
-            HERO — Severity Spectrum
+            SCORE HERO CARD
         ════════════════════════════════════════════════════════ */}
         <motion.div
           initial={{ opacity: 0, y: 12 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.1 }}
-          className="rounded-2xl border border-gray-200 dark:border-[#30363d] p-8 mb-6 bg-white dark:bg-[#0d1117]"
+          className="rounded-2xl border border-gray-200 dark:border-[#30363d] p-6 lg:p-8 mb-6 bg-white dark:bg-[#161b22] shadow-sm"
         >
           <RiskSpectrum
             score={breakdown.overallScore}
             level={breakdown.overallLevel}
             onRecalculate={recalculate}
             recalculating={recalculating}
+            lastCalculatedAt={lastCalculatedAt}
+            availableSources={availableSources}
+            totalSources={totalSources}
           />
         </motion.div>
 
@@ -238,13 +280,15 @@ export default function RiskAnalysisPage() {
           <motion.div
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
-            className="mb-6 flex items-start gap-3 px-4 py-3 rounded-lg bg-amber-50 dark:bg-amber-500/10 border border-amber-200 dark:border-amber-500/25 text-sm"
+            className="mb-6 flex items-start gap-3 px-4 py-3 rounded-xl bg-amber-50 dark:bg-amber-500/10 border border-amber-200 dark:border-amber-500/25 text-sm"
           >
-            <AlertCircle
-              className="w-4 h-4 text-amber-600 dark:text-amber-400 flex-shrink-0 mt-0.5"
-              strokeWidth={2}
-            />
-            <div className="text-amber-900 dark:text-amber-200">
+            <div className="w-8 h-8 rounded-lg bg-amber-100 dark:bg-amber-500/20 flex items-center justify-center flex-shrink-0">
+              <AlertCircle
+                className="w-4 h-4 text-amber-600 dark:text-amber-400"
+                strokeWidth={2.25}
+              />
+            </div>
+            <div className="text-amber-900 dark:text-amber-200 pt-0.5">
               <span className="font-semibold">
                 {t(
                   "risk.page.dataWarningTitle",
@@ -256,7 +300,7 @@ export default function RiskAnalysisPage() {
                 {t(
                   "risk.page.dataWarningBody",
                   "{{count}} of 6 data provider(s) could not be reached. Scores reflect conservative estimates.",
-                  { count: breakdown.unavailableProviderCount || 0 }
+                  { count: unavailableCount }
                 )}
               </span>
             </div>
@@ -266,49 +310,48 @@ export default function RiskAnalysisPage() {
         {/* ════════════════════════════════════════════════════════
             2-COLUMN: Radar + Top Risks
         ════════════════════════════════════════════════════════ */}
-        <div className="grid grid-cols-1 md:grid-cols-[1fr_1.2fr] gap-6 mb-8">
-          <div className="rounded-2xl border border-gray-200 dark:border-[#30363d] p-6 bg-white dark:bg-[#0d1117]">
-            <h2 className="text-sm font-semibold text-gray-900 dark:text-[#e6edf3] mb-1">
+        <div className="grid grid-cols-1 md:grid-cols-[1fr_1.2fr] gap-6 mb-6">
+          <div className="rounded-2xl border border-gray-200 dark:border-[#30363d] p-6 bg-white dark:bg-[#161b22] shadow-sm">
+            <h2 className="text-base font-bold text-gray-900 dark:text-[#e6edf3]">
               {t("risk.page.categoryBreakdown", "Category Breakdown")}
             </h2>
-            <p className="text-xs text-gray-500 dark:text-[#7d8590] mb-4">
+            <p className="text-xs text-gray-500 dark:text-[#7d8590] mt-0.5 mb-4">
               {t(
                 "risk.page.categoryBreakdownDesc",
-                "All 6 risk factors visualized"
+                "Your property vs area average"
               )}
             </p>
-            <RiskBreakdownRadar breakdown={breakdown} height={260} />
+            <RiskBreakdownRadar breakdown={breakdown} propertyId={propertyId} height={280} />
           </div>
 
-          <div className="rounded-2xl border border-gray-200 dark:border-[#30363d] p-6 bg-white dark:bg-[#0d1117]">
-            <h2 className="text-sm font-semibold text-gray-900 dark:text-[#e6edf3] mb-1">
+          <div className="rounded-2xl border border-gray-200 dark:border-[#30363d] p-6 bg-white dark:bg-[#161b22] shadow-sm">
+            <h2 className="text-base font-bold text-gray-900 dark:text-[#e6edf3]">
               {t("risk.page.topRisksTitle", "Top Risk Contributors")}
             </h2>
-            <p className="text-xs text-gray-500 dark:text-[#7d8590] mb-4">
+            <p className="text-xs text-gray-500 dark:text-[#7d8590] mt-0.5 mb-4">
               {t(
                 "risk.page.topRisksDesc",
                 "Highest scoring factors driving overall risk"
               )}
             </p>
-            <div className="space-y-3">
+            <div className="space-y-2.5">
               {breakdown.factors?.slice(0, 3).map((factor, idx) => {
+                const cat = CATEGORY_COLORS[factor.category] || CATEGORY_COLORS.MARKET;
                 const meta = getRiskLevelMeta(factor.level);
                 return (
                   <div
                     key={factor.category}
-                    className="flex items-center gap-3 p-3 rounded-lg bg-gray-50 dark:bg-[#161b22]"
+                    className="flex items-center gap-3 p-3 rounded-xl border border-gray-100 dark:border-[#30363d] bg-gray-50/60 dark:bg-[#1c2128] hover:border-gray-200 dark:hover:border-[#484f58] transition-colors"
                   >
-                    <span
-                      className="w-6 h-6 rounded-md flex items-center justify-center text-xs font-black tabular-nums"
-                      style={{
-                        backgroundColor: `${meta.solid}15`,
-                        color: meta.solid,
-                      }}
+                    {/* Rank badge */}
+                    <div
+                      className={`w-8 h-8 rounded-lg flex items-center justify-center text-xs font-black tabular-nums flex-shrink-0 ${cat.bg} ${cat.text}`}
+                      style={{ boxShadow: `inset 0 0 0 1px ${cat.solid}30` }}
                     >
                       {idx + 1}
-                    </span>
+                    </div>
                     <div className="flex-1 min-w-0">
-                      <div className="text-sm font-semibold text-gray-900 dark:text-[#e6edf3]">
+                      <div className="text-sm font-bold text-gray-900 dark:text-[#e6edf3]">
                         {t(
                           `risk.categories.${factor.category}`,
                           factor.category
@@ -319,7 +362,7 @@ export default function RiskAnalysisPage() {
                       </div>
                     </div>
                     <div
-                      className="text-lg font-bold tabular-nums flex-shrink-0"
+                      className="text-xl font-black tabular-nums flex-shrink-0"
                       style={{ color: meta.solid }}
                     >
                       {formatScore(factor.score)}
@@ -334,22 +377,22 @@ export default function RiskAnalysisPage() {
         {/* ════════════════════════════════════════════════════════
             FULL FACTOR LIST
         ════════════════════════════════════════════════════════ */}
-        <div className="rounded-2xl border border-gray-200 dark:border-[#30363d] bg-white dark:bg-[#0d1117] overflow-hidden mb-8">
+        <div className="rounded-2xl border border-gray-200 dark:border-[#30363d] bg-white dark:bg-[#161b22] shadow-sm overflow-hidden mb-6">
           <div className="px-6 py-4 border-b border-gray-100 dark:border-[#21262d] flex items-center justify-between">
             <div>
-              <h2 className="text-sm font-semibold text-gray-900 dark:text-[#e6edf3]">
-                {t("risk.page.factorsTitle", "All Risk Factors")}
+              <h2 className="text-base font-bold text-gray-900 dark:text-[#e6edf3]">
+                {t("risk.page.factorsTitle", "Risk Factors")}
               </h2>
               <p className="text-xs text-gray-500 dark:text-[#7d8590] mt-0.5">
                 {t(
                   "risk.page.factorsSubtitle",
-                  "Click any row for full analysis and recommendations"
+                  "Ordered by risk contribution. Click any card to see full analysis."
                 )}
               </p>
             </div>
             <button
               onClick={() => setShowMethodology((v) => !v)}
-              className="inline-flex items-center gap-1.5 text-xs text-gray-500 dark:text-[#7d8590] hover:text-gray-900 dark:hover:text-[#e6edf3] transition-colors"
+              className="inline-flex items-center gap-1.5 text-xs font-medium text-gray-500 dark:text-[#7d8590] hover:text-gray-900 dark:hover:text-[#e6edf3] transition-colors"
             >
               <Info className="w-3.5 h-3.5" strokeWidth={2} />
               {t("risk.page.methodology", "Methodology")}
@@ -369,10 +412,7 @@ export default function RiskAnalysisPage() {
         </div>
 
         {/* ════════════════════════════════════════════════════════
-            🆕 RISK HISTORY SECTION — Session 18 addition
-            Placed AFTER factor list, BEFORE methodology.
-            Rationale: users see current state first, then historical
-            context, then technical methodology at the bottom.
+            RISK HISTORY
         ════════════════════════════════════════════════════════ */}
         <RiskHistorySection
           history={history}
@@ -382,7 +422,7 @@ export default function RiskAnalysisPage() {
         />
 
         {/* ════════════════════════════════════════════════════════
-            METHODOLOGY — collapsible
+            METHODOLOGY
         ════════════════════════════════════════════════════════ */}
         {showMethodology && (
           <motion.div
@@ -406,6 +446,25 @@ export default function RiskAnalysisPage() {
           </p>
         </div>
       </div>
+    </div>
+  );
+}
+
+/* ══════════════════════════════════════════════════════════════
+   MetaPill — small pill with filled colored icon tile
+   ══════════════════════════════════════════════════════════════ */
+
+function MetaPill({ icon: Icon, iconBg, iconColor, value }) {
+  return (
+    <div className="inline-flex items-center gap-2 pl-1 pr-3 py-1 rounded-full bg-gray-50 dark:bg-[#1c2128] border border-gray-200/70 dark:border-[#30363d]">
+      <div
+        className={`w-6 h-6 rounded-full flex items-center justify-center ${iconBg}`}
+      >
+        <Icon className={`w-3 h-3 ${iconColor}`} strokeWidth={2.5} />
+      </div>
+      <span className="text-xs font-semibold text-gray-900 dark:text-[#e6edf3] tabular-nums">
+        {value}
+      </span>
     </div>
   );
 }

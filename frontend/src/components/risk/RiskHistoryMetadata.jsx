@@ -1,21 +1,26 @@
 "use client";
 
 import { motion } from "framer-motion";
-import { Activity, ArrowDownRight, ArrowUpRight, Minus, Calendar } from "lucide-react";
+import {
+  Activity,
+  ArrowDownRight,
+  ArrowUpRight,
+  Calendar,
+  Equal,
+  Shield,
+} from "lucide-react";
 import { useTranslation } from "react-i18next";
 
 import { getRiskLevelMeta, formatScore } from "@/utils/riskUtils";
 
 /**
- * RiskHistoryMetadata — Compact stats bar at the top of RiskHistorySection.
+ * RiskHistoryMetadata — 4 KPI stat cards with filled colored icon tiles.
  *
- * Shows:
- *   - Current risk level (colored badge)
- *   - Score delta from baseline (with direction arrow)
- *   - Total assessment count
- *   - First and latest assessment dates
- *
- * Design inspired by: Stripe metric strips, Linear insight bars.
+ * Cards:
+ *   - CURRENT     → colored by level (Shield icon)
+ *   - CHANGE      → colored by direction (Arrow icon)
+ *   - ASSESSMENTS → blue (Activity icon)
+ *   - TIMESPAN    → purple (Calendar icon)
  */
 export default function RiskHistoryMetadata({ history }) {
   const { t, i18n } = useTranslation();
@@ -28,20 +33,15 @@ export default function RiskHistoryMetadata({ history }) {
     totalAssessments,
     scoreDelta,
     currentLevel,
-    baselineLevel,
     history: entries,
   } = history;
 
   const currentMeta = getRiskLevelMeta(currentLevel);
 
-  // entries are chronological (oldest first)
   const firstAssessment = entries[0];
   const latestAssessment = entries[entries.length - 1];
 
-  // Delta direction — remember: HIGHER score = MORE risk
-  // So delta > 0 = risk INCREASED (bad, red arrow up)
-  // delta < 0 = risk DECREASED (good, green arrow down)
-  // delta === 0 = no change (gray)
+  // Delta direction — higher = more risk = worse
   const hasDelta = scoreDelta !== null && scoreDelta !== undefined;
   const deltaAbs = hasDelta ? Math.abs(scoreDelta) : 0;
   const isImproved = hasDelta && scoreDelta < 0;
@@ -57,7 +57,7 @@ export default function RiskHistoryMetadata({ history }) {
     ? ArrowDownRight
     : isWorsened
     ? ArrowUpRight
-    : Minus;
+    : Equal;
 
   const formatDate = (isoString) => {
     if (!isoString) return "—";
@@ -78,91 +78,132 @@ export default function RiskHistoryMetadata({ history }) {
       initial={{ opacity: 0, y: -4 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.25 }}
-      className="grid grid-cols-2 md:grid-cols-4 gap-px bg-gray-200 dark:bg-[#30363d] rounded-xl overflow-hidden border border-gray-200 dark:border-[#30363d]"
+      className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4"
     >
       {/* ── CURRENT LEVEL ────────────────────────────────── */}
-      <div className="bg-white dark:bg-[#0d1117] px-5 py-4">
-        <div className="text-[10px] uppercase tracking-widest font-bold text-gray-400 dark:text-[#7d8590] mb-2">
-          {t("risk.history.metaCurrent", "Current")}
-        </div>
-        <div className="flex items-baseline gap-2">
+      <StatCard
+        label={t("risk.history.metaCurrent", "Current")}
+        icon={Shield}
+        iconColor={currentMeta.solid}
+        iconBgHex={`${currentMeta.solid}18`}
+        iconBorderHex={`${currentMeta.solid}35`}
+      >
+        <div className="flex items-baseline gap-2 flex-wrap">
           <span
-            className="text-2xl font-black tabular-nums tracking-tight"
+            className="text-3xl font-black tabular-nums tracking-tight leading-none"
             style={{ color: currentMeta.solid }}
           >
             {formatScore(latestAssessment.overallScore)}
           </span>
           <span
-            className="text-xs font-bold uppercase tracking-wider"
+            className="text-xs font-black uppercase tracking-widest"
             style={{ color: currentMeta.solid }}
           >
             {t(`risk.levels.${currentLevel}`, currentLevel)}
           </span>
         </div>
-      </div>
+        <div className="text-[11px] text-gray-500 dark:text-[#7d8590] mt-1.5">
+          {t("risk.history.metaCurrentSub", "Overall risk score")}
+        </div>
+      </StatCard>
 
       {/* ── DELTA ────────────────────────────────────────── */}
-      <div className="bg-white dark:bg-[#0d1117] px-5 py-4">
-        <div className="text-[10px] uppercase tracking-widest font-bold text-gray-400 dark:text-[#7d8590] mb-2">
-          {t("risk.history.metaDelta", "Change")}
-        </div>
-        <div className="flex items-center gap-1.5">
-          <DeltaIcon
-            className="w-4 h-4"
-            strokeWidth={2.25}
-            style={{ color: deltaColor }}
-          />
+      <StatCard
+        label={t("risk.history.metaDelta", "Change")}
+        icon={DeltaIcon}
+        iconColor={deltaColor}
+        iconBgHex={`${deltaColor}18`}
+        iconBorderHex={`${deltaColor}35`}
+      >
+        <div className="flex items-baseline gap-1.5">
+          {!isFlat && (
+            <span
+              className="text-2xl font-black tabular-nums leading-none"
+              style={{ color: deltaColor }}
+            >
+              {isImproved ? "−" : "+"}
+            </span>
+          )}
           <span
-            className="text-2xl font-black tabular-nums tracking-tight"
+            className="text-3xl font-black tabular-nums tracking-tight leading-none"
             style={{ color: deltaColor }}
           >
             {isFlat ? "0.0" : formatScore(deltaAbs)}
           </span>
         </div>
-        <div className="text-[11px] text-gray-500 dark:text-[#7d8590] mt-0.5">
+        <div className="text-[11px] text-gray-500 dark:text-[#7d8590] mt-1.5">
           {isFlat
-            ? t("risk.history.metaNoChange", "No change")
-            : t("risk.history.metaFromBaseline", "from baseline")}
+            ? t("risk.history.metaNoChange", "No change from baseline")
+            : isImproved
+            ? t("risk.history.metaImprovedFromBaseline", "Improved from baseline")
+            : t("risk.history.metaWorsenedFromBaseline", "Higher than baseline")}
         </div>
-      </div>
+      </StatCard>
 
       {/* ── TOTAL ASSESSMENTS ────────────────────────────── */}
-      <div className="bg-white dark:bg-[#0d1117] px-5 py-4">
-        <div className="text-[10px] uppercase tracking-widest font-bold text-gray-400 dark:text-[#7d8590] mb-2">
-          {t("risk.history.metaAssessments", "Assessments")}
-        </div>
+      <StatCard
+        label={t("risk.history.metaAssessments", "Assessments")}
+        icon={Activity}
+        iconColor="#3B82F6"
+        iconBgHex="#3B82F618"
+        iconBorderHex="#3B82F635"
+      >
         <div className="flex items-baseline gap-2">
-          <span className="text-2xl font-black tabular-nums tracking-tight text-gray-900 dark:text-[#e6edf3]">
+          <span className="text-3xl font-black tabular-nums tracking-tight leading-none text-gray-900 dark:text-[#e6edf3]">
             {totalAssessments}
           </span>
-          <Activity
-            className="w-3.5 h-3.5 text-gray-400 dark:text-[#7d8590]"
-            strokeWidth={2}
-          />
+          <span className="text-xs font-semibold uppercase tracking-widest text-gray-400 dark:text-[#6e7681]">
+            {totalAssessments === 1
+              ? t("risk.history.metaTotalRun", "run")
+              : t("risk.history.metaTotalRuns", "runs")}
+          </span>
         </div>
-        <div className="text-[11px] text-gray-500 dark:text-[#7d8590] mt-0.5">
-          {t("risk.history.metaTotalRuns", "total runs")}
+        <div className="text-[11px] text-gray-500 dark:text-[#7d8590] mt-1.5">
+          {t("risk.history.metaAssessmentsSub", "Recalculations performed")}
         </div>
-      </div>
+      </StatCard>
 
       {/* ── DATE RANGE ───────────────────────────────────── */}
-      <div className="bg-white dark:bg-[#0d1117] px-5 py-4">
-        <div className="text-[10px] uppercase tracking-widest font-bold text-gray-400 dark:text-[#7d8590] mb-2">
-          {t("risk.history.metaTimespan", "Timespan")}
+      <StatCard
+        label={t("risk.history.metaTimespan", "Timespan")}
+        icon={Calendar}
+        iconColor="#A855F7"
+        iconBgHex="#A855F718"
+        iconBorderHex="#A855F735"
+      >
+        <div className="text-lg font-bold text-gray-900 dark:text-[#e6edf3] leading-tight truncate">
+          {formatDate(latestAssessment.calculatedAt)}
         </div>
-        <div className="flex items-center gap-1.5">
-          <Calendar
-            className="w-3.5 h-3.5 text-gray-400 dark:text-[#7d8590] flex-shrink-0"
-            strokeWidth={2}
-          />
-          <div className="text-sm font-semibold text-gray-900 dark:text-[#e6edf3] truncate">
-            {formatDate(firstAssessment.calculatedAt)}
-          </div>
+        <div className="text-[11px] text-gray-500 dark:text-[#7d8590] mt-1.5 truncate">
+          {t("risk.history.metaSince", "Since")} {formatDate(firstAssessment.calculatedAt)}
         </div>
-        <div className="text-[11px] text-gray-500 dark:text-[#7d8590] mt-0.5 truncate">
-          {t("risk.history.metaLatest", "Latest")}: {formatDate(latestAssessment.calculatedAt)}
+      </StatCard>
+    </motion.div>
+  );
+}
+
+/* ══════════════════════════════════════════════════════════════
+   StatCard — shared shell
+   ══════════════════════════════════════════════════════════════ */
+
+function StatCard({ label, icon: Icon, iconColor, iconBgHex, iconBorderHex, children }) {
+  return (
+    <div className="rounded-2xl border border-gray-200 dark:border-[#30363d] bg-white dark:bg-[#161b22] shadow-sm p-5 min-h-[128px]">
+      <div className="flex items-center justify-between mb-3">
+        <span className="text-[10px] font-black uppercase tracking-[0.15em] text-gray-400 dark:text-[#6e7681]">
+          {label}
+        </span>
+        <div
+          className="w-9 h-9 rounded-lg flex items-center justify-center"
+          style={{
+            backgroundColor: iconBgHex,
+            boxShadow: `inset 0 0 0 1px ${iconBorderHex}`,
+          }}
+        >
+          <Icon className="w-4 h-4" style={{ color: iconColor }} strokeWidth={2.25} />
         </div>
       </div>
-    </motion.div>
+      {children}
+    </div>
   );
 }

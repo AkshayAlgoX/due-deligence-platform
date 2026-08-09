@@ -11,20 +11,7 @@ import RiskHistorySkeleton from "./RiskHistorySkeleton";
 import RiskHistoryTimeline from "./RiskHistoryTimeline";
 
 /**
- * RiskHistorySection — Parent container for the complete risk history experience.
- *
- * Composition:
- *   - Section header (title + description + icon)
- *   - Metadata bar (4 KPIs)
- *   - Trend chart (Recharts area chart)
- *   - Timeline (vertical rail of assessments)
- *
- * Handles states:
- *   - Loading    → <RiskHistorySkeleton />
- *   - No history → <RiskHistoryEmpty />
- *   - Has data   → Full section (metadata + chart + timeline)
- *
- * Design inspired by: Stripe insights, Linear activity, Vercel deployments.
+ * RiskHistorySection — Full risk history experience.
  */
 export default function RiskHistorySection({
   history,
@@ -34,12 +21,10 @@ export default function RiskHistorySection({
 }) {
   const { t } = useTranslation();
 
-  // ── Loading state ──
   if (loading && !history) {
     return <RiskHistorySkeleton />;
   }
 
-  // ── Empty state — no history at all ──
   const hasNoHistory =
     !history || !history.history || history.history.length === 0;
 
@@ -55,7 +40,6 @@ export default function RiskHistorySection({
     );
   }
 
-  // ── Single assessment — show minimal view ──
   const isSingleAssessment = history.history.length === 1;
 
   return (
@@ -68,14 +52,14 @@ export default function RiskHistorySection({
         transition={{ duration: 0.35 }}
         className="space-y-6"
       >
-        {/* Metadata bar */}
+        {/* Metadata KPI grid */}
         <RiskHistoryMetadata history={history} />
 
         {/* Chart — only if 2+ assessments */}
         {!isSingleAssessment && (
-          <div className="rounded-2xl border border-gray-200 dark:border-[#30363d] bg-white dark:bg-[#0d1117] p-6">
+          <div className="rounded-2xl border border-gray-200 dark:border-[#30363d] bg-white dark:bg-[#161b22] shadow-sm p-6">
             <div className="mb-4">
-              <h3 className="text-sm font-semibold text-gray-900 dark:text-[#e6edf3]">
+              <h3 className="text-base font-bold text-gray-900 dark:text-[#e6edf3]">
                 {t("risk.history.chartTitle", "Risk Score Trend")}
               </h3>
               <p className="text-xs text-gray-500 dark:text-[#7d8590] mt-0.5">
@@ -90,9 +74,9 @@ export default function RiskHistorySection({
         )}
 
         {/* Timeline */}
-        <div className="rounded-2xl border border-gray-200 dark:border-[#30363d] bg-white dark:bg-[#0d1117] overflow-hidden">
+        <div className="rounded-2xl border border-gray-200 dark:border-[#30363d] bg-white dark:bg-[#161b22] shadow-sm overflow-hidden">
           <div className="px-6 py-4 border-b border-gray-100 dark:border-[#21262d]">
-            <h3 className="text-sm font-semibold text-gray-900 dark:text-[#e6edf3]">
+            <h3 className="text-base font-bold text-gray-900 dark:text-[#e6edf3]">
               {t("risk.history.timelineTitle", "Assessment Timeline")}
             </h3>
             <p className="text-xs text-gray-500 dark:text-[#7d8590] mt-0.5">
@@ -109,18 +93,27 @@ export default function RiskHistorySection({
   );
 }
 
-/** Section header — shared across all states. */
+/* ══════════════════════════════════════════════════════════════
+   Section header with filled icon tile
+   ══════════════════════════════════════════════════════════════ */
+
 function SectionHeader({ t }) {
   return (
-    <div className="flex items-center gap-2.5 mb-5">
-      <div className="w-8 h-8 rounded-lg bg-gray-100 dark:bg-[#161b22] border border-gray-200 dark:border-[#30363d] flex items-center justify-center">
+    <div className="flex items-center gap-3 mb-5">
+      <div
+        className="w-10 h-10 rounded-xl flex items-center justify-center"
+        style={{
+          backgroundColor: "#3B82F618",
+          boxShadow: "inset 0 0 0 1px #3B82F635",
+        }}
+      >
         <TrendingUp
-          className="w-4 h-4 text-gray-600 dark:text-[#7d8590]"
-          strokeWidth={2}
+          className="w-4.5 h-4.5 text-blue-600 dark:text-blue-400"
+          strokeWidth={2.25}
         />
       </div>
       <div>
-        <h2 className="text-base font-bold text-gray-900 dark:text-[#e6edf3] tracking-tight">
+        <h2 className="text-lg font-bold text-gray-900 dark:text-[#e6edf3] tracking-tight">
           {t("risk.history.sectionTitle", "Risk History")}
         </h2>
         <p className="text-xs text-gray-500 dark:text-[#7d8590]">

@@ -1,7 +1,7 @@
-// frontend/src/components/risk/RiskBreakdownRadar.jsx
 "use client";
 
 import { motion } from "framer-motion";
+import { useMemo } from "react";
 import { useTranslation } from "react-i18next";
 import {
   PolarAngleAxis,
@@ -14,69 +14,68 @@ import {
 } from "recharts";
 
 import { CATEGORY_META, formatWeight } from "@/utils/riskUtils";
+import { getAreaAverage } from "@/utils/mockAreaAverage";
 
 /**
- * RiskBreakdownRadar — 6-axis radar chart showing all category scores.
+ * RiskBreakdownRadar — Premium dual-overlay radar.
  *
- * Uses recharts. Fully theme-aware (auto-adapts to dark mode via CSS vars).
- * Custom tooltip shows: category name, score, weight, level.
+ * Shows two polygons:
+ *   1. Your property (green gradient fill, solid stroke, glow)
+ *   2. Area average (grey dashed outline, no fill)
  *
- * Design choices:
- *   - Filled polygon (not just outline) — makes shape shockingly clear
- *   - Semi-transparent fill so overlapping is readable
- *   - Custom axis labels with category icons (via ticks formatter)
- *   - Score axis 0-100 with LOW/MED/HIGH/CRITICAL threshold rings
- *
- * @param {Object} breakdown — RiskBreakdownDto from API
- * @param {number} [height=350]
+ * Includes:
+ *   - Gradient defs for radial fill
+ *   - Delta-aware custom tooltip
+ *   - Legend row below with colored swatches
  */
-export default function RiskBreakdownRadar({ breakdown, height = 350 }) {
+export default function RiskBreakdownRadar({ breakdown, propertyId, height = 350 }) {
   const { t } = useTranslation();
+
+  const areaAvg = useMemo(() => getAreaAverage(propertyId), [propertyId]);
 
   if (!breakdown) return null;
 
-  // Build chart data — one row per category, in fixed weight order
   const data = [
     {
       category: t("risk.categories.FLOOD", "Flood"),
       key: "FLOOD",
       score: Math.round(breakdown.floodScore || 0),
-      fullScore: breakdown.floodScore || 0,
+      areaScore: Math.round(areaAvg.floodScore),
       weight: CATEGORY_META.FLOOD.weight,
     },
     {
       category: t("risk.categories.LEGAL", "Legal"),
       key: "LEGAL",
       score: Math.round(breakdown.legalScore || 0),
-      fullScore: breakdown.legalScore || 0,
+      areaScore: Math.round(areaAvg.legalScore),
       weight: CATEGORY_META.LEGAL.weight,
     },
     {
       category: t("risk.categories.TAX", "Tax"),
       key: "TAX",
       score: Math.round(breakdown.taxScore || 0),
-      fullScore: breakdown.taxScore || 0,
+      areaScore: Math.round(areaAvg.taxScore),
       weight: CATEGORY_META.TAX.weight,
     },
     {
       category: t("risk.categories.ZONING", "Zoning"),
       key: "ZONING",
       score: Math.round(breakdown.zoningScore || 0),
-      fullScore: breakdown.zoningScore || 0,
+      areaScore: Math.round(areaAvg.zoningScore),
       weight: CATEGORY_META.ZONING.weight,
     },
     {
       category: t("risk.categories.ENVIRONMENTAL", "Environmental"),
       key: "ENVIRONMENTAL",
       score: Math.round(breakdown.environmentalScore || 0),
-      fullScore: breakdown.environmentalScore || 0,
+      areaScore: Math.round(areaAvg.environmentalScore),
       weight: CATEGORY_META.ENVIRONMENTAL.weight,
     },
     {
       category: t("risk.categories.MARKET", "Market"),
       key: "MARKET",
       score: Math.round(breakdown.marketScore || 0),
-      fullScore: breakdown.marketScore || 0,
+      areaScore: Math.round(areaAvg.marketScore),
       weight: CATEGORY_META.MARKET.weight,
     },
   ];
@@ -89,16 +88,30 @@ export default function RiskBreakdownRadar({ breakdown, height = 350 }) {
       className="w-full"
     >
       <ResponsiveContainer width="100%" height={height}>
-        <RadarChart
-          cx="50%"
-          cy="50%"
-          outerRadius="75%"
-          data={data}
-        >
+        <RadarChart cx="50%" cy="50%" outerRadius="72%" data={data}>
+          <defs>
+            {/* Radial gradient for your property polygon */}
+            <radialGradient id="propGradient" cx="50%" cy="50%" r="50%">
+              <stop offset="0%" stopColor="#22C55E" stopOpacity={0.05} />
+              <stop offset="60%" stopColor="#22C55E" stopOpacity={0.35} />
+              <stop offset="100%" stopColor="#16a34a" stopOpacity={0.55} />
+            </radialGradient>
+
+            {/* Soft glow filter */}
+            <filter id="polygonGlow" x="-20%" y="-20%" width="140%" height="140%">
+              <feGaussianBlur stdDeviation="3" result="blur" />
+              <feMerge>
+                <feMergeNode in="blur" />
+                <feMergeNode in="SourceGraphic" />
+              </feMerge>
+            </filter>
+          </defs>
+
           <PolarGrid
             stroke="currentColor"
             className="text-gray-200 dark:text-[#30363d]"
-            strokeDasharray="3 3"
+            strokeDasharray="2 4"
+            gridType="polygon"
           />
 
           <PolarAngleAxis
@@ -106,9 +119,9 @@ export default function RiskBreakdownRadar({ breakdown, height = 350 }) {
             tick={{
               fill: "currentColor",
               fontSize: 12,
-              fontWeight: 600,
+              fontWeight: 700,
             }}
-            className="text-gray-600 dark:text-[#e6edf3]"
+            className="text-gray-700 dark:text-[#e6edf3]"
           />
 
           <PolarRadiusAxis
@@ -118,62 +131,155 @@ export default function RiskBreakdownRadar({ breakdown, height = 350 }) {
               fill: "currentColor",
               fontSize: 10,
             }}
-            className="text-gray-400 dark:text-[#7d8590]"
+            className="text-gray-400 dark:text-[#6e7681]"
             tickCount={5}
+            axisLine={false}
+            stroke="transparent"
           />
 
+          {/* Area average — background layer, dashed outline only */}
           <Radar
-            name={t("risk.radar.seriesName", "Risk Score")}
+            name="areaAvg"
+            dataKey="areaScore"
+            stroke="#7d8590"
+            fill="#7d8590"
+            fillOpacity={0.05}
+            strokeWidth={1.5}
+            strokeDasharray="4 4"
+            isAnimationActive={true}
+            animationDuration={900}
+          />
+
+          {/* Your property — foreground, gradient fill + glow */}
+          <Radar
+            name="property"
             dataKey="score"
             stroke="#22C55E"
-            fill="#22C55E"
-            fillOpacity={0.25}
-            strokeWidth={2}
-            animationDuration={800}
+            fill="url(#propGradient)"
+            fillOpacity={1}
+            strokeWidth={2.5}
+            filter="url(#polygonGlow)"
+            isAnimationActive={true}
+            animationDuration={1000}
           />
 
           <Tooltip content={<RadarTooltip t={t} />} />
         </RadarChart>
       </ResponsiveContainer>
 
-      {/* Legend / helper text below */}
-      <p className="mt-3 text-center text-xs text-gray-500 dark:text-[#7d8590]">
+      {/* ── Legend row ── */}
+      <div className="mt-3 flex items-center justify-center gap-5">
+        <div className="flex items-center gap-2">
+          <span className="relative flex items-center">
+            <span className="w-3 h-3 rounded-sm bg-[#22C55E]" />
+            <span className="absolute inset-0 rounded-sm bg-[#22C55E] blur-sm opacity-60" />
+          </span>
+          <span className="text-xs font-semibold text-gray-700 dark:text-[#e6edf3]">
+            {t("risk.radar.legendProperty", "This property")}
+          </span>
+        </div>
+        <div className="flex items-center gap-2">
+          <span className="w-3 h-0.5 border-t-2 border-dashed border-gray-400 dark:border-[#7d8590]" />
+          <span className="text-xs font-semibold text-gray-500 dark:text-[#7d8590]">
+            {t("risk.radar.legendArea", "Area average")}
+          </span>
+        </div>
+      </div>
+
+      {/* ── Helper text ── */}
+      <p className="mt-2 text-center text-[11px] text-gray-400 dark:text-[#6e7681]">
         {t("risk.radar.helperText", "Each axis shows a category score (0–100). Lower is better.")}
       </p>
     </motion.div>
   );
 }
 
-// ── Custom tooltip ────────────────────────────────────────────
+/* ══════════════════════════════════════════════════════════════
+   Custom tooltip — shows property + area avg + delta
+   ══════════════════════════════════════════════════════════════ */
 
 function RadarTooltip({ active, payload, t }) {
   if (!active || !payload || !payload.length) return null;
 
   const item = payload[0].payload;
+  const delta = item.score - item.areaScore;
+  const isBetter = delta < 0; // lower = better
+  const isWorse = delta > 0;
+  const deltaColor = isBetter ? "#22C55E" : isWorse ? "#EF4444" : "#7d8590";
+  const deltaLabel =
+    delta === 0
+      ? t("risk.radar.tooltipSameAsArea", "Same as area avg")
+      : isBetter
+      ? t("risk.radar.tooltipBetter", "{{n}} pts below area avg", { n: Math.abs(delta) })
+      : t("risk.radar.tooltipWorse", "{{n}} pts above area avg", { n: Math.abs(delta) });
+
   const level =
-    item.fullScore < 26 ? "LOW" :
-    item.fullScore < 51 ? "MEDIUM" :
-    item.fullScore < 76 ? "HIGH" : "CRITICAL";
+    item.score < 26 ? "LOW" :
+    item.score < 51 ? "MEDIUM" :
+    item.score < 76 ? "HIGH" : "CRITICAL";
 
   return (
-    <div className="rounded-lg bg-white dark:bg-[#161b22] border border-gray-200 dark:border-[#30363d] shadow-lg p-3 text-xs">
-      <div className="font-semibold text-gray-900 dark:text-[#e6edf3] mb-1">
-        {item.category}
-      </div>
-      <div className="flex items-center gap-2 text-gray-600 dark:text-[#7d8590]">
-        <span>{t("risk.radar.tooltipScore", "Score")}:</span>
-        <span className="font-bold text-gray-900 dark:text-[#e6edf3] tabular-nums">
-          {item.score} / 100
+    <div className="rounded-xl bg-white dark:bg-[#161b22] border border-gray-200 dark:border-[#30363d] shadow-xl px-3.5 py-3 min-w-[200px]">
+      <div className="flex items-center justify-between mb-2 pb-2 border-b border-gray-100 dark:border-[#21262d]">
+        <span className="text-sm font-bold text-gray-900 dark:text-[#e6edf3]">
+          {item.category}
+        </span>
+        <span className="text-[9px] font-black uppercase tracking-widest px-1.5 py-0.5 rounded"
+          style={{
+            backgroundColor:
+              level === "LOW" ? "#22C55E20" :
+              level === "MEDIUM" ? "#F59E0B20" :
+              level === "HIGH" ? "#F9731620" : "#EF444420",
+            color:
+              level === "LOW" ? "#22C55E" :
+              level === "MEDIUM" ? "#F59E0B" :
+              level === "HIGH" ? "#F97316" : "#EF4444",
+          }}
+        >
+          {t(`risk.levels.${level}`, level)}
         </span>
       </div>
-      <div className="flex items-center gap-2 text-gray-600 dark:text-[#7d8590]">
-        <span>{t("risk.radar.tooltipWeight", "Weight")}:</span>
-        <span className="font-medium text-gray-900 dark:text-[#e6edf3]">
-          {formatWeight(item.weight)}
-        </span>
+
+      <div className="space-y-1.5">
+        <div className="flex items-center justify-between text-xs">
+          <div className="flex items-center gap-2">
+            <span className="w-2 h-2 rounded-sm bg-[#22C55E]" />
+            <span className="text-gray-600 dark:text-[#7d8590]">
+              {t("risk.radar.tooltipYours", "Your property")}
+            </span>
+          </div>
+          <span className="font-bold text-gray-900 dark:text-[#e6edf3] tabular-nums">
+            {item.score}
+          </span>
+        </div>
+        <div className="flex items-center justify-between text-xs">
+          <div className="flex items-center gap-2">
+            <span className="w-2 h-0.5 border-t border-dashed border-gray-400 dark:border-[#7d8590]" />
+            <span className="text-gray-600 dark:text-[#7d8590]">
+              {t("risk.radar.tooltipArea", "Area avg")}
+            </span>
+          </div>
+          <span className="font-semibold text-gray-500 dark:text-[#7d8590] tabular-nums">
+            {item.areaScore}
+          </span>
+        </div>
       </div>
-      <div className="mt-1 text-[10px] font-bold uppercase tracking-widest opacity-75">
-        {t(`risk.levels.${level}`, level)}
+
+      <div className="mt-2 pt-2 border-t border-gray-100 dark:border-[#21262d]">
+        <div className="flex items-center justify-between">
+          <span className="text-[10px] font-bold uppercase tracking-wider text-gray-400 dark:text-[#6e7681]">
+            {t("risk.radar.tooltipWeight", "Weight")}
+          </span>
+          <span className="text-[11px] font-semibold text-gray-700 dark:text-[#c9d1d9] tabular-nums">
+            {formatWeight(item.weight)}
+          </span>
+        </div>
+        <div
+          className="mt-1 text-[11px] font-bold tabular-nums"
+          style={{ color: deltaColor }}
+        >
+          {deltaLabel}
+        </div>
       </div>
     </div>
   );
