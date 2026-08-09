@@ -251,8 +251,73 @@
         "pricePerSqFt": "Price per sq ft benchmarking",
         "trends": "12-month market trends",
         "confidence": "Valuation confidence band"
-      }
+      },
+      "similarity": {
+        "verySimilar": "Very Similar",
+        "similar": "Similar",
+        "somewhatSimilar": "Somewhat Similar"
+      },
+      "radiusKm": "{{km}} km",
+      "distanceKm": "{{km}} km away",
+      "pricePerSqft": "Price/sqft",
+      "betterDealBy": "{{pct}}% cheaper/sqft",
+      "pricierBy": "{{pct}}% pricier/sqft",
+      "table": {
+        "address": "Address",
+        "similarity": "Similarity",
+        "distance": "Distance",
+        "value": "Value",
+        "beds": "Beds"
+      },
+      "map": {
+        "title": "Comparable Properties Map",
+        "priceHeatmap": "Price Heatmap",
+        "noCoords": "This property doesn't have location coordinates set, so nearby comparables can't be shown on a map.",
+        "subjectProperty": "This property"
+      },
+      "noResults": "No comparable properties found",
+      "noResultsDesc": "Try increasing the search radius to find more nearby properties.",
+      "page": {
+        "loading": "Finding comparable properties…",
+        "errorTitle": "Unable to load comparable properties"
+      },
+      "viewComparables": "View Comparables",
+      "viewComparablesTooltip": "Find similar nearby properties"
+    
     },
+
+    "valuation": {
+      "title": "Property Valuation",
+      "noValuationYet": "No valuation calculated yet",
+      "noValuationDesc": "Run a valuation to get an estimated market value based on comparable properties, replacement cost, and rental income.",
+      "calculateNow": "Calculate Valuation",
+      "calculating": "Calculating…",
+      "recalculating": "Recalculating…",
+      "recalculate": "Recalculate",
+      "estimatedValue": "Estimated Value",
+      "confidenceRange": "Confidence range",
+      "calculatedOn": "Calculated on {{date}}",
+      "methods": {
+        "comparable": "Comparable",
+        "cost": "Cost",
+        "income": "Income",
+        "final": "Final Estimate"
+      },
+      "methodsComparisonTitle": "Valuation Methods Comparison",
+      "methodsComparisonDesc": "How each valuation method estimates this property's worth",
+      "priceTrend": "Price Trend",
+      "perSqft": "Price per Sqft (Neighborhood)",
+      "page": {
+        "loading": "Loading valuation…",
+        "errorTitle": "Unable to load valuation"
+      },
+      "calculatedSuccess": "Valuation calculated successfully",
+      "calculatedFailed": "Failed to calculate valuation",
+      "footerDisclaimer": "Valuation estimates are generated from comparable sales, replacement cost, and rental income assumptions. This is a decision support tool, not a certified appraisal.",
+      "viewValuation": "Valuation",
+      "viewValuationTooltip": "See the estimated market value for this property"
+    },
+
     "financial": {
       "eyebrow": "Financial Analysis",
       "title": "Valuation, Ownership & Tax Records",

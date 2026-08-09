@@ -14,6 +14,9 @@ import {
   UserRound,
   Pencil,
   FileText,
+  GitCompare,
+  TrendingUp,
+
 } from "lucide-react";
 import Link from "next/link";
 import { formatINRFull } from "@/utils/currency";
@@ -172,6 +175,35 @@ export default function PropertyDetails({ property, onEdit }) {
                   defaultValue: "Generate Report",
                 })}
               </Link>
+
+
+              {/* View Comparables — outline style, secondary action */}
+              <Link
+                href={`/properties/${id}/comparables`}
+                onClick={(e) => e.stopPropagation()}
+                title={t("comparable.viewComparablesTooltip", {
+                  defaultValue: "Find similar nearby properties",
+                })}
+                className="flex items-center gap-1.5 rounded-lg border border-gray-200 dark:border-[#30363d] bg-white dark:bg-[#1c2128] px-3 py-1.5 text-xs font-semibold text-gray-700 dark:text-[#e6edf3] transition-all duration-150 hover:border-[#22C55E] hover:text-[#16a34a] dark:hover:text-green-400 active:scale-95"
+              >
+                <GitCompare className="h-3.5 w-3.5" strokeWidth={2.4} />
+                {t("comparable.viewComparables", { defaultValue: "View Comparables" })}
+              </Link>
+
+              {/* Valuation — outline style, secondary action */}
+              <Link
+                href={`/properties/${id}/valuation`}
+                onClick={(e) => e.stopPropagation()}
+                title={t("valuation.viewValuationTooltip", {
+                  defaultValue: "See the estimated market value for this property",
+                })}
+                className="flex items-center gap-1.5 rounded-lg border border-gray-200 dark:border-[#30363d] bg-white dark:bg-[#1c2128] px-3 py-1.5 text-xs font-semibold text-gray-700 dark:text-[#e6edf3] transition-all duration-150 hover:border-[#22C55E] hover:text-[#16a34a] dark:hover:text-green-400 active:scale-95"
+              >
+                <TrendingUp className="h-3.5 w-3.5" strokeWidth={2.4} />
+                {t("valuation.viewValuation", { defaultValue: "Valuation" })}
+              </Link>
+
+
 
               {/* Quick PDF — existing DownloadPDFButton, unchanged */}
               <div

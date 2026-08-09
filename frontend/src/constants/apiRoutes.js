@@ -101,6 +101,27 @@ export const API_ROUTES = {
   // ── SSE ───────────────────────────────────────────────────────────────────
   SSE_NOTIFICATIONS: '/api/sse/notifications',
 
+
+
+
+    // ── Comparable Properties  ────────────────────────────
+  COMPARABLE: {
+    LIST:         (propertyId) => `/api/properties/${propertyId}/comparables`,
+    MAP_DATA:     (propertyId) => `/api/properties/${propertyId}/comparables/map-data`,
+    SIMILARITY:   (propertyId, compId) => `/api/properties/${propertyId}/comparables/${compId}/similarity`,
+    SEARCH:       (propertyId) => `/api/properties/${propertyId}/comparables/search`,
+    PRICE_TRENDS: (propertyId) => `/api/properties/${propertyId}/comparables/price-trends`,
+  },
+
+  // ── Property Valuation  ───────────────────────────────
+  VALUATION: {
+    GET:               (propertyId) => `/api/properties/${propertyId}/valuation`,
+    CALCULATE:         (propertyId) => `/api/properties/${propertyId}/valuation/calculate`,
+    METHODS_BREAKDOWN: (propertyId) => `/api/properties/${propertyId}/valuation/methods-breakdown`,
+    PRICE_HISTORY:     (propertyId) => `/api/properties/${propertyId}/valuation/price-history`,
+  },
+
+
 };
 
 
