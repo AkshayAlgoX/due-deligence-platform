@@ -13,6 +13,7 @@ import {
   FileText,
   Bell,
   ClipboardList,
+  History,
   User,
   LifeBuoy,
   Bookmark,
@@ -29,9 +30,10 @@ const ROUTE_ROLES = {
   "/dashboard/risk-assessment":     ["BUYER", "REAL_ESTATE_AGENT", "LEGAL_REVIEWER", "FINANCIAL_INSTITUTION", "ADMIN"],
   "/dashboard/property-comparison": ["BUYER", "REAL_ESTATE_AGENT", "LEGAL_REVIEWER", "FINANCIAL_INSTITUTION", "ADMIN"],
   "/dashboard/saved-comparisons":   ["BUYER", "REAL_ESTATE_AGENT", "LEGAL_REVIEWER", "FINANCIAL_INSTITUTION", "ADMIN"],
-  "/reports": ["BUYER", "REAL_ESTATE_AGENT", "LEGAL_REVIEWER", "FINANCIAL_INSTITUTION", "ADMIN"],
+  "/reports":                       ["BUYER", "REAL_ESTATE_AGENT", "LEGAL_REVIEWER", "FINANCIAL_INSTITUTION", "ADMIN"],
   "/dashboard/notifications":       ["BUYER", "REAL_ESTATE_AGENT", "LEGAL_REVIEWER", "FINANCIAL_INSTITUTION", "ADMIN"],
   "/dashboard/audit-logs":          ["ADMIN"],
+  "/dashboard/report-history":      ["BUYER", "REAL_ESTATE_AGENT", "LEGAL_REVIEWER", "FINANCIAL_INSTITUTION", "ADMIN"],
   "/dashboard/profile":             ["BUYER", "REAL_ESTATE_AGENT", "LEGAL_REVIEWER", "FINANCIAL_INSTITUTION", "ADMIN"],
   "/dashboard/settings":            ["BUYER", "REAL_ESTATE_AGENT", "LEGAL_REVIEWER", "FINANCIAL_INSTITUTION", "ADMIN"],
   "/support":                       ["BUYER", "REAL_ESTATE_AGENT", "LEGAL_REVIEWER", "FINANCIAL_INSTITUTION", "ADMIN"],
@@ -44,16 +46,14 @@ function canAccess(href, role) {
   return allowed.includes(role);
 }
 
-// MAIN section is always expanded (no collapse control shown).
-// Other sections are collapsible.
 const MENU_SECTION_CONFIGS = [
-    {
+  {
     id: "main",
     sectionKey: "nav.sections.main",
     collapsible: true,
     items: [
-      { titleKey: "nav.dashboard",      href: "/dashboard",                  icon: LayoutDashboard, badge: null },
-      { titleKey: "nav.propertySearch", href: "/dashboard/property-search",  icon: Search,          badge: null },
+      { titleKey: "nav.dashboard",      href: "/dashboard",                 icon: LayoutDashboard, badge: null },
+      { titleKey: "nav.propertySearch", href: "/dashboard/property-search", icon: Search,          badge: null },
     ],
   },
   {
@@ -72,9 +72,10 @@ const MENU_SECTION_CONFIGS = [
     sectionKey: "nav.sections.activity",
     collapsible: true,
     items: [
-      { titleKey: "nav.reports",       href: "/reports",       icon: FileText,      badge: null },
-      { titleKey: "nav.notifications", href: "/dashboard/notifications", icon: Bell,          badge: null },
-      { titleKey: "nav.auditLogs",     href: "/dashboard/audit-logs",    icon: ClipboardList, badge: null },
+      { titleKey: "nav.reports",       href: "/reports",                      icon: FileText,      badge: null },
+      { titleKey: "nav.notifications", href: "/dashboard/notifications",      icon: Bell,          badge: null },
+      { titleKey: "nav.auditLogs",     href: "/dashboard/audit-logs",         icon: ClipboardList, badge: null },
+      { titleKey: "nav.reportHistory", href: "/dashboard/report-history",     icon: History,       badge: null },
     ],
   },
   {
@@ -107,9 +108,6 @@ export default function Sidebar({ isOpen = true, onClose, isDesktopRail = false 
   const [sessionStart] = useState(() => new Date());
   const [, tick] = useState(0);
   const [userRole, setUserRole] = useState("");
-
-  // Collapsed sections state — persisted to localStorage
-  // Default: all sections expanded
   const [collapsedSections, setCollapsedSections] = useState({});
 
   useEffect(() => {
@@ -122,19 +120,15 @@ export default function Sidebar({ isOpen = true, onClose, isDesktopRail = false 
     return () => clearInterval(interval);
   }, []);
 
-  // Load collapsed state from localStorage on mount
   useEffect(() => {
     try {
       const saved = localStorage.getItem(STORAGE_KEY);
-      if (saved) {
-        setCollapsedSections(JSON.parse(saved));
-      }
+      if (saved) setCollapsedSections(JSON.parse(saved));
     } catch {
       // silently ignore
     }
   }, []);
 
-  // Auto-expand section that contains the active route
   useEffect(() => {
     if (!pathname) return;
     for (const section of MENU_SECTION_CONFIGS) {
@@ -149,11 +143,7 @@ export default function Sidebar({ isOpen = true, onClose, isDesktopRail = false 
       if (hasActive && collapsedSections[section.id]) {
         setCollapsedSections((prev) => {
           const next = { ...prev, [section.id]: false };
-          try {
-            localStorage.setItem(STORAGE_KEY, JSON.stringify(next));
-          } catch {
-            // silently ignore
-          }
+          try { localStorage.setItem(STORAGE_KEY, JSON.stringify(next)); } catch {}
           return next;
         });
       }
@@ -164,11 +154,7 @@ export default function Sidebar({ isOpen = true, onClose, isDesktopRail = false 
   const toggleSection = (id) => {
     setCollapsedSections((prev) => {
       const next = { ...prev, [id]: !prev[id] };
-      try {
-        localStorage.setItem(STORAGE_KEY, JSON.stringify(next));
-      } catch {
-        // silently ignore
-      }
+      try { localStorage.setItem(STORAGE_KEY, JSON.stringify(next)); } catch {}
       return next;
     });
   };
@@ -184,31 +170,28 @@ export default function Sidebar({ isOpen = true, onClose, isDesktopRail = false 
       )}
 
       <aside
-  className={`
-    w-64 flex flex-col h-full
-    bg-white dark:bg-[#161b22]
-    border-r border-gray-100 dark:border-[#30363d]
-    ${isDesktopRail
-      ? "relative"
-      : `fixed inset-y-0 left-0 z-40 transition-transform duration-300 ease-in-out ${
-          isOpen ? "translate-x-0" : "-translate-x-full"
-        }`
-    }
-  `}
->
+        className={`
+          w-64 flex flex-col h-full
+          bg-white dark:bg-[#161b22]
+          border-r border-gray-100 dark:border-[#30363d]
+          ${isDesktopRail
+            ? "relative"
+            : `fixed inset-y-0 left-0 z-40 transition-transform duration-300 ease-in-out ${
+                isOpen ? "translate-x-0" : "-translate-x-full"
+              }`
+          }
+        `}
+      >
         <nav className="flex-1 overflow-y-auto px-3 py-5">
           {MENU_SECTION_CONFIGS.map((section) => {
             const visibleItems = section.items.filter((item) =>
               canAccess(item.href, userRole)
             );
-
             if (visibleItems.length === 0) return null;
-
             const isCollapsed = section.collapsible && collapsedSections[section.id];
 
             return (
               <div key={section.id} className="mb-5">
-                {/* Section header */}
                 {section.collapsible ? (
                   <button
                     type="button"
@@ -233,7 +216,6 @@ export default function Sidebar({ isOpen = true, onClose, isDesktopRail = false 
                   </p>
                 )}
 
-                {/* Items */}
                 <div
                   className={`overflow-hidden transition-all duration-300 ease-in-out ${
                     isCollapsed ? "max-h-0 opacity-0" : "max-h-[500px] opacity-100"
@@ -287,9 +269,7 @@ export default function Sidebar({ isOpen = true, onClose, isDesktopRail = false 
                             }
                           />
                         </div>
-
                         <span className="flex-1 truncate">{t(item.titleKey)}</span>
-
                         {item.badge && (
                           <span
                             className={`
