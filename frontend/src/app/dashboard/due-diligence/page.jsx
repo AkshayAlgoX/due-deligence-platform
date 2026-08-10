@@ -537,14 +537,14 @@ export default function DueDiligencePortfolioPage() {
             <h1 className="text-2xl font-bold text-gray-900 dark:text-[#e6edf3] mb-1">
               Due Diligence Overview
             </h1>
-            <p className="text-sm text-gray-500 dark:text-[#7d8590] mb-4 flex items-center gap-2 justify-center md:justify-start flex-wrap">
+              <div className="text-sm text-gray-500 dark:text-[#7d8590] mb-4 flex items-center gap-2 justify-center md:justify-start flex-wrap">
               <span>
                 {stats.covered} of {stats.total} properties have due diligence reports
               </span>
               <InfoTooltip
                 text="Coverage = properties with at least one report generated ÷ total properties. Aim for 100% coverage to reduce transaction risk."
               />
-            </p>
+              </div>
 
             <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
               <div className="rounded-xl p-3 bg-white dark:bg-[#1c2128] border border-gray-100 dark:border-[#30363d]">
