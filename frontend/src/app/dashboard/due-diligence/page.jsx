@@ -16,39 +16,58 @@ import {
   ArrowUpRight,
   Filter,
   Download,
-  Building2,
-  Zap,
   FileWarning,
   ArrowDownUp,
-  Sparkles,
   Info,
-  Plus,
+  MapPin,
+  TrendingUp,
   FileSpreadsheet,
+  ChevronDown,
 } from "lucide-react";
+import {
+  ResponsiveContainer,
+  AreaChart,
+  Area,
+  XAxis,
+  YAxis,
+  Tooltip,
+} from "recharts";
 
 import { getAllProperties } from "@/services/propertyService";
 import { useReport } from "@/hooks/useReport";
 
-// ─── Design tokens ────────────────────────────────────────────────────────────
+// ─── Constants ────────────────────────────────────────────────────────────────
 
 const STATUS_CONFIG = {
-  COMPLETED:   { color: "#22C55E", bg: "rgba(34,197,94,0.12)",  border: "rgba(34,197,94,0.25)",  label: "Completed"   },
-  PROCESSING:  { color: "#3B82F6", bg: "rgba(59,130,246,0.12)", border: "rgba(59,130,246,0.25)", label: "Processing"  },
-  PENDING:     { color: "#F59E0B", bg: "rgba(245,158,11,0.12)", border: "rgba(245,158,11,0.25)", label: "Pending"     },
-  FAILED:      { color: "#EF4444", bg: "rgba(239,68,68,0.12)",  border: "rgba(239,68,68,0.25)",  label: "Failed"      },
-  EXPIRED:     { color: "#6B7280", bg: "rgba(107,114,128,0.12)",border: "rgba(107,114,128,0.25)",label: "Expired"     },
+  COMPLETED:  { color: "#22C55E", bg: "rgba(34,197,94,0.12)",   border: "rgba(34,197,94,0.25)",  label: "Completed"  },
+  PROCESSING: { color: "#3B82F6", bg: "rgba(59,130,246,0.12)",  border: "rgba(59,130,246,0.25)", label: "Processing" },
+  PENDING:    { color: "#F59E0B", bg: "rgba(245,158,11,0.12)",  border: "rgba(245,158,11,0.25)", label: "Pending"    },
+  FAILED:     { color: "#EF4444", bg: "rgba(239,68,68,0.12)",   border: "rgba(239,68,68,0.25)",  label: "Failed"     },
+  EXPIRED:    { color: "#6B7280", bg: "rgba(107,114,128,0.12)", border: "rgba(107,114,128,0.25)",label: "Expired"    },
 };
-
-function normalizeStatus(s) {
-  const key = (s ?? "").toUpperCase();
-  return STATUS_CONFIG[key] ? key : "PENDING";
-}
-
-// ─── Route helper (SINGLE SOURCE OF TRUTH) ────────────────────────────────────
 
 const PROPERTY_DETAIL_ROUTE = (id) => `/dashboard/property-search/${id}`;
 const REPORT_DETAIL_ROUTE   = (id) => `/reports/${id}`;
 const ALL_REPORTS_ROUTE     = "/reports";
+
+function normalizeStatus(s) {
+  const k = (s ?? "").toUpperCase();
+  return STATUS_CONFIG[k] ? k : "PENDING";
+}
+
+// ─── Theme detection ──────────────────────────────────────────────────────────
+
+function useIsDark() {
+  const [isDark, setIsDark] = useState(false);
+  useEffect(() => {
+    const check = () => setIsDark(document.documentElement.classList.contains("dark"));
+    check();
+    const obs = new MutationObserver(check);
+    obs.observe(document.documentElement, { attributes: true, attributeFilter: ["class"] });
+    return () => obs.disconnect();
+  }, []);
+  return isDark;
+}
 
 // ─── Animated number ──────────────────────────────────────────────────────────
 
@@ -56,27 +75,19 @@ function AnimatedNumber({ value, decimals = 0, style, className }) {
   const ref = useRef(null);
   const mv  = useMotionValue(0);
   const sp  = useSpring(mv, { stiffness: 60, damping: 20 });
-
-  useEffect(() => {
-    mv.jump(0);
-    mv.set(value);
-  }, [value, mv]);
-
+  useEffect(() => { mv.jump(0); mv.set(value); }, [value, mv]);
   useEffect(() => {
     const unsub = sp.on("change", (v) => {
-      if (ref.current) {
-        ref.current.textContent = decimals > 0 ? v.toFixed(decimals) : Math.round(v);
-      }
+      if (ref.current) ref.current.textContent = decimals > 0 ? v.toFixed(decimals) : Math.round(v);
     });
     return unsub;
   }, [sp, decimals]);
-
   return <span ref={ref} style={style} className={className}>0</span>;
 }
 
 // ─── Info tooltip ─────────────────────────────────────────────────────────────
 
-function InfoTooltip({ text }) {
+function InfoTooltip({ text, isDark }) {
   const [open, setOpen] = useState(false);
   return (
     <span
@@ -97,16 +108,16 @@ function InfoTooltip({ text }) {
               left: "50%",
               transform: "translateX(-50%)",
               zIndex: 50,
-              background: "#161b22",
-              border: "1px solid #30363d",
+              background: isDark ? "#161b22" : "#ffffff",
+              border: `1px solid ${isDark ? "#30363d" : "#e2e8f0"}`,
               borderRadius: 8,
               padding: "8px 12px",
               fontSize: 11,
               lineHeight: 1.5,
-              color: "#e6edf3",
+              color: isDark ? "#e6edf3" : "#0f172a",
               width: 240,
               fontWeight: 500,
-              boxShadow: "0 8px 24px rgba(0,0,0,0.4)",
+              boxShadow: isDark ? "0 8px 24px rgba(0,0,0,0.4)" : "0 8px 24px rgba(15,23,42,0.12)",
               pointerEvents: "none",
             }}
           >
@@ -116,6 +127,27 @@ function InfoTooltip({ text }) {
       </AnimatePresence>
     </span>
   );
+}
+
+// ─── Format inline label ─────────────────────────────────────────────────────
+
+function FormatBadge({ format }) {
+  const f = (format ?? "").toUpperCase();
+  if (f === "PDF") {
+    return (
+      <span className="inline-flex items-center gap-1 text-[10px] font-bold text-red-500 dark:text-red-400">
+        <FileText size={9} strokeWidth={2.5} />PDF
+      </span>
+    );
+  }
+  if (f === "EXCEL" || f === "XLSX") {
+    return (
+      <span className="inline-flex items-center gap-1 text-[10px] font-bold text-green-600 dark:text-green-400">
+        <FileSpreadsheet size={9} strokeWidth={2.5} />EXCEL
+      </span>
+    );
+  }
+  return null;
 }
 
 // ─── Status pill ──────────────────────────────────────────────────────────────
@@ -140,87 +172,6 @@ function StatusPill({ status, size = "sm" }) {
   );
 }
 
-// ─── Format badge ─────────────────────────────────────────────────────────────
-
-function FormatBadge({ format }) {
-  const f = (format ?? "").toUpperCase();
-  if (f === "PDF") {
-    return (
-      <span style={{
-        display: "inline-flex", alignItems: "center", gap: 4,
-        fontSize: 10, fontWeight: 800, padding: "2px 6px",
-        background: "rgba(239,68,68,0.12)",
-        color: "#EF4444",
-        border: "1px solid rgba(239,68,68,0.25)",
-        borderRadius: 5, letterSpacing: "0.05em",
-      }}>
-        <FileText size={9} strokeWidth={2.5} />
-        PDF
-      </span>
-    );
-  }
-  if (f === "EXCEL" || f === "XLSX") {
-    return (
-      <span style={{
-        display: "inline-flex", alignItems: "center", gap: 4,
-        fontSize: 10, fontWeight: 800, padding: "2px 6px",
-        background: "rgba(34,197,94,0.12)",
-        color: "#22C55E",
-        border: "1px solid rgba(34,197,94,0.25)",
-        borderRadius: 5, letterSpacing: "0.05em",
-      }}>
-        <FileSpreadsheet size={9} strokeWidth={2.5} />
-        EXCEL
-      </span>
-    );
-  }
-  // If format missing/unknown, render nothing
-  return null;
-}
-// ─── Progress ring ────────────────────────────────────────────────────────────
-
-function ProgressRing({ percent, size = 140, color = "#22C55E" }) {
-  const r      = (size - 20) / 2;
-  const circ   = 2 * Math.PI * r;
-  const offset = circ - (percent / 100) * circ;
-  return (
-    <div style={{ position: "relative", width: size, height: size, flexShrink: 0 }}>
-      <svg width={size} height={size} style={{ transform: "rotate(-90deg)" }}>
-        <circle cx={size/2} cy={size/2} r={r} fill="none"
-          stroke="rgba(255,255,255,0.06)" strokeWidth={10} />
-        <circle cx={size/2} cy={size/2} r={r} fill="none"
-          stroke={color} strokeWidth={10} strokeLinecap="round"
-          strokeDasharray={circ} strokeDashoffset={offset}
-          style={{
-            transition: "stroke-dashoffset 1s ease",
-            filter: `drop-shadow(0 0 8px ${color}50)`,
-          }}
-        />
-      </svg>
-      <div style={{
-        position: "absolute", inset: 0,
-        display: "flex", flexDirection: "column",
-        alignItems: "center", justifyContent: "center",
-      }}>
-        <div style={{ display: "flex", alignItems: "baseline", gap: 2 }}>
-          <AnimatedNumber
-            value={percent}
-            decimals={0}
-            style={{ fontSize: 30, fontWeight: 900, color, fontVariantNumeric: "tabular-nums" }}
-          />
-          <span style={{ fontSize: 14, fontWeight: 800, color }}>%</span>
-        </div>
-        <span style={{
-          fontSize: 10, fontWeight: 700, textTransform: "uppercase",
-          letterSpacing: "0.08em", color, marginTop: -2,
-        }}>
-          Coverage
-        </span>
-      </div>
-    </div>
-  );
-}
-
 // ─── Date helpers ─────────────────────────────────────────────────────────────
 
 function formatDate(iso) {
@@ -236,37 +187,28 @@ function timeAgo(iso) {
   if (!iso) return "—";
   const then = new Date(iso).getTime();
   if (isNaN(then)) return "—";
-
   const diff = Date.now() - then;
   if (diff < 0) return formatDate(iso);
-
   const secs = Math.floor(diff / 1000);
   const mins = Math.floor(secs / 60);
   const hrs  = Math.floor(mins / 60);
   const days = Math.floor(hrs / 24);
-
-  // Same-day → time only
-  const timeStr = new Date(iso).toLocaleTimeString(undefined, {
-    hour: "numeric",
-    minute: "2-digit",
-  });
-
-  if (secs < 45)   return "just now";
-  if (mins < 60)   return `${mins}m ago`;
-  if (hrs < 24)    return `${hrs}h ago · ${timeStr}`;
-  if (days === 1)  return `yesterday · ${timeStr}`;
-  if (days < 7)    return `${days}d ago · ${timeStr}`;
+  const timeStr = new Date(iso).toLocaleTimeString(undefined, { hour: "numeric", minute: "2-digit" });
+  if (secs < 45)  return "just now";
+  if (mins < 60)  return `${mins}m ago`;
+  if (hrs < 24)   return `${hrs}h ago · ${timeStr}`;
+  if (days === 1) return `yesterday · ${timeStr}`;
+  if (days < 7)   return `${days}d ago · ${timeStr}`;
   return formatDate(iso);
 }
+
 // ─── CSV export ───────────────────────────────────────────────────────────────
 
-function exportDueDiligenceCSV(properties, reports) {
+function exportCSV(properties, reports) {
   const headers = [
-    "Property Address", "City", "State", "Property Type",
-    "Market Value", "Report Count", "Latest Report Status",
-    "Latest Report Date", "Latest Report Format", "Coverage",
+    "Property Address","City","State","Property Type","Market Value",
+    "Report Count","Latest Status","Latest Date","Latest Format","Coverage",
   ];
-
   const rows = properties.map((p) => {
     const propReports = reports.filter((r) => r.propertyId === p.id);
     const latest = propReports.sort((a, b) =>
@@ -285,49 +227,88 @@ function exportDueDiligenceCSV(properties, reports) {
       propReports.length > 0 ? "Yes" : "No",
     ].join(",");
   });
-
-  const csv  = [headers.join(","), ...rows].join("\n");
+  const csv = [headers.join(","), ...rows].join("\n");
   const blob = new Blob([csv], { type: "text/csv;charset=utf-8;" });
-  const url  = URL.createObjectURL(blob);
-  const a    = document.createElement("a");
-  const ts   = new Date().toISOString().split("T")[0];
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement("a");
+  const ts = new Date().toISOString().split("T")[0];
   a.href = url;
   a.download = `due_diligence_portfolio_${ts}.csv`;
-  document.body.appendChild(a);
-  a.click();
-  document.body.removeChild(a);
+  document.body.appendChild(a); a.click(); document.body.removeChild(a);
   URL.revokeObjectURL(url);
 }
+
+// ─── Activity chart data ──────────────────────────────────────────────────────
+
+function buildActivityData(reports) {
+  const now = new Date();
+  const days = [];
+  for (let i = 29; i >= 0; i--) {
+    const d = new Date(now);
+    d.setDate(d.getDate() - i);
+    d.setHours(0, 0, 0, 0);
+    days.push({ date: d, count: 0, label: d.toLocaleDateString(undefined, { month: "short", day: "numeric" }) });
+  }
+  (reports ?? []).forEach((r) => {
+    const t = new Date(r.createdAt ?? 0).getTime();
+    if (isNaN(t)) return;
+    const bucket = days.find((d) => {
+      const start = d.date.getTime();
+      const end   = start + 86400000;
+      return t >= start && t < end;
+    });
+    if (bucket) bucket.count++;
+  });
+  return days;
+}
+
+const ActivityTooltip = ({ active, payload, isDark }) => {
+  if (!active || !payload?.length) return null;
+  const d = payload[0].payload;
+  return (
+    <div style={{
+      background: isDark ? "#161b22" : "#ffffff",
+      border: `1px solid ${isDark ? "#30363d" : "#e2e8f0"}`,
+      borderRadius: 8, padding: "6px 10px",
+      boxShadow: isDark ? "0 4px 12px rgba(0,0,0,0.3)" : "0 4px 12px rgba(15,23,42,0.1)",
+    }}>
+      <p style={{ color: isDark ? "#e6edf3" : "#0f172a", fontSize: 11, fontWeight: 700 }}>
+        {d.label}
+      </p>
+      <p style={{ color: "#22C55E", fontSize: 11, fontWeight: 600 }}>
+        {d.count} report{d.count !== 1 ? "s" : ""}
+      </p>
+    </div>
+  );
+};
 
 // ─── Skeleton ─────────────────────────────────────────────────────────────────
 
 function PageSkeleton() {
   return (
     <div className="w-full max-w-[1400px] mx-auto space-y-6 animate-pulse">
-      <div className="h-36 rounded-2xl bg-gray-100 dark:bg-[#1c2128]" />
-      <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-        {[...Array(4)].map((_, i) => (
-          <div key={i} className="h-24 rounded-2xl bg-gray-100 dark:bg-[#1c2128]" />
-        ))}
+      <div className="h-32 rounded-2xl bg-gray-100 dark:bg-[#1c2128]" />
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+        <div className="h-56 rounded-2xl bg-gray-100 dark:bg-[#1c2128]" />
+        <div className="h-56 rounded-2xl bg-gray-100 dark:bg-[#1c2128]" />
       </div>
-      <div className="h-56 rounded-2xl bg-gray-100 dark:bg-[#1c2128]" />
-      <div className="h-64 rounded-2xl bg-gray-100 dark:bg-[#1c2128]" />
+      <div className="h-96 rounded-2xl bg-gray-100 dark:bg-[#1c2128]" />
     </div>
   );
 }
 
-// ─── Filter constants ─────────────────────────────────────────────────────────
+// ─── Filters ──────────────────────────────────────────────────────────────────
 
 const FILTER_TABS = [
-  { id: "ALL",         label: "All",           icon: FileText },
-  { id: "COVERED",     label: "Covered",       icon: CheckCircle2 },
-  { id: "NO_REPORT",   label: "Not Started",   icon: FileWarning  },
+  { id: "ALL",       label: "All",         icon: FileText   },
+  { id: "COVERED",   label: "Covered",     icon: CheckCircle2 },
+  { id: "NO_REPORT", label: "Not Started", icon: FileWarning  },
 ];
 
 const SORT_OPTIONS = [
-  { value: "recent",       label: "Recent Activity" },
-  { value: "name_asc",     label: "Name A→Z"        },
-  { value: "reports_desc", label: "Most Reports"    },
+  { value: "recent",       label: "Recent"     },
+  { value: "name_asc",     label: "Name"       },
+  { value: "reports_desc", label: "Coverage"   },
 ];
 
 // ─── Main ─────────────────────────────────────────────────────────────────────
@@ -335,15 +316,10 @@ const SORT_OPTIONS = [
 export default function DueDiligencePortfolioPage() {
   const { t } = useTranslation();
   const router = useRouter();
+  const isDark = useIsDark();
   const tableRef = useRef(null);
 
-  const {
-    reports,
-    pagination,
-    listLoading,
-    listError,
-    fetchList,
-  } = useReport();
+  const { reports, listLoading, listError, fetchList } = useReport();
 
   const [properties, setProperties]     = useState([]);
   const [propsLoading, setPropsLoading] = useState(true);
@@ -351,12 +327,12 @@ export default function DueDiligencePortfolioPage() {
   const [filterTab, setFilterTab]       = useState("ALL");
   const [searchQuery, setSearchQuery]   = useState("");
   const [sortBy, setSortBy]             = useState("recent");
+  const [expandedCities, setExpandedCities] = useState({});
 
   useEffect(() => {
     document.title = "Due Diligence | Real Estate Due Diligence";
   }, []);
 
-  // Load properties
   useEffect(() => {
     (async () => {
       try {
@@ -379,7 +355,6 @@ export default function DueDiligencePortfolioPage() {
   const loading = propsLoading || listLoading;
   const error   = propsError || listError;
 
-  // Navigation helpers — used everywhere to prevent 404s
   const goToProperty = useCallback((id) => {
     if (id != null) router.push(PROPERTY_DETAIL_ROUTE(id));
   }, [router]);
@@ -394,13 +369,7 @@ export default function DueDiligencePortfolioPage() {
     }, 50);
   }, []);
 
-  const jumpToNoReport = useCallback(() => {
-    setFilterTab("NO_REPORT");
-    setSearchQuery("");
-    scrollToTable();
-  }, [scrollToTable]);
-
-  // ── Derived ──
+  // ── Derived data ──
 
   const reportsByProperty = useMemo(() => {
     const map = {};
@@ -421,11 +390,8 @@ export default function DueDiligencePortfolioPage() {
       const latest      = propReports[0] ?? null;
       const latestStatus = latest ? normalizeStatus(latest.status) : null;
       return {
-        ...p,
-        reports: propReports,
-        reportCount: propReports.length,
-        latestReport: latest,
-        latestStatus,
+        ...p, reports: propReports, reportCount: propReports.length,
+        latestReport: latest, latestStatus,
         hasReports: propReports.length > 0,
       };
     });
@@ -445,12 +411,35 @@ export default function DueDiligencePortfolioPage() {
     return { total, covered, noReport, totalReports, completedReports, pendingReports, coverage };
   }, [properties, enriched, reports]);
 
+  // Group unassessed properties by city
+  const unassessedByCity = useMemo(() => {
+    const groups = {};
+    enriched.filter((p) => !p.hasReports).forEach((p) => {
+      const city = (p.city ?? "Unknown").trim() || "Unknown";
+      if (!groups[city]) groups[city] = [];
+      groups[city].push(p);
+    });
+    return Object.entries(groups)
+      .map(([city, list]) => ({ city, list }))
+      .sort((a, b) => b.list.length - a.list.length);
+  }, [enriched]);
+
   const recentReports = useMemo(() => {
     return (reports ?? [])
       .slice()
       .sort((a, b) => new Date(b.createdAt ?? 0) - new Date(a.createdAt ?? 0))
       .slice(0, 5);
   }, [reports]);
+
+  const activityData = useMemo(() => buildActivityData(reports), [reports]);
+
+  const peakDay = useMemo(() => {
+    return activityData.reduce((peak, d) => d.count > peak.count ? d : peak, { count: 0 });
+  }, [activityData]);
+
+  const totalIn30Days = useMemo(() =>
+    activityData.reduce((sum, d) => sum + d.count, 0),
+  [activityData]);
 
   const filtered = useMemo(() => {
     let list = [...enriched];
@@ -464,7 +453,6 @@ export default function DueDiligencePortfolioPage() {
         (p.propertyType ?? "").toLowerCase().includes(q)
       );
     }
-
     if (filterTab === "COVERED")   list = list.filter((p) => p.hasReports);
     if (filterTab === "NO_REPORT") list = list.filter((p) => !p.hasReports);
 
@@ -485,16 +473,8 @@ export default function DueDiligencePortfolioPage() {
     return list;
   }, [enriched, filterTab, searchQuery, sortBy]);
 
-  const noReportProperties = useMemo(() =>
-    enriched.filter((p) => !p.hasReports).slice(0, 5),
-  [enriched]);
-
   const hasActiveFilters = filterTab !== "ALL" || searchQuery.trim();
-
-  const clearFilters = () => {
-    setFilterTab("ALL");
-    setSearchQuery("");
-  };
+  const clearFilters = () => { setFilterTab("ALL"); setSearchQuery(""); };
 
   // ── Render ──
 
@@ -511,410 +491,462 @@ export default function DueDiligencePortfolioPage() {
     );
   }
 
+  // Coverage color story: red < 40 < amber < 75 < green
   const coverageColor =
     stats.coverage >= 75 ? "#22C55E" :
     stats.coverage >= 40 ? "#F59E0B" : "#EF4444";
 
+  const coverageMessage =
+    stats.coverage >= 75 ? "Portfolio is well-vetted."     :
+    stats.coverage >= 40 ? "More coverage recommended."    :
+    "Significant compliance gap.";
+
   return (
     <div className="w-full max-w-[1400px] mx-auto space-y-6 pb-10">
 
-      {/* ══════════════ HERO ══════════════ */}
+      {/* ══════════════ HERO — Compact & Data-Dense ══════════════ */}
       <motion.div
         initial={{ opacity: 0, y: 16 }}
         animate={{ opacity: 1, y: 0 }}
         className="rounded-2xl border border-gray-100 dark:border-[#30363d]
           bg-white dark:bg-[#161b22] shadow-sm overflow-hidden"
       >
-        <div style={{
-          height: 3,
-          background: "linear-gradient(90deg, #EF4444, #F59E0B, #22C55E)",
-        }} />
+        <div className="p-8 flex flex-col lg:flex-row items-stretch gap-8">
 
-        <div className="p-6 flex flex-col md:flex-row items-center gap-8">
-          <ProgressRing percent={stats.coverage} color={coverageColor} />
-
-          <div className="flex-1 text-center md:text-left w-full">
-            <h1 className="text-2xl font-bold text-gray-900 dark:text-[#e6edf3] mb-1">
-              Due Diligence Overview
-            </h1>
-              <div className="text-sm text-gray-500 dark:text-[#7d8590] mb-4 flex items-center gap-2 justify-center md:justify-start flex-wrap">
-              <span>
-                {stats.covered} of {stats.total} properties have due diligence reports
-              </span>
-              <InfoTooltip
-                text="Coverage = properties with at least one report generated ÷ total properties. Aim for 100% coverage to reduce transaction risk."
-              />
-              </div>
-
-            <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
-              <div className="rounded-xl p-3 bg-white dark:bg-[#1c2128] border border-gray-100 dark:border-[#30363d]">
-                <div style={{
-                  width: 28, height: 28, borderRadius: 8, marginBottom: 6,
-                  background: "rgba(34,197,94,0.12)",
-                  boxShadow: "inset 0 0 0 1px rgba(34,197,94,0.25)",
-                  display: "flex", alignItems: "center", justifyContent: "center",
-                }}>
-                  <CheckCircle2 size={15} color="#22C55E" strokeWidth={2.5} />
+          {/* Left — Coverage + Message */}
+          <div className="flex items-center gap-5 lg:pr-6 lg:border-r lg:border-gray-100 lg:dark:border-[#21262d]">
+            <div style={{ position: "relative", width: 120, height: 120, flexShrink: 0 }}>
+              <svg width={120} height={120} style={{ transform: "rotate(-90deg)" }}>
+                <circle cx={60} cy={60} r={52} fill="none"
+                  stroke={isDark ? "rgba(255,255,255,0.06)" : "rgba(15,23,42,0.06)"} strokeWidth={9} />
+                <circle cx={60} cy={60} r={52} fill="none"
+                  stroke={coverageColor} strokeWidth={9} strokeLinecap="round"
+                  strokeDasharray={2 * Math.PI * 52}
+                  strokeDashoffset={2 * Math.PI * 52 - (stats.coverage / 100) * 2 * Math.PI * 52}
+                  style={{ transition: "stroke-dashoffset 1s ease" }}
+                />
+              </svg>
+              <div style={{
+                position: "absolute", inset: 0,
+                display: "flex", alignItems: "center", justifyContent: "center",
+              }}>
+                <div style={{ display: "flex", alignItems: "baseline", gap: 1 }}>
+                  <AnimatedNumber
+                    value={stats.coverage}
+                    style={{ fontSize: 30, fontWeight: 900, color: coverageColor, fontVariantNumeric: "tabular-nums" }}
+                  />
+                  <span style={{ fontSize: 16, fontWeight: 800, color: coverageColor }}>%</span>
                 </div>
-                <p className="text-lg font-black tabular-nums text-gray-900 dark:text-[#e6edf3]">
-                  {stats.completedReports}
-                </p>
-                <p className="text-[10px] font-bold uppercase tracking-wider text-[#22C55E]">
-                  Completed
-                </p>
               </div>
+            </div>
 
-              <div className="rounded-xl p-3 bg-white dark:bg-[#1c2128] border border-gray-100 dark:border-[#30363d]">
-                <div style={{
-                  width: 28, height: 28, borderRadius: 8, marginBottom: 6,
-                  background: "rgba(59,130,246,0.12)",
-                  boxShadow: "inset 0 0 0 1px rgba(59,130,246,0.25)",
-                  display: "flex", alignItems: "center", justifyContent: "center",
-                }}>
-                  <Clock size={15} color="#3B82F6" strokeWidth={2.5} />
-                </div>
-                <p className="text-lg font-black tabular-nums text-gray-900 dark:text-[#e6edf3]">
-                  {stats.pendingReports}
-                </p>
-                <p className="text-[10px] font-bold uppercase tracking-wider text-[#3B82F6]">
-                  In Progress
-                </p>
-              </div>
-
-              <div className="rounded-xl p-3 bg-white dark:bg-[#1c2128] border border-gray-100 dark:border-[#30363d]">
-                <div style={{
-                  width: 28, height: 28, borderRadius: 8, marginBottom: 6,
-                  background: "rgba(245,158,11,0.12)",
-                  boxShadow: "inset 0 0 0 1px rgba(245,158,11,0.25)",
-                  display: "flex", alignItems: "center", justifyContent: "center",
-                }}>
-                  <FileWarning size={15} color="#F59E0B" strokeWidth={2.5} />
-                </div>
-                <p className="text-lg font-black tabular-nums text-gray-900 dark:text-[#e6edf3]">
-                  {stats.noReport}
-                </p>
-                <p className="text-[10px] font-bold uppercase tracking-wider text-[#F59E0B]">
-                  No Report
-                </p>
-              </div>
-
-              <div className="rounded-xl p-3 bg-white dark:bg-[#1c2128] border border-gray-100 dark:border-[#30363d]">
-                <div style={{
-                  width: 28, height: 28, borderRadius: 8, marginBottom: 6,
-                  background: "rgba(99,102,241,0.12)",
-                  boxShadow: "inset 0 0 0 1px rgba(99,102,241,0.25)",
-                  display: "flex", alignItems: "center", justifyContent: "center",
-                }}>
-                  <FileText size={15} color="#6366F1" strokeWidth={2.5} />
-                </div>
-                <p className="text-lg font-black tabular-nums text-gray-900 dark:text-[#e6edf3]">
-                  {stats.totalReports}
-                </p>
-                <p className="text-[10px] font-bold uppercase tracking-wider text-[#6366F1]">
-                  Total
-                </p>
+            <div className="min-w-0">
+              <h1 className="text-2xl font-bold text-gray-900 dark:text-[#e6edf3] leading-tight">
+                Due Diligence
+              </h1>
+              <p className="text-sm text-gray-500 dark:text-[#7d8590] mt-1">
+                {coverageMessage}
+              </p>
+              <div className="flex items-center gap-3 mt-2 text-xs">
+                <span className="text-gray-500 dark:text-[#7d8590]">
+                  <span className="font-bold text-gray-900 dark:text-[#e6edf3] tabular-nums">
+                    {stats.covered}
+                  </span>
+                  /{stats.total} covered
+                </span>
+                <InfoTooltip
+                  isDark={isDark}
+                  text="Coverage = properties with at least one report ÷ total properties."
+                />
               </div>
             </div>
           </div>
 
-          <div className="flex flex-col gap-3 flex-shrink-0">
+          {/* Center — KPIs (data-dense, no icon tiles) */}
+          <div className="flex-1 grid grid-cols-3 gap-4">
+            <div>
+              <p className="text-[11px] font-bold uppercase tracking-wider text-gray-400 dark:text-[#6e7681]">
+                Total Reports
+              </p>
+              <p className="text-3xl font-black tabular-nums text-gray-900 dark:text-[#e6edf3] mt-1">
+                {stats.totalReports}
+              </p>
+              <p className="text-xs font-semibold text-gray-500 dark:text-[#7d8590] mt-0.5">
+                <span className="text-[#22C55E]">{stats.completedReports} done</span>
+                {stats.pendingReports > 0 && (
+                  <>
+                    <span className="mx-1">·</span>
+                    <span className="text-[#3B82F6]">{stats.pendingReports} in progress</span>
+                  </>
+                )}
+              </p>
+            </div>
+
+            <div>
+              <p className="text-[11px] font-bold uppercase tracking-wider text-gray-400 dark:text-[#6e7681]">
+                No Report
+              </p>
+              <p className="text-3xl font-black tabular-nums text-[#F59E0B] mt-1">
+                {stats.noReport}
+              </p>
+              <p className="text-xs font-semibold text-gray-500 dark:text-[#7d8590] mt-0.5">
+                across {unassessedByCity.length} cit{unassessedByCity.length === 1 ? "y" : "ies"}
+              </p>
+            </div>
+
+            <div>
+              <p className="text-[11px] font-bold uppercase tracking-wider text-gray-400 dark:text-[#6e7681]">
+                Last 30 Days
+              </p>
+              <p className="text-3xl font-black tabular-nums text-gray-900 dark:text-[#e6edf3] mt-1">
+                {totalIn30Days}
+              </p>
+              <p className="text-xs font-semibold text-gray-500 dark:text-[#7d8590] mt-0.5 flex items-center gap-1">
+                <TrendingUp size={11} className="text-[#22C55E]" />
+                reports generated
+              </p>
+            </div>
+          </div>
+
+          {/* Right — Single primary action */}
+          <div className="flex items-center gap-2 lg:border-l lg:border-gray-100 lg:dark:border-[#21262d] lg:pl-6">
+            <button
+              onClick={() => exportCSV(properties, reports ?? [])}
+              disabled={properties.length === 0}
+              className="p-3 rounded-lg text-xs font-semibold
+                bg-gray-100 dark:bg-[#1c2128]
+                border border-gray-200 dark:border-[#30363d]
+                text-gray-600 dark:text-[#7d8590]
+                hover:bg-gray-200 dark:hover:bg-[#30363d]
+                hover:text-gray-900 dark:hover:text-[#e6edf3]
+                transition disabled:opacity-50"
+              title="Export portfolio as CSV"
+            >
+              <Download size={15} />
+            </button>
             <motion.button
               whileTap={{ scale: 0.97 }}
               whileHover={{ scale: 1.03 }}
               onClick={() => router.push(ALL_REPORTS_ROUTE)}
-              className="flex items-center gap-2 px-5 py-3 rounded-xl text-sm font-bold
-                bg-gradient-to-br from-[#22C55E] to-[#16a34a]
-                text-white shadow-[0_10px_30px_rgba(34,197,94,0.4)]
-                hover:shadow-[0_12px_36px_rgba(34,197,94,0.5)]
-                transition"
+              className="flex items-center gap-2 px-5 py-3 rounded-lg text-sm font-bold
+                bg-gray-900 dark:bg-[#e6edf3]
+                text-white dark:text-[#0d1117]
+                hover:bg-gray-800 dark:hover:bg-white
+                transition shadow-sm whitespace-nowrap"
             >
-              <FileText size={16} />
-              View All Reports
-            </motion.button>
-            <motion.button
-              whileTap={{ scale: 0.97 }}
-              whileHover={{ scale: 1.02 }}
-              onClick={() => exportDueDiligenceCSV(properties, reports ?? [])}
-              disabled={properties.length === 0}
-              className="flex items-center gap-2 px-5 py-3 rounded-xl text-sm font-semibold
-                bg-white dark:bg-[#1c2128]
-                border border-gray-200 dark:border-[#30363d]
-                text-gray-700 dark:text-[#e6edf3]
-                hover:border-gray-300 dark:hover:border-[#484f58]
-                transition shadow-sm disabled:opacity-50"
-            >
-              <Download size={15} />
-              Export CSV
+              All Reports
+              <ArrowUpRight size={14} strokeWidth={2.5} />
             </motion.button>
           </div>
         </div>
       </motion.div>
 
-      {/* ══════════════ ACTION NEEDED ══════════════ */}
-      {noReportProperties.length > 0 && (
+      {/* ══════════════ ACTIVITY + RECENT ══════════════ */}
+      <div className="grid grid-cols-1 lg:grid-cols-5 gap-6">
+
+        {/* Activity chart — takes 3 cols */}
         <motion.div
           initial={{ opacity: 0, y: 12 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.1 }}
-          className="rounded-2xl overflow-hidden"
-          style={{
-            border: "1px solid rgba(245,158,11,0.2)",
-            background: "linear-gradient(135deg, rgba(245,158,11,0.04), transparent)",
-          }}
+          className="lg:col-span-3 rounded-2xl border border-gray-100 dark:border-[#30363d]
+            bg-white dark:bg-[#161b22] shadow-sm p-6"
         >
-          <div className="p-6">
-            <div className="flex items-center justify-between gap-3 mb-4 flex-wrap">
-              <div className="flex items-center gap-3">
-                <div style={{
-                  width: 40, height: 40, borderRadius: 10,
-                  background: "rgba(245,158,11,0.15)",
-                  boxShadow: "inset 0 0 0 1px rgba(245,158,11,0.3)",
-                  display: "flex", alignItems: "center", justifyContent: "center",
-                }}>
-                  <Zap size={19} color="#F59E0B" strokeWidth={2.25} />
-                </div>
-                <div>
-                  <p className="font-bold text-gray-900 dark:text-[#e6edf3]">
-                    Action Needed
-                  </p>
-                  <p className="text-xs text-amber-600 dark:text-amber-400 font-medium">
-                    {stats.noReport} propert{stats.noReport === 1 ? "y has" : "ies have"} no due diligence report yet
-                  </p>
-                </div>
-              </div>
+          <div className="flex items-center justify-between mb-3">
+            <div>
+              <p className="text-sm font-bold text-gray-900 dark:text-[#e6edf3]">
+                Report Activity
+              </p>
+              <p className="text-xs text-gray-500 dark:text-[#7d8590]">
+                Last 30 days · Peak: {peakDay.count > 0 ? `${peakDay.count} on ${peakDay.label}` : "no activity"}
+              </p>
             </div>
-
-            <div className="space-y-2">
-              {noReportProperties.map((p, i) => (
-                <motion.div
-                  key={p.id}
-                  initial={{ opacity: 0, x: -8 }}
-                  animate={{ opacity: 1, x: 0 }}
-                  transition={{ delay: 0.15 + i * 0.05 }}
-                  className="w-full flex items-center gap-4 p-4 rounded-xl
-                    bg-white dark:bg-[#161b22]
-                    border border-gray-100 dark:border-[#30363d]
-                    hover:border-gray-200 dark:hover:border-[#484f58]
-                    hover:shadow-md transition text-left group"
-                  style={{ borderLeft: "3px solid #F59E0B" }}
-                >
-                  <button
-                    onClick={() => goToProperty(p.id)}
-                    className="flex items-center gap-4 flex-1 min-w-0 text-left"
-                  >
-                    <div style={{
-                      width: 40, height: 40, borderRadius: 10, flexShrink: 0,
-                      background: "rgba(245,158,11,0.12)",
-                      boxShadow: "inset 0 0 0 1px rgba(245,158,11,0.25)",
-                      display: "flex", alignItems: "center", justifyContent: "center",
-                    }}>
-                      <Building2 size={18} color="#F59E0B" strokeWidth={2.25} />
-                    </div>
-                    <div className="flex-1 min-w-0">
-                      <p className="text-sm font-semibold text-gray-900 dark:text-[#e6edf3] truncate group-hover:text-[#F59E0B] transition">
-                        {p.address}
-                      </p>
-                      <p className="text-xs text-gray-500 dark:text-[#7d8590] truncate">
-                        {p.city}{p.state ? `, ${p.state}` : ""} · {p.propertyType ?? "—"}
-                      </p>
-                    </div>
-                  </button>
-
-                  <motion.button
-                    whileTap={{ scale: 0.97 }}
-                    whileHover={{ scale: 1.03 }}
-                    onClick={(e) => { e.stopPropagation(); goToProperty(p.id); }}
-                    className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-bold
-                      bg-gradient-to-br from-[#F59E0B] to-[#D97706]
-                      text-white shadow-[0_4px_12px_rgba(245,158,11,0.4)]
-                      hover:shadow-[0_6px_16px_rgba(245,158,11,0.5)]
-                      transition whitespace-nowrap"
-                  >
-                    <Plus size={13} strokeWidth={2.75} />
-                    Generate Report
-                  </motion.button>
-                </motion.div>
-              ))}
-            </div>
-
-            {stats.noReport > noReportProperties.length && (
-              <div className="mt-4 text-center">
-                <button
-                  onClick={jumpToNoReport}
-                  className="inline-flex items-center gap-1 text-xs font-bold text-[#F59E0B] hover:underline"
-                >
-                  View all {stats.noReport} properties without reports
-                  <ChevronRight size={13} />
-                </button>
-              </div>
-            )}
           </div>
-        </motion.div>
-      )}
 
-      {/* ══════════════ RECENT REPORTS ══════════════ */}
-      {recentReports.length > 0 && (
+          <ResponsiveContainer width="100%" height={180}>
+            <AreaChart data={activityData} margin={{ top: 4, right: 4, left: -30, bottom: 0 }}>
+              <defs>
+                <linearGradient id="activityGrad" x1="0" y1="0" x2="0" y2="1">
+                  <stop offset="0%"   stopColor="#22C55E" stopOpacity={0.35} />
+                  <stop offset="100%" stopColor="#22C55E" stopOpacity={0} />
+                </linearGradient>
+              </defs>
+              <XAxis
+                dataKey="label"
+                tick={{ fontSize: 9, fill: isDark ? "#6e7681" : "#94a3b8" }}
+                axisLine={false} tickLine={false}
+                interval={4}
+              />
+              <YAxis
+                tick={{ fontSize: 9, fill: isDark ? "#6e7681" : "#94a3b8" }}
+                axisLine={false} tickLine={false}
+                allowDecimals={false}
+              />
+              <Tooltip content={<ActivityTooltip isDark={isDark} />} cursor={{ stroke: "#22C55E", strokeWidth: 1, strokeDasharray: "3 3" }} />
+              <Area
+                type="monotone"
+                dataKey="count"
+                stroke="#22C55E"
+                strokeWidth={2}
+                fill="url(#activityGrad)"
+              />
+            </AreaChart>
+          </ResponsiveContainer>
+        </motion.div>
+
+        {/* Recent reports — takes 2 cols */}
         <motion.div
           initial={{ opacity: 0, y: 12 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.15 }}
-          className="rounded-2xl border border-gray-100 dark:border-[#30363d] bg-white dark:bg-[#161b22] shadow-sm overflow-hidden"
+          className="lg:col-span-2 rounded-2xl border border-gray-100 dark:border-[#30363d]
+            bg-white dark:bg-[#161b22] shadow-sm overflow-hidden flex flex-col"
         >
-          <div className="flex items-center justify-between gap-3 p-6 border-b border-gray-100 dark:border-[#21262d]">
-            <div className="flex items-center gap-3">
-              <div style={{
-                width: 36, height: 36, borderRadius: 9,
-                background: "rgba(34,197,94,0.12)",
-                boxShadow: "inset 0 0 0 1px rgba(34,197,94,0.25)",
-                display: "flex", alignItems: "center", justifyContent: "center",
-              }}>
-                <Sparkles size={17} color="#22C55E" strokeWidth={2.25} />
+          <div className="flex items-center justify-between p-6 border-b border-gray-100 dark:border-[#21262d]">
+            <div>
+              <p className="text-sm font-bold text-gray-900 dark:text-[#e6edf3]">
+                Recent Reports
+              </p>
+              <p className="text-xs text-gray-500 dark:text-[#7d8590]">
+                {recentReports.length > 0 ? `Last ${recentReports.length} generated` : "No reports yet"}
+              </p>
+            </div>
+            {recentReports.length > 0 && (
+              <button
+                onClick={() => router.push(ALL_REPORTS_ROUTE)}
+                className="text-[11px] font-bold text-gray-500 hover:text-gray-900 dark:text-[#7d8590] dark:hover:text-[#e6edf3] transition flex items-center gap-1"
+              >
+                All
+                <ChevronRight size={12} />
+              </button>
+            )}
+          </div>
+
+          <div className="flex-1">
+            {recentReports.length === 0 ? (
+              <div className="p-8 text-center">
+                <FileText size={28} className="mx-auto mb-2 text-gray-300 dark:text-[#30363d]" />
+                <p className="text-xs text-gray-500 dark:text-[#7d8590]">
+                  Generate your first report from any property.
+                </p>
               </div>
+            ) : (
+              <div className="divide-y divide-gray-50 dark:divide-[#21262d]">
+                {recentReports.map((r, i) => {
+                  const status = normalizeStatus(r.status);
+                  const cfg    = STATUS_CONFIG[status];
+                  const prop   = properties.find((p) => p.id === r.propertyId);
+                  return (
+                    <motion.button
+                      key={r.id ?? i}
+                      initial={{ opacity: 0, x: -4 }}
+                      animate={{ opacity: 1, x: 0 }}
+                      transition={{ delay: 0.2 + i * 0.04 }}
+                      onClick={() => goToReport(r.id)}
+                      className="w-full flex items-center gap-3 px-6 py-4
+                        hover:bg-gray-50 dark:hover:bg-[#1c2128]
+                        transition text-left group"
+                    >
+                      <span
+                        className="w-1.5 h-1.5 rounded-full flex-shrink-0"
+                        style={{ background: cfg.color }}
+                      />
+                      <div className="flex-1 min-w-0">
+                        <p className="text-sm font-semibold text-gray-900 dark:text-[#e6edf3] truncate group-hover:text-[#22C55E] transition">
+                          {prop?.address ?? `Property #${r.propertyId ?? "—"}`}
+                        </p>
+                        <div className="flex items-center gap-2 mt-0.5">
+                          <FormatBadge format={r.format} />
+                          <span className="text-[10px] text-gray-500 dark:text-[#7d8590]">
+                            {timeAgo(r.completedAt ?? r.createdAt)}
+                          </span>
+                        </div>
+                      </div>
+                      <ChevronRight size={13} className="text-gray-300 dark:text-[#484f58] group-hover:text-gray-500 dark:group-hover:text-[#7d8590] transition flex-shrink-0" />
+                    </motion.button>
+                  );
+                })}
+              </div>
+            )}
+          </div>
+        </motion.div>
+      </div>
+
+      {/* ══════════════ COMPLIANCE GAP (grouped by city) ══════════════ */}
+      {unassessedByCity.length > 0 && (
+        <motion.div
+          initial={{ opacity: 0, y: 12 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.2 }}
+          className="rounded-2xl border border-gray-100 dark:border-[#30363d]
+            bg-white dark:bg-[#161b22] shadow-sm overflow-hidden"
+        >
+          <div className="flex items-center justify-between p-6 border-b border-gray-100 dark:border-[#21262d]">
+            <div className="flex items-center gap-3">
+              <div className="w-1 h-8 rounded-full" style={{ background: "#F59E0B" }} />
               <div>
-                <p className="font-bold text-gray-900 dark:text-[#e6edf3] text-sm">
-                  Recent Reports
+                <p className="text-sm font-bold text-gray-900 dark:text-[#e6edf3]">
+                  Compliance Gap
                 </p>
                 <p className="text-xs text-gray-500 dark:text-[#7d8590]">
-                  Last {recentReports.length} generated
+                  {stats.noReport} properties need reports · Grouped by location
                 </p>
               </div>
             </div>
             <button
-              onClick={() => router.push(ALL_REPORTS_ROUTE)}
-              className="text-xs font-bold text-[#22C55E] hover:underline flex items-center gap-1"
+              onClick={() => { setFilterTab("NO_REPORT"); scrollToTable(); }}
+              className="text-[11px] font-bold text-gray-500 hover:text-gray-900 dark:text-[#7d8590] dark:hover:text-[#e6edf3] transition flex items-center gap-1"
             >
-              View all
-              <ChevronRight size={13} />
+              View in table
+              <ChevronRight size={12} />
             </button>
           </div>
 
           <div className="divide-y divide-gray-50 dark:divide-[#21262d]">
-            {recentReports.map((r, i) => {
-              const status  = normalizeStatus(r.status);
-              const cfg     = STATUS_CONFIG[status];
-              const prop    = properties.find((p) => p.id === r.propertyId);
+            {unassessedByCity.map((group, i) => {
+              const isExpanded = expandedCities[group.city] ?? (i === 0);
               return (
-                <motion.button
-                  key={r.id ?? i}
-                  initial={{ opacity: 0, y: 4 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ delay: 0.2 + i * 0.04 }}
-                  whileTap={{ scale: 0.997 }}
-                  onClick={() => goToReport(r.id)}
-                  className="w-full flex items-center gap-4 px-6 py-3.5
-                    hover:bg-gray-50/80 dark:hover:bg-[#1c2128]/60
-                    transition text-left group"
-                  style={{ borderLeft: `3px solid ${cfg.color}` }}
-                >
-                  <div style={{
-                    width: 36, height: 36, borderRadius: 9, flexShrink: 0,
-                    background: cfg.bg,
-                    boxShadow: `inset 0 0 0 1px ${cfg.border}`,
-                    display: "flex", alignItems: "center", justifyContent: "center",
-                  }}>
-                    <FileText size={16} color={cfg.color} strokeWidth={2.25} />
-                  </div>
-                  <div className="flex-1 min-w-0">
-                    <p className="text-sm font-semibold text-gray-900 dark:text-[#e6edf3] truncate">
-                      {prop?.address ?? `Property #${r.propertyId ?? "—"}`}
-                    </p>
-                    <div className="flex items-center gap-2 mt-0.5 flex-wrap">
-                      <FormatBadge format={r.format} />
-                      <span className="text-xs text-gray-500 dark:text-[#7d8590]">
-                        {timeAgo(r.completedAt ?? r.createdAt)}
-                      </span>
+                <div key={group.city}>
+                  <button
+                    onClick={() => setExpandedCities((prev) => ({ ...prev, [group.city]: !isExpanded }))}
+                    className="w-full flex items-center gap-3 px-6 py-4
+                      hover:bg-gray-50 dark:hover:bg-[#1c2128] transition text-left"
+                  >
+                    <MapPin size={14} className="text-gray-400 dark:text-[#6e7681] flex-shrink-0" />
+                    <div className="flex-1">
+                      <p className="text-base font-bold text-gray-900 dark:text-[#e6edf3]">
+                        {group.city}
+                      </p>
                     </div>
-                  </div>
-                  <StatusPill status={status} size="xs" />
-                  <ArrowUpRight size={16} className="text-gray-300 dark:text-[#484f58] group-hover:text-[#22C55E] transition flex-shrink-0" />
-                </motion.button>
+                    <span className="text-[11px] font-bold px-2 py-0.5 rounded-full
+                      bg-amber-50 dark:bg-amber-500/10
+                      text-amber-700 dark:text-amber-400 tabular-nums">
+                      {group.list.length}
+                    </span>
+                    <ChevronDown
+                      size={14}
+                      className={`text-gray-400 dark:text-[#6e7681] transition-transform ${isExpanded ? "" : "-rotate-90"}`}
+                    />
+                  </button>
+
+                  <AnimatePresence initial={false}>
+                    {isExpanded && (
+                      <motion.div
+                        initial={{ height: 0, opacity: 0 }}
+                        animate={{ height: "auto", opacity: 1 }}
+                        exit={{ height: 0, opacity: 0 }}
+                        transition={{ duration: 0.2 }}
+                        style={{ overflow: "hidden" }}
+                      >
+                        <div className="pb-2 px-5">
+                          <div className="pl-5 border-l border-gray-100 dark:border-[#21262d] space-y-0.5">
+                            {group.list.map((p) => (
+                              <button
+                                key={p.id}
+                                onClick={() => goToProperty(p.id)}
+                                className="w-full flex items-center gap-3 py-2 px-2 rounded-lg
+                                  hover:bg-gray-50 dark:hover:bg-[#1c2128]
+                                  transition text-left group"
+                              >
+                                <div className="flex-1 min-w-0">
+                                  <p className="text-xs font-semibold text-gray-800 dark:text-[#c9d1d9] truncate group-hover:text-[#22C55E] transition">
+                                    {p.address}
+                                  </p>
+                                  <p className="text-[10px] text-gray-500 dark:text-[#7d8590]">
+                                    {p.propertyType ?? "—"}
+                                    {p.marketValue ? ` · ₹${(p.marketValue / 100000).toFixed(1)}L` : ""}
+                                  </p>
+                                </div>
+                                <span className="text-[10px] font-bold text-gray-400 dark:text-[#6e7681] opacity-0 group-hover:opacity-100 transition">
+                                  Generate →
+                                </span>
+                              </button>
+                            ))}
+                          </div>
+                        </div>
+                      </motion.div>
+                    )}
+                  </AnimatePresence>
+                </div>
               );
             })}
           </div>
         </motion.div>
       )}
 
-      {/* ══════════════ ALL PROPERTIES TABLE ══════════════ */}
+      {/* ══════════════ FULL COVERAGE TABLE ══════════════ */}
       <motion.div
         ref={tableRef}
         initial={{ opacity: 0, y: 12 }}
         animate={{ opacity: 1, y: 0 }}
-        transition={{ delay: 0.2 }}
-        className="rounded-2xl border border-gray-100 dark:border-[#30363d] bg-white dark:bg-[#161b22] shadow-sm overflow-hidden scroll-mt-6"
+        transition={{ delay: 0.25 }}
+        className="rounded-2xl border border-gray-100 dark:border-[#30363d]
+          bg-white dark:bg-[#161b22] shadow-sm overflow-hidden scroll-mt-6"
       >
-        <div className="p-6 border-b border-gray-100 dark:border-[#21262d] space-y-4">
-          <div className="flex items-center justify-between gap-3 flex-wrap">
-            <div className="flex items-center gap-3">
-              <div style={{
-                width: 36, height: 36, borderRadius: 9,
-                background: "rgba(99,102,241,0.12)",
-                boxShadow: "inset 0 0 0 1px rgba(99,102,241,0.25)",
-                display: "flex", alignItems: "center", justifyContent: "center",
-              }}>
-                <Filter size={16} color="#6366F1" strokeWidth={2.25} />
-              </div>
-              <div>
-                <p className="font-bold text-gray-900 dark:text-[#e6edf3] text-sm">
-                  Property Coverage
-                </p>
-                <p className="text-xs text-gray-500 dark:text-[#7d8590]">
-                  {filtered.length} shown
-                  {filterTab === "COVERED"   && " · Covered only"}
-                  {filterTab === "NO_REPORT" && " · Not started only"}
-                </p>
-              </div>
+        <div className="p-6 border-b border-gray-100 dark:border-[#21262d]">
+          <div className="flex items-center justify-between gap-3 flex-wrap mb-3">
+            <div>
+              <p className="text-sm font-bold text-gray-900 dark:text-[#e6edf3]">
+                All Properties
+              </p>
+              <p className="text-xs text-gray-500 dark:text-[#7d8590]">
+                {filtered.length} propert{filtered.length === 1 ? "y" : "ies"}
+                {filterTab === "COVERED"   && " · Covered only"}
+                {filterTab === "NO_REPORT" && " · Not started only"}
+              </p>
             </div>
 
-            {hasActiveFilters && (
-              <button
-                onClick={clearFilters}
-                className="flex items-center gap-1.5 px-3 py-2 rounded-lg text-xs font-semibold
-                  bg-gray-100 dark:bg-[#1c2128]
-                  text-gray-600 dark:text-[#7d8590]
-                  hover:bg-gray-200 dark:hover:bg-[#30363d]
-                  transition"
-              >
-                <X size={13} />
-                Clear filters
-              </button>
-            )}
-          </div>
-
-          <div className="flex items-center gap-2 flex-wrap">
-            {FILTER_TABS.map((tab) => {
-              const Icon   = tab.icon;
-              const active = filterTab === tab.id;
-              return (
+            <div className="flex items-center gap-2">
+              {hasActiveFilters && (
                 <button
-                  key={tab.id}
-                  onClick={() => setFilterTab(tab.id)}
-                  className={`flex items-center gap-2 px-3.5 py-1.5 rounded-full text-xs font-bold transition-all ${
-                    active
-                      ? "bg-gray-900 dark:bg-[#e6edf3] text-white dark:text-[#0d1117] shadow-sm"
-                      : "bg-gray-100 dark:bg-[#21262d] text-gray-600 dark:text-[#7d8590] hover:bg-gray-200 dark:hover:bg-[#30363d]"
-                  }`}
+                  onClick={clearFilters}
+                  className="flex items-center gap-1 px-2.5 py-1.5 rounded-lg text-[11px] font-semibold
+                    bg-gray-100 dark:bg-[#1c2128]
+                    text-gray-600 dark:text-[#7d8590]
+                    hover:bg-gray-200 dark:hover:bg-[#30363d]
+                    transition"
                 >
-                  <Icon size={13} strokeWidth={2.5} />
-                  {tab.label}
+                  <X size={12} />
+                  Clear
                 </button>
-              );
-            })}
+              )}
+              <div className="flex items-center gap-1 flex-wrap">
+                {FILTER_TABS.map((tab) => {
+                  const Icon   = tab.icon;
+                  const active = filterTab === tab.id;
+                  return (
+                    <button
+                      key={tab.id}
+                      onClick={() => setFilterTab(tab.id)}
+                      className={`flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg text-[11px] font-bold transition ${
+                        active
+                          ? "bg-gray-900 dark:bg-[#e6edf3] text-white dark:text-[#0d1117]"
+                          : "text-gray-500 dark:text-[#7d8590] hover:bg-gray-100 dark:hover:bg-[#1c2128]"
+                      }`}
+                    >
+                      <Icon size={12} strokeWidth={2.5} />
+                      {tab.label}
+                    </button>
+                  );
+                })}
+              </div>
+            </div>
           </div>
 
-          <div className="flex flex-col sm:flex-row gap-3">
+          <div className="flex flex-col sm:flex-row gap-2">
             <div className="flex-1 relative">
               <Search
-                size={15}
+                size={13}
                 className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 dark:text-[#6e7681] pointer-events-none"
               />
               <input
                 type="text"
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
-                placeholder="Search property by address, city, type…"
+                placeholder="Search by address, city, or type…"
                 autoComplete="off"
                 spellCheck={false}
-                className="w-full pl-9 pr-9 py-2 rounded-xl text-sm
+                className="w-full pl-9 pr-9 py-2 rounded-lg text-xs
                   bg-gray-50 dark:bg-[#1c2128]
                   border border-gray-200 dark:border-[#30363d]
                   text-gray-900 dark:text-[#e6edf3]
@@ -927,19 +959,19 @@ export default function DueDiligencePortfolioPage() {
                   onClick={() => setSearchQuery("")}
                   className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 dark:text-[#6e7681] hover:text-gray-600 dark:hover:text-[#e6edf3]"
                 >
-                  <X size={14} />
+                  <X size={12} />
                 </button>
               )}
             </div>
 
-            <div className="flex items-center gap-1.5 p-1 rounded-xl bg-gray-100 dark:bg-[#1c2128]
+            <div className="flex items-center gap-0.5 p-0.5 rounded-lg bg-gray-100 dark:bg-[#1c2128]
               border border-gray-200 dark:border-[#30363d]">
-              <ArrowDownUp size={13} className="text-gray-400 dark:text-[#6e7681] ml-2 mr-1 flex-shrink-0" />
+              <ArrowDownUp size={11} className="text-gray-400 dark:text-[#6e7681] ml-2 mr-1 flex-shrink-0" />
               {SORT_OPTIONS.map((opt) => (
                 <button
                   key={opt.value}
                   onClick={() => setSortBy(opt.value)}
-                  className={`px-3 py-1.5 rounded-lg text-xs font-semibold transition-all whitespace-nowrap ${
+                  className={`px-2.5 py-1.5 rounded text-[11px] font-semibold transition ${
                     sortBy === opt.value
                       ? "bg-white dark:bg-[#161b22] text-gray-900 dark:text-[#e6edf3] shadow-sm"
                       : "text-gray-500 dark:text-[#7d8590] hover:text-gray-700 dark:hover:text-[#e6edf3]"
@@ -952,13 +984,15 @@ export default function DueDiligencePortfolioPage() {
           </div>
         </div>
 
-        <div className="hidden lg:flex items-center gap-4 px-6 py-3 border-b border-gray-100 dark:border-[#21262d] bg-gray-50/50 dark:bg-[#0d1117]/40">
-          <span className="w-9 text-[10px] font-bold uppercase tracking-wider text-gray-400 dark:text-[#6e7681]" />
-          <span className="flex-1 text-[10px] font-bold uppercase tracking-wider text-gray-400 dark:text-[#6e7681]">Property</span>
-          <span className="text-[10px] font-bold uppercase tracking-wider text-gray-400 dark:text-[#6e7681] text-center" style={{ width: 70 }}>Reports</span>
-          <span className="text-[10px] font-bold uppercase tracking-wider text-gray-400 dark:text-[#6e7681]" style={{ width: 130 }}>Latest</span>
-          <span className="text-[10px] font-bold uppercase tracking-wider text-gray-400 dark:text-[#6e7681] text-center" style={{ width: 110 }}>Status</span>
-          <span style={{ width: 16 }} />
+        {/* Column headers */}
+        <div className="hidden md:grid grid-cols-[1fr_100px_150px_110px_20px] gap-3 items-center px-6 py-3
+          border-b border-gray-100 dark:border-[#21262d]
+          bg-gray-50/60 dark:bg-[#0d1117]/60">
+          <span className="text-[10px] font-bold uppercase tracking-wider text-gray-400 dark:text-[#6e7681]">Property</span>
+          <span className="text-[10px] font-bold uppercase tracking-wider text-gray-400 dark:text-[#6e7681] text-center">Reports</span>
+          <span className="text-[10px] font-bold uppercase tracking-wider text-gray-400 dark:text-[#6e7681]">Latest</span>
+          <span className="text-[10px] font-bold uppercase tracking-wider text-gray-400 dark:text-[#6e7681] text-center">Status</span>
+          <span />
         </div>
 
         <div className="divide-y divide-gray-50 dark:divide-[#21262d]">
@@ -971,113 +1005,91 @@ export default function DueDiligencePortfolioPage() {
                 exit={{ opacity: 0 }}
                 className="py-16 text-center"
               >
-                <ShieldCheck size={36} className="mx-auto mb-3 text-gray-300 dark:text-[#30363d]" />
-                <p className="text-gray-500 dark:text-[#7d8590] font-medium text-sm">
-                  No properties match the current filters.
+                <ShieldCheck size={32} className="mx-auto mb-3 text-gray-300 dark:text-[#30363d]" />
+                <p className="text-gray-500 dark:text-[#7d8590] text-xs font-medium">
+                  No properties match filters.
                 </p>
                 <button
                   onClick={clearFilters}
-                  className="mt-3 text-xs font-bold text-[#22C55E] hover:underline"
+                  className="mt-2 text-xs font-bold text-[#22C55E] hover:underline"
                 >
-                  Clear all filters
+                  Clear
                 </button>
               </motion.div>
             ) : (
-              filtered.map((p, i) => {
-                const status = p.latestStatus;
-                const cfg    = status ? STATUS_CONFIG[status] : null;
-                const accent = cfg?.color ?? "#6B7280";
-                return (
-                  <motion.button
-                    key={p.id}
-                    layout
-                    initial={{ opacity: 0, y: 6 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    exit={{ opacity: 0, y: -6 }}
-                    transition={{ delay: Math.min(i * 0.02, 0.4) }}
-                    whileTap={{ scale: 0.997 }}
-                    onClick={() => goToProperty(p.id)}
-                    className="w-full flex items-center gap-4 px-6 py-4
-                      hover:bg-gray-50/80 dark:hover:bg-[#1c2128]/60
-                      transition text-left group"
-                    style={{ borderLeft: `3px solid ${accent}` }}
-                  >
-                    <div style={{
-                      width: 36, height: 36, borderRadius: 9, flexShrink: 0,
-                      background: p.hasReports ? "rgba(34,197,94,0.12)" : "rgba(245,158,11,0.12)",
-                      boxShadow: `inset 0 0 0 1px ${p.hasReports ? "rgba(34,197,94,0.25)" : "rgba(245,158,11,0.25)"}`,
-                      display: "flex", alignItems: "center", justifyContent: "center",
-                    }}>
-                      {p.hasReports
-                        ? <ShieldCheck size={16} color="#22C55E" strokeWidth={2.25} />
-                        : <FileWarning size={16} color="#F59E0B" strokeWidth={2.25} />
-                      }
-                    </div>
-
-                    <div className="flex-1 min-w-0">
+              filtered.map((p, i) => (
+                <motion.button
+                  key={p.id}
+                  layout
+                  initial={{ opacity: 0, y: 4 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  exit={{ opacity: 0, y: -4 }}
+                  transition={{ delay: Math.min(i * 0.015, 0.4) }}
+                  onClick={() => goToProperty(p.id)}
+                  className="w-full grid grid-cols-1 md:grid-cols-[1fr_100px_150px_110px_20px] gap-3 items-center
+                    px-6 py-4
+                    hover:bg-gray-50 dark:hover:bg-[#1c2128]
+                    transition text-left group"
+                >
+                  {/* Property */}
+                  <div className="flex items-center gap-3 min-w-0">
+                    <span
+                      className="w-1.5 h-1.5 rounded-full flex-shrink-0"
+                      style={{
+                        background: p.hasReports ? "#22C55E" : "#F59E0B",
+                      }}
+                    />
+                    <div className="min-w-0">
                       <p className="text-sm font-semibold text-gray-900 dark:text-[#e6edf3] truncate group-hover:text-[#22C55E] transition">
                         {p.address}
                       </p>
-                      <div className="flex items-center gap-2 mt-0.5 flex-wrap">
-                        <span className="text-xs text-gray-500 dark:text-[#7d8590]">
-                          {p.city}{p.state ? `, ${p.state}` : ""}
-                        </span>
-                        {p.propertyType && (
-                          <span className="text-[10px] font-bold px-2 py-0.5 rounded-full
-                            bg-gray-100 dark:bg-[#21262d]
-                            text-gray-500 dark:text-[#7d8590] uppercase tracking-wide">
-                            {p.propertyType}
-                          </span>
-                        )}
-                      </div>
-                    </div>
-
-                    <div style={{ width: 70, textAlign: "center" }}>
-                      <p className="text-lg font-black tabular-nums text-gray-900 dark:text-[#e6edf3]">
-                        {p.reportCount}
-                      </p>
-                      <p className="text-[9px] font-bold uppercase tracking-wider text-gray-400 dark:text-[#6e7681]">
-                        {p.reportCount === 1 ? "report" : "reports"}
+                      <p className="text-xs text-gray-500 dark:text-[#7d8590] truncate">
+                        {p.city}{p.state ? `, ${p.state}` : ""}
+                        {p.propertyType && ` · ${p.propertyType}`}
                       </p>
                     </div>
+                  </div>
 
-                    <div style={{ width: 130 }}>
-                      {p.latestReport ? (
-                        <>
-                          <p className="text-xs font-semibold text-gray-700 dark:text-[#e6edf3]">
-                            {timeAgo(p.latestReport.completedAt ?? p.latestReport.createdAt)}
-                          </p>
-                          <div className="mt-1">
-                            <FormatBadge format={p.latestReport.format} />
-                          </div>
-                        </>
-                      ) : (
-                        <p className="text-xs text-gray-400 dark:text-[#6e7681] italic">
-                          Never generated
+                  {/* Reports count */}
+                  <div className="md:text-center">
+                    <span className="text-base font-black tabular-nums text-gray-900 dark:text-[#e6edf3]">
+                      {p.reportCount}
+                    </span>
+                    <span className="ml-1 text-[10px] text-gray-400 dark:text-[#6e7681]">
+                      {p.reportCount === 1 ? "report" : "reports"}
+                    </span>
+                  </div>
+
+                  {/* Latest */}
+                  <div>
+                    {p.latestReport ? (
+                      <>
+                        <p className="text-xs font-semibold text-gray-700 dark:text-[#c9d1d9]">
+                          {timeAgo(p.latestReport.completedAt ?? p.latestReport.createdAt)}
                         </p>
-                      )}
-                    </div>
+                        <div className="mt-0.5"><FormatBadge format={p.latestReport.format} /></div>
+                      </>
+                    ) : (
+                      <p className="text-xs text-gray-400 dark:text-[#6e7681] italic">
+                        Never
+                      </p>
+                    )}
+                  </div>
 
-                    <div style={{ width: 110, display: "flex", justifyContent: "center" }}>
-                      {status ? (
-                        <StatusPill status={status} size="xs" />
-                      ) : (
-                        <span className="text-[10px] font-bold uppercase tracking-wider px-2 py-1 rounded-full"
-                          style={{
-                            background: "rgba(107,114,128,0.12)",
-                            color: "#6B7280",
-                            border: "1px solid rgba(107,114,128,0.25)",
-                          }}
-                        >
-                          None
-                        </span>
-                      )}
-                    </div>
+                  {/* Status */}
+                  <div className="md:flex md:justify-center">
+                    {p.latestStatus ? (
+                      <StatusPill status={p.latestStatus} size="xs" />
+                    ) : (
+                      <span className="text-[10px] font-bold uppercase tracking-wider text-gray-400 dark:text-[#6e7681]">
+                        —
+                      </span>
+                    )}
+                  </div>
 
-                    <ArrowUpRight size={16} className="text-gray-300 dark:text-[#484f58] group-hover:text-[#22C55E] transition flex-shrink-0" />
-                  </motion.button>
-                );
-              })
+                  <ChevronRight size={13} className="hidden md:block text-gray-300 dark:text-[#484f58] group-hover:text-[#22C55E] transition flex-shrink-0" />
+                </motion.button>
+              ))
             )}
           </AnimatePresence>
         </div>
