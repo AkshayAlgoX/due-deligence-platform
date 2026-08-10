@@ -1,7 +1,7 @@
 "use client";
 
 import { motion } from "framer-motion";
-import { useMemo } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { useTranslation } from "react-i18next";
 import {
   PolarAngleAxis,
@@ -16,68 +16,48 @@ import {
 import { CATEGORY_META, formatWeight } from "@/utils/riskUtils";
 import { getAreaAverage } from "@/utils/mockAreaAverage";
 
+function useIsDark() {
+  const [isDark, setIsDark] = useState(false);
+  useEffect(() => {
+    const check = () => setIsDark(document.documentElement.classList.contains("dark"));
+    check();
+    const observer = new MutationObserver(check);
+    observer.observe(document.documentElement, { attributes: true, attributeFilter: ["class"] });
+    return () => observer.disconnect();
+  }, []);
+  return isDark;
+}
+
 /**
  * RiskBreakdownRadar — Premium dual-overlay radar.
- *
- * Shows two polygons:
- *   1. Your property (green gradient fill, solid stroke, glow)
- *   2. Area average (grey dashed outline, no fill)
- *
- * Includes:
- *   - Gradient defs for radial fill
- *   - Delta-aware custom tooltip
- *   - Legend row below with colored swatches
+ * Property polygon: solid green with drop-shadow glow.
+ * Area average: grey dashed outline.
  */
 export default function RiskBreakdownRadar({ breakdown, propertyId, height = 350 }) {
   const { t } = useTranslation();
+  const isDark = useIsDark();
+
+  // Mode-aware colors — MUCH stronger contrast now
+  const gridStroke     = isDark ? "rgba(255,255,255,0.18)" : "rgba(15,23,42,0.22)";
+  const gridStrokeSoft = isDark ? "rgba(255,255,255,0.08)" : "rgba(15,23,42,0.10)";
+  const axisTick       = isDark ? "#c9d1d9" : "#334155";
+  const radiusTick     = isDark ? "#6e7681" : "#94a3b8";
+  const areaStroke     = isDark ? "#8b949e" : "#94a3b8";
+  const tooltipBg      = isDark ? "#161b22" : "#ffffff";
+  const tooltipBorder  = isDark ? "#30363d" : "#e2e8f0";
+  const tooltipText    = isDark ? "#e6edf3" : "#0f172a";
 
   const areaAvg = useMemo(() => getAreaAverage(propertyId), [propertyId]);
 
   if (!breakdown) return null;
 
   const data = [
-    {
-      category: t("risk.categories.FLOOD", "Flood"),
-      key: "FLOOD",
-      score: Math.round(breakdown.floodScore || 0),
-      areaScore: Math.round(areaAvg.floodScore),
-      weight: CATEGORY_META.FLOOD.weight,
-    },
-    {
-      category: t("risk.categories.LEGAL", "Legal"),
-      key: "LEGAL",
-      score: Math.round(breakdown.legalScore || 0),
-      areaScore: Math.round(areaAvg.legalScore),
-      weight: CATEGORY_META.LEGAL.weight,
-    },
-    {
-      category: t("risk.categories.TAX", "Tax"),
-      key: "TAX",
-      score: Math.round(breakdown.taxScore || 0),
-      areaScore: Math.round(areaAvg.taxScore),
-      weight: CATEGORY_META.TAX.weight,
-    },
-    {
-      category: t("risk.categories.ZONING", "Zoning"),
-      key: "ZONING",
-      score: Math.round(breakdown.zoningScore || 0),
-      areaScore: Math.round(areaAvg.zoningScore),
-      weight: CATEGORY_META.ZONING.weight,
-    },
-    {
-      category: t("risk.categories.ENVIRONMENTAL", "Environmental"),
-      key: "ENVIRONMENTAL",
-      score: Math.round(breakdown.environmentalScore || 0),
-      areaScore: Math.round(areaAvg.environmentalScore),
-      weight: CATEGORY_META.ENVIRONMENTAL.weight,
-    },
-    {
-      category: t("risk.categories.MARKET", "Market"),
-      key: "MARKET",
-      score: Math.round(breakdown.marketScore || 0),
-      areaScore: Math.round(areaAvg.marketScore),
-      weight: CATEGORY_META.MARKET.weight,
-    },
+    { category: t("risk.categories.FLOOD", "Flood"),                 key: "FLOOD",         score: Math.round(breakdown.floodScore || 0),         areaScore: Math.round(areaAvg.floodScore),         weight: CATEGORY_META.FLOOD.weight },
+    { category: t("risk.categories.LEGAL", "Legal"),                 key: "LEGAL",         score: Math.round(breakdown.legalScore || 0),         areaScore: Math.round(areaAvg.legalScore),         weight: CATEGORY_META.LEGAL.weight },
+    { category: t("risk.categories.TAX", "Tax"),                     key: "TAX",           score: Math.round(breakdown.taxScore || 0),           areaScore: Math.round(areaAvg.taxScore),           weight: CATEGORY_META.TAX.weight },
+    { category: t("risk.categories.ZONING", "Zoning"),               key: "ZONING",        score: Math.round(breakdown.zoningScore || 0),        areaScore: Math.round(areaAvg.zoningScore),        weight: CATEGORY_META.ZONING.weight },
+    { category: t("risk.categories.ENVIRONMENTAL", "Environmental"), key: "ENVIRONMENTAL", score: Math.round(breakdown.environmentalScore || 0), areaScore: Math.round(areaAvg.environmentalScore), weight: CATEGORY_META.ENVIRONMENTAL.weight },
+    { category: t("risk.categories.MARKET", "Market"),               key: "MARKET",        score: Math.round(breakdown.marketScore || 0),        areaScore: Math.round(areaAvg.marketScore),        weight: CATEGORY_META.MARKET.weight },
   ];
 
   return (
@@ -90,84 +70,83 @@ export default function RiskBreakdownRadar({ breakdown, propertyId, height = 350
       <ResponsiveContainer width="100%" height={height}>
         <RadarChart cx="50%" cy="50%" outerRadius="72%" data={data}>
           <defs>
-            {/* Radial gradient for your property polygon */}
+            {/* Vibrant radial gradient for property polygon */}
             <radialGradient id="propGradient" cx="50%" cy="50%" r="50%">
-              <stop offset="0%" stopColor="#22C55E" stopOpacity={0.05} />
-              <stop offset="60%" stopColor="#22C55E" stopOpacity={0.35} />
-              <stop offset="100%" stopColor="#16a34a" stopOpacity={0.55} />
+              <stop offset="0%"   stopColor="#22C55E" stopOpacity={0.15} />
+              <stop offset="50%"  stopColor="#22C55E" stopOpacity={0.45} />
+              <stop offset="100%" stopColor="#16a34a" stopOpacity={0.7} />
             </radialGradient>
-
-            {/* Soft glow filter */}
-            <filter id="polygonGlow" x="-20%" y="-20%" width="140%" height="140%">
-              <feGaussianBlur stdDeviation="3" result="blur" />
-              <feMerge>
-                <feMergeNode in="blur" />
-                <feMergeNode in="SourceGraphic" />
-              </feMerge>
-            </filter>
           </defs>
 
+          {/* Solid grid — visible in both modes */}
           <PolarGrid
-            stroke="currentColor"
-            className="text-gray-200 dark:text-[#30363d]"
-            strokeDasharray="2 4"
+            stroke={gridStroke}
+            strokeWidth={1}
             gridType="polygon"
           />
 
           <PolarAngleAxis
             dataKey="category"
             tick={{
-              fill: "currentColor",
+              fill: axisTick,
               fontSize: 12,
               fontWeight: 700,
             }}
-            className="text-gray-700 dark:text-[#e6edf3]"
           />
 
           <PolarRadiusAxis
             angle={90}
             domain={[0, 100]}
             tick={{
-              fill: "currentColor",
+              fill: radiusTick,
               fontSize: 10,
+              fontWeight: 600,
             }}
-            className="text-gray-400 dark:text-[#6e7681]"
             tickCount={5}
             axisLine={false}
             stroke="transparent"
           />
 
-          {/* Area average — background layer, dashed outline only */}
+          {/* Area average — dashed grey outline */}
           <Radar
             name="areaAvg"
             dataKey="areaScore"
-            stroke="#7d8590"
-            fill="#7d8590"
-            fillOpacity={0.05}
+            stroke={areaStroke}
+            fill={areaStroke}
+            fillOpacity={0.06}
             strokeWidth={1.5}
-            strokeDasharray="4 4"
+            strokeDasharray="5 4"
             isAnimationActive={true}
             animationDuration={900}
           />
 
-          {/* Your property — foreground, gradient fill + glow */}
+          {/* Property polygon — bold green with drop-shadow glow */}
           <Radar
             name="property"
             dataKey="score"
-            stroke="#22C55E"
+            stroke="#16a34a"
             fill="url(#propGradient)"
             fillOpacity={1}
-            strokeWidth={2.5}
-            filter="url(#polygonGlow)"
+            strokeWidth={3}
+            style={{ filter: "drop-shadow(0 0 6px rgba(34,197,94,0.55))" }}
             isAnimationActive={true}
             animationDuration={1000}
           />
 
-          <Tooltip content={<RadarTooltip t={t} />} />
+          <Tooltip
+            content={
+              <RadarTooltip
+                t={t}
+                tooltipBg={tooltipBg}
+                tooltipBorder={tooltipBorder}
+                tooltipText={tooltipText}
+              />
+            }
+          />
         </RadarChart>
       </ResponsiveContainer>
 
-      {/* ── Legend row ── */}
+      {/* Legend */}
       <div className="mt-3 flex items-center justify-center gap-5">
         <div className="flex items-center gap-2">
           <span className="relative flex items-center">
@@ -186,7 +165,6 @@ export default function RiskBreakdownRadar({ breakdown, propertyId, height = 350
         </div>
       </div>
 
-      {/* ── Helper text ── */}
       <p className="mt-2 text-center text-[11px] text-gray-400 dark:text-[#6e7681]">
         {t("risk.radar.helperText", "Each axis shows a category score (0–100). Lower is better.")}
       </p>
@@ -195,15 +173,15 @@ export default function RiskBreakdownRadar({ breakdown, propertyId, height = 350
 }
 
 /* ══════════════════════════════════════════════════════════════
-   Custom tooltip — shows property + area avg + delta
+   Custom tooltip
    ══════════════════════════════════════════════════════════════ */
 
-function RadarTooltip({ active, payload, t }) {
+function RadarTooltip({ active, payload, t, tooltipBg, tooltipBorder, tooltipText }) {
   if (!active || !payload || !payload.length) return null;
 
   const item = payload[0].payload;
   const delta = item.score - item.areaScore;
-  const isBetter = delta < 0; // lower = better
+  const isBetter = delta < 0;
   const isWorse = delta > 0;
   const deltaColor = isBetter ? "#22C55E" : isWorse ? "#EF4444" : "#7d8590";
   const deltaLabel =
@@ -219,21 +197,25 @@ function RadarTooltip({ active, payload, t }) {
     item.score < 76 ? "HIGH" : "CRITICAL";
 
   return (
-    <div className="rounded-xl bg-white dark:bg-[#161b22] border border-gray-200 dark:border-[#30363d] shadow-xl px-3.5 py-3 min-w-[200px]">
+    <div
+      className="rounded-xl border shadow-xl px-3.5 py-3 min-w-[200px]"
+      style={{ background: tooltipBg, borderColor: tooltipBorder }}
+    >
       <div className="flex items-center justify-between mb-2 pb-2 border-b border-gray-100 dark:border-[#21262d]">
-        <span className="text-sm font-bold text-gray-900 dark:text-[#e6edf3]">
+        <span className="text-sm font-bold" style={{ color: tooltipText }}>
           {item.category}
         </span>
-        <span className="text-[9px] font-black uppercase tracking-widest px-1.5 py-0.5 rounded"
+        <span
+          className="text-[9px] font-black uppercase tracking-widest px-1.5 py-0.5 rounded"
           style={{
             backgroundColor:
-              level === "LOW" ? "#22C55E20" :
+              level === "LOW"    ? "#22C55E20" :
               level === "MEDIUM" ? "#F59E0B20" :
-              level === "HIGH" ? "#F9731620" : "#EF444420",
+              level === "HIGH"   ? "#F9731620" : "#EF444420",
             color:
-              level === "LOW" ? "#22C55E" :
+              level === "LOW"    ? "#22C55E" :
               level === "MEDIUM" ? "#F59E0B" :
-              level === "HIGH" ? "#F97316" : "#EF4444",
+              level === "HIGH"   ? "#F97316" : "#EF4444",
           }}
         >
           {t(`risk.levels.${level}`, level)}
@@ -248,7 +230,7 @@ function RadarTooltip({ active, payload, t }) {
               {t("risk.radar.tooltipYours", "Your property")}
             </span>
           </div>
-          <span className="font-bold text-gray-900 dark:text-[#e6edf3] tabular-nums">
+          <span className="font-bold tabular-nums" style={{ color: tooltipText }}>
             {item.score}
           </span>
         </div>

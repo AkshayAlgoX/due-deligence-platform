@@ -36,7 +36,7 @@ import {
 
 import { getAllProperties, getPropertyRisk } from "@/services/propertyService";
 
-// ─── Design tokens (locked) ──────────────────────────────────────────────────
+// ─── Design tokens ────────────────────────────────────────────────────────────
 
 const LEVEL_CONFIG = {
   LOW:      { color: "#22C55E", bg: "rgba(34,197,94,0.12)",  border: "rgba(34,197,94,0.25)",  label: "Low"      },
@@ -71,6 +71,38 @@ function scoreToLevel(s) {
   return "LOW";
 }
 
+// ─── Theme detection ──────────────────────────────────────────────────────────
+
+function useIsDark() {
+  const [isDark, setIsDark] = useState(false);
+  useEffect(() => {
+    const check = () =>
+      setIsDark(document.documentElement.classList.contains("dark"));
+    check();
+    const observer = new MutationObserver(check);
+    observer.observe(document.documentElement, {
+      attributes: true, attributeFilter: ["class"],
+    });
+    return () => observer.disconnect();
+  }, []);
+  return isDark;
+}
+
+// Mode-aware colors — use for inline SVG track/grid/tooltip backgrounds
+function themeColors(isDark) {
+  return {
+    trackFill:      isDark ? "rgba(255,255,255,0.06)" : "rgba(15,23,42,0.06)",
+    gridStroke:     isDark ? "rgba(255,255,255,0.08)" : "rgba(15,23,42,0.08)",
+    tooltipBg:      isDark ? "#161b22"                 : "#ffffff",
+    tooltipBorder:  isDark ? "#30363d"                 : "#e2e8f0",
+    tooltipText:    isDark ? "#e6edf3"                 : "#0f172a",
+    tooltipSub:     isDark ? "#7d8590"                 : "#64748b",
+    tooltipShadow:  isDark ? "0 8px 24px rgba(0,0,0,0.3)" : "0 8px 24px rgba(15,23,42,0.12)",
+    axisTick:       isDark ? "#7d8590" : "#64748b",
+    axisTickMinor:  isDark ? "#6e7681" : "#94a3b8",
+  };
+}
+
 // ─── Animated counter ─────────────────────────────────────────────────────────
 
 function AnimatedNumber({ value, decimals = 0, style, className }) {
@@ -95,45 +127,45 @@ function AnimatedNumber({ value, decimals = 0, style, className }) {
   return <span ref={ref} style={style} className={className}>0</span>;
 }
 
-// ─── Recharts sub-components (hoisted) ────────────────────────────────────────
+// ─── Recharts sub-components (hoisted, mode-aware) ────────────────────────────
 
-const CustomBarTooltip = ({ active, payload }) => {
+const CustomBarTooltip = ({ active, payload, tc }) => {
   if (!active || !payload?.length) return null;
   const d   = payload[0].payload;
   const cfg = CATEGORY_CONFIG[d.category];
   return (
     <div style={{
-      background: "#161b22", border: "1px solid #30363d",
+      background: tc.tooltipBg, border: `1px solid ${tc.tooltipBorder}`,
       borderRadius: 12, padding: "10px 14px", minWidth: 150,
-      boxShadow: "0 8px 24px rgba(0,0,0,0.3)",
+      boxShadow: tc.tooltipShadow,
     }}>
       <div style={{ display: "flex", alignItems: "center", gap: 6, marginBottom: 6 }}>
         <span style={{ width: 8, height: 8, borderRadius: "50%", background: cfg.color }} />
         <span style={{ color: cfg.color, fontWeight: 700, fontSize: 12 }}>{cfg.label}</span>
       </div>
-      <p style={{ color: "#e6edf3", fontSize: 13, fontWeight: 600 }}>
+      <p style={{ color: tc.tooltipText, fontSize: 13, fontWeight: 600 }}>
         Avg Score: {d.avgScore.toFixed(1)}
       </p>
-      <p style={{ color: "#7d8590", fontSize: 11, marginTop: 2 }}>
+      <p style={{ color: tc.tooltipSub, fontSize: 11, marginTop: 2 }}>
         Across {d.count} properties
       </p>
     </div>
   );
 };
 
-const CustomRadarTooltip = ({ active, payload }) => {
+const CustomRadarTooltip = ({ active, payload, tc }) => {
   if (!active || !payload?.length) return null;
   const d = payload[0].payload;
   const cat = Object.keys(CATEGORY_CONFIG).find(k => CATEGORY_CONFIG[k].label === d.subject);
   const cfg = cat ? CATEGORY_CONFIG[cat] : { color: "#22C55E" };
   return (
     <div style={{
-      background: "#161b22", border: "1px solid #30363d",
+      background: tc.tooltipBg, border: `1px solid ${tc.tooltipBorder}`,
       borderRadius: 10, padding: "8px 12px",
-      boxShadow: "0 8px 24px rgba(0,0,0,0.3)",
+      boxShadow: tc.tooltipShadow,
     }}>
       <p style={{ color: cfg.color, fontWeight: 700, fontSize: 12, marginBottom: 2 }}>{d.subject}</p>
-      <p style={{ color: "#e6edf3", fontSize: 13 }}>
+      <p style={{ color: tc.tooltipText, fontSize: 13 }}>
         Avg: <strong>{Number(d.value).toFixed(1)}</strong>
       </p>
     </div>
@@ -155,9 +187,9 @@ function PageSkeleton() {
   );
 }
 
-// ─── Mini score ring ──────────────────────────────────────────────────────────
+// ─── Mini ring ────────────────────────────────────────────────────────────────
 
-function MiniRing({ score, level, size = 48 }) {
+function MiniRing({ score, level, size = 48, trackFill }) {
   const cfg    = LEVEL_CONFIG[level] ?? LEVEL_CONFIG.LOW;
   const r      = (size - 10) / 2;
   const circ   = 2 * Math.PI * r;
@@ -165,7 +197,7 @@ function MiniRing({ score, level, size = 48 }) {
   return (
     <div style={{ position: "relative", width: size, height: size, flexShrink: 0 }}>
       <svg width={size} height={size} style={{ transform: "rotate(-90deg)" }}>
-        <circle cx={size/2} cy={size/2} r={r} fill="none" stroke="rgba(255,255,255,0.06)" strokeWidth={4.5} />
+        <circle cx={size/2} cy={size/2} r={r} fill="none" stroke={trackFill} strokeWidth={4.5} />
         <circle
           cx={size/2} cy={size/2} r={r} fill="none"
           stroke={cfg.color} strokeWidth={4.5} strokeLinecap="round"
@@ -187,7 +219,7 @@ function MiniRing({ score, level, size = 48 }) {
 
 // ─── Hero ring ────────────────────────────────────────────────────────────────
 
-function HeroRing({ score, level }) {
+function HeroRing({ score, level, trackFill }) {
   const cfg    = LEVEL_CONFIG[level] ?? LEVEL_CONFIG.LOW;
   const size   = 140;
   const r      = 56;
@@ -197,7 +229,7 @@ function HeroRing({ score, level }) {
     <div style={{ position: "relative", width: size, height: size, flexShrink: 0 }}>
       <svg width={size} height={size} style={{ transform: "rotate(-90deg)" }}>
         <circle cx={size/2} cy={size/2} r={r} fill="none"
-          stroke="rgba(255,255,255,0.06)" strokeWidth={10} />
+          stroke={trackFill} strokeWidth={10} />
         <circle cx={size/2} cy={size/2} r={r} fill="none"
           stroke={cfg.color} strokeWidth={10} strokeLinecap="round"
           strokeDasharray={circ} strokeDashoffset={offset}
@@ -252,7 +284,7 @@ function LevelPill({ level, size = "sm" }) {
 
 // ─── Info tooltip ─────────────────────────────────────────────────────────────
 
-function InfoTooltip({ text }) {
+function InfoTooltip({ text, tc }) {
   const [open, setOpen] = useState(false);
   return (
     <span style={{ position: "relative", display: "inline-flex" }}
@@ -272,16 +304,16 @@ function InfoTooltip({ text }) {
               left: "50%",
               transform: "translateX(-50%)",
               zIndex: 50,
-              background: "#161b22",
-              border: "1px solid #30363d",
+              background: tc.tooltipBg,
+              border: `1px solid ${tc.tooltipBorder}`,
               borderRadius: 8,
               padding: "8px 12px",
               fontSize: 11,
               lineHeight: 1.5,
-              color: "#e6edf3",
+              color: tc.tooltipText,
               width: 240,
               fontWeight: 500,
-              boxShadow: "0 8px 24px rgba(0,0,0,0.4)",
+              boxShadow: tc.tooltipShadow,
               pointerEvents: "none",
             }}
           >
@@ -349,6 +381,8 @@ function exportToCSV(rows, filterLevel, filterCat) {
 export default function RiskAssessmentPortfolioPage() {
   const { t } = useTranslation();
   const router = useRouter();
+  const isDark = useIsDark();
+  const tc     = useMemo(() => themeColors(isDark), [isDark]);
 
   const [properties, setProperties]   = useState([]);
   const [riskMap, setRiskMap]         = useState({});
@@ -358,7 +392,7 @@ export default function RiskAssessmentPortfolioPage() {
   const [filterCat, setFilterCat]     = useState("ALL");
   const [sortBy, setSortBy]           = useState("score_desc");
   const [searchQuery, setSearchQuery] = useState("");
-  const [scoreMode, setScoreMode]     = useState("weighted"); // "simple" | "weighted"
+  const [scoreMode, setScoreMode]     = useState("weighted");
 
   useEffect(() => {
     document.title = "Risk Assessment | Real Estate Due Diligence";
@@ -391,8 +425,6 @@ export default function RiskAssessmentPortfolioPage() {
 
   useEffect(() => { load(); }, [load]);
 
-  // ── Derived data ──
-
   const enriched = useMemo(() =>
     properties.map((p) => {
       const risk = riskMap[p.id];
@@ -413,7 +445,6 @@ export default function RiskAssessmentPortfolioPage() {
     return c;
   }, [withRisk]);
 
-  // Two portfolio scores — simple average vs value-weighted
   const simpleAvgScore = useMemo(() => {
     if (!withRisk.length) return 0;
     return withRisk.reduce((s, p) => s + p.overallScore, 0) / withRisk.length;
@@ -444,11 +475,9 @@ export default function RiskAssessmentPortfolioPage() {
     })),
   [categoryAverages]);
 
-  // ── FILTERING (fixed) ──
   const filtered = useMemo(() => {
     let list = [...withRisk];
 
-    // Search
     if (searchQuery.trim()) {
       const q = searchQuery.trim().toLowerCase();
       list = list.filter((p) =>
@@ -459,12 +488,10 @@ export default function RiskAssessmentPortfolioPage() {
       );
     }
 
-    // Level filter
     if (filterLevel !== "ALL") {
       list = list.filter((p) => p.overallLevel === filterLevel);
     }
 
-    // Category filter — actually keeps only properties where THAT category has score >= 25
     if (filterCat !== "ALL") {
       const key = CATEGORY_KEYS.find((k) => k.cat === filterCat)?.key;
       if (key) {
@@ -472,9 +499,7 @@ export default function RiskAssessmentPortfolioPage() {
       }
     }
 
-    // Sort
     if (filterCat !== "ALL") {
-      // If category filter active, sort by that category's score
       const key = CATEGORY_KEYS.find((k) => k.cat === filterCat)?.key;
       if (key) {
         list.sort((a, b) => (b.risk?.[key] ?? 0) - (a.risk?.[key] ?? 0));
@@ -510,8 +535,6 @@ export default function RiskAssessmentPortfolioPage() {
 
   const hasActiveFilters = filterLevel !== "ALL" || filterCat !== "ALL" || searchQuery.trim();
 
-  // ── Render ──
-
   if (loading) return <PageSkeleton />;
 
   if (error) {
@@ -534,7 +557,7 @@ export default function RiskAssessmentPortfolioPage() {
   return (
     <div className="w-full max-w-[1400px] mx-auto space-y-6 pb-10">
 
-      {/* ══════════════ HERO ══════════════ */}
+      {/* HERO */}
       <motion.div
         initial={{ opacity: 0, y: 16 }}
         animate={{ opacity: 1, y: 0 }}
@@ -547,10 +570,8 @@ export default function RiskAssessmentPortfolioPage() {
         }} />
 
         <div className="p-6 flex flex-col md:flex-row items-center gap-8">
-          {/* Ring */}
-          <HeroRing score={displayScore} level={scoreToLevel(displayScore)} />
+          <HeroRing score={displayScore} level={scoreToLevel(displayScore)} trackFill={tc.trackFill} />
 
-          {/* Middle */}
           <div className="flex-1 text-center md:text-left w-full">
             <h1 className="text-2xl font-bold text-gray-900 dark:text-[#e6edf3] mb-1">
               Portfolio Risk Assessment
@@ -559,7 +580,6 @@ export default function RiskAssessmentPortfolioPage() {
               Monitoring {withRisk.length} of {properties.length} properties across 6 risk categories
             </p>
 
-            {/* Score mode toggle */}
             <div className="flex items-center gap-2 mb-4 justify-center md:justify-start">
               <div className="flex items-center gap-1 p-1 rounded-lg bg-gray-100 dark:bg-[#1c2128]
                 border border-gray-200 dark:border-[#30363d]">
@@ -585,6 +605,7 @@ export default function RiskAssessmentPortfolioPage() {
                 </button>
               </div>
               <InfoTooltip
+                tc={tc}
                 text={
                   scoreMode === "weighted"
                     ? "Value-weighted: expensive properties count more. Industry standard (JLL, CBRE). Formula: Σ(score × value) / Σ(value)"
@@ -593,7 +614,6 @@ export default function RiskAssessmentPortfolioPage() {
               />
             </div>
 
-            {/* Level KPI row */}
             <div className="grid grid-cols-4 gap-3">
               {(["CRITICAL", "HIGH", "MEDIUM", "LOW"]).map((level) => {
                 const cfg   = LEVEL_CONFIG[level];
@@ -603,9 +623,9 @@ export default function RiskAssessmentPortfolioPage() {
                   <button
                     key={level}
                     onClick={() => setFilterLevel(active ? "ALL" : level)}
-                    className="rounded-xl p-3 text-center transition cursor-pointer border bg-white dark:bg-[#1c2128]"
+                    className="rounded-xl p-3 text-center transition cursor-pointer border bg-gray-50 dark:bg-[#1c2128] hover:bg-white dark:hover:bg-[#21262d]"
                     style={{
-                      borderColor: active ? cfg.color : "transparent",
+                      borderColor: active ? cfg.color : (isDark ? "transparent" : "#e2e8f0"),
                       boxShadow: active ? `0 4px 16px ${cfg.color}25` : undefined,
                     }}
                   >
@@ -629,7 +649,6 @@ export default function RiskAssessmentPortfolioPage() {
             </div>
           </div>
 
-          {/* Right */}
           <div className="flex flex-col items-center gap-3 flex-shrink-0">
             <div className="flex items-center gap-3 px-5 py-3 rounded-xl bg-gray-50 dark:bg-[#1c2128]">
               <div style={{
@@ -673,10 +692,9 @@ export default function RiskAssessmentPortfolioPage() {
         </div>
       </motion.div>
 
-      {/* ══════════════ CHARTS ══════════════ */}
+      {/* CHARTS */}
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
 
-        {/* Category bar chart */}
         <motion.div
           initial={{ opacity: 0, y: 12 }}
           animate={{ opacity: 1, y: 0 }}
@@ -723,15 +741,18 @@ export default function RiskAssessmentPortfolioPage() {
               <XAxis
                 dataKey="category"
                 tickFormatter={(v) => CATEGORY_CONFIG[v]?.label ?? v}
-                tick={{ fontSize: 11, fill: "#7d8590", fontWeight: 600 }}
+                tick={{ fontSize: 11, fill: tc.axisTick, fontWeight: 600 }}
                 axisLine={false} tickLine={false}
               />
               <YAxis
                 domain={[0, 100]}
-                tick={{ fontSize: 10, fill: "#6e7681" }}
+                tick={{ fontSize: 10, fill: tc.axisTickMinor }}
                 axisLine={false} tickLine={false}
               />
-              <Tooltip content={<CustomBarTooltip />} cursor={{ fill: "rgba(255,255,255,0.03)" }} />
+              <Tooltip
+                content={<CustomBarTooltip tc={tc} />}
+                cursor={{ fill: isDark ? "rgba(255,255,255,0.03)" : "rgba(15,23,42,0.04)" }}
+              />
               <Bar dataKey="avgScore" radius={[8, 8, 0, 0]} maxBarSize={56}>
                 {categoryAverages.map(({ category }) => {
                   const dimmed = catFilterActive && category !== filterCat;
@@ -747,7 +768,6 @@ export default function RiskAssessmentPortfolioPage() {
             </BarChart>
           </ResponsiveContainer>
 
-          {/* Category filter chips */}
           <div className="flex flex-wrap gap-2 mt-5 pt-4 border-t border-gray-100 dark:border-[#21262d]">
             <button
               onClick={() => setFilterCat("ALL")}
@@ -772,8 +792,8 @@ export default function RiskAssessmentPortfolioPage() {
                     color: "#fff",
                     boxShadow: `0 2px 8px ${cfg.color}40`,
                   } : {
-                    background: "rgba(148,163,184,0.08)",
-                    color: "#7d8590",
+                    background: isDark ? "rgba(148,163,184,0.08)" : "rgba(148,163,184,0.15)",
+                    color: isDark ? "#7d8590" : "#475569",
                   }}
                 >
                   <span style={{
@@ -788,7 +808,6 @@ export default function RiskAssessmentPortfolioPage() {
           </div>
         </motion.div>
 
-        {/* Radar */}
         <motion.div
           initial={{ opacity: 0, y: 12 }}
           animate={{ opacity: 1, y: 0 }}
@@ -823,10 +842,10 @@ export default function RiskAssessmentPortfolioPage() {
                     <stop offset="100%" stopColor="#22C55E" stopOpacity={0.03} />
                   </radialGradient>
                 </defs>
-                <PolarGrid stroke="rgba(255,255,255,0.08)" gridType="polygon" />
+                <PolarGrid stroke={tc.gridStroke} gridType="polygon" />
                 <PolarAngleAxis
                   dataKey="subject"
-                  tick={{ fontSize: 10, fill: "#7d8590", fontWeight: 600 }}
+                  tick={{ fontSize: 10, fill: tc.axisTick, fontWeight: 600 }}
                 />
                 <Radar
                   dataKey="value"
@@ -834,7 +853,7 @@ export default function RiskAssessmentPortfolioPage() {
                   fill="url(#radar-glow)"
                   strokeWidth={2}
                 />
-                <Tooltip content={<CustomRadarTooltip />} />
+                <Tooltip content={<CustomRadarTooltip tc={tc} />} />
               </RadarChart>
             </ResponsiveContainer>
           </div>
@@ -853,7 +872,7 @@ export default function RiskAssessmentPortfolioPage() {
         </motion.div>
       </div>
 
-      {/* ══════════════ NEEDS ATTENTION ══════════════ */}
+      {/* NEEDS ATTENTION */}
       {urgentProperties.length > 0 && (
         <motion.div
           initial={{ opacity: 0, y: 12 }}
@@ -903,7 +922,7 @@ export default function RiskAssessmentPortfolioPage() {
                       hover:shadow-md transition text-left group"
                     style={{ borderLeft: `3px solid ${cfg.color}` }}
                   >
-                    <MiniRing score={p.overallScore} level={p.overallLevel} />
+                    <MiniRing score={p.overallScore} level={p.overallLevel} trackFill={tc.trackFill} />
                     <div className="flex-1 min-w-0">
                       <p className="text-sm font-semibold text-gray-900 dark:text-[#e6edf3] truncate">
                         {p.address}
@@ -922,14 +941,13 @@ export default function RiskAssessmentPortfolioPage() {
         </motion.div>
       )}
 
-      {/* ══════════════ ALL PROPERTIES TABLE ══════════════ */}
+      {/* ALL PROPERTIES TABLE */}
       <motion.div
         initial={{ opacity: 0, y: 12 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ delay: 0.25 }}
         className="rounded-2xl border border-gray-100 dark:border-[#30363d] bg-white dark:bg-[#161b22] shadow-sm overflow-hidden"
       >
-        {/* Table header */}
         <div className="p-6 border-b border-gray-100 dark:border-[#21262d] space-y-4">
           <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
             <div className="flex items-center gap-3">
@@ -992,9 +1010,7 @@ export default function RiskAssessmentPortfolioPage() {
             </div>
           </div>
 
-          {/* Search + Sort */}
           <div className="flex flex-col sm:flex-row gap-3">
-            {/* Search */}
             <div className="flex-1 relative">
               <Search
                 size={15}
@@ -1025,7 +1041,6 @@ export default function RiskAssessmentPortfolioPage() {
               )}
             </div>
 
-            {/* Sort */}
             <div className="flex items-center gap-1.5 p-1 rounded-xl bg-gray-100 dark:bg-[#1c2128]
               border border-gray-200 dark:border-[#30363d]">
               <ArrowDownUp size={13} className="text-gray-400 dark:text-[#6e7681] ml-2 mr-1 flex-shrink-0" />
@@ -1047,7 +1062,6 @@ export default function RiskAssessmentPortfolioPage() {
           </div>
         </div>
 
-        {/* Column headers */}
         <div className="hidden lg:flex items-center gap-4 px-6 py-3 border-b border-gray-100 dark:border-[#21262d] bg-gray-50/50 dark:bg-[#0d1117]/40">
           <span className="w-7 text-[10px] font-bold uppercase tracking-wider text-gray-400 dark:text-[#6e7681] text-center">Rank</span>
           <span className="w-12 text-[10px] font-bold uppercase tracking-wider text-gray-400 dark:text-[#6e7681] text-center">
@@ -1061,7 +1075,6 @@ export default function RiskAssessmentPortfolioPage() {
           <span style={{ width: 16 }} />
         </div>
 
-        {/* Rows */}
         <div className="divide-y divide-gray-50 dark:divide-[#21262d]">
           <AnimatePresence mode="popLayout">
             {filtered.length === 0 ? (
@@ -1085,7 +1098,6 @@ export default function RiskAssessmentPortfolioPage() {
               </motion.div>
             ) : (
               filtered.map((p, i) => {
-                // If category filter active, show that category's score/level as primary
                 const catScore = catFilterActive ? (p.risk?.[catFilterKey] ?? 0) : p.overallScore;
                 const catLevel = catFilterActive ? scoreToLevel(catScore) : p.overallLevel;
                 const cfg = LEVEL_CONFIG[catLevel] ?? LEVEL_CONFIG.LOW;
@@ -1104,15 +1116,12 @@ export default function RiskAssessmentPortfolioPage() {
                       transition text-left group"
                     style={{ borderLeft: `3px solid ${cfg.color}` }}
                   >
-                    {/* Rank */}
                     <span className="w-7 text-xs font-bold tabular-nums text-gray-400 dark:text-[#484f58] flex-shrink-0 text-center">
                       #{i + 1}
                     </span>
 
-                    {/* Ring — reflects category score when filtered */}
-                    <MiniRing score={catScore} level={catLevel} />
+                    <MiniRing score={catScore} level={catLevel} trackFill={tc.trackFill} />
 
-                    {/* Info */}
                     <div className="flex-1 min-w-0">
                       <p className="text-sm font-semibold text-gray-900 dark:text-[#e6edf3] truncate group-hover:text-[#22C55E] transition">
                         {p.address}
@@ -1136,7 +1145,6 @@ export default function RiskAssessmentPortfolioPage() {
                       </div>
                     </div>
 
-                    {/* Category bars */}
                     <div className="hidden lg:flex items-end gap-1.5 h-8" style={{ width: 100, justifyContent: "center" }}>
                       {CATEGORY_KEYS.map(({ key, cat }) => {
                         const score  = p.risk?.[key] ?? 0;
@@ -1148,7 +1156,7 @@ export default function RiskAssessmentPortfolioPage() {
                             title={`${catCfg.label}: ${score}`}
                             style={{
                               width: 6, height: 28, borderRadius: 3,
-                              background: "rgba(255,255,255,0.06)",
+                              background: tc.trackFill,
                               position: "relative", overflow: "hidden",
                               opacity: dimmed ? 0.25 : 1,
                               transition: "opacity 0.3s",
@@ -1166,12 +1174,10 @@ export default function RiskAssessmentPortfolioPage() {
                       })}
                     </div>
 
-                    {/* Level pill */}
                     <div style={{ width: 80, display: "flex", justifyContent: "center" }}>
                       <LevelPill level={catLevel} size="xs" />
                     </div>
 
-                    {/* Arrow */}
                     <ArrowUpRight
                       size={16}
                       className="text-gray-300 dark:text-[#484f58] group-hover:text-[#22C55E] transition flex-shrink-0"
@@ -1183,7 +1189,6 @@ export default function RiskAssessmentPortfolioPage() {
           </AnimatePresence>
         </div>
 
-        {/* Unassessed */}
         {noRisk.length > 0 && !hasActiveFilters && (
           <div className="border-t border-gray-100 dark:border-[#21262d] p-5">
             <div className="flex items-center gap-2 mb-3">
