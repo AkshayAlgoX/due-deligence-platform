@@ -1,5 +1,6 @@
 "use client";
 
+import Link from "next/link";
 import { useEffect, useState } from "react";
 import { useSearchParams } from "next/navigation";
 import { useTranslation } from "react-i18next";
@@ -13,7 +14,10 @@ import {
   RefreshCw,
   Users,
   ShieldAlert,
+  ClipboardList,
+  History,
 } from "lucide-react";
+
 import { fadeInUp } from "@/utils/animations";
 
 import StatsCard from "@/components/dashboard/StatsCard";
@@ -30,7 +34,9 @@ import {
   getDashboardStats,
   getDashboardTrends,
 } from "@/services/dashboardService";
+
 import { getCurrentUser } from "@/services/authService";
+
 import PortfolioTrendChart from "@/components/dashboard/PortfolioTrendChart";
 import RecommendationsPanel from "@/components/dashboard/RecommendationsPanel";
 import PortfolioMap from "@/components/dashboard/PortfolioMap";
@@ -64,6 +70,7 @@ export default function DashboardPage() {
   useEffect(() => {
     loadUser();
     loadAll();
+
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
@@ -78,17 +85,25 @@ export default function DashboardPage() {
 
   const loadAll = async (silent = false) => {
     try {
-      if (!silent) setLoading(true);
-      else setRefreshing(true);
+      if (!silent) {
+        setLoading(true);
+      } else {
+        setRefreshing(true);
+      }
 
       const [statsData, trendsData] = await Promise.all([
         getDashboardStats(),
         getDashboardTrends().catch(() => null),
       ]);
+
       setStats(statsData);
       setTrends(trendsData);
 
-      if (silent) toast.success(t("dashboard.refreshed"), { duration: 1500 });
+      if (silent) {
+        toast.success(t("dashboard.refreshed"), {
+          duration: 1500,
+        });
+      }
     } catch (err) {
       toast.error(t("dashboard.errors.couldntLoad"), {
         description: t("dashboard.errors.pleaseRefresh"),
@@ -110,14 +125,19 @@ export default function DashboardPage() {
   };
 
   const currentUser = getUser();
+
   const canAddProperty =
     currentUser &&
     (currentUser.role === "ADMIN" ||
       ["BUYER", "REAL_ESTATE_AGENT"].includes(currentUser.role));
 
   const firstName =
-    user?.fullName?.split(" ")[0] ?? user?.email?.split("@")[0] ?? "";
+    user?.fullName?.split(" ")[0] ??
+    user?.email?.split("@")[0] ??
+    "";
+
   const isAdmin = user?.role === "ADMIN";
+
   const subtitle = isAdmin
     ? t("dashboard.platformOverview")
     : t("dashboard.subtitle");
@@ -130,20 +150,24 @@ export default function DashboardPage() {
       {/* ── ADMIN MODE BANNER ───────────────────────────────────────── */}
       {isAdmin && (
         <div className="flex items-center gap-3 rounded-2xl border border-amber-200 dark:border-amber-800/60 bg-gradient-to-r from-amber-50 to-orange-50 dark:from-[#1f1a0e] dark:to-[#1c1608] px-5 py-3.5 shadow-sm">
+
           <div className="flex h-8 w-8 flex-shrink-0 items-center justify-center rounded-xl bg-amber-500/15 dark:bg-amber-500/20">
             <ShieldAlert
               className="h-4 w-4 text-amber-600 dark:text-amber-400"
               strokeWidth={2.5}
             />
           </div>
+
           <div className="flex-1 min-w-0">
             <p className="text-sm font-bold text-amber-800 dark:text-amber-300">
               {t("dashboard.adminBanner.title")}
             </p>
+
             <p className="text-xs text-amber-700/70 dark:text-amber-400/70 leading-relaxed">
               {t("dashboard.adminBanner.description")}
             </p>
           </div>
+
           <div className="flex-shrink-0 rounded-full bg-amber-500 px-3 py-1">
             <span className="text-[10px] font-black uppercase tracking-widest text-white">
               {t("dashboard.adminBanner.badge")}
@@ -154,21 +178,27 @@ export default function DashboardPage() {
 
       {/* ── Header ─────────────────────────────────────────────────── */}
       <div className="flex flex-wrap items-end justify-between gap-4">
+
         <div>
           <h1 className="text-[32px] font-extrabold tracking-tight text-gray-900 dark:text-[#e6edf3]">
             {getGreeting(t)}
+
             {firstName ? (
-              <span className="text-[#22C55E]">, {firstName}</span>
+              <span className="text-[#22C55E]">
+                , {firstName}
+              </span>
             ) : (
               ""
             )}
           </h1>
+
           <p className="mt-1 text-sm text-gray-500 dark:text-[#7d8590]">
             {subtitle}
           </p>
         </div>
 
         <div className="flex gap-3">
+
           <button
             onClick={handleRefresh}
             disabled={refreshing}
@@ -178,7 +208,9 @@ export default function DashboardPage() {
             <RefreshCw
               size={16}
               className={`text-gray-600 dark:text-[#7d8590] transition-colors group-hover:text-[#22C55E] ${
-                refreshing ? "animate-spin text-[#22C55E]" : ""
+                refreshing
+                  ? "animate-spin text-[#22C55E]"
+                  : ""
               }`}
             />
           </button>
@@ -189,11 +221,83 @@ export default function DashboardPage() {
               className="group relative flex h-11 items-center gap-2 overflow-hidden rounded-xl bg-gradient-to-br from-[#22C55E] to-[#16a34a] px-5 text-sm font-bold text-white shadow-[0_10px_30px_rgba(34,197,94,0.4)] transition-all hover:scale-[1.03] hover:shadow-[0_15px_40px_rgba(34,197,94,0.55)] active:scale-[0.97]"
             >
               <span className="absolute inset-0 -translate-x-full bg-gradient-to-r from-transparent via-white/25 to-transparent transition-transform duration-1000 group-hover:translate-x-full" />
-              <Plus size={18} className="relative z-10" strokeWidth={2.5} />
-              <span className="relative z-10">{t("property.addProperty")}</span>
+
+              <Plus
+                size={18}
+                className="relative z-10"
+                strokeWidth={2.5}
+              />
+
+              <span className="relative z-10">
+                {t("property.addProperty")}
+              </span>
             </button>
           )}
+
         </div>
+      </div>
+
+      {/* ── Audit & Report History Quick Links ─────────────────────── */}
+      <div className="flex flex-wrap gap-3">
+
+        {/* Report History */}
+        <Link
+          href="/dashboard/report-history"
+          className="group flex items-center gap-4 rounded-2xl border border-gray-200 dark:border-[#30363d] bg-white dark:bg-[#161b22] p-5 shadow-sm transition-all hover:-translate-y-0.5 hover:border-[#22C55E] hover:shadow-[0_8px_24px_rgba(34,197,94,0.12)]"
+        >
+          <div className="flex h-12 w-12 flex-shrink-0 items-center justify-center rounded-xl bg-green-50 dark:bg-[#0d2818]">
+            <History
+              size={22}
+              strokeWidth={2.2}
+              className="text-[#16a34a] dark:text-green-400"
+            />
+          </div>
+
+          <div className="min-w-0 flex-1">
+            <h3 className="text-sm font-bold text-gray-900 dark:text-[#e6edf3]">
+              {t("dashboard.quickLinks.reportHistory")}
+            </h3>
+
+            <p className="mt-1 text-xs text-gray-500 dark:text-[#7d8590]">
+              {t("dashboard.quickLinks.reportHistoryDescription")}
+            </p>
+          </div>
+
+          <span className="text-lg text-gray-400 transition-transform group-hover:translate-x-1 group-hover:text-[#22C55E]">
+            →
+          </span>
+        </Link>
+
+        {/* Audit Logs — Admin only */}
+        {isAdmin && (
+          <Link
+            href="/dashboard/audit-logs"
+            className="group flex items-center gap-4 rounded-2xl border border-gray-200 dark:border-[#30363d] bg-white dark:bg-[#161b22] p-5 shadow-sm transition-all hover:-translate-y-0.5 hover:border-[#22C55E] hover:shadow-[0_8px_24px_rgba(34,197,94,0.12)]"
+          >
+            <div className="flex h-12 w-12 flex-shrink-0 items-center justify-center rounded-xl bg-green-50 dark:bg-[#0d2818]">
+              <ClipboardList
+                size={22}
+                strokeWidth={2.2}
+                className="text-[#16a34a] dark:text-green-400"
+              />
+            </div>
+
+            <div className="min-w-0 flex-1">
+              <h3 className="text-sm font-bold text-gray-900 dark:text-[#e6edf3]">
+                {t("dashboard.quickLinks.auditLogs")}
+              </h3>
+
+              <p className="mt-1 text-xs text-gray-500 dark:text-[#7d8590]">
+                {t("dashboard.quickLinks.auditLogsDescription")}
+              </p>
+            </div>
+
+            <span className="text-lg text-gray-400 transition-transform group-hover:translate-x-1 group-hover:text-[#22C55E]">
+              →
+            </span>
+          </Link>
+        )}
+
       </div>
 
       {/* ── Hero Strip ─────────────────────────────────────────────── */}
@@ -230,7 +334,10 @@ export default function DashboardPage() {
       {/* ── Portfolio map ──────────────────────────────────────────── */}
       {!isEmpty && (
         <ErrorBoundary>
-          <PortfolioMap key={`map-${refreshKey}`} refreshKey={refreshKey} />
+          <PortfolioMap
+            key={`map-${refreshKey}`}
+            refreshKey={refreshKey}
+          />
         </ErrorBoundary>
       )}
 
@@ -252,6 +359,7 @@ export default function DashboardPage() {
           initial="initial"
           animate="animate"
         >
+
           {/* Total properties */}
           <StatsCard
             title={t("dashboard.stats.totalProperties")}
@@ -263,11 +371,25 @@ export default function DashboardPage() {
             subtitle={
               stats.totalProperties === 0
                 ? t("dashboard.stats.noPropertiesAdded")
-                : formatTrend(t, trends?.propertiesThisWeek)
+                : formatTrend(
+                    t,
+                    trends?.propertiesThisWeek
+                  )
             }
-            icon={<Building2 size={20} strokeWidth={2.5} />}
-            trendValue={formatDelta(trends?.propertiesGrowthPct)}
-            trendUp={trends ? trends.propertiesGrowthPct >= 0 : null}
+            icon={
+              <Building2
+                size={20}
+                strokeWidth={2.5}
+              />
+            }
+            trendValue={formatDelta(
+              trends?.propertiesGrowthPct
+            )}
+            trendUp={
+              trends
+                ? trends.propertiesGrowthPct >= 0
+                : null
+            }
             href="/dashboard/property-search"
           />
 
@@ -283,14 +405,27 @@ export default function DashboardPage() {
               stats.totalProperties > 0
                 ? t("dashboard.stats.ofTotal", {
                     pct: Math.round(
-                      (stats.verifiedProperties / stats.totalProperties) * 100
+                      (stats.verifiedProperties /
+                        stats.totalProperties) *
+                        100
                     ),
                   })
                 : t("dashboard.stats.nothingToVerify")
             }
-            icon={<ShieldCheck size={20} strokeWidth={2.5} />}
-            trendValue={formatDelta(trends?.verifiedGrowthPct)}
-            trendUp={trends ? trends.verifiedGrowthPct >= 0 : null}
+            icon={
+              <ShieldCheck
+                size={20}
+                strokeWidth={2.5}
+              />
+            }
+            trendValue={formatDelta(
+              trends?.verifiedGrowthPct
+            )}
+            trendUp={
+              trends
+                ? trends.verifiedGrowthPct >= 0
+                : null
+            }
             href="/dashboard/property-search?filter=verified"
           />
 
@@ -304,10 +439,17 @@ export default function DashboardPage() {
             }
             subtitle={
               stats.pendingProperties > 0
-                ? t("dashboard.stats.awaitingVerification")
+                ? t(
+                    "dashboard.stats.awaitingVerification"
+                  )
                 : t("dashboard.stats.allCaughtUp")
             }
-            icon={<Clock size={20} strokeWidth={2.5} />}
+            icon={
+              <Clock
+                size={20}
+                strokeWidth={2.5}
+              />
+            }
             trendValue={null}
             href={
               stats.pendingProperties > 0
@@ -320,46 +462,71 @@ export default function DashboardPage() {
           <StatsCard
             title={t("dashboard.stats.platformUsers")}
             value={
-              stats.totalUsers > 0 ? stats.totalUsers.toLocaleString() : "—"
+              stats.totalUsers > 0
+                ? stats.totalUsers.toLocaleString()
+                : "—"
             }
             subtitle={
               stats.activeUsers > 0
-                ? t("dashboard.stats.activeIn30Days", { n: stats.activeUsers })
+                ? t("dashboard.stats.activeIn30Days", {
+                    n: stats.activeUsers,
+                  })
                 : undefined
             }
-            icon={<Users size={20} strokeWidth={2.5} />}
-            trendValue={formatDelta(trends?.usersGrowthPct)}
-            trendUp={trends ? trends.usersGrowthPct >= 0 : null}
+            icon={
+              <Users
+                size={20}
+                strokeWidth={2.5}
+              />
+            }
+            trendValue={formatDelta(
+              trends?.usersGrowthPct
+            )}
+            trendUp={
+              trends
+                ? trends.usersGrowthPct >= 0
+                : null
+            }
           />
+
         </motion.div>
       )}
 
       {/* ── Portfolio breakdown + Recent properties ────────────────── */}
       {!loading && !isEmpty && (
         <div className="grid grid-cols-1 gap-6 lg:grid-cols-5">
+
           <div className="lg:col-span-3">
             <ErrorBoundary>
               <RecentPropertiesTable />
             </ErrorBoundary>
           </div>
+
           <div className="lg:col-span-2">
             <ErrorBoundary>
-              <PortfolioBreakdown key={`chart-${refreshKey}`} />
+              <PortfolioBreakdown
+                key={`chart-${refreshKey}`}
+              />
             </ErrorBoundary>
           </div>
+
         </div>
       )}
 
       {/* ── Activity feed ──────────────────────────────────────────── */}
       {!loading && !isEmpty && (
         <ErrorBoundary>
-          <ActivityFeed key={`activity-${refreshKey}`} />
+          <ActivityFeed
+            key={`activity-${refreshKey}`}
+          />
         </ErrorBoundary>
       )}
 
       {/* ── Empty state ────────────────────────────────────────────── */}
       {!loading && isEmpty && (
-        <EmptyState onAddClick={() => setModalOpen(true)} />
+        <EmptyState
+          onAddClick={() => setModalOpen(true)}
+        />
       )}
 
       <AddPropertyModal
@@ -367,16 +534,21 @@ export default function DashboardPage() {
         onClose={() => setModalOpen(false)}
         onSuccess={handleAddSuccess}
       />
+
     </div>
   );
 }
 
 // ─── Empty state ─────────────────────────────────────────────────────
+
 function EmptyState({ onAddClick }) {
   const { t } = useTranslation();
+
   return (
     <div className="rounded-2xl border border-gray-100 dark:border-[#30363d] bg-white dark:bg-[#161b22] p-10 shadow-sm">
+
       <div className="mx-auto flex max-w-md flex-col items-center text-center">
+
         <div className="flex h-16 w-16 items-center justify-center rounded-2xl bg-[#edf7f3] dark:bg-[#0d2818]">
           <Building2
             className="h-7 w-7 text-[#16a34a] dark:text-green-400"
@@ -387,6 +559,7 @@ function EmptyState({ onAddClick }) {
         <h2 className="mt-5 text-lg font-bold text-gray-900 dark:text-[#e6edf3]">
           {t("dashboard.empty.title")}
         </h2>
+
         <p className="mt-2 text-sm text-gray-500 dark:text-[#7d8590] leading-relaxed">
           {t("dashboard.empty.description")}
         </p>
@@ -396,29 +569,51 @@ function EmptyState({ onAddClick }) {
           onClick={onAddClick}
           className="mt-6 flex items-center gap-2 rounded-lg bg-gradient-to-r from-[#22C55E] to-[#16a34a] px-4 py-2.5 text-sm font-semibold text-white shadow-[0_4px_12px_rgba(34,197,94,0.3)] transition-all duration-150 hover:opacity-95 active:scale-95"
         >
-          <Plus size={16} strokeWidth={2.5} />
+          <Plus
+            size={16}
+            strokeWidth={2.5}
+          />
+
           {t("property.addFirstProperty")}
         </button>
+
       </div>
     </div>
   );
 }
 
 // ─── Helpers ─────────────────────────────────────────────────────────
+
 function getGreeting(t) {
   const hour = new Date().getHours();
-  if (hour < 12) return t("dashboard.greetings.morning");
-  if (hour < 17) return t("dashboard.greetings.afternoon");
+
+  if (hour < 12) {
+    return t("dashboard.greetings.morning");
+  }
+
+  if (hour < 17) {
+    return t("dashboard.greetings.afternoon");
+  }
+
   return t("dashboard.greetings.evening");
 }
 
 function formatDelta(pct) {
-  if (pct == null || pct === 0) return null;
+  if (pct == null || pct === 0) {
+    return null;
+  }
+
   const sign = pct > 0 ? "+" : "";
+
   return `${sign}${pct}%`;
 }
 
 function formatTrend(t, count) {
-  if (count == null || count === 0) return undefined;
-  return t("dashboard.stats.plusThisWeek", { count });
+  if (count == null || count === 0) {
+    return undefined;
+  }
+
+  return t("dashboard.stats.plusThisWeek", {
+    count,
+  });
 }

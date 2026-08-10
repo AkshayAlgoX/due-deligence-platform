@@ -16,6 +16,8 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.transaction.support.TransactionSynchronization;
+import org.springframework.transaction.support.TransactionSynchronizationManager;
 
 import com.realestate.duediligence.dto.DueDiligenceReportResponse;
 import com.realestate.duediligence.dto.GenerateReportRequest;
@@ -26,6 +28,7 @@ import com.realestate.duediligence.entity.Property;
 import com.realestate.duediligence.entity.ReportSection;
 import com.realestate.duediligence.entity.User;
 import com.realestate.duediligence.enums.ReportStatus;
+import com.realestate.duediligence.enums.RiskLevel;
 import com.realestate.duediligence.repository.DueDiligenceReportRepository;
 import com.realestate.duediligence.repository.PropertyRepository;
 import com.realestate.duediligence.repository.ReportSectionRepository;
@@ -103,12 +106,38 @@ public class DueDiligenceReportServiceImpl implements DueDiligenceReportService 
                 .build();
 
         DueDiligenceReport saved = reportRepository.save(report);
-        log.info("Report {} created (PENDING) for property {} by user {}",
-                saved.getId(), property.getId(), user.getEmail());
 
-        // Dispatch async generation — returns immediately, doesn't block this transaction
-        boolean forceRecalc = Boolean.TRUE.equals(request.getForceRiskRecalculation());
-        executor.execute(saved.getId(), forceRecalc);
+        log.info("Report {} created (PENDING) for property {} by user {}",
+              saved.getId(), property.getId(), user.getEmail());
+
+        boolean forceRecalc =
+             Boolean.TRUE.equals(request.getForceRiskRecalculation());
+
+        Long savedReportId = saved.getId();
+
+        /*
+         * IMPORTANT:
+         * Start asynchronous report generation only AFTER
+         * the transaction that created the report has committed.
+         *
+         * Otherwise the async transaction may start before PostgreSQL
+         * can see the newly created report.
+        */
+        TransactionSynchronizationManager.registerSynchronization(
+            new TransactionSynchronization() {
+
+            @Override
+            public void afterCommit() {
+                log.info(
+                        "Transaction committed. Starting async generation for report {}",
+                        savedReportId
+                );
+
+                executor.execute(savedReportId, forceRecalc);
+            }
+        }
+);
+
         return toFullResponse(saved, List.of());
     }
 
@@ -269,18 +298,52 @@ public class DueDiligenceReportServiceImpl implements DueDiligenceReportService 
     }
 
     private ReportSummaryDto toSummaryDto(DueDiligenceReport r) {
-        return ReportSummaryDto.builder()
-                .id(r.getId())
-                .propertyId(r.getProperty() != null ? r.getProperty().getId() : null)
-                .propertyAddress(r.getProperty() != null ? r.getProperty().getAddress() : null)
-                .title(r.getTitle())
-                .status(r.getStatus())
-                .version(r.getVersion())
-                .riskScoreSnapshot(r.getRiskScoreSnapshot())
-                .errorMessage(r.getErrorMessage())
-                .createdAt(toInstant(r.getCreatedAt()))
-                .completedAt(toInstant(r.getCompletedAt()))
-                .generatedByEmail(r.getGeneratedBy() != null ? r.getGeneratedBy().getEmail() : null)
-                .build();
+
+    RiskLevel riskLevel = null;
+
+    if (r.getRiskAssessmentSnapshot() != null) {
+        riskLevel = r.getRiskAssessmentSnapshot().getOverallLevel();
     }
-}
+
+    Double riskScore = r.getRiskScoreSnapshot();
+
+    /*
+     * Fallback to the risk assessment snapshot score if
+     * riskScoreSnapshot has not been populated separately.
+     */
+    if (riskScore == null && r.getRiskAssessmentSnapshot() != null) {
+        riskScore = r.getRiskAssessmentSnapshot().getOverallScore();
+    }
+
+    return ReportSummaryDto.builder()
+            .id(r.getId())
+            .propertyId(
+                    r.getProperty() != null
+                            ? r.getProperty().getId()
+                            : null
+            )
+            .propertyAddress(
+                    r.getProperty() != null
+                            ? r.getProperty().getAddress()
+                            : null
+            )
+            .title(r.getTitle())
+            .status(r.getStatus())
+            .version(r.getVersion())
+
+            // Actual risk score
+            .riskScoreSnapshot(riskScore)
+
+            // Actual risk level
+            .riskLevel(riskLevel)
+
+            .errorMessage(r.getErrorMessage())
+            .createdAt(toInstant(r.getCreatedAt()))
+            .completedAt(toInstant(r.getCompletedAt()))
+            .generatedByEmail(
+                    r.getGeneratedBy() != null
+                            ? r.getGeneratedBy().getEmail()
+                            : null
+            )
+            .build();
+}}

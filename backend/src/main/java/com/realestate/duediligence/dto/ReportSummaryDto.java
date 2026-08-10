@@ -5,6 +5,7 @@ import java.time.Instant;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.realestate.duediligence.enums.ReportStatus;
+import com.realestate.duediligence.enums.RiskLevel;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -12,10 +13,9 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 /**
- * Lightweight report summary — used in list endpoints and status polling.
+ * Lightweight report summary — used in list endpoints.
  *
- * Excludes sections and heavy content — fetch full report via /reports/{id}
- * when user selects one. This is what the "My Reports" page renders.
+ * Contains the risk snapshot captured when the report was generated.
  */
 @Data
 @Builder
@@ -25,19 +25,38 @@ import lombok.NoArgsConstructor;
 public class ReportSummaryDto {
 
     private Long id;
+
     private Long propertyId;
-    private String propertyAddress;   // denormalized for list rendering (no extra fetch)
+
+    private String propertyAddress;
+
     private String title;
+
     private ReportStatus status;
+
     private Integer version;
 
-    /** Snapshot of risk score at generation time (not live). */
+    /**
+     * Risk score snapshot at report generation time.
+     */
     private Double riskScoreSnapshot;
 
-    /** Set when status=FAILED — surfaced in UI as inline error. */
+    /**
+     * Risk level snapshot at report generation time.
+     */
+    private RiskLevel riskLevel;
+
+    /**
+     * Set when status = FAILED.
+     */
     private String errorMessage;
 
     private Instant createdAt;
+
     private Instant completedAt;
-    private String generatedByEmail;  // denormalized for admin views
+
+    /**
+     * User who generated the report.
+     */
+    private String generatedByEmail;
 }

@@ -1,6 +1,7 @@
 package com.realestate.duediligence.repository;
 
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 
@@ -11,4 +12,8 @@ public interface ReportHistoryRepository extends JpaRepository<ReportHistory, Lo
     List<ReportHistory> findByPropertyIdOrderByCreatedAtDesc(Long propertyId);
 
     List<ReportHistory> findByReportIdOrderByVersionDesc(String reportId);
+
+    Optional<ReportHistory> findFirstByReportIdOrderByVersionDesc(String reportId);
+
+    boolean existsByReportId(String reportId);
 }

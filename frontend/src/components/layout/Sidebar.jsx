@@ -13,6 +13,7 @@ import {
   FileText,
   Bell,
   ClipboardList,
+  History,
   User,
   LifeBuoy,
   Bookmark,
@@ -23,68 +24,227 @@ import {
 import { getUser } from "@/utils/helpers";
 
 const ROUTE_ROLES = {
-  "/dashboard":                     ["BUYER", "REAL_ESTATE_AGENT", "LEGAL_REVIEWER", "FINANCIAL_INSTITUTION", "ADMIN"],
-  "/dashboard/property-search":     ["BUYER", "REAL_ESTATE_AGENT", "LEGAL_REVIEWER", "FINANCIAL_INSTITUTION", "ADMIN"],
-  "/dashboard/due-diligence":       ["BUYER", "REAL_ESTATE_AGENT", "LEGAL_REVIEWER", "FINANCIAL_INSTITUTION", "ADMIN"],
-  "/dashboard/risk-assessment":     ["BUYER", "REAL_ESTATE_AGENT", "LEGAL_REVIEWER", "FINANCIAL_INSTITUTION", "ADMIN"],
-  "/dashboard/property-comparison": ["BUYER", "REAL_ESTATE_AGENT", "LEGAL_REVIEWER", "FINANCIAL_INSTITUTION", "ADMIN"],
-  "/dashboard/saved-comparisons":   ["BUYER", "REAL_ESTATE_AGENT", "LEGAL_REVIEWER", "FINANCIAL_INSTITUTION", "ADMIN"],
-  "/reports": ["BUYER", "REAL_ESTATE_AGENT", "LEGAL_REVIEWER", "FINANCIAL_INSTITUTION", "ADMIN"],
-  "/dashboard/notifications":       ["BUYER", "REAL_ESTATE_AGENT", "LEGAL_REVIEWER", "FINANCIAL_INSTITUTION", "ADMIN"],
-  "/dashboard/audit-logs":          ["ADMIN"],
-  "/dashboard/profile":             ["BUYER", "REAL_ESTATE_AGENT", "LEGAL_REVIEWER", "FINANCIAL_INSTITUTION", "ADMIN"],
-  "/dashboard/settings":            ["BUYER", "REAL_ESTATE_AGENT", "LEGAL_REVIEWER", "FINANCIAL_INSTITUTION", "ADMIN"],
-  "/support":                       ["BUYER", "REAL_ESTATE_AGENT", "LEGAL_REVIEWER", "FINANCIAL_INSTITUTION", "ADMIN"],
+  "/dashboard": [
+    "BUYER",
+    "REAL_ESTATE_AGENT",
+    "LEGAL_REVIEWER",
+    "FINANCIAL_INSTITUTION",
+    "ADMIN",
+  ],
+
+  "/dashboard/property-search": [
+    "BUYER",
+    "REAL_ESTATE_AGENT",
+    "LEGAL_REVIEWER",
+    "FINANCIAL_INSTITUTION",
+    "ADMIN",
+  ],
+
+  "/dashboard/due-diligence": [
+    "BUYER",
+    "REAL_ESTATE_AGENT",
+    "LEGAL_REVIEWER",
+    "FINANCIAL_INSTITUTION",
+    "ADMIN",
+  ],
+
+  "/dashboard/risk-assessment": [
+    "BUYER",
+    "REAL_ESTATE_AGENT",
+    "LEGAL_REVIEWER",
+    "FINANCIAL_INSTITUTION",
+    "ADMIN",
+  ],
+
+  "/dashboard/property-comparison": [
+    "BUYER",
+    "REAL_ESTATE_AGENT",
+    "LEGAL_REVIEWER",
+    "FINANCIAL_INSTITUTION",
+    "ADMIN",
+  ],
+
+  "/dashboard/saved-comparisons": [
+    "BUYER",
+    "REAL_ESTATE_AGENT",
+    "LEGAL_REVIEWER",
+    "FINANCIAL_INSTITUTION",
+    "ADMIN",
+  ],
+
+  "/reports": [
+    "BUYER",
+    "REAL_ESTATE_AGENT",
+    "LEGAL_REVIEWER",
+    "FINANCIAL_INSTITUTION",
+    "ADMIN",
+  ],
+
+  "/dashboard/notifications": [
+    "BUYER",
+    "REAL_ESTATE_AGENT",
+    "LEGAL_REVIEWER",
+    "FINANCIAL_INSTITUTION",
+    "ADMIN",
+  ],
+
+  "/dashboard/audit-logs": [
+    "ADMIN",
+  ],
+
+  "/dashboard/report-history": [
+  "BUYER",
+  "REAL_ESTATE_AGENT",
+  "LEGAL_REVIEWER",
+  "FINANCIAL_INSTITUTION",
+  "ADMIN",
+],
+
+  "/dashboard/profile": [
+    "BUYER",
+    "REAL_ESTATE_AGENT",
+    "LEGAL_REVIEWER",
+    "FINANCIAL_INSTITUTION",
+    "ADMIN",
+  ],
+
+  "/dashboard/settings": [
+    "BUYER",
+    "REAL_ESTATE_AGENT",
+    "LEGAL_REVIEWER",
+    "FINANCIAL_INSTITUTION",
+    "ADMIN",
+  ],
+
+  "/support": [
+    "BUYER",
+    "REAL_ESTATE_AGENT",
+    "LEGAL_REVIEWER",
+    "FINANCIAL_INSTITUTION",
+    "ADMIN",
+  ],
 };
 
 function canAccess(href, role) {
   if (!role) return true;
+
   const allowed = ROUTE_ROLES[href];
+
   if (!allowed) return true;
+
   return allowed.includes(role);
 }
 
 // MAIN section is always expanded (no collapse control shown).
 // Other sections are collapsible.
 const MENU_SECTION_CONFIGS = [
-    {
+  {
     id: "main",
     sectionKey: "nav.sections.main",
     collapsible: true,
     items: [
-      { titleKey: "nav.dashboard",      href: "/dashboard",                  icon: LayoutDashboard, badge: null },
-      { titleKey: "nav.propertySearch", href: "/dashboard/property-search",  icon: Search,          badge: null },
+      {
+        titleKey: "nav.dashboard",
+        href: "/dashboard",
+        icon: LayoutDashboard,
+        badge: null,
+      },
+      {
+        titleKey: "nav.propertySearch",
+        href: "/dashboard/property-search",
+        icon: Search,
+        badge: null,
+      },
     ],
   },
+
   {
     id: "analysis",
     sectionKey: "nav.sections.analysis",
     collapsible: true,
     items: [
-      { titleKey: "nav.dueDiligence",       href: "/dashboard/due-diligence",       icon: ShieldCheck,   badge: null },
-      { titleKey: "nav.riskAssessment",     href: "/dashboard/risk-assessment",     icon: AlertTriangle, badge: null },
-      { titleKey: "nav.propertyComparison", href: "/dashboard/property-comparison", icon: GitCompare,    badge: null },
-      { titleKey: "nav.savedComparisons",   href: "/dashboard/saved-comparisons",   icon: Bookmark,      badge: null },
+      {
+        titleKey: "nav.dueDiligence",
+        href: "/dashboard/due-diligence",
+        icon: ShieldCheck,
+        badge: null,
+      },
+      {
+        titleKey: "nav.riskAssessment",
+        href: "/dashboard/risk-assessment",
+        icon: AlertTriangle,
+        badge: null,
+      },
+      {
+        titleKey: "nav.propertyComparison",
+        href: "/dashboard/property-comparison",
+        icon: GitCompare,
+        badge: null,
+      },
+      {
+        titleKey: "nav.savedComparisons",
+        href: "/dashboard/saved-comparisons",
+        icon: Bookmark,
+        badge: null,
+      },
     ],
   },
+
   {
     id: "activity",
     sectionKey: "nav.sections.activity",
     collapsible: true,
     items: [
-      { titleKey: "nav.reports",       href: "/reports",       icon: FileText,      badge: null },
-      { titleKey: "nav.notifications", href: "/dashboard/notifications", icon: Bell,          badge: null },
-      { titleKey: "nav.auditLogs",     href: "/dashboard/audit-logs",    icon: ClipboardList, badge: null },
+      {
+        titleKey: "nav.reports",
+        href: "/reports",
+        icon: FileText,
+        badge: null,
+      },
+      {
+        titleKey: "nav.notifications",
+        href: "/dashboard/notifications",
+        icon: Bell,
+        badge: null,
+      },
+      {
+        titleKey: "nav.auditLogs",
+        href: "/dashboard/audit-logs",
+        icon: ClipboardList,
+        badge: null,
+      },
+      {
+        titleKey: "nav.reportHistory",
+        href: "/dashboard/report-history",
+        icon: History,
+        badge: null,
+      },
     ],
   },
+
   {
     id: "account",
     sectionKey: "nav.sections.account",
     collapsible: true,
     items: [
-      { titleKey: "nav.profile",  href: "/dashboard/profile",  icon: User,     badge: null },
-      { titleKey: "nav.settings", href: "/dashboard/settings", icon: Settings, badge: null },
-      { titleKey: "nav.support",  href: "/support",            icon: LifeBuoy, badge: null },
+      {
+        titleKey: "nav.profile",
+        href: "/dashboard/profile",
+        icon: User,
+        badge: null,
+      },
+      {
+        titleKey: "nav.settings",
+        href: "/dashboard/settings",
+        icon: Settings,
+        badge: null,
+      },
+      {
+        titleKey: "nav.support",
+        href: "/support",
+        icon: LifeBuoy,
+        badge: null,
+      },
     ],
   },
 ];
@@ -92,18 +252,37 @@ const MENU_SECTION_CONFIGS = [
 const STORAGE_KEY = "dd_sidebar_sections";
 
 function timeAgo(date, t) {
-  const seconds = Math.floor((Date.now() - date.getTime()) / 1000);
-  if (seconds < 60) return t("common.justNow");
+  const seconds = Math.floor(
+    (Date.now() - date.getTime()) / 1000
+  );
+
+  if (seconds < 60) {
+    return t("common.justNow");
+  }
+
   const mins = Math.floor(seconds / 60);
-  if (mins < 60) return t("common.minutesAgo", { n: mins });
+
+  if (mins < 60) {
+    return t("common.minutesAgo", { n: mins });
+  }
+
   const hrs = Math.floor(mins / 60);
-  if (hrs < 24) return t("common.hoursAgo", { n: hrs });
+
+  if (hrs < 24) {
+    return t("common.hoursAgo", { n: hrs });
+  }
+
   return date.toLocaleDateString();
 }
 
-export default function Sidebar({ isOpen = true, onClose, isDesktopRail = false }) {
+export default function Sidebar({
+  isOpen = true,
+  onClose,
+  isDesktopRail = false,
+}) {
   const pathname = usePathname();
   const { t } = useTranslation();
+
   const [sessionStart] = useState(() => new Date());
   const [, tick] = useState(0);
   const [userRole, setUserRole] = useState("");
@@ -114,11 +293,16 @@ export default function Sidebar({ isOpen = true, onClose, isDesktopRail = false 
 
   useEffect(() => {
     const user = getUser();
+
     setUserRole(user?.role ?? "");
   }, []);
 
   useEffect(() => {
-    const interval = setInterval(() => tick((prev) => prev + 1), 30000);
+    const interval = setInterval(
+      () => tick((prev) => prev + 1),
+      30000
+    );
+
     return () => clearInterval(interval);
   }, []);
 
@@ -126,6 +310,7 @@ export default function Sidebar({ isOpen = true, onClose, isDesktopRail = false 
   useEffect(() => {
     try {
       const saved = localStorage.getItem(STORAGE_KEY);
+
       if (saved) {
         setCollapsedSections(JSON.parse(saved));
       }
@@ -137,8 +322,10 @@ export default function Sidebar({ isOpen = true, onClose, isDesktopRail = false 
   // Auto-expand section that contains the active route
   useEffect(() => {
     if (!pathname) return;
+
     for (const section of MENU_SECTION_CONFIGS) {
       if (!section.collapsible) continue;
+
       const hasActive = section.items.some((item) =>
         item.href === "/dashboard"
           ? pathname === "/dashboard"
@@ -146,29 +333,47 @@ export default function Sidebar({ isOpen = true, onClose, isDesktopRail = false 
           ? pathname === "/support"
           : pathname.startsWith(item.href)
       );
+
       if (hasActive && collapsedSections[section.id]) {
         setCollapsedSections((prev) => {
-          const next = { ...prev, [section.id]: false };
+          const next = {
+            ...prev,
+            [section.id]: false,
+          };
+
           try {
-            localStorage.setItem(STORAGE_KEY, JSON.stringify(next));
+            localStorage.setItem(
+              STORAGE_KEY,
+              JSON.stringify(next)
+            );
           } catch {
             // silently ignore
           }
+
           return next;
         });
       }
     }
+
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [pathname]);
 
   const toggleSection = (id) => {
     setCollapsedSections((prev) => {
-      const next = { ...prev, [id]: !prev[id] };
+      const next = {
+        ...prev,
+        [id]: !prev[id],
+      };
+
       try {
-        localStorage.setItem(STORAGE_KEY, JSON.stringify(next));
+        localStorage.setItem(
+          STORAGE_KEY,
+          JSON.stringify(next)
+        );
       } catch {
         // silently ignore
       }
+
       return next;
     });
   };
@@ -184,18 +389,21 @@ export default function Sidebar({ isOpen = true, onClose, isDesktopRail = false 
       )}
 
       <aside
-  className={`
-    w-64 flex flex-col h-full
-    bg-white dark:bg-[#161b22]
-    border-r border-gray-100 dark:border-[#30363d]
-    ${isDesktopRail
-      ? "relative"
-      : `fixed inset-y-0 left-0 z-40 transition-transform duration-300 ease-in-out ${
-          isOpen ? "translate-x-0" : "-translate-x-full"
-        }`
-    }
-  `}
->
+        className={`
+          w-64 flex flex-col h-full
+          bg-white dark:bg-[#161b22]
+          border-r border-gray-100 dark:border-[#30363d]
+          ${
+            isDesktopRail
+              ? "relative"
+              : `fixed inset-y-0 left-0 z-40 transition-transform duration-300 ease-in-out ${
+                  isOpen
+                    ? "translate-x-0"
+                    : "-translate-x-full"
+                }`
+          }
+        `}
+      >
         <nav className="flex-1 overflow-y-auto px-3 py-5">
           {MENU_SECTION_CONFIGS.map((section) => {
             const visibleItems = section.items.filter((item) =>
@@ -204,26 +412,36 @@ export default function Sidebar({ isOpen = true, onClose, isDesktopRail = false 
 
             if (visibleItems.length === 0) return null;
 
-            const isCollapsed = section.collapsible && collapsedSections[section.id];
+            const isCollapsed =
+              section.collapsible &&
+              collapsedSections[section.id];
 
             return (
-              <div key={section.id} className="mb-5">
+              <div
+                key={section.id}
+                className="mb-5"
+              >
                 {/* Section header */}
                 {section.collapsible ? (
                   <button
                     type="button"
-                    onClick={() => toggleSection(section.id)}
+                    onClick={() =>
+                      toggleSection(section.id)
+                    }
                     aria-expanded={!isCollapsed}
                     className="mb-2 flex w-full items-center justify-between px-4 py-1 rounded-md transition group hover:bg-gray-50 dark:hover:bg-[#1c2128]"
                   >
                     <span className="text-[10px] font-bold uppercase tracking-widest text-gray-400 dark:text-[#6e7681] group-hover:text-gray-600 dark:group-hover:text-[#7d8590]">
                       {t(section.sectionKey)}
                     </span>
+
                     <ChevronDown
                       size={12}
                       strokeWidth={2.5}
                       className={`text-gray-400 dark:text-[#6e7681] transition-transform duration-200 ${
-                        isCollapsed ? "-rotate-90" : "rotate-0"
+                        isCollapsed
+                          ? "-rotate-90"
+                          : "rotate-0"
                       }`}
                     />
                   </button>
@@ -236,11 +454,14 @@ export default function Sidebar({ isOpen = true, onClose, isDesktopRail = false 
                 {/* Items */}
                 <div
                   className={`overflow-hidden transition-all duration-300 ease-in-out ${
-                    isCollapsed ? "max-h-0 opacity-0" : "max-h-[500px] opacity-100"
+                    isCollapsed
+                      ? "max-h-0 opacity-0"
+                      : "max-h-[500px] opacity-100"
                   }`}
                 >
                   {visibleItems.map((item) => {
                     const Icon = item.icon;
+
                     const isActive =
                       item.href === "/dashboard"
                         ? pathname === "/dashboard"
@@ -253,7 +474,10 @@ export default function Sidebar({ isOpen = true, onClose, isDesktopRail = false 
                         key={item.titleKey}
                         href={item.href}
                         onClick={() => {
-                          if (typeof window !== "undefined" && window.innerWidth < 1024) {
+                          if (
+                            typeof window !== "undefined" &&
+                            window.innerWidth < 1024
+                          ) {
                             onClose?.();
                           }
                         }}
@@ -261,9 +485,10 @@ export default function Sidebar({ isOpen = true, onClose, isDesktopRail = false 
                           group relative mb-1 flex items-center gap-3
                           rounded-lg px-3 py-2.5
                           text-sm font-semibold transition
-                          ${isActive
-                            ? "bg-gradient-to-r from-[#22C55E] to-[#16a34a] text-white shadow-[0_4px_12px_rgba(34,197,94,0.3)]"
-                            : "text-gray-600 hover:bg-gray-50 hover:text-gray-900 dark:text-[#7d8590] dark:hover:bg-[#1c2128] dark:hover:text-[#e6edf3]"
+                          ${
+                            isActive
+                              ? "bg-gradient-to-r from-[#22C55E] to-[#16a34a] text-white shadow-[0_4px_12px_rgba(34,197,94,0.3)]"
+                              : "text-gray-600 hover:bg-gray-50 hover:text-gray-900 dark:text-[#7d8590] dark:hover:bg-[#1c2128] dark:hover:text-[#e6edf3]"
                           }
                         `}
                       >
@@ -271,15 +496,18 @@ export default function Sidebar({ isOpen = true, onClose, isDesktopRail = false 
                           className={`
                             flex h-7 w-7 flex-shrink-0 items-center justify-center rounded-md
                             transition-colors
-                            ${isActive
-                              ? "bg-white/20"
-                              : "bg-gray-100 group-hover:bg-white dark:bg-[#1c2128] dark:group-hover:bg-[#30363d]"
+                            ${
+                              isActive
+                                ? "bg-white/20"
+                                : "bg-gray-100 group-hover:bg-white dark:bg-[#1c2128] dark:group-hover:bg-[#30363d]"
                             }
                           `}
                         >
                           <Icon
                             size={15}
-                            strokeWidth={isActive ? 2.5 : 2}
+                            strokeWidth={
+                              isActive ? 2.5 : 2
+                            }
                             className={
                               isActive
                                 ? "text-white"
@@ -288,15 +516,18 @@ export default function Sidebar({ isOpen = true, onClose, isDesktopRail = false 
                           />
                         </div>
 
-                        <span className="flex-1 truncate">{t(item.titleKey)}</span>
+                        <span className="flex-1 truncate">
+                          {t(item.titleKey)}
+                        </span>
 
                         {item.badge && (
                           <span
                             className={`
                               rounded-full px-2 py-0.5 text-[10px] font-bold tabular-nums
-                              ${isActive
-                                ? "bg-white/25 text-white"
-                                : "bg-red-50 text-red-600 dark:bg-[#2d1214] dark:text-red-400"
+                              ${
+                                isActive
+                                  ? "bg-white/25 text-white"
+                                  : "bg-red-50 text-red-600 dark:bg-[#2d1214] dark:text-red-400"
                               }
                             `}
                           >
@@ -319,10 +550,13 @@ export default function Sidebar({ isOpen = true, onClose, isDesktopRail = false 
                 <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-green-400 opacity-75" />
                 <span className="relative inline-flex h-1.5 w-1.5 rounded-full bg-green-500" />
               </span>
+
               <span className="font-semibold text-gray-500 dark:text-[#7d8590] truncate">
-                {t("nav.sessionActive")} · {timeAgo(sessionStart, t)}
+                {t("nav.sessionActive")} ·{" "}
+                {timeAgo(sessionStart, t)}
               </span>
             </div>
+
             <span className="font-medium text-gray-400 dark:text-[#6e7681] flex-shrink-0 ml-2">
               {t("nav.version")}
             </span>

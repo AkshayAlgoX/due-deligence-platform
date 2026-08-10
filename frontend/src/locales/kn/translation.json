@@ -269,19 +269,221 @@
     "reports": "ವರದಿಗಳು",
     "notifications": "ಅಧಿಸೂಚನೆಗಳು",
     "auditLogs": "ಆಡಿಟ್ ಲಾಗ್‌ಗಳು",
+    "reportHistory": "ವರದಿ ಇತಿಹಾಸ",
     "profile": "ಪ್ರೊಫೈಲ್",
     "settings": "ಸೆಟ್ಟಿಂಗ್‌ಗಳು",
     "support": "ಬೆಂಬಲ",
+
+    "sessionActive": "ಸೆಶನ್ ಸಕ್ರಿಯ",
+    "version": "v1.0",
+
     "sections": {
       "main": "ಮುಖ್ಯ",
       "analysis": "ವಿಶ್ಲೇಷಣೆ",
       "insights": "ಒಳನೋಟಗಳು",
       "account": "ಖಾತೆ",
       "activity": "ಚಟುವಟಿಕೆ"
-    },
-    "sessionActive": "ಸೆಶನ್ ಸಕ್ರಿಯ",
-    "version": "v1.0"
+    }
   },
+    
+  "audit": {
+  "title": "ಆಡಿಟ್ ಲಾಗ್‌ಗಳು",
+  "description": "ಸಿಸ್ಟಮ್ ಚಟುವಟಿಕೆ, ಬಳಕೆದಾರರ ಕ್ರಿಯೆಗಳು ಮತ್ತು ವರದಿ ಘಟನೆಗಳನ್ನು ಟ್ರ್ಯಾಕ್ ಮಾಡಿ ಪರಿಶೀಲಿಸಿ.",
+  "search": "ಹುಡುಕಿ",
+  "detail": {
+    "title": "ಆಡಿಟ್ ಲಾಗ್ ವಿವರಗಳು",
+    "logId": "ಲಾಗ್ ಐಡಿ #{{id}}",
+    "close": "ಮುಚ್ಚಿ",
+    "loading": "ಆಡಿಟ್ ಲಾಗ್ ವಿವರಗಳನ್ನು ಲೋಡ್ ಮಾಡಲಾಗುತ್ತಿದೆ...",
+    "activity": "ಚಟುವಟಿಕೆ",
+    "action": "ಕ್ರಿಯೆ",
+    "createdAt": "ರಚಿಸಿದ ಸಮಯ",
+    "user": "ಬಳಕೆದಾರ",
+    "userId": "ಬಳಕೆದಾರ ಐಡಿ",
+    "entityType": "ಎಂಟಿಟಿ ಪ್ರಕಾರ",
+    "entityId": "ಎಂಟಿಟಿ ಐಡಿ",
+    "requestInformation": "ವಿನಂತಿ ಮಾಹಿತಿ",
+    "ipAddress": "ಐಪಿ ವಿಳಾಸ",
+    "userAgent": "ಬಳಕೆದಾರ ಏಜೆಂಟ್",
+    "changes": "ಬದಲಾವಣೆಗಳು",
+    "previousValue": "ಹಿಂದಿನ ಮೌಲ್ಯ",
+    "newValue": "ಹೊಸ ಮೌಲ್ಯ / ವಿವರಗಳು",
+    "unavailable": "ಆಡಿಟ್ ಲಾಗ್ ವಿವರಗಳು ಲಭ್ಯವಿಲ್ಲ."
+  },
+
+  "export": "ರಫ್ತು",
+  "loading": "ಆಡಿಟ್ ಲಾಗ್‌ಗಳು ಲೋಡ್ ಆಗುತ್ತಿವೆ...",
+  "noResults": "ಯಾವುದೇ ಆಡಿಟ್ ಲಾಗ್‌ಗಳು ಕಂಡುಬಂದಿಲ್ಲ.",
+  "view": "ವೀಕ್ಷಿಸಿ",
+
+  "filters": {
+    "title": "ಆಡಿಟ್ ಲಾಗ್ ಫಿಲ್ಟರ್‌ಗಳು",
+    "description": "ಕ್ರಿಯೆ, ಬಳಕೆದಾರ ಅಥವಾ ದಿನಾಂಕದ ಮೂಲಕ ಆಡಿಟ್ ಚಟುವಟಿಕೆಯನ್ನು ಫಿಲ್ಟರ್ ಮಾಡಿ.",
+    "clear": "ಫಿಲ್ಟರ್‌ಗಳನ್ನು ತೆರವುಗೊಳಿಸಿ",
+    "action": "ಕ್ರಿಯೆ",
+    "allActions": "ಎಲ್ಲಾ ಕ್ರಿಯೆಗಳು",
+    "userId": "ಬಳಕೆದಾರ ID",
+    "userIdPlaceholder": "ಬಳಕೆದಾರ ID ನಮೂದಿಸಿ",
+    "fromDate": "ಪ್ರಾರಂಭ ದಿನಾಂಕ",
+    "toDate": "ಅಂತಿಮ ದಿನಾಂಕ"
+  },
+
+  "action": {
+    "LOGIN": "ಲಾಗಿನ್",
+    "LOGOUT": "ಲಾಗ್‌ಔಟ್",
+    "PROPERTY_VIEW": "ಆಸ್ತಿಯನ್ನು ವೀಕ್ಷಿಸಲಾಗಿದೆ",
+    "PROPERTY_CREATED": "ಆಸ್ತಿಯನ್ನು ರಚಿಸಲಾಗಿದೆ",
+    "PROPERTY_UPDATED": "ಆಸ್ತಿಯನ್ನು ನವೀಕರಿಸಲಾಗಿದೆ",
+    "PROPERTY_DELETED": "ಆಸ್ತಿಯನ್ನು ಅಳಿಸಲಾಗಿದೆ",
+    "REPORT_GENERATED": "ವರದಿಯನ್ನು ರಚಿಸಲಾಗಿದೆ",
+    "REPORT_DOWNLOADED": "ವರದಿಯನ್ನು ಡೌನ್‌ಲೋಡ್ ಮಾಡಲಾಗಿದೆ",
+    "RISK_ASSESSED": "ಅಪಾಯವನ್ನು ಮೌಲ್ಯಮಾಪನ ಮಾಡಲಾಗಿದೆ",
+    "EXPORT_PDF": "PDF ರಫ್ತು",
+    "EXPORT_EXCEL": "EXCEL ರಫ್ತು",
+    "USER_REGISTERED": "ಬಳಕೆದಾರರನ್ನು ನೋಂದಾಯಿಸಲಾಗಿದೆ",
+    "PROFILE_UPDATED": "ಪ್ರೊಫೈಲ್ ನವೀಕರಿಸಲಾಗಿದೆ",
+    "PASSWORD_CHANGED": "ಪಾಸ್‌ವರ್ಡ್ ಬದಲಾಯಿಸಲಾಗಿದೆ"
+  },
+
+  "resource": {
+    "PROPERTY": "ಆಸ್ತಿ",
+    "REPORT": "ವರದಿ",
+    "USER": "ಬಳಕೆದಾರ",
+    "PROFILE": "ಪ್ರೊಫೈಲ್",
+    "RISK": "ಅಪಾಯ",
+    "AUTHENTICATION": "ದೃಢೀಕರಣ",
+    "SYSTEM": "ಸಿಸ್ಟಮ್"
+  },
+
+  "columns": {
+    "user": "ಬಳಕೆದಾರ",
+    "action": "ಕ್ರಿಯೆ",
+    "resource": "ಸಂಪನ್ಮೂಲ",
+    "resourceId": "ಸಂಪನ್ಮೂಲ ID",
+    "date": "ರಚಿಸಿದ ದಿನಾಂಕ",
+    "ip": "IP ವಿಳಾಸ",
+    "details": "ವಿವರಗಳು",
+    "view": "ವೀಕ್ಷಿಸಿ"
+  },
+
+  "timeline": {
+    "title": "ಚಟುವಟಿಕೆ ಕಾಲರೇಖೆ",
+    "description": "ಇತ್ತೀಚಿನ ಸಿಸ್ಟಮ್ ಮತ್ತು ಬಳಕೆದಾರ ಚಟುವಟಿಕೆ.",
+    "performed": "ನಿರ್ವಹಿಸಿದ್ದಾರೆ",
+    "on": "ರಂದು",
+    "at": "ನಲ್ಲಿ",
+    "by": "ಮೂಲಕ",
+    "ipAddress": "IP ವಿಳಾಸ",
+    "noActivity": "ಇತ್ತೀಚಿನ ಯಾವುದೇ ಚಟುವಟಿಕೆ ಕಂಡುಬಂದಿಲ್ಲ."
+  },
+
+  "activity": {
+    "title": "ಬಳಕೆದಾರ ಚಟುವಟಿಕೆ",
+    "graph": {
+      "description": "ಕಳೆದ 7 ದಿನಗಳ ಆಡಿಟ್ ಚಟುವಟಿಕೆ.",
+      "loading": "ಚಟುವಟಿಕೆ ಲೋಡ್ ಆಗುತ್ತಿದೆ...",
+      "sevenDaysAgo": "7 ದಿನಗಳ ಹಿಂದೆ",
+      "today": "ಇಂದು",
+      "activities": "ಚಟುವಟಿಕೆಗಳು",
+      "activity": "ಚಟುವಟಿಕೆ",
+      "days": {
+        "sun": "ಭಾನು",
+        "mon": "ಸೋಮ",
+        "tue": "ಮಂಗಳ",
+        "wed": "ಬುಧ",
+        "thu": "ಗುರು",
+        "fri": "ಶುಕ್ರ",
+        "sat": "ಶನಿ"
+      }
+    }
+  },
+
+  "stats": {
+    "totalLogs": "ಒಟ್ಟು ಲಾಗ್‌ಗಳು",
+    "loginEvents": "ಲಾಗಿನ್ ಘಟನೆಗಳು",
+    "reportsGenerated": "ರಚಿಸಲಾದ ವರದಿಗಳು",
+    "propertiesCreated": "ರಚಿಸಲಾದ ಆಸ್ತಿಗಳು"
+  },
+
+  "errors": {
+    "loadFailed": "ಆಡಿಟ್ ಲಾಗ್‌ಗಳನ್ನು ಲೋಡ್ ಮಾಡಲು ವಿಫಲವಾಗಿದೆ."
+  },
+
+  "exporting": "ರಫ್ತು ಮಾಡಲಾಗುತ್ತಿದೆ..."
+},
+
+"reportHistory": {
+  "title": "ವರದಿ ಇತಿಹಾಸ",
+  "description": "ಹಿಂದೆ ರಚಿಸಲಾದ ಡ್ಯೂ ಡಿಲಿಜೆನ್ಸ್ ವರದಿಗಳನ್ನು ವೀಕ್ಷಿಸಿ ಮತ್ತು ನಿರ್ವಹಿಸಿ.",
+  "loading": "ವರದಿ ಇತಿಹಾಸ ಲೋಡ್ ಆಗುತ್ತಿದೆ...",
+
+  "stats": {
+    "total": "ಒಟ್ಟು",
+    "lowRisk": "ಕಡಿಮೆ ಅಪಾಯ",
+    "mediumRisk": "ಮಧ್ಯಮ ಅಪಾಯ",
+    "highRisk": "ಹೆಚ್ಚಿನ ಅಪಾಯ"
+  },
+
+  "showing": "{{count}} ವರದಿಗಳನ್ನು ತೋರಿಸಲಾಗುತ್ತಿದೆ",
+  "empty": "ಯಾವುದೇ ವರದಿಗಳು ಕಂಡುಬಂದಿಲ್ಲ",
+  "emptyDescription": "ನಿಮ್ಮ ಹುಡುಕಾಟ ಅಥವಾ ಫಿಲ್ಟರ್ ಮಾನದಂಡಗಳನ್ನು ಬದಲಾಯಿಸಲು ಪ್ರಯತ್ನಿಸಿ.",
+  "version": "ಆವೃತ್ತಿ",
+  "download": "ಡೌನ್‌ಲೋಡ್",
+  "share": "ಹಂಚಿಕೊಳ್ಳಿ",
+  "archive": "ಆರ್ಕೈವ್",
+  "delete": "ಅಳಿಸಿ",
+
+  "risk": {
+    "all": "ಎಲ್ಲಾ ಅಪಾಯದ ಮಟ್ಟಗಳು",
+    "LOW": "ಕಡಿಮೆ",
+    "MEDIUM": "ಮಧ್ಯಮ",
+    "HIGH": "ಹೆಚ್ಚು",
+    "CRITICAL": "ಗಂಭೀರ"
+  },
+
+  "filters": {
+    "search": "ಹುಡುಕಿ",
+    "searchPlaceholder": "ವರದಿಗಳು ಅಥವಾ ಆಸ್ತಿಗಳನ್ನು ಹುಡುಕಿ...",
+    "riskLevel": "ಅಪಾಯದ ಮಟ್ಟ",
+    "allRiskLevels": "ಎಲ್ಲಾ ಅಪಾಯದ ಮಟ್ಟಗಳು",
+    "low": "ಕಡಿಮೆ",
+    "medium": "ಮಧ್ಯಮ",
+    "high": "ಹೆಚ್ಚು",
+    "critical": "ಗಂಭೀರ",
+    "date": "ದಿನಾಂಕ",
+    "reset": "ಮರುಹೊಂದಿಸಿ"
+  },
+
+  "card": {
+    "defaultTitle": "ಆಸ್ತಿ ಡ್ಯೂ ಡಿಲಿಜೆನ್ಸ್ ವರದಿ",
+    "property": "ಆಸ್ತಿ",
+    "generated": "ರಚಿಸಲಾಗಿದೆ",
+    "version": "ಆವೃತ್ತಿ",
+    "viewReport": "ವರದಿ ವೀಕ್ಷಿಸಿ",
+    "download": "ಡೌನ್‌ಲೋಡ್",
+    "share": "ಹಂಚಿಕೊಳ್ಳಿ",
+    "archive": "ಆರ್ಕೈವ್",
+    "delete": "ಅಳಿಸಿ",
+    "untitled": "ಶೀರ್ಷಿಕೆ ಇಲ್ಲದ ವರದಿ",
+    "risk": "ಅಪಾಯ",
+    "sections": "ವಿಭಾಗಗಳು",
+    "sections_one": "{{count}} ವಿಭಾಗ",
+    "sections_other": "{{count}} ವಿಭಾಗಗಳು",
+    "view": "ವೀಕ್ಷಿಸಿ",
+    "openReport": "ವರದಿ ತೆರೆಯಿರಿ",
+    "moreActions": "ಹೆಚ್ಚಿನ ಕ್ರಿಯೆಗಳು",
+    "copyLink": "ಲಿಂಕ್ ನಕಲಿಸಿ",
+    "copyId": "ವರದಿ ID ನಕಲಿಸಿ",
+    "linkCopied": "ಲಿಂಕ್ ಕ್ಲಿಪ್‌ಬೋರ್ಡ್‌ಗೆ ನಕಲಿಸಲಾಗಿದೆ",
+    "idCopied": "ವರದಿ ID ನಕಲಿಸಲಾಗಿದೆ",
+    "copyFailed": "ನಕಲಿಸಲು ವಿಫಲವಾಗಿದೆ"
+  },
+
+  "errors": {
+    "loadFailed": "ವರದಿ ಇತಿಹಾಸವನ್ನು ಲೋಡ್ ಮಾಡಲು ವಿಫಲವಾಗಿದೆ. ದಯವಿಟ್ಟು ಮತ್ತೆ ಪ್ರಯತ್ನಿಸಿ."
+  }
+},
+
   "auth": {
     "login": {
       "title": "ಮರಳಿ ಸ್ವಾಗತ",
@@ -462,6 +664,14 @@
     "platformOverview": "ಪ್ಲ್ಯಾಟ್‌ಫಾರ್ಮ್ ಅವಲೋಕನ",
     "pageTitle": "ಡ್ಯಾಶ್‌ಬೋರ್ಡ್ | Real Estate Due Diligence Agent",
     "refreshed": "ಡ್ಯಾಶ್‌ಬೋರ್ಡ್ ನವೀಕರಿಸಲಾಗಿದೆ",
+
+    "quickLinks": {
+    "reportHistory": "ವರದಿ ಇತಿಹಾಸ",
+    "reportHistoryDescription": "ಈ ಹಿಂದೆ ರಚಿಸಲಾದ ವರದಿಗಳನ್ನು ವೀಕ್ಷಿಸಿ ಮತ್ತು ನಿರ್ವಹಿಸಿ.",
+    "auditLogs": "ಆಡಿಟ್ ಲಾಗ್‌ಗಳು",
+    "auditLogsDescription": "ಸಿಸ್ಟಮ್ ಚಟುವಟಿಕೆ ಮತ್ತು ಬಳಕೆದಾರರ ಕ್ರಿಯೆಗಳನ್ನು ಟ್ರ್ಯಾಕ್ ಮಾಡಿ ಮತ್ತು ಪರಿಶೀಲಿಸಿ."
+},
+
     "stats": {
       "totalProperties": "ಒಟ್ಟು ಆಸ್ತಿಗಳು",
       "verified": "ಪರಿಶೀಲಿಸಿದ",

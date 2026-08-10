@@ -269,19 +269,221 @@
     "reports": "અહેવાલો",
     "notifications": "સૂચનાઓ",
     "auditLogs": "ઑડિટ લૉગ્સ",
+    "reportHistory": "રિપોર્ટ ઇતિહાસ",
     "profile": "પ્રોફાઇલ",
     "settings": "સેટિંગ્સ",
     "support": "સહાય",
+
+    "sessionActive": "સત્ર સક્રિય",
+    "version": "v1.0",
+
     "sections": {
       "main": "મુખ્ય",
       "analysis": "વિશ્લેષણ",
       "insights": "આંતરદૃષ્ટિ",
       "account": "એકાઉન્ટ",
       "activity": "પ્રવૃત્તિ"
-    },
-    "sessionActive": "સત્ર સક્રિય",
-    "version": "v1.0"
+    }
   },
+
+  "audit": {
+  "title": "ઑડિટ લૉગ્સ",
+  "description": "સિસ્ટમ પ્રવૃત્તિ, વપરાશકર્તાની ક્રિયાઓ અને રિપોર્ટ ઇવેન્ટ્સને ટ્રૅક અને સમીક્ષા કરો.",
+  "search": "શોધો",
+  "detail": {
+    "title": "ઑડિટ લૉગ વિગતો",
+    "logId": "લૉગ આઈડી #{{id}}",
+    "close": "બંધ કરો",
+    "loading": "ઑડિટ લૉગ વિગતો લોડ થઈ રહી છે...",
+    "activity": "પ્રવૃત્તિ",
+    "action": "ક્રિયા",
+    "createdAt": "બનાવ્યાની તારીખ",
+    "user": "વપરાશકર્તા",
+    "userId": "વપરાશકર્તા આઈડી",
+    "entityType": "એન્ટિટી પ્રકાર",
+    "entityId": "એન્ટિટી આઈડી",
+    "requestInformation": "વિનંતી માહિતી",
+    "ipAddress": "આઈપી સરનામું",
+    "userAgent": "યુઝર એજન્ટ",
+    "changes": "ફેરફારો",
+    "previousValue": "પહેલાનું મૂલ્ય",
+    "newValue": "નવું મૂલ્ય / વિગતો",
+    "unavailable": "ઑડિટ લૉગ વિગતો ઉપલબ્ધ નથી."
+  },
+
+  "export": "નિકાસ કરો",
+  "loading": "ઑડિટ લૉગ્સ લોડ થઈ રહ્યા છે...",
+  "noResults": "કોઈ ઑડિટ લૉગ મળ્યા નથી.",
+  "view": "જુઓ",
+
+  "filters": {
+    "title": "ઑડિટ લૉગ ફિલ્ટર્સ",
+    "description": "ક્રિયા, વપરાશકર્તા અથવા તારીખ પ્રમાણે ઑડિટ પ્રવૃત્તિ ફિલ્ટર કરો.",
+    "clear": "ફિલ્ટર્સ સાફ કરો",
+    "action": "ક્રિયા",
+    "allActions": "બધી ક્રિયાઓ",
+    "userId": "વપરાશકર્તા ID",
+    "userIdPlaceholder": "વપરાશકર્તા ID દાખલ કરો",
+    "fromDate": "શરૂઆતની તારીખ",
+    "toDate": "અંતિમ તારીખ"
+  },
+
+  "action": {
+    "LOGIN": "લૉગિન",
+    "LOGOUT": "લૉગઆઉટ",
+    "PROPERTY_VIEW": "મિલકત જોવામાં આવી",
+    "PROPERTY_CREATED": "મિલકત બનાવવામાં આવી",
+    "PROPERTY_UPDATED": "મિલકત અપડેટ કરવામાં આવી",
+    "PROPERTY_DELETED": "મિલકત કાઢી નાખવામાં આવી",
+    "REPORT_GENERATED": "રિપોર્ટ બનાવવામાં આવ્યો",
+    "REPORT_DOWNLOADED": "રિપોર્ટ ડાઉનલોડ કરવામાં આવ્યો",
+    "RISK_ASSESSED": "જોખમનું મૂલ્યાંકન કરવામાં આવ્યું",
+    "EXPORT_PDF": "PDF નિકાસ",
+    "EXPORT_EXCEL": "EXCEL નિકાસ",
+    "USER_REGISTERED": "વપરાશકર્તા નોંધાયેલ",
+    "PROFILE_UPDATED": "પ્રોફાઇલ અપડેટ કરવામાં આવી",
+    "PASSWORD_CHANGED": "પાસવર્ડ બદલવામાં આવ્યો"
+  },
+
+  "resource": {
+    "PROPERTY": "મિલકત",
+    "REPORT": "રિપોર્ટ",
+    "USER": "વપરાશકર્તા",
+    "PROFILE": "પ્રોફાઇલ",
+    "RISK": "જોખમ",
+    "AUTHENTICATION": "પ્રમાણીકરણ",
+    "SYSTEM": "સિસ્ટમ"
+  },
+
+  "columns": {
+    "user": "વપરાશકર્તા",
+    "action": "ક્રિયા",
+    "resource": "સંસાધન",
+    "resourceId": "સંસાધન ID",
+    "date": "બનાવેલ તારીખ",
+    "ip": "IP સરનામું",
+    "details": "વિગતો",
+    "view": "જુઓ"
+  },
+
+  "timeline": {
+    "title": "પ્રવૃત્તિ સમયરેખા",
+    "description": "તાજેતરની સિસ્ટમ અને વપરાશકર્તા પ્રવૃત્તિ.",
+    "performed": "કર્યું",
+    "on": "પર",
+    "at": "ખાતે",
+    "by": "દ્વારા",
+    "ipAddress": "IP સરનામું",
+    "noActivity": "કોઈ તાજેતરની પ્રવૃત્તિ મળી નથી."
+  },
+
+  "activity": {
+    "title": "વપરાશકર્તા પ્રવૃત્તિ",
+    "graph": {
+      "description": "છેલ્લા 7 દિવસની ઑડિટ પ્રવૃત્તિ.",
+      "loading": "પ્રવૃત્તિ લોડ થઈ રહી છે...",
+      "sevenDaysAgo": "7 દિવસ પહેલાં",
+      "today": "આજે",
+      "activities": "પ્રવૃત્તિઓ",
+      "activity": "પ્રવૃત્તિ",
+      "days": {
+        "sun": "રવિ",
+        "mon": "સોમ",
+        "tue": "મંગળ",
+        "wed": "બુધ",
+        "thu": "ગુરુ",
+        "fri": "શુક્ર",
+        "sat": "શનિ"
+      }
+    }
+  },
+
+  "stats": {
+    "totalLogs": "કુલ લૉગ્સ",
+    "loginEvents": "લૉગિન ઇવેન્ટ્સ",
+    "reportsGenerated": "બનાવેલા રિપોર્ટ્સ",
+    "propertiesCreated": "બનાવેલી મિલકતો"
+  },
+
+  "errors": {
+    "loadFailed": "ઑડિટ લૉગ્સ લોડ કરવામાં નિષ્ફળ."
+  },
+
+  "exporting": "નિકાસ થઈ રહી છે..."
+},
+
+"reportHistory": {
+  "title": "રિપોર્ટ ઇતિહાસ",
+  "description": "અગાઉ બનાવેલા ડ્યુ ડિલિજન્સ રિપોર્ટ્સ જુઓ અને મેનેજ કરો.",
+  "loading": "રિપોર્ટ ઇતિહાસ લોડ થઈ રહ્યો છે...",
+
+  "stats": {
+    "total": "કુલ",
+    "lowRisk": "ઓછું જોખમ",
+    "mediumRisk": "મધ્યમ જોખમ",
+    "highRisk": "ઉચ્ચ જોખમ"
+  },
+
+  "showing": "{{count}} રિપોર્ટ્સ બતાવવામાં આવી રહ્યા છે",
+  "empty": "કોઈ રિપોર્ટ મળ્યો નથી",
+  "emptyDescription": "તમારી શોધ અથવા ફિલ્ટર માપદંડ બદલવાનો પ્રયાસ કરો.",
+  "version": "સંસ્કરણ",
+  "download": "ડાઉનલોડ",
+  "share": "શેર",
+  "archive": "આર્કાઇવ",
+  "delete": "કાઢી નાખો",
+
+  "risk": {
+    "all": "બધા જોખમ સ્તરો",
+    "LOW": "ઓછું",
+    "MEDIUM": "મધ્યમ",
+    "HIGH": "ઉચ્ચ",
+    "CRITICAL": "ગંભીર"
+  },
+
+  "filters": {
+    "search": "શોધો",
+    "searchPlaceholder": "રિપોર્ટ અથવા મિલકતો શોધો...",
+    "riskLevel": "જોખમ સ્તર",
+    "allRiskLevels": "બધા જોખમ સ્તરો",
+    "low": "ઓછું",
+    "medium": "મધ્યમ",
+    "high": "ઉચ્ચ",
+    "critical": "ગંભીર",
+    "date": "તારીખ",
+    "reset": "રીસેટ"
+  },
+
+  "card": {
+    "defaultTitle": "મિલકત ડ્યુ ડિલિજન્સ રિપોર્ટ",
+    "property": "મિલકત",
+    "generated": "બનાવવામાં આવ્યું",
+    "version": "સંસ્કરણ",
+    "viewReport": "રિપોર્ટ જુઓ",
+    "download": "ડાઉનલોડ",
+    "share": "શેર",
+    "archive": "આર્કાઇવ",
+    "delete": "કાઢી નાખો",
+    "untitled": "શીર્ષક વિનાનો રિપોર્ટ",
+    "risk": "જોખમ",
+    "sections": "વિભાગો",
+    "sections_one": "{{count}} વિભાગ",
+    "sections_other": "{{count}} વિભાગો",
+    "view": "જુઓ",
+    "openReport": "રિપોર્ટ ખોલો",
+    "moreActions": "વધુ ક્રિયાઓ",
+    "copyLink": "લિંક કૉપી કરો",
+    "copyId": "રિપોર્ટ ID કૉપી કરો",
+    "linkCopied": "લિંક ક્લિપબોર્ડ પર કૉપી થઈ",
+    "idCopied": "રિપોર્ટ ID કૉપી થઈ",
+    "copyFailed": "કૉપી કરવામાં નિષ્ફળ"
+  },
+
+  "errors": {
+    "loadFailed": "રિપોર્ટ ઇતિહાસ લોડ કરવામાં નિષ્ફળ. કૃપા કરીને ફરી પ્રયાસ કરો."
+  }
+},
+    
   "auth": {
     "login": {
       "title": "પુનઃ સ્વાગત છે",
@@ -462,6 +664,14 @@
     "platformOverview": "प्लॅटफॉर्म अवलोकन",
     "pageTitle": "ড৅শবো়র্ড | Real Estate Due Diligence Agent",
     "refreshed": "ড৅শবো়র্ড আপডেট হয়েছে",
+
+    "quickLinks": {
+    "reportHistory": "રિપોર્ટ ઇતિહાસ",
+    "reportHistoryDescription": "અગાઉ બનાવેલા અહેવાલો જુઓ અને સંચાલિત કરો.",
+    "auditLogs": "ઑડિટ લૉગ્સ",
+    "auditLogsDescription": "સિસ્ટમ પ્રવૃત્તિ અને વપરાશકર્તાની ક્રિયાઓને ટ્રૅક અને સમીક્ષા કરો."
+},
+
     "stats": {
       "totalProperties": "कुल मिलकतो",
       "verified": "चकासायेली",

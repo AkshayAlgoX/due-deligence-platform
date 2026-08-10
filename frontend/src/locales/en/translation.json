@@ -670,19 +670,221 @@
     "reports": "Reports",
     "notifications": "Notifications",
     "auditLogs": "Audit Logs",
+    "reportHistory": "Report History",
     "profile": "Profile",
     "settings": "Settings",
     "support": "Support",
-    "sections": {
-  "main": "Main",
-  "analysis": "Analysis",
-  "insights": "Insights",
-  "activity": "Activity",
-  "account": "Account"
-},
+
     "sessionActive": "Session active",
-    "version": "v1.0"
+    "version": "v1.0",
+
+    "sections": {
+     "main": "Main",
+     "analysis": "Analysis",
+     "insights": "Insights",
+     "activity": "Activity",
+     "account": "Account"
+  }
+},
+
+ "audit": {
+  "title": "Audit Logs",
+  "description": "Track and review system activity, user actions, and report events.",
+  "search": "Search",
+  "detail": {
+    "title": "Audit Log Details",
+    "logId": "Log ID #{{id}}",
+    "close": "Close",
+    "loading": "Loading audit log details...",
+    "activity": "Activity",
+    "action": "Action",
+    "createdAt": "Created At",
+    "user": "User",
+    "userId": "User ID",
+    "entityType": "Entity Type",
+    "entityId": "Entity ID",
+    "requestInformation": "Request Information",
+    "ipAddress": "IP Address",
+    "userAgent": "User Agent",
+    "changes": "Changes",
+    "previousValue": "Previous Value",
+    "newValue": "New Value / Details",
+    "unavailable": "Audit log details are unavailable."
+},
+
+  "export": "Export",
+  "loading": "Loading audit logs...",
+  "noResults": "No audit logs found.",
+  "view": "View",
+
+  "filters": {
+    "title": "Audit Log Filters",
+    "description": "Filter audit activity by action, user, or date.",
+    "clear": "Clear Filters",
+    "action": "Action",
+    "allActions": "All Actions",
+    "userId": "User ID",
+    "userIdPlaceholder": "Enter user ID",
+    "fromDate": "From Date",
+    "toDate": "To Date"
   },
+
+  "action": {
+    "LOGIN": "LOGIN",
+    "LOGOUT": "LOGOUT",
+    "PROPERTY_VIEW": "PROPERTY VIEW",
+    "PROPERTY_CREATED": "PROPERTY CREATED",
+    "PROPERTY_UPDATED": "PROPERTY UPDATED",
+    "PROPERTY_DELETED": "PROPERTY DELETED",
+    "REPORT_GENERATED": "REPORT GENERATED",
+    "REPORT_DOWNLOADED": "REPORT DOWNLOADED",
+    "RISK_ASSESSED": "RISK ASSESSED",
+    "EXPORT_PDF": "EXPORT PDF",
+    "EXPORT_EXCEL": "EXPORT EXCEL",
+    "USER_REGISTERED": "USER REGISTERED",
+    "PROFILE_UPDATED": "PROFILE UPDATED",
+    "PASSWORD_CHANGED": "PASSWORD CHANGED"
+  },
+
+  "resource": {
+    "PROPERTY": "Property",
+    "REPORT": "Report",
+    "USER": "User",
+    "PROFILE": "Profile",
+    "RISK": "Risk",
+    "AUTHENTICATION": "Authentication",
+    "SYSTEM": "System"
+  },
+
+  "columns": {
+    "user": "User",
+    "action": "Action",
+    "resource": "Resource",
+    "resourceId": "Resource ID",
+    "date": "Created At",
+    "ip": "IP Address",
+    "details": "Details",
+    "view": "View"
+  },
+
+  "timeline": {
+    "title": "Activity Timeline",
+    "description": "Recent system and user activity.",
+    "performed": "performed",
+    "on": "on",
+    "at": "at",
+    "by": "by",
+    "ipAddress": "IP Address",
+    "noActivity": "No recent activity found."
+  },
+
+  "activity": {
+    "title": "User Activity",
+    "graph": {
+      "description": "Audit activity over the last 7 days.",
+      "loading": "Loading activity...",
+      "sevenDaysAgo": "7 days ago",
+      "today": "Today",
+      "activities": "activities",
+      "activity": "activity",
+      "days": {
+        "sun": "Sun",
+        "mon": "Mon",
+        "tue": "Tue",
+        "wed": "Wed",
+        "thu": "Thu",
+        "fri": "Fri",
+        "sat": "Sat"
+      }
+    }
+  },
+
+  "stats": {
+    "totalLogs": "Total Logs",
+    "loginEvents": "Login Events",
+    "reportsGenerated": "Reports Generated",
+    "propertiesCreated": "Properties Created"
+  },
+
+  "errors": {
+    "loadFailed": "Failed to load audit logs."
+  },
+
+  "exporting": "Exporting..."
+},
+
+"reportHistory": {
+  "title": "Report History",
+  "description": "View and manage previously generated due diligence reports.",
+  "loading": "Loading report history...",
+
+  "stats": {
+    "total": "Total",
+    "lowRisk": "Low Risk",
+    "mediumRisk": "Medium Risk",
+    "highRisk": "High Risk"
+  },
+
+  "showing": "Showing {{count}} reports",
+  "empty": "No reports found",
+  "emptyDescription": "Try changing your search or filter criteria.",
+  "version": "Version",
+  "download": "Download",
+  "share": "Share",
+  "archive": "Archive",
+  "delete": "Delete",
+
+  "risk": {
+    "all": "All Risk Levels",
+    "LOW": "Low",
+    "MEDIUM": "Medium",
+    "HIGH": "High",
+    "CRITICAL": "Critical"
+  },
+
+  "filters": {
+    "search": "Search",
+    "searchPlaceholder": "Search reports or properties...",
+    "riskLevel": "Risk Level",
+    "allRiskLevels": "All Risk Levels",
+    "low": "Low",
+    "medium": "Medium",
+    "high": "High",
+    "critical": "Critical",
+    "date": "Date",
+    "reset": "Reset"
+  },
+
+  "card": {
+  "defaultTitle": "Property Due Diligence Report",
+  "property": "Property",
+  "generated": "Generated",
+  "version": "Version",
+  "viewReport": "View Report",
+  "download": "Download",
+  "share": "Share",
+  "archive": "Archive",
+  "delete": "Delete",
+  "untitled": "Untitled report",
+  "risk": "Risk",
+  "sections": "sections",
+  "sections_one": "{{count}} section",
+  "sections_other": "{{count}} sections",
+  "view": "View",
+  "openReport": "Open report",
+  "moreActions": "More actions",
+  "copyLink": "Copy link",
+  "copyId": "Copy report ID",
+  "linkCopied": "Link copied to clipboard",
+  "idCopied": "Report ID copied",
+  "copyFailed": "Failed to copy"
+  },
+
+  "errors": {
+    "loadFailed": "Failed to load report history. Please try again."
+  }
+},
+
   "auth": {
     "login": {
       "title": "Welcome back",
@@ -863,6 +1065,14 @@
     "platformOverview": "Platform overview",
     "pageTitle": "Dashboard | Real Estate Due Diligence Agent",
     "refreshed": "Dashboard updated",
+  
+    "quickLinks": {
+    "reportHistory": "Report History",
+    "reportHistoryDescription": "View and manage previously generated reports.",
+    "auditLogs": "Audit Logs",
+    "auditLogsDescription": "Track and review system activity and user actions."
+  },
+
     "stats": {
       "totalProperties": "Total properties",
       "verified": "Verified",
