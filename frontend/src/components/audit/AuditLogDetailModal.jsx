@@ -228,11 +228,11 @@ const AuditLogDetailModal = ({
 
   return (
     <div
-      className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4"
+      className="fixed inset-x-0 top-20 bottom-0 z-[100] flex items-center justify-center bg-black/50 p-4"
       onClick={onClose}
     >
       <div
-        className="max-h-[90vh] w-full max-w-3xl overflow-y-auto rounded-xl bg-white shadow-xl dark:bg-[#161b22]"
+        className="max-h-[calc(100vh-7rem)] w-full max-w-3xl overflow-y-auto rounded-xl bg-white shadow-xl dark:bg-[#161b22]"
         onClick={(event) => event.stopPropagation()}
       >
         {/* =========================================================

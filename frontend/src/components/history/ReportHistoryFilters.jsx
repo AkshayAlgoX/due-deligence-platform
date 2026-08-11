@@ -1,7 +1,8 @@
 "use client";
 
-import { Search, RotateCcw } from "lucide-react";
+import { Search, RotateCcw, ChevronDown, Check } from "lucide-react";
 import { useTranslation } from "react-i18next";
+import { useEffect, useRef, useState } from "react";
 
 const RISK_TRANSLATIONS = {
   en: {
@@ -138,6 +139,50 @@ export default function ReportHistoryFilters({
     });
   };
 
+  // =========================================================
+  // RISK LEVEL DROPDOWN UI
+  // =========================================================
+  const [riskDropdownOpen, setRiskDropdownOpen] = useState(false);
+  const riskDropdownRef = useRef(null);
+
+  const riskOptions = [
+    "ALL",
+    "LOW",
+    "MEDIUM",
+    "HIGH",
+    "CRITICAL",
+  ];
+
+  const selectedRisk = filters?.riskLevel || "ALL";
+
+  const handleCustomRiskChange = (value) => {
+    onChange({
+      riskLevel: value,
+    });
+
+    setRiskDropdownOpen(false);
+  };
+
+  useEffect(() => {
+    const handleOutsideClick = (event) => {
+      if (
+        riskDropdownRef.current &&
+        !riskDropdownRef.current.contains(event.target)
+      ) {
+        setRiskDropdownOpen(false);
+      }
+    };
+
+    document.addEventListener("mousedown", handleOutsideClick);
+
+    return () => {
+      document.removeEventListener(
+        "mousedown",
+        handleOutsideClick
+      );
+    };
+  }, []);
+
   return (
     <div className="rounded-xl border border-gray-200 bg-white p-5 dark:border-[#30363d] dark:bg-[#161b22]">
       <div className="grid grid-cols-1 gap-4 md:grid-cols-6">
@@ -202,51 +247,148 @@ export default function ReportHistoryFilters({
             })}
           </label>
 
-          <select
-            value={filters?.riskLevel || "ALL"}
-            onChange={handleRiskChange}
-            className="
-              h-11
-              w-full
-              rounded-lg
-              border
-              border-gray-200
-              bg-white
-              px-3
-              text-sm
-              text-gray-900
-              outline-none
-              transition
-              focus:border-gray-400
-              focus:ring-2
-              focus:ring-gray-900/10
-              dark:border-[#30363d]
-              dark:bg-[#0d1117]
-              dark:text-[#e6edf3]
-              dark:focus:border-[#484f58]
-              dark:focus:ring-white/10
-            "
+          {/* =================================================
+              CUSTOM RISK LEVEL DROPDOWN
+          ================================================= */}
+          <div
+            ref={riskDropdownRef}
+            className="relative"
           >
-            <option value="ALL">
-              {getRiskLabel("all")}
-            </option>
+            {/* Selected value */}
+            <button
+              type="button"
+              onClick={() =>
+                setRiskDropdownOpen(
+                  !riskDropdownOpen
+                )
+              }
+              className="
+                flex
+                h-11
+                w-full
+                items-center
+                justify-between
+                rounded-lg
+                border
+                border-gray-200
+                bg-white
+                px-3
+                text-left
+                text-sm
+                text-gray-900
+                outline-none
+                transition-all
+                duration-200
+                hover:border-gray-300
+                focus:border-green-500
+                focus:ring-2
+                focus:ring-green-500/20
+                dark:border-[#30363d]
+                dark:bg-[#0d1117]
+                dark:text-[#e6edf3]
+                dark:hover:border-[#484f58]
+                dark:focus:border-green-500
+              "
+              aria-haspopup="listbox"
+              aria-expanded={riskDropdownOpen}
+            >
+              <span>
+                {getRiskLabel(
+                  selectedRisk === "ALL"
+                    ? "all"
+                    : selectedRisk
+                )}
+              </span>
 
-            <option value="LOW">
-              {getRiskLabel("LOW")}
-            </option>
+              <ChevronDown
+                className={`h-4 w-4 text-gray-500 transition-transform duration-200 dark:text-[#8b949e] ${
+                  riskDropdownOpen
+                    ? "rotate-180"
+                    : ""
+                }`}
+              />
+            </button>
 
-            <option value="MEDIUM">
-              {getRiskLabel("MEDIUM")}
-            </option>
+            {/* Dropdown options */}
+            {riskDropdownOpen && (
+              <div
+                className="
+                  absolute
+                  left-0
+                  right-0
+                  z-50
+                  mt-2
+                  overflow-hidden
+                  rounded-lg
+                  border
+                  border-gray-200
+                  bg-white
+                  p-1
+                  shadow-lg
+                  ring-1
+                  ring-black/5
+                  dark:border-[#30363d]
+                  dark:bg-[#161b22]
+                  dark:ring-white/5
+                "
+                role="listbox"
+              >
+                {riskOptions.map((risk) => {
+                  const labelKey =
+                    risk === "ALL"
+                      ? "all"
+                      : risk;
 
-            <option value="HIGH">
-              {getRiskLabel("HIGH")}
-            </option>
+                  const isSelected =
+                    selectedRisk === risk;
 
-            <option value="CRITICAL">
-              {getRiskLabel("CRITICAL")}
-            </option>
-          </select>
+                  return (
+                    <button
+                      key={risk}
+                      type="button"
+                      onClick={() =>
+                        handleCustomRiskChange(
+                          risk
+                        )
+                      }
+                      className={`
+                        flex
+                        w-full
+                        items-center
+                        justify-between
+                        rounded-md
+                        px-3
+                        py-2.5
+                        text-left
+                        text-sm
+                        transition-colors
+                        ${
+                          isSelected
+                            ? "bg-green-50 font-medium text-green-700 dark:bg-green-500/10 dark:text-green-400"
+                            : "text-gray-700 hover:bg-gray-50 dark:text-[#c9d1d9] dark:hover:bg-[#21262d]"
+                        }
+                      `}
+                      role="option"
+                      aria-selected={
+                        isSelected
+                      }
+                    >
+                      <span>
+                        {getRiskLabel(labelKey)}
+                      </span>
+
+                      {isSelected && (
+                        <Check
+                          className="h-4 w-4 text-green-600 dark:text-green-400"
+                          strokeWidth={2.5}
+                        />
+                      )}
+                    </button>
+                  );
+                })}
+              </div>
+            )}
+          </div>
         </div>
 
         {/* Date */}
