@@ -1,7 +1,8 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { X, Mail, Shield, Calendar, Clock, CheckCircle2, FileText } from "lucide-react";
+import { X, Mail, Calendar } from "lucide-react";
+import { useTranslation } from "react-i18next";
 import { Skeleton } from "@/components/ui/Skeleton";
 import { Badge } from "@/components/ui/badge";
 import { toast } from "sonner";
@@ -22,6 +23,7 @@ function formatDateTime(value) {
 }
 
 export default function UserDetailModal({ userId, isOpen, onClose }) {
+  const { t } = useTranslation();
   const [loading, setLoading] = useState(true);
   const [detail, setDetail] = useState(null);
 
@@ -35,7 +37,7 @@ export default function UserDetailModal({ userId, isOpen, onClose }) {
         if (!cancelled) setDetail(data);
       } catch {
         if (!cancelled) {
-          toast.error("Failed to load user details.");
+          toast.error(t("nav.admin.userManagement.failedToLoad"));
           onClose();
         }
       } finally {
@@ -43,7 +45,7 @@ export default function UserDetailModal({ userId, isOpen, onClose }) {
       }
     })();
     return () => { cancelled = true; };
-  }, [isOpen, userId]);
+  }, [isOpen, userId, t]);
 
   useEffect(() => {
     if (!isOpen) return;
@@ -65,9 +67,11 @@ export default function UserDetailModal({ userId, isOpen, onClose }) {
       >
         <div className="flex items-start justify-between p-6 border-b border-gray-100 dark:border-[#30363d]">
           <div>
-            <h3 className="text-lg font-bold text-gray-900 dark:text-[#e6edf3]">User Details</h3>
+            <h3 className="text-lg font-bold text-gray-900 dark:text-[#e6edf3]">
+              {t("nav.admin.userDetail.title")}
+            </h3>
             <p className="mt-0.5 text-xs text-gray-400 dark:text-[#7d8590]">
-              Account information and activity
+              {t("nav.admin.userDetail.subtitle")}
             </p>
           </div>
           <button onClick={onClose} className="text-gray-400 hover:text-gray-600 dark:hover:text-[#e6edf3] transition">
@@ -91,19 +95,27 @@ export default function UserDetailModal({ userId, isOpen, onClose }) {
                 </h4>
                 <div className="mt-1 flex items-center gap-2">
                   <Badge variant={detail?.isBanned ? "destructive" : detail?.isActive ? "default" : "secondary"}>
-                    {detail?.isBanned ? "Banned" : detail?.isActive ? "Active" : "Inactive"}
+                    {detail?.isBanned
+                      ? t("nav.admin.userManagement.banned")
+                      : detail?.isActive
+                        ? t("nav.admin.userManagement.active")
+                        : t("nav.admin.userManagement.inactive")}
                   </Badge>
                   <Badge variant="outline">{detail?.role || "—"}</Badge>
                 </div>
               </div>
 
               <div className="grid grid-cols-1 gap-3 text-sm">
-                <DetailRow icon={<Mail size={16} />} label="Email" value={detail?.email || "—"} />
-                <DetailRow icon={<Shield size={16} />} label="Verified" value={detail?.isVerified ? "Yes" : detail?.isVerified === false ? "No" : "—"} />
-                <DetailRow icon={<Calendar size={16} />} label="Joined" value={formatDate(detail?.createdAt)} />
-                <DetailRow icon={<Clock size={16} />} label="Last login" value={formatDateTime(detail?.lastLoginAt)} />
-                <DetailRow icon={<FileText size={16} />} label="Reports created" value={detail?.reportsCount ?? "—"} />
-                <DetailRow icon={<CheckCircle2 size={16} />} label="Properties viewed" value={detail?.propertiesViewedCount ?? "—"} />
+                <DetailRow
+                  icon={<Mail size={16} />}
+                  label={t("nav.admin.userDetail.email")}
+                  value={detail?.email || "—"}
+                />
+                <DetailRow
+                  icon={<Calendar size={16} />}
+                  label={t("nav.admin.userDetail.joined")}
+                  value={formatDate(detail?.createdAt)}
+                />
               </div>
             </>
           )}
@@ -114,7 +126,7 @@ export default function UserDetailModal({ userId, isOpen, onClose }) {
             onClick={onClose}
             className="rounded-xl border border-gray-200 dark:border-[#30363d] bg-white dark:bg-[#161b22] px-4 py-2 text-sm font-bold text-gray-700 dark:text-[#e6edf3] transition hover:bg-gray-50 dark:hover:bg-[#1c2128]"
           >
-            Close
+            {t("nav.admin.userDetail.close")}
           </button>
         </div>
       </div>

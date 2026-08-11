@@ -2,7 +2,9 @@ package com.realestate.duediligence.service.impl;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.EnumMap;
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -13,7 +15,10 @@ import com.realestate.duediligence.dto.MonthlyTrendDto;
 import com.realestate.duediligence.dto.RiskDistributionDto;
 import com.realestate.duediligence.dto.UserActivityDto;
 import com.realestate.duediligence.dto.UserManagementDto;
+import com.realestate.duediligence.enums.RiskLevel;
+import com.realestate.duediligence.repository.DueDiligenceReportRepository;
 import com.realestate.duediligence.repository.PropertyRepository;
+import com.realestate.duediligence.repository.RiskAssessmentRepository;
 import com.realestate.duediligence.repository.UserRepository;
 import com.realestate.duediligence.service.AdminAnalyticsService;
 
@@ -23,14 +28,20 @@ public class AdminAnalyticsServiceImpl implements AdminAnalyticsService {
     private final UserRepository userRepository;
     private final PropertyRepository propertyRepository;
     private final com.realestate.duediligence.repository.RoleRepository roleRepository;
+    private final RiskAssessmentRepository riskAssessmentRepository;
+    private final DueDiligenceReportRepository reportRepository;
 
     @Autowired
     public AdminAnalyticsServiceImpl(UserRepository userRepository,
             PropertyRepository propertyRepository,
-            com.realestate.duediligence.repository.RoleRepository roleRepository) {
+            com.realestate.duediligence.repository.RoleRepository roleRepository,
+            RiskAssessmentRepository riskAssessmentRepository,
+            DueDiligenceReportRepository reportRepository) {
         this.userRepository = userRepository;
         this.propertyRepository = propertyRepository;
         this.roleRepository = roleRepository;
+        this.riskAssessmentRepository = riskAssessmentRepository;
+        this.reportRepository = reportRepository;
     }
 
     @Override
@@ -116,8 +127,12 @@ public class AdminAnalyticsServiceImpl implements AdminAnalyticsService {
         long newPropsPreviousPeriod = propertyRepository.countByCreatedAtBetween(previousPeriodStart, periodStart);
         double propertyTrendPercent = calculateTrendPercent(newPropsPreviousPeriod, newPropsThisPeriod);
 
-        long reportsThisMonth = 0;
-        double avgRiskScore = 0.0;
+        // Reports created in the current period window
+        long reportsThisMonth = reportRepository.countByCreatedAtBetween(periodStart, LocalDateTime.now());
+
+        // Average overall risk score across all currently-active assessments
+        Double avgRaw = riskAssessmentRepository.avgOverallScore();
+        double avgRiskScore = (avgRaw != null) ? avgRaw : 0.0;
 
         return new DashboardStatsDto(
                 totalUsers,
@@ -151,16 +166,47 @@ public class AdminAnalyticsServiceImpl implements AdminAnalyticsService {
 
     @Override
     public List<RiskDistributionDto> getRiskDistribution(int periodDays) {
+        // Seed all 4 levels with 0 so the response always has all 4 entries
+        Map<RiskLevel, Long> counts = new EnumMap<>(RiskLevel.class);
+        for (RiskLevel level : RiskLevel.values()) {
+            counts.put(level, 0L);
+        }
+
+        // countByLevelGrouped() queries only the currently-active (is_latest=true) assessments
+        List<Object[]> rows = riskAssessmentRepository.countByLevelGrouped();
+        for (Object[] row : rows) {
+            RiskLevel level = (RiskLevel) row[0];
+            long count = ((Number) row[1]).longValue();
+            counts.put(level, count);
+        }
+
         return List.of(
-                new RiskDistributionDto("LOW", 0),
-                new RiskDistributionDto("MEDIUM", 0),
-                new RiskDistributionDto("HIGH", 0),
-                new RiskDistributionDto("CRITICAL", 0));
+                new RiskDistributionDto(RiskLevel.LOW.name(),      counts.get(RiskLevel.LOW)),
+                new RiskDistributionDto(RiskLevel.MEDIUM.name(),   counts.get(RiskLevel.MEDIUM)),
+                new RiskDistributionDto(RiskLevel.HIGH.name(),     counts.get(RiskLevel.HIGH)),
+                new RiskDistributionDto(RiskLevel.CRITICAL.name(), counts.get(RiskLevel.CRITICAL)));
     }
 
     @Override
     public List<MonthlyTrendDto> getReportsTrend(int periodDays, String granularity) {
-        return List.of();
+        LocalDateTime end   = LocalDateTime.now();
+        LocalDateTime start = end.minusDays(periodDays);
+
+        List<Object[]> rows;
+        if ("weekly".equalsIgnoreCase(granularity)) {
+            rows = reportRepository.countWeeklyBetween(start, end);
+        } else {
+            // default: daily
+            rows = reportRepository.countDailyBetween(start, end);
+        }
+
+        List<MonthlyTrendDto> result = new ArrayList<>();
+        for (Object[] row : rows) {
+            String dateLabel = (String) row[0];
+            long count = ((Number) row[1]).longValue();
+            result.add(new MonthlyTrendDto(dateLabel, count));
+        }
+        return result;
     }
 
     @Override

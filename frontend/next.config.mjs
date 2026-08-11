@@ -1,12 +1,8 @@
+/** @type {import('next').NextConfig} */
 const nextConfig = {
   turbopack: {
-  root: process.cwd(),
-},
-
-  /**
-   * Proxy all /api/** requests to the Spring Boot backend.
-   ...
-   */
+    root: import.meta.dirname, // pins the root to this file's folder (frontend/), ignoring the stray lockfile
+  },
   async rewrites() {
     return [
       {

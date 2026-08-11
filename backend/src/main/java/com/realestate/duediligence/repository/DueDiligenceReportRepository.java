@@ -1,5 +1,6 @@
 package com.realestate.duediligence.repository;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
@@ -40,4 +41,37 @@ public interface DueDiligenceReportRepository extends JpaRepository<DueDiligence
 
     /** Admin: all reports paginated. */
     Page<DueDiligenceReport> findAllByOrderByCreatedAtDesc(Pageable pageable);
+
+    // ── Admin analytics ──────────────────────────────────────────────────────
+
+    /** Count of reports created within a date window (for stats / trend). */
+    long countByCreatedAtBetween(LocalDateTime start, LocalDateTime end);
+
+    /**
+     * Daily report counts within a window.
+     * Returns Object[]{ dateLabel (String yyyy-MM-dd), count (Long) }.
+     */
+    @Query(value =
+        "SELECT TO_CHAR(created_at, 'YYYY-MM-DD') AS day, COUNT(*) " +
+        "FROM due_diligence_reports " +
+        "WHERE created_at >= :start AND created_at < :end " +
+        "GROUP BY day ORDER BY day",
+        nativeQuery = true)
+    List<Object[]> countDailyBetween(
+        @Param("start") LocalDateTime start,
+        @Param("end")   LocalDateTime end);
+
+    /**
+     * Weekly report counts within a window.
+     * Returns Object[]{ weekLabel (String yyyy-'W'ww), count (Long) }.
+     */
+    @Query(value =
+        "SELECT TO_CHAR(created_at, 'IYYY-\"W\"IW') AS week, COUNT(*) " +
+        "FROM due_diligence_reports " +
+        "WHERE created_at >= :start AND created_at < :end " +
+        "GROUP BY week ORDER BY week",
+        nativeQuery = true)
+    List<Object[]> countWeeklyBetween(
+        @Param("start") LocalDateTime start,
+        @Param("end")   LocalDateTime end);
 }

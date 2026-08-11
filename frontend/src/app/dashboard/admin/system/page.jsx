@@ -1,5 +1,6 @@
 "use client";
 
+import { useTranslation } from "react-i18next";
 import { useState, useEffect, useCallback } from "react";
 import { Database, Server, Clock, RefreshCw } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -26,7 +27,9 @@ function StatusPill({ status }) {
           : "bg-red-50 text-red-700 dark:bg-red-950/40 dark:text-red-400"
       }`}
     >
-      <span className={`h-1.5 w-1.5 rounded-full ${up ? "bg-green-500" : "bg-red-500"}`} />
+      <span
+        className={`h-1.5 w-1.5 rounded-full ${up ? "bg-green-500" : "bg-red-500"}`}
+      />
       {status ?? "UNKNOWN"}
     </span>
   );
@@ -39,7 +42,9 @@ function HealthCard({ icon: Icon, title, children }) {
         <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-green-50 dark:bg-green-950/30">
           <Icon size={18} className="text-green-600 dark:text-green-400" />
         </div>
-        <h3 className="text-sm font-semibold text-gray-800 dark:text-[#e6edf3]">{title}</h3>
+        <h3 className="text-sm font-semibold text-gray-800 dark:text-[#e6edf3]">
+          {title}
+        </h3>
       </div>
       {children}
     </div>
@@ -47,6 +52,7 @@ function HealthCard({ icon: Icon, title, children }) {
 }
 
 export default function AdminSystemPage() {
+  const { t } = useTranslation();
   const [loading, setLoading] = useState(true);
   const [health, setHealth] = useState(null);
 
@@ -56,11 +62,11 @@ export default function AdminSystemPage() {
       const h = await getSystemHealth();
       setHealth(h);
     } catch {
-      toast.error("Failed to load system health.");
+      toast.error(t("nav.admin.activeUsersFailed"));
     } finally {
       setLoading(false);
     }
-  }, []);
+  }, [t]);
 
   useEffect(() => {
     fetchHealth();
@@ -70,32 +76,44 @@ export default function AdminSystemPage() {
     <div className="space-y-6 p-6">
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-xl font-bold text-gray-900 dark:text-[#e6edf3]">System Health</h1>
+          <h1 className="text-xl font-bold text-gray-900 dark:text-[#e6edf3]">
+            {t("nav.admin.systemHealthTitle")}
+          </h1>
           <p className="mt-1 text-sm text-gray-400 dark:text-[#7d8590]">
-            Live status of the API and database
+            {t("nav.admin.systemHealthSubtitle")}
           </p>
         </div>
-        <Button size="sm" variant="outline" onClick={fetchHealth} disabled={loading}>
-          <RefreshCw size={14} className={`mr-1.5 ${loading ? "animate-spin" : ""}`} />
-          Refresh
+        <Button
+          size="sm"
+          variant="outline"
+          onClick={fetchHealth}
+          disabled={loading}
+        >
+          <RefreshCw
+            size={14}
+            className={`mr-1.5 ${loading ? "animate-spin" : ""}`}
+          />
+          {t("nav.admin.refresh")}
         </Button>
       </div>
 
       {loading ? (
         <div className="grid grid-cols-1 gap-4 sm:grid-cols-3">
-          {[0, 1, 2].map((i) => <Skeleton key={i} className="h-32 w-full" />)}
+          {[0, 1, 2].map((i) => (
+            <Skeleton key={i} className="h-32 w-full" />
+          ))}
         </div>
       ) : (
         <div className="grid grid-cols-1 gap-4 sm:grid-cols-3">
-          <HealthCard icon={Server} title="API Status">
+          <HealthCard icon={Server} title={t("nav.admin.apiStatus")}>
             <StatusPill status={health?.apiStatus} />
           </HealthCard>
 
-          <HealthCard icon={Database} title="Database Status">
+          <HealthCard icon={Database} title={t("nav.admin.databaseStatus")}>
             <StatusPill status={health?.dbStatus} />
           </HealthCard>
 
-          <HealthCard icon={Clock} title="Uptime">
+          <HealthCard icon={Clock} title={t("nav.admin.uptime")}>
             <p className="text-lg font-bold text-gray-900 dark:text-[#e6edf3]">
               {formatUptime(health?.uptimeSeconds ?? 0)}
             </p>

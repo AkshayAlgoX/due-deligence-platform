@@ -61,9 +61,10 @@ export const getTopCities = async (limit = 10) => {
   const { data } = await api.get(API_ROUTES.ADMIN_DASHBOARD_TOP_CITIES, {
     params: { limit },
   });
+
   return (data ?? []).map((d) => ({
     city: d.city ?? "",
-    count: d.count ?? 0,
+    count: d.propertyCount ?? 0,
   }));
 };
 
@@ -76,15 +77,25 @@ export const getUserActivityHeatmap = async () => {
 /** Currently active user count. */
 export const getActiveUsers = async () => {
   const { data } = await api.get(API_ROUTES.ADMIN_DASHBOARD_ACTIVE_USERS);
-  return data?.activeUsers ?? 0;
+  return data?.activeUsers ?? data ?? 0;
 };
 
 /** Export dashboard analytics (returns a file blob — for direct download). */
-export const exportDashboardAnalytics = async (format = "excel") => {
-  const response = await api.get(API_ROUTES.ADMIN_DASHBOARD_EXPORT, {
-    params: { format },
-    responseType: "blob",
-  });
+export const exportDashboardAnalytics = async (
+  format = "excel",
+  language = "en"
+) => {
+  const response = await api.get(
+    API_ROUTES.ADMIN_DASHBOARD_EXPORT,
+    {
+      params: {
+        format,
+        language,
+      },
+      responseType: "blob",
+    }
+  );
+
   return response.data;
 };
 

@@ -1,7 +1,10 @@
 package com.realestate.duediligence.controller;
 
 import java.util.List;
-
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
+import com.realestate.duediligence.service.AdminExportService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -20,16 +23,57 @@ import com.realestate.duediligence.service.AdminAnalyticsService;
 public class AdminDashboardController {
 
     private final AdminAnalyticsService adminAnalyticsService;
+    private final AdminExportService adminExportService;
 
     @Autowired
-    public AdminDashboardController(AdminAnalyticsService adminAnalyticsService) {
+    public AdminDashboardController(
+            AdminAnalyticsService adminAnalyticsService,
+            AdminExportService adminExportService) {
+
         this.adminAnalyticsService = adminAnalyticsService;
+        this.adminExportService = adminExportService;
     }
 
     @GetMapping("/stats")
     public DashboardStatsDto getStats(@RequestParam(defaultValue = "30d") String period) {
         int days = parsePeriodToDays(period);
         return adminAnalyticsService.getStats(days);
+    }
+
+    @GetMapping("/export")
+    public ResponseEntity<byte[]> exportDashboard(
+            @RequestParam(defaultValue = "excel") String format,
+            @RequestParam(defaultValue = "30d") String period,
+            @RequestParam(defaultValue = "en") String language) {
+
+        int days = parsePeriodToDays(period);
+
+        byte[] fileBytes = adminExportService.exportDashboard(
+                format,
+                days,
+                language);
+
+        String filename;
+        MediaType mediaType;
+
+        if ("pdf".equalsIgnoreCase(format)) {
+            filename = "admin-analytics.pdf";
+            mediaType = MediaType.APPLICATION_PDF;
+        } else if ("csv".equalsIgnoreCase(format)) {
+            filename = "admin-analytics.csv";
+            mediaType = MediaType.parseMediaType("text/csv");
+        } else {
+            filename = "admin-analytics.xlsx";
+            mediaType = MediaType.parseMediaType(
+                    "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet");
+        }
+
+        return ResponseEntity.ok()
+                .contentType(mediaType)
+                .header(
+                        HttpHeaders.CONTENT_DISPOSITION,
+                        "attachment; filename=\"" + filename + "\"")
+                .body(fileBytes);
     }
 
     @GetMapping("/risk-distribution")

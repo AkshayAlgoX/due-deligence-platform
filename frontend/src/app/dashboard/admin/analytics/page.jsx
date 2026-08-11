@@ -1,6 +1,6 @@
 "use client";
+import { useTranslation } from "react-i18next";
 import DateRangePicker from "@/components/admin/DateRangePicker";
-
 import { useState, useEffect, useCallback } from "react";
 import {
   ResponsiveContainer,
@@ -16,7 +16,6 @@ import {
   CartesianGrid,
   Tooltip,
 } from "recharts";
-import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/Skeleton";
 import { toast } from "sonner";
 import {
@@ -33,19 +32,17 @@ const RISK_COLORS = {
   CRITICAL: "#991B1B",
 };
 
-const PERIODS = [
-  { label: "7d", value: "7d" },
-  { label: "30d", value: "30d" },
-  { label: "90d", value: "90d" },
-];
-
 function useDarkMode() {
   const [isDark, setIsDark] = useState(false);
   useEffect(() => {
-    const check = () => setIsDark(document.documentElement.classList.contains("dark"));
+    const check = () =>
+      setIsDark(document.documentElement.classList.contains("dark"));
     check();
     const observer = new MutationObserver(check);
-    observer.observe(document.documentElement, { attributes: true, attributeFilter: ["class"] });
+    observer.observe(document.documentElement, {
+      attributes: true,
+      attributeFilter: ["class"],
+    });
     return () => observer.disconnect();
   }, []);
   return isDark;
@@ -54,9 +51,13 @@ function useDarkMode() {
 function ChartCardShell({ title, subtitle, children }) {
   return (
     <div className="overflow-hidden rounded-2xl border border-gray-100 dark:border-[#30363d] bg-white dark:bg-[#161b22] shadow-[0_20px_60px_rgba(0,0,0,0.06)] p-6">
-      <h3 className="text-sm font-semibold text-gray-800 dark:text-[#e6edf3]">{title}</h3>
+      <h3 className="text-sm font-semibold text-gray-800 dark:text-[#e6edf3]">
+        {title}
+      </h3>
       {subtitle && (
-        <p className="mt-0.5 mb-4 text-xs text-gray-400 dark:text-[#7d8590]">{subtitle}</p>
+        <p className="mt-0.5 mb-4 text-xs text-gray-400 dark:text-[#7d8590]">
+          {subtitle}
+        </p>
       )}
       {children}
     </div>
@@ -64,6 +65,7 @@ function ChartCardShell({ title, subtitle, children }) {
 }
 
 export default function AdminAnalyticsPage() {
+  const { t } = useTranslation();
   const isDark = useDarkMode();
   const gridStroke = isDark ? "#30363d" : "#f3f4f6";
   const axisTickFill = isDark ? "#7d8590" : "#9ca3af";
@@ -77,32 +79,53 @@ export default function AdminAnalyticsPage() {
   const fetchAll = useCallback(async () => {
     setLoading(true);
     try {
-      const [r, t, c] = await Promise.all([
+      const [r, tr, c] = await Promise.all([
         getRiskDistribution(period),
         getReportsTrend(period, "daily"),
         getTopCities(10),
       ]);
-      setRiskData(r.map((d) => ({ name: d.level, value: d.count, color: RISK_COLORS[d.level] ?? "#9CA3AF" })));
-      setTrendData(t.map((d) => ({ label: d.date, reports: d.count })));
+      setRiskData(
+        r.map((d) => ({
+          name: d.level,
+          value: d.count,
+          color: RISK_COLORS[d.level] ?? "#9CA3AF",
+        }))
+      );
+      setTrendData(tr.map((d) => ({ label: d.date, reports: d.count })));
       setTopCities(c.map((d) => ({ city: d.city, count: d.count })));
     } catch {
-      toast.error("Failed to load analytics data.");
+      toast.error(t("nav.admin.activeUsersFailed"));
     } finally {
       setLoading(false);
     }
-  }, [period]);
+  }, [period, t]);
 
   useEffect(() => {
     fetchAll();
   }, [fetchAll]);
 
+  const tooltipStyle = {
+    contentStyle: {
+      backgroundColor: isDark ? "#161b22" : "#ffffff",
+      border: `1px solid ${isDark ? "#30363d" : "#e5e7eb"}`,
+      borderRadius: 8,
+      fontSize: 12,
+    },
+    labelStyle: { color: isDark ? "#e6edf3" : "#111827" },
+    cursor: {
+      fill: isDark ? "rgba(255,255,255,0.04)" : "rgba(0,0,0,0.04)",
+    },
+  };
+
   return (
     <div className="space-y-6 p-6">
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-xl font-bold text-gray-900 dark:text-[#e6edf3]">Analytics</h1>
+          <h1 className="text-xl font-bold text-gray-900 dark:text-[#e6edf3]">
+            {t("nav.admin.analytics")}
+          </h1>
           <p className="mt-1 text-sm text-gray-400 dark:text-[#7d8590]">
-            Platform trends, risk breakdown, and geographic activity
+            {t("nav.admin.analyticsSubtitle")}
           </p>
         </div>
         <DateRangePicker value={period} onChange={setPeriod} />
@@ -110,73 +133,117 @@ export default function AdminAnalyticsPage() {
 
       {loading ? (
         <div className="grid grid-cols-1 gap-4 lg:grid-cols-2">
-          {[0, 1, 2].map((i) => <Skeleton key={i} className="h-64 w-full" />)}
+          {[0, 1, 2].map((i) => (
+            <Skeleton key={i} className="h-64 w-full" />
+          ))}
         </div>
       ) : (
         <div className="grid grid-cols-1 gap-4 lg:grid-cols-2">
-          <ChartCardShell title="Reports Trend" subtitle={`Last ${period}`}>
+          <ChartCardShell
+            title={t("nav.admin.reportsTrend")}
+            subtitle={`${t("nav.admin.reportsTrendSubtitle")} — ${period}`}
+          >
             <ResponsiveContainer width="100%" height={240}>
-              <AreaChart data={trendData} margin={{ top: 4, right: 4, left: 0, bottom: 0 }}>
+              <AreaChart
+                data={trendData}
+                margin={{ top: 4, right: 4, left: 0, bottom: 0 }}
+              >
                 <defs>
-                  <linearGradient id="analyticsReportsGrad" x1="0" y1="0" x2="0" y2="1">
-                    <stop offset="0%" stopColor="#22C55E" stopOpacity={isDark ? 0.35 : 0.25} />
+                  <linearGradient
+                    id="analyticsReportsGrad"
+                    x1="0"
+                    y1="0"
+                    x2="0"
+                    y2="1"
+                  >
+                    <stop
+                      offset="0%"
+                      stopColor="#22C55E"
+                      stopOpacity={isDark ? 0.35 : 0.25}
+                    />
                     <stop offset="100%" stopColor="#22C55E" stopOpacity={0} />
                   </linearGradient>
                 </defs>
-                <CartesianGrid strokeDasharray="3 3" stroke={gridStroke} vertical={false} />
-                <XAxis dataKey="label" tick={{ fontSize: 11, fill: axisTickFill }} axisLine={false} tickLine={false} />
-                <YAxis tick={{ fontSize: 10, fill: axisTickFill }} axisLine={false} tickLine={false} width={32} />
-                <Tooltip
-  contentStyle={{
-    backgroundColor: isDark ? "#161b22" : "#ffffff",
-    border: `1px solid ${isDark ? "#30363d" : "#e5e7eb"}`,
-    borderRadius: 8,
-    fontSize: 12,
-  }}
-  labelStyle={{ color: isDark ? "#e6edf3" : "#111827" }}
-  cursor={{ fill: isDark ? "rgba(255,255,255,0.04)" : "rgba(0,0,0,0.04)" }}
-/>
-                <Area type="monotone" dataKey="reports" stroke="#22C55E" strokeWidth={2.5} fill="url(#analyticsReportsGrad)" dot={false} />
+                <CartesianGrid
+                  strokeDasharray="3 3"
+                  stroke={gridStroke}
+                  vertical={false}
+                />
+                <XAxis
+                  dataKey="label"
+                  tick={{ fontSize: 11, fill: axisTickFill }}
+                  axisLine={false}
+                  tickLine={false}
+                />
+                <YAxis
+                  tick={{ fontSize: 10, fill: axisTickFill }}
+                  axisLine={false}
+                  tickLine={false}
+                  width={32}
+                />
+                <Tooltip {...tooltipStyle} />
+                <Area
+                  type="monotone"
+                  dataKey="reports"
+                  stroke="#22C55E"
+                  strokeWidth={2.5}
+                  fill="url(#analyticsReportsGrad)"
+                  dot={false}
+                />
               </AreaChart>
             </ResponsiveContainer>
           </ChartCardShell>
 
-          <ChartCardShell title="Risk Distribution" subtitle="Across all properties">
+          <ChartCardShell
+            title={t("nav.admin.riskDistribution")}
+            subtitle={t("nav.admin.riskDistributionSubtitle")}
+          >
             <ResponsiveContainer width="100%" height={240}>
               <PieChart>
-                <Pie data={riskData} dataKey="value" nameKey="name" innerRadius={60} outerRadius={90} paddingAngle={3}>
-                  {riskData.map((entry, i) => <Cell key={i} fill={entry.color} />)}
+                <Pie
+                  data={riskData}
+                  dataKey="value"
+                  nameKey="name"
+                  innerRadius={60}
+                  outerRadius={90}
+                  paddingAngle={3}
+                >
+                  {riskData.map((entry, i) => (
+                    <Cell key={i} fill={entry.color} />
+                  ))}
                 </Pie>
-                <Tooltip
-  contentStyle={{
-    backgroundColor: isDark ? "#161b22" : "#ffffff",
-    border: `1px solid ${isDark ? "#30363d" : "#e5e7eb"}`,
-    borderRadius: 8,
-    fontSize: 12,
-  }}
-  labelStyle={{ color: isDark ? "#e6edf3" : "#111827" }}
-  cursor={{ fill: isDark ? "rgba(255,255,255,0.04)" : "rgba(0,0,0,0.04)" }}
-/>
+                <Tooltip {...tooltipStyle} />
               </PieChart>
             </ResponsiveContainer>
           </ChartCardShell>
 
-          <ChartCardShell title="Top Cities" subtitle="By property count" >
+          <ChartCardShell
+            title={t("nav.admin.topCities")}
+            subtitle={t("nav.admin.topCitiesSubtitle")}
+          >
             <ResponsiveContainer width="100%" height={240}>
-              <BarChart data={topCities} margin={{ top: 4, right: 4, left: 0, bottom: 0 }}>
-                <CartesianGrid strokeDasharray="3 3" stroke={gridStroke} vertical={false} />
-                <XAxis dataKey="city" tick={{ fontSize: 11, fill: axisTickFill }} axisLine={false} tickLine={false} />
-                <YAxis tick={{ fontSize: 10, fill: axisTickFill }} axisLine={false} tickLine={false} width={32} />
-                <Tooltip
-  contentStyle={{
-    backgroundColor: isDark ? "#161b22" : "#ffffff",
-    border: `1px solid ${isDark ? "#30363d" : "#e5e7eb"}`,
-    borderRadius: 8,
-    fontSize: 12,
-  }}
-  labelStyle={{ color: isDark ? "#e6edf3" : "#111827" }}
-  cursor={{ fill: isDark ? "rgba(255,255,255,0.04)" : "rgba(0,0,0,0.04)" }}
-/>
+              <BarChart
+                data={topCities}
+                margin={{ top: 4, right: 4, left: 0, bottom: 0 }}
+              >
+                <CartesianGrid
+                  strokeDasharray="3 3"
+                  stroke={gridStroke}
+                  vertical={false}
+                />
+                <XAxis
+                  dataKey="city"
+                  tick={{ fontSize: 11, fill: axisTickFill }}
+                  axisLine={false}
+                  tickLine={false}
+                />
+                <YAxis
+                  tick={{ fontSize: 10, fill: axisTickFill }}
+                  axisLine={false}
+                  tickLine={false}
+                  width={32}
+                />
+                <Tooltip {...tooltipStyle} />
                 <Bar dataKey="count" fill="#22C55E" radius={[6, 6, 0, 0]} />
               </BarChart>
             </ResponsiveContainer>
