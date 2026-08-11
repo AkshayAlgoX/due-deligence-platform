@@ -189,6 +189,7 @@ export default function ReportHistoryFilters({
                 dark:placeholder:text-[#6e7681]
                 dark:focus:border-[#484f58]
                 dark:focus:ring-white/10
+                dark:[color-scheme:dark]
               "
             />
           </div>
@@ -225,6 +226,7 @@ export default function ReportHistoryFilters({
               dark:text-[#e6edf3]
               dark:focus:border-[#484f58]
               dark:focus:ring-white/10
+              dark:[color-scheme:dark]
             "
           >
             <option value="ALL">
@@ -281,6 +283,7 @@ export default function ReportHistoryFilters({
               dark:text-[#e6edf3]
               dark:focus:border-[#484f58]
               dark:focus:ring-white/10
+              dark:[color-scheme:dark]
             "
           />
         </div>
