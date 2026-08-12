@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { useSearchParams } from "next/navigation";
+import { useSearchParams, useRouter } from "next/navigation";
 import { useTranslation } from "react-i18next";
 import { toast } from "sonner";
 import { motion } from "framer-motion";
@@ -12,7 +12,6 @@ import {
   Plus,
   RefreshCw,
   Users,
-  ShieldAlert,
 } from "lucide-react";
 import { fadeInUp } from "@/utils/animations";
 
@@ -38,6 +37,7 @@ import PortfolioMap from "@/components/dashboard/PortfolioMap";
 export default function DashboardPage() {
   const { t } = useTranslation();
   const searchParams = useSearchParams();
+  const router = useRouter();
 
   const [stats, setStats] = useState(null);
   const [trends, setTrends] = useState(null);
@@ -46,6 +46,16 @@ export default function DashboardPage() {
   const [user, setUser] = useState(null);
   const [modalOpen, setModalOpen] = useState(false);
   const [refreshKey, setRefreshKey] = useState(0);
+
+  // ── ADMIN AUTO-REDIRECT (sync role read to prevent flash) ────────
+  const [userRole] = useState(() => {
+    if (typeof window === "undefined") return "";
+    try { const u = getUser(); return u?.role ?? ""; } catch { return ""; }
+  });
+
+  useEffect(() => {
+    if (userRole === "ADMIN") { router.replace("/dashboard/admin"); }
+  }, [userRole, router]);
 
   // ── Unauthorized redirect toast ──────────────────────────────────
   useEffect(() => {
@@ -117,40 +127,17 @@ export default function DashboardPage() {
 
   const firstName =
     user?.fullName?.split(" ")[0] ?? user?.email?.split("@")[0] ?? "";
-  const isAdmin = user?.role === "ADMIN";
-  const subtitle = isAdmin
-    ? t("dashboard.platformOverview")
-    : t("dashboard.subtitle");
+  const subtitle = t("dashboard.subtitle");
 
   const isEmpty = stats && stats.totalProperties === 0;
 
+  // Guard: redirect admin to /dashboard/admin, show nothing until role known
+  if (!userRole || userRole === "ADMIN") {
+    return null;
+  }
+
   return (
     <div className="mx-auto w-full max-w-[1400px] space-y-8">
-
-      {/* ── ADMIN MODE BANNER ───────────────────────────────────────── */}
-      {isAdmin && (
-        <div className="flex items-center gap-3 rounded-2xl border border-amber-200 dark:border-amber-800/60 bg-gradient-to-r from-amber-50 to-orange-50 dark:from-[#1f1a0e] dark:to-[#1c1608] px-5 py-3.5 shadow-sm">
-          <div className="flex h-8 w-8 flex-shrink-0 items-center justify-center rounded-xl bg-amber-500/15 dark:bg-amber-500/20">
-            <ShieldAlert
-              className="h-4 w-4 text-amber-600 dark:text-amber-400"
-              strokeWidth={2.5}
-            />
-          </div>
-          <div className="flex-1 min-w-0">
-            <p className="text-sm font-bold text-amber-800 dark:text-amber-300">
-              {t("dashboard.adminBanner.title")}
-            </p>
-            <p className="text-xs text-amber-700/70 dark:text-amber-400/70 leading-relaxed">
-              {t("dashboard.adminBanner.description")}
-            </p>
-          </div>
-          <div className="flex-shrink-0 rounded-full bg-amber-500 px-3 py-1">
-            <span className="text-[10px] font-black uppercase tracking-widest text-white">
-              {t("dashboard.adminBanner.badge")}
-            </span>
-          </div>
-        </div>
-      )}
 
       {/* ── Header ─────────────────────────────────────────────────── */}
       <div className="flex flex-wrap items-end justify-between gap-4">
