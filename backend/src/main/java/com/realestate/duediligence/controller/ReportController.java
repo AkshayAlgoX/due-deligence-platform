@@ -69,12 +69,19 @@ public class ReportController {
                     "Returns immediately with the report shell — poll /status until COMPLETED. " +
                     "Idempotent: if a PENDING report exists for the same property within 60s, " +
                     "that report is returned instead of creating a duplicate.")
-    public ResponseEntity<DueDiligenceReportResponse> generate(
+    public ResponseEntity<?> generate(
             @Valid @RequestBody GenerateReportRequest request) {
         try {
             log.info("Report generation requested for property {}", request.getPropertyId());
             DueDiligenceReportResponse response = reportService.generate(request);
             return ResponseEntity.status(202).body(response);   // 202 Accepted (async)
+        } catch (com.realestate.duediligence.exception.PlanLimitExceededException e) {
+            // 402-style plan limit — frontend shows upgrade modal
+            log.warn("Plan limit exceeded: {}", e.getMessage());
+            return ResponseEntity.status(402).body(Map.of(
+                    "success", false,
+                    "planLimitReached", true,
+                    "message", e.getMessage()));
         } catch (RuntimeException e) {
             log.warn("Report generation failed: {}", e.getMessage());
             return ResponseEntity.notFound().build();

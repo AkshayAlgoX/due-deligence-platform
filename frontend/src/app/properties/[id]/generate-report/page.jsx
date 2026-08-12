@@ -12,6 +12,7 @@ import {
   MapPin,
   RefreshCw,
   Square,
+  AlertTriangle,
 } from "lucide-react";
 import Link from "next/link";
 import { useParams, useRouter } from "next/navigation";
@@ -37,6 +38,7 @@ export default function GenerateReportPage() {
   const [title, setTitle] = useState("");
   const [forceRecalculate, setForceRecalculate] = useState(false);
   const [modalOpen, setModalOpen] = useState(false);
+  const [planLimitReached, setPlanLimitReached] = useState(false);
 
   const {
     report,
@@ -81,8 +83,14 @@ export default function GenerateReportPage() {
         forceRecalculate,
       });
     } catch (err) {
-      // Error already captured by hook; modal will show FAILED state
-      console.error("Generate failed:", err);
+      // Plan-limit exceeded → show upgrade modal instead of the failed state
+      if (err?.response?.status === 402 || err?.response?.data?.planLimitReached) {
+        setModalOpen(false);
+        setPlanLimitReached(true);
+      } else {
+        // Error already captured by hook; modal will show FAILED state
+        console.error("Generate failed:", err);
+      }
     }
   };
 
@@ -334,6 +342,38 @@ export default function GenerateReportPage() {
         onRedirect={handleRedirect}
         onRetry={handleRetry}
       />
+
+      {/* ── Plan-limit upgrade modal ── */}
+      {planLimitReached && (
+        <div className="fixed inset-0 z-[60] flex items-center justify-center bg-black/50 p-4">
+          <div className="w-full max-w-md rounded-2xl border border-gray-100 dark:border-[#30363d] bg-white dark:bg-[#161b22] p-6 shadow-xl">
+            <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-amber-500/10 ring-1 ring-amber-500/30 mb-4">
+              <AlertTriangle className="h-6 w-6 text-amber-500" />
+            </div>
+            <h3 className="text-lg font-black text-gray-900 dark:text-[#e6edf3]">
+              Free plan limit reached
+            </h3>
+            <p className="mt-2 text-sm text-gray-500 dark:text-[#7d8590] leading-relaxed">
+              You've generated 3 reports this month on the Free plan. Upgrade to Pro for
+              unlimited reports, all export formats, and white-label PDFs.
+            </p>
+            <div className="mt-6 flex gap-3">
+              <button
+                onClick={() => setPlanLimitReached(false)}
+                className="flex-1 h-10 rounded-xl border border-gray-200 dark:border-[#30363d] text-sm font-bold text-gray-700 dark:text-[#e6edf3] hover:bg-gray-50 dark:hover:bg-[#1c2128] transition"
+              >
+                Not now
+              </button>
+              <Link
+                href="/checkout?plan=pro"
+                className="flex-1 h-10 rounded-xl bg-gradient-to-br from-[#22C55E] to-[#16a34a] text-sm font-bold text-white shadow-[0_8px_20px_rgba(34,197,94,0.3)] hover:scale-[1.02] transition flex items-center justify-center"
+              >
+                Upgrade to Pro
+              </Link>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
