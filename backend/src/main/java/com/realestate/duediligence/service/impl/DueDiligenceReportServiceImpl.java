@@ -256,10 +256,30 @@ public class DueDiligenceReportServiceImpl implements DueDiligenceReportService 
                 .orElseThrow(() -> new RuntimeException("Report not found: " + reportId));
 
         User user = requireCurrentUser();
-        if (!isAdmin(user) &&
+
+        // ── TEMPORARY DEBUG LOGGING ──────────────────────────────────
+        String roleName = (user.getRole() != null && user.getRole().getRoleName() != null)
+                ? user.getRole().getRoleName().name() : "NULL";
+        boolean admin = isAdmin(user);
+        Long ownerId = report.getGeneratedBy() != null ? report.getGeneratedBy().getId() : null;
+        String ownerEmail = report.getGeneratedBy() != null ? report.getGeneratedBy().getEmail() : "NULL";
+
+        log.info("[AUTHZ-DEBUG] reportId={} | userId={} | userEmail={} | role={} | isAdmin={} | ownerId={} | ownerEmail={} | isOwner={}",
+                reportId,
+                user.getId(),
+                user.getEmail(),
+                roleName,
+                admin,
+                ownerId,
+                ownerEmail,
+                ownerId != null && ownerId.equals(user.getId()));
+        // ── END DEBUG ────────────────────────────────────────────────
+
+        if (!admin &&
                 (report.getGeneratedBy() == null ||
                  !report.getGeneratedBy().getId().equals(user.getId()))) {
-            // Same 404 as not-found to prevent enumeration
+            log.warn("[AUTHZ-DEBUG] ACCESS DENIED: reportId={} userId={} role={} isAdmin={} ownerId={}",
+                    reportId, user.getId(), roleName, admin, ownerId);
             throw new RuntimeException("Report not found: " + reportId);
         }
         return report;

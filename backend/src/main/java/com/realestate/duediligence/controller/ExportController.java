@@ -229,10 +229,16 @@ public class ExportController {
 
     private Long getUserId(Authentication authentication) {
         if (authentication == null || authentication.getName() == null) {
+            org.slf4j.LoggerFactory.getLogger(ExportController.class)
+                .warn("[AUTHZ-DEBUG] getUserId: authentication is null or name is null → defaulting to 1");
             return 1L;
         }
         User user = userRepository.findByEmail(authentication.getName()).orElse(null);
-        return user != null ? user.getId() : 1L;
+        Long resolvedId = user != null ? user.getId() : 1L;
+        org.slf4j.LoggerFactory.getLogger(ExportController.class)
+            .info("[AUTHZ-DEBUG] getUserId: authName={} | resolvedId={} | userFound={}",
+                authentication.getName(), resolvedId, user != null);
+        return resolvedId;
     }
 
     private String formatReportFileName(DueDiligenceReportResponse report, String extension) {
