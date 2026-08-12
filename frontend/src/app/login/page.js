@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useRef, useEffect } from "react";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import Link from "next/link";
 import { toast } from "sonner";
 import { useTranslation } from "react-i18next";
@@ -31,8 +31,9 @@ import {
 
 function LoginPageInner() {
   const router = useRouter();
+  const searchParams = useSearchParams();
+  const redirectTo = searchParams.get("redirect") || "/dashboard";
   const { t } = useTranslation();
-
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
@@ -105,10 +106,10 @@ function LoginPageInner() {
         loginUser({ email: email.trim().toLowerCase(), password, rememberMe }),
         minDuration,
       ]);
-      toast.success(t("auth.login.title"), {
+           toast.success(t("auth.login.title"), {
         description: t("auth.login.redirectingToDashboard"),
       });
-      router.push("/dashboard");
+      router.push(redirectTo);
     } catch (err) {
       await minDuration;
       if (err.errors && typeof err.errors === "object") {

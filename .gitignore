@@ -1,3 +1,11 @@
 .idea/
 .vscode/
-tmp/ 
+tmp/
+
+# ── Environment files (SECRETS — never commit) ──────────────────
+.env
+.env.local
+.env.*.local
+backend/.env
+!.env.example
+!backend/.env.example

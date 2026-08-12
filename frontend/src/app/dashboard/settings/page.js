@@ -32,9 +32,27 @@ export default function SettingsPage() {
     document.title = t("settings.title") + " | Real Estate Due Diligence";
   }, [t]);
 
-  // Guard: show nothing until role is known
+    // Guard: skeleton until role is known (no blank flash)
   if (!userRole) {
-    return null;
+    return (
+      <div className="mx-auto w-full max-w-3xl space-y-8">
+        {/* Header skeleton */}
+        <div className="flex items-center gap-3">
+          <div className="h-10 w-10 rounded-xl bg-gray-100 dark:bg-[#1c2128] animate-pulse" />
+          <div className="space-y-2">
+            <div className="h-7 w-40 rounded-lg bg-gray-100 dark:bg-[#1c2128] animate-pulse" />
+            <div className="h-3.5 w-64 rounded bg-gray-100 dark:bg-[#1c2128] animate-pulse" />
+          </div>
+        </div>
+        {/* Section skeletons */}
+        {[1, 2, 3].map((i) => (
+          <div key={i} className="space-y-3">
+            <div className="h-5 w-32 rounded bg-gray-100 dark:bg-[#1c2128] animate-pulse" />
+            <div className="h-24 w-full rounded-2xl bg-gray-100 dark:bg-[#161b22] animate-pulse" />
+          </div>
+        ))}
+      </div>
+    );
   }
 
   return userRole === "ADMIN" ? <AdminSettings /> : <BuyerSettings />;

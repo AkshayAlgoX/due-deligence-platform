@@ -18,7 +18,7 @@ export default function ReportsLineChart({ data = [], isDark }) {
   const axisTickFill = isDark ? "#7d8590" : "#9ca3af";
 
   return (
-    <ResponsiveContainer width="100%" height="100%">
+    <ResponsiveContainer width="100%" height={260}>
       <AreaChart
         data={data}
         margin={{ top: 4, right: 4, left: 0, bottom: 0 }}
