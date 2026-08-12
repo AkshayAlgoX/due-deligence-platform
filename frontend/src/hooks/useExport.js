@@ -3,7 +3,7 @@
 import { useState, useCallback } from "react";
 import { toast } from "sonner";
 import { exportService } from "@/services/exportService";
-import { downloadUrl } from "@/utils/downloadUtils";
+import { downloadUrl, downloadBlob } from "@/utils/downloadUtils";
 import { EXPORT_STAGES, EXPORT_FORMATS } from "@/utils/exportConstants";
 
 export function useExport() {
@@ -108,8 +108,7 @@ export function useExport() {
         setProgressStage(EXPORT_STAGES.DOWNLOADING);
         setProgressPercent(90);
 
-        // For bulk ZIP — use blob since POST can't be triggered via iframe GET
-        const { downloadBlob } = await import("@/utils/downloadUtils");
+        // For bulk ZIP — use blob since POST can't be triggered via window.open GET
         downloadBlob(blob, "bulk_due_diligence_reports.zip");
 
         setProgressStage(EXPORT_STAGES.COMPLETED);

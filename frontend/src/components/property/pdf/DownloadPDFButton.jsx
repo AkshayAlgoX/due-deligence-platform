@@ -7,6 +7,7 @@ import { toast } from "sonner";
 import { useTranslation } from "react-i18next";
 import { getAggregatedProperty } from "@/services/aggregationService";
 import { getPropertyRisk } from "@/services/propertyService";
+import { downloadBlob } from "@/utils/downloadUtils";
 
 export default function DownloadPDFButton({ property }) {
   const { t } = useTranslation();
@@ -79,7 +80,6 @@ export default function DownloadPDFButton({ property }) {
         .toLowerCase()
         .replace(/\s+/g, "-");
 
-      const { downloadBlob } = await import("@/utils/downloadUtils");
       downloadBlob(blob, filename);
     } catch (err) {
       console.error("PDF generation failed:", err);

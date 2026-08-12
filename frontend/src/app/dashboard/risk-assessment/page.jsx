@@ -35,6 +35,7 @@ import {
 } from "recharts";
 
 import { getAllProperties, getPropertyRisk } from "@/services/propertyService";
+import { downloadBlob } from "@/utils/downloadUtils";
 
 // ─── Design tokens ────────────────────────────────────────────────────────────
 
@@ -366,7 +367,6 @@ function exportToCSV(rows, filterLevel, filterCat) {
   const ts   = new Date().toISOString().split("T")[0];
   const suffix = filterLevel !== "ALL" ? `_${filterLevel.toLowerCase()}` : "";
   const catSuffix = filterCat !== "ALL" ? `_${filterCat.toLowerCase()}` : "";
-  const { downloadBlob } = await import("@/utils/downloadUtils");
   downloadBlob(blob, `portfolio_risk${suffix}${catSuffix}_${ts}.csv`);
 }
 
