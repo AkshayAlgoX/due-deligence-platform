@@ -61,9 +61,9 @@ public class SecurityConfig {
                     org.springframework.security.web.header.writers.ReferrerPolicyHeaderWriter.ReferrerPolicy.STRICT_ORIGIN_WHEN_CROSS_ORIGIN
                 ))
                 .contentSecurityPolicy(csp -> csp.policyDirectives(
-                    "default-src 'self'; " +
-                    "img-src 'self' data: https:; " +
-                    "script-src 'self' 'unsafe-inline' https://accounts.google.com; " +
+                    "default-src 'self' blob:; " +
+                    "img-src 'self' data: blob: https:; " +
+                    "script-src 'self' 'unsafe-inline' blob: https://accounts.google.com; " +
                     "style-src 'self' 'unsafe-inline'; " +
                     "connect-src 'self' http://localhost:8080 https://accounts.google.com; " +
                     "frame-src https://accounts.google.com"

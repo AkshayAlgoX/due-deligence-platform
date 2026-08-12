@@ -45,10 +45,6 @@ export function useExport() {
 
         setProgressStage(EXPORT_STAGES.COMPLETED);
         setProgressPercent(100);
-
-        toast.success("PDF Export Ready", {
-          description: `Downloaded ${filename} successfully.`,
-        });
       } catch (error) {
         console.error("PDF export failed:", error);
         toast.error("PDF Export Failed", {
@@ -83,10 +79,6 @@ export function useExport() {
 
         setProgressStage(EXPORT_STAGES.COMPLETED);
         setProgressPercent(100);
-
-        toast.success("Excel Export Ready", {
-          description: `Downloaded ${filename} successfully.`,
-        });
       } catch (error) {
         console.error("Excel export failed:", error);
         toast.error("Excel Export Failed", {
@@ -124,10 +116,6 @@ export function useExport() {
 
         setProgressStage(EXPORT_STAGES.COMPLETED);
         setProgressPercent(100);
-
-        toast.success("Bulk Export Ready", {
-          description: `Exported ${reportIds.length} reports into ZIP archive.`,
-        });
       } catch (error) {
         console.error("Bulk export failed:", error);
         toast.error("Bulk Export Failed", {
@@ -158,9 +146,6 @@ export function useExport() {
       try {
         const blob = await exportService.downloadFromHistory(exportId);
         downloadBlob(blob, filename);
-        toast.success("Re-download Complete", {
-          description: `Downloaded ${filename}.`,
-        });
       } catch (error) {
         console.error("Re-download failed:", error);
         toast.error("Re-download Failed", {

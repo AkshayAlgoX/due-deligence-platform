@@ -69,8 +69,6 @@ export default function ExportAnalyticsButton({ defaultFormat = "excel" }) {
       document.body.removeChild(link);
 
       window.URL.revokeObjectURL(url);
-
-      toast.success(t("nav.admin.exportDownloaded"));
     } catch (error) {
       console.error("Analytics export failed:", error);
       toast.error(t("nav.admin.exportFailed"));
