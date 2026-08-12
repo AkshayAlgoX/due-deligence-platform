@@ -163,8 +163,8 @@ export default function ReportHistoryPage() {
       <div className="min-h-screen bg-white dark:bg-[#0d1117]">
         <div className="mx-auto w-full max-w-6xl px-6 py-8">
           <div className="flex items-center gap-3">
-            <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-gray-900 dark:bg-white">
-              <History className="h-5 w-5 text-white dark:text-gray-900" />
+            <div className="flex h-10 w-10 items-center justify-center rounded-xl border border-green-200 bg-green-50 dark:border-green-500/30 dark:bg-green-500/10">
+              <History className="h-5 w-5 text-green-600 dark:text-green-400" />
             </div>
 
             <div>
@@ -192,9 +192,9 @@ export default function ReportHistoryPage() {
         <div className="mb-8 flex flex-col gap-5 md:flex-row md:items-end md:justify-between">
           <div>
             <div className="mb-2 flex items-center gap-3">
-              <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-gray-900 dark:bg-white">
+              <div className="flex h-10 w-10 items-center justify-center rounded-xl border border-green-200 bg-green-50 dark:border-green-500/30 dark:bg-green-500/10">
                 <History
-                  className="h-5 w-5 text-white dark:text-gray-900"
+                  className="h-5 w-5 text-green-600 dark:text-green-400"
                   strokeWidth={2.25}
                 />
               </div>

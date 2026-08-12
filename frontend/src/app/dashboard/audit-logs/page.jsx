@@ -79,8 +79,8 @@ export default function AuditLogsPage() {
         <div className="mb-6 flex flex-col gap-4 lg:flex-row lg:items-start lg:justify-between">
           <div>
             <div className="flex items-center gap-3">
-              <div className="flex h-11 w-11 items-center justify-center rounded-xl bg-gray-900 text-white dark:bg-[#161b22]">
-                <ClipboardList className="h-6 w-6" />
+              <div className="flex h-11 w-11 items-center justify-center rounded-xl border border-green-200 bg-green-50 dark:border-green-500/30 dark:bg-green-500/10">
+                <ClipboardList className="h-6 w-6 text-green-600 dark:text-green-400" />
               </div>
 
               <h1 className="text-3xl font-black tracking-tight text-gray-900 dark:text-[#e6edf3]">
