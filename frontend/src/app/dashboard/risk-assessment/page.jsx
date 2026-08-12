@@ -363,17 +363,11 @@ function exportToCSV(rows, filterLevel, filterCat) {
 
   const csv = [headers.join(","), ...csvRows].join("\n");
   const blob = new Blob([csv], { type: "text/csv;charset=utf-8;" });
-  const url  = URL.createObjectURL(blob);
-  const a    = document.createElement("a");
   const ts   = new Date().toISOString().split("T")[0];
   const suffix = filterLevel !== "ALL" ? `_${filterLevel.toLowerCase()}` : "";
   const catSuffix = filterCat !== "ALL" ? `_${filterCat.toLowerCase()}` : "";
-  a.href = url;
-  a.download = `portfolio_risk${suffix}${catSuffix}_${ts}.csv`;
-  document.body.appendChild(a);
-  a.click();
-  document.body.removeChild(a);
-  URL.revokeObjectURL(url);
+  const { downloadBlob } = await import("@/utils/downloadUtils");
+  downloadBlob(blob, `portfolio_risk${suffix}${catSuffix}_${ts}.csv`);
 }
 
 // ─── Main ─────────────────────────────────────────────────────────────────────
