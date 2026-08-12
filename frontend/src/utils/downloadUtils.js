@@ -1,17 +1,26 @@
 export function downloadBlob(blob, filename = "download") {
   if (!blob || !(blob instanceof Blob)) {
-    console.error("Invalid blob provided for download");
-    return;
+    throw new Error("Invalid blob provided for download");
+  }
+
+  if (blob.size === 0) {
+    throw new Error("File is empty");
   }
 
   const url = window.URL.createObjectURL(blob);
   const link = document.createElement("a");
   link.href = url;
   link.setAttribute("download", filename);
+  link.style.display = "none";
+
   document.body.appendChild(link);
   link.click();
-  link.remove();
-  window.URL.revokeObjectURL(url);
+
+  // Delay cleanup to ensure browser initiates download before revoking the blob URL
+  setTimeout(() => {
+    link.remove();
+    window.URL.revokeObjectURL(url);
+  }, 100);
 }
 
 export function formatBytes(bytes, decimals = 1) {

@@ -117,7 +117,7 @@ public class AuditLogController {
      * ==========================================================
      */
     @GetMapping("/export")
-    public ResponseEntity<byte[]> exportLogs(
+    public ResponseEntity<?> exportLogs(
 
             @RequestParam(defaultValue = "csv") String format,
 
@@ -130,33 +130,44 @@ public class AuditLogController {
             @RequestParam(required = false) String to
 
     ) {
+        try {
+            AuditLogFilterRequest request = new AuditLogFilterRequest();
 
-        AuditLogFilterRequest request = new AuditLogFilterRequest();
+            if (action != null && !action.isBlank()) {
+                request.setAction(com.realestate.duediligence.enums.AuditAction.valueOf(action.toUpperCase()));
+            }
 
-        if (action != null && !action.isBlank()) {
-            request.setAction(com.realestate.duediligence.enums.AuditAction.valueOf(action.toUpperCase()));
+            request.setUserId(userId);
+
+            if (from != null && !from.isBlank()) {
+                request.setFromDate(java.time.LocalDate.parse(from));
+           }
+
+            if (to != null && !to.isBlank()) {
+                request.setToDate(java.time.LocalDate.parse(to));
+            }
+
+            byte[] data = auditLogService.exportLogs(request, format);
+
+            MediaType contentType = "csv".equalsIgnoreCase(format)
+                    ? MediaType.parseMediaType("text/csv;charset=UTF-8")
+                    : MediaType.APPLICATION_OCTET_STREAM;
+
+            return ResponseEntity.ok()
+
+                    .header(HttpHeaders.CONTENT_DISPOSITION,
+                            "attachment; filename=audit_logs." + format)
+
+                    .contentType(contentType)
+
+                    .body(data);
+        } catch (Exception e) {
+            org.slf4j.LoggerFactory.getLogger(AuditLogController.class)
+                .error("Audit log export failed (format={}): {}", format, e.getMessage(), e);
+            return ResponseEntity.status(500).body(
+                java.util.Map.of("success", false, "message",
+                    "Failed to export audit logs. " + e.getMessage()));
         }
-
-        request.setUserId(userId);
-
-        if (from != null && !from.isBlank()) {
-            request.setFromDate(java.time.LocalDate.parse(from));
-       }
-
-        if (to != null && !to.isBlank()) {
-            request.setToDate(java.time.LocalDate.parse(to));
-        }
-
-        byte[] data = auditLogService.exportLogs(request, format);
-
-        return ResponseEntity.ok()
-
-                .header(HttpHeaders.CONTENT_DISPOSITION,
-                        "attachment; filename=audit_logs." + format)
-
-                .contentType(MediaType.APPLICATION_OCTET_STREAM)
-
-                .body(data);
     }
 
     /**
