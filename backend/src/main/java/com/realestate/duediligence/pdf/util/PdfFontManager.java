@@ -43,15 +43,15 @@ public class PdfFontManager {
 
     private static final String FONT_PATH_PREFIX = "fonts/";
 
-    private static PdfFont regular;
-    private static PdfFont medium;
-    private static PdfFont semibold;
-    private static PdfFont bold;
+    private PdfFont regular;
+    private PdfFont medium;
+    private PdfFont semibold;
+    private PdfFont bold;
 
-    private static boolean loaded = false;
+    private boolean loaded = false;
 
     @PostConstruct
-    public void loadFonts() {
+    public synchronized void loadFonts() {
         try {
             regular  = loadFont("Inter-Regular.otf");
             medium   = loadFont("Inter-Medium.otf");
@@ -97,13 +97,13 @@ public class PdfFontManager {
     }
 
     /** Body text default — Inter Regular 400. */
-    public static PdfFont regular() {
+    public PdfFont regular() {
         ensureLoaded();
         return regular;
     }
 
     /** Slightly-emphasized text — Inter Medium 500. Used for value cells, subtle emphasis. */
-    public static PdfFont medium() {
+    public PdfFont medium() {
         ensureLoaded();
         return medium;
     }
@@ -113,7 +113,7 @@ public class PdfFontManager {
      * Use for card titles, subsection headers, metric labels.
      * SemiBold reads as "heavy" without the visual noise of full Bold.
      */
-    public static PdfFont semibold() {
+    public PdfFont semibold() {
         ensureLoaded();
         return semibold;
     }
@@ -124,17 +124,17 @@ public class PdfFontManager {
      * top-level H1 section headers. Avoid Bold in body copy — SemiBold
      * is the premium alternative.
      */
-    public static PdfFont bold() {
+    public PdfFont bold() {
         ensureLoaded();
         return bold;
     }
 
     /** Diagnostic: has font loading succeeded? */
-    public static boolean isLoaded() {
+    public boolean isLoaded() {
         return loaded;
     }
 
-    private static void ensureLoaded() {
+    private void ensureLoaded() {
         if (!loaded || regular == null) {
             throw new IllegalStateException(
                 "PdfFontManager not initialized. Ensure @PostConstruct ran successfully. "

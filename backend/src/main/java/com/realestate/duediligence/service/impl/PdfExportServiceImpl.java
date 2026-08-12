@@ -35,6 +35,7 @@ import com.itextpdf.layout.renderer.DrawContext;
 import com.realestate.duediligence.config.PdfConfig;
 import com.realestate.duediligence.config.PdfDesignSystem;
 import com.realestate.duediligence.dto.DueDiligenceReportResponse;
+import com.realestate.duediligence.pdf.util.PdfFontManager;
 import com.realestate.duediligence.pdf.renderer.AppendixRenderer;
 import com.realestate.duediligence.pdf.renderer.CoverPageRenderer;
 import com.realestate.duediligence.pdf.renderer.ExecutiveSummaryRenderer;
@@ -76,6 +77,9 @@ public class PdfExportServiceImpl implements PdfExportService {
     @Autowired
     private PdfReportDataProvider dataProvider;
 
+    @Autowired
+    private PdfFontManager pdfFontManager;
+
     // Renderers — injected in pipeline order.
     @Autowired private CoverPageRenderer          coverPageRenderer;
     @Autowired private ExecutiveSummaryRenderer   executiveSummaryRenderer;
@@ -97,6 +101,9 @@ public class PdfExportServiceImpl implements PdfExportService {
 
         log.info("[pdf-export] Starting premium PDF generation for report {}", reportId);
         long start = System.currentTimeMillis();
+
+        // Reload fonts fresh per request — avoids iText cross-document object leak
+        pdfFontManager.loadFonts();
 
         // ── Step 1: Load all structured data ─────────────────────────────
         PdfReportBundle bundle = dataProvider.loadBundle(reportId);
