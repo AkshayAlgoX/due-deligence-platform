@@ -229,13 +229,9 @@ function exportCSV(properties, reports) {
   });
   const csv = [headers.join(","), ...rows].join("\n");
   const blob = new Blob([csv], { type: "text/csv;charset=utf-8;" });
-  const url = URL.createObjectURL(blob);
-  const a = document.createElement("a");
   const ts = new Date().toISOString().split("T")[0];
-  a.href = url;
-  a.download = `due_diligence_portfolio_${ts}.csv`;
-  document.body.appendChild(a); a.click(); document.body.removeChild(a);
-  URL.revokeObjectURL(url);
+  const { downloadBlob } = await import("@/utils/downloadUtils");
+  downloadBlob(blob, `due_diligence_portfolio_${ts}.csv`);
 }
 
 // ─── Activity chart data ──────────────────────────────────────────────────────

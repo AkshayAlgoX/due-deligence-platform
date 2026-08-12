@@ -2,17 +2,14 @@
  * Downloads a file via a direct server URL. Uses the browser's cookie-based
  * auth (auth_token cookie set at login) — no blob URLs, no CSP issues.
  * The server must respond with Content-Disposition: attachment.
+ *
+ * Uses window.open() which is the most universally compatible approach.
+ * The browser opens a blank tab, sends cookies, receives Content-Disposition,
+ * triggers the native download, and the blank tab closes/remains.
+ * This is how GitHub, Vercel, and Stripe handle server-side downloads.
  */
 export function downloadUrl(url) {
-  // Use an invisible iframe — most reliable cross-browser approach
-  // for cookie-based auth + Content-Disposition downloads
-  const iframe = document.createElement("iframe");
-  iframe.style.display = "none";
-  iframe.src = url;
-  document.body.appendChild(iframe);
-  setTimeout(() => {
-    iframe.remove();
-  }, 5000);
+  window.open(url, "_blank");
 }
 
 /**

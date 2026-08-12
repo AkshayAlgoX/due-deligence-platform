@@ -4,7 +4,6 @@ import { useState } from "react";
 import { useTranslation } from "react-i18next";
 import { Download, Loader2 } from "lucide-react";
 import { toast } from "sonner";
-import { exportDashboardAnalytics } from "@/services/adminService";
 
 export default function ExportAnalyticsButton({ defaultFormat = "excel" }) {
   const { t, i18n } = useTranslation();
