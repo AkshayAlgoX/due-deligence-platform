@@ -14,6 +14,8 @@ public interface SubscriptionRepository extends JpaRepository<Subscription, Long
 
     Optional<Subscription> findByCashfreeOrderId(String orderId);
 
+    Optional<Subscription> findFirstByUserIdAndStatus(Long userId, String status);
+
     List<Subscription> findTop6ByUserIdOrderByCreatedAtDesc(Long userId);
 
     long countByUserIdAndCreatedAtAfter(Long userId, LocalDateTime since);

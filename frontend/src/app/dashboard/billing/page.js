@@ -3,18 +3,18 @@
 import { useState, useEffect, useCallback } from "react";
 import { useSearchParams } from "next/navigation";
 import Link from "next/link";
-import { useTranslation } from "react-i18next";
 import {
   CreditCard,
   Zap,
   FileText,
   Calendar,
-  ArrowUpRight,
-  Loader2,
-  AlertTriangle,
   CheckCircle2,
-  Crown,
-  Building2,
+  AlertCircle,
+  Loader2,
+  Sparkles,
+  X,
+  ArrowUpRight,
+  Infinity as InfinityIcon,
 } from "lucide-react";
 import { toast } from "sonner";
 import subscriptionService from "@/services/subscriptionService";
@@ -22,49 +22,75 @@ import subscriptionService from "@/services/subscriptionService";
 const PLAN_META = {
   FREE: {
     label: "Free",
-    icon: FileText,
-    color: "text-white/60",
-    bg: "bg-white/[0.06]",
-    tagline: "3 reports per month",
+    tagline: "3 reports/month · Basic exports",
+    accent: "from-slate-500/20 to-slate-600/10",
+    ring: "ring-slate-500/30",
+    text: "text-slate-400",
+    price: "₹0",
   },
   PRO: {
     label: "Pro",
-    icon: Crown,
-    color: "text-emerald-400",
-    bg: "bg-emerald-500/10",
-    tagline: "Unlimited reports, all exports",
+    tagline: "Unlimited reports · White-label PDFs",
+    accent: "from-emerald-500/20 to-emerald-600/10",
+    ring: "ring-emerald-500/40",
+    text: "text-emerald-400",
+    price: "₹499/mo",
   },
   BUSINESS: {
     label: "Business",
-    icon: Building2,
-    color: "text-emerald-300",
-    bg: "bg-emerald-500/15",
-    tagline: "Teams, API access, custom branding",
+    tagline: "Team seats · API access · Custom branding",
+    accent: "from-violet-500/20 to-violet-600/10",
+    ring: "ring-violet-500/40",
+    text: "text-violet-400",
+    price: "₹1,999/mo",
   },
   ENTERPRISE: {
     label: "Enterprise",
-    icon: Zap,
-    color: "text-white",
-    bg: "bg-white/10",
-    tagline: "Custom terms, dedicated manager",
+    tagline: "Custom SLA · Dedicated support",
+    accent: "from-amber-500/20 to-amber-600/10",
+    ring: "ring-amber-500/40",
+    text: "text-amber-400",
+    price: "Custom",
   },
 };
 
 export default function BillingPage() {
-  const { t } = useTranslation();
   const searchParams = useSearchParams();
-  const [data, setData] = useState(null);
+  const showSuccess = searchParams.get("success") === "true";
+
+  const [subscription, setSubscription] = useState(null);
   const [loading, setLoading] = useState(true);
   const [cancelling, setCancelling] = useState(false);
   const [confirmCancel, setConfirmCancel] = useState(false);
 
   const fetchData = useCallback(async () => {
+    setLoading(true);
     try {
-      const result = await subscriptionService.getCurrent();
-      if (result.success) setData(result);
+      const data = await subscriptionService.getCurrent();
+      if (!data.success) {
+        // Backend explicitly returned success=false — treat as FREE plan
+        setSubscription({
+          plan: "FREE",
+          planLimit: 3,
+          reportsThisMonth: 0,
+          reportsRemaining: 3,
+          expiresAt: null,
+          status: "NONE",
+        });
+      } else {
+        setSubscription(data);
+      }
     } catch (err) {
-      console.error("Failed to load subscription:", err);
-      toast.error("Couldn't load billing info");
+      console.warn("Billing fetch failed, defaulting to FREE:", err?.message);
+      // Fallback: assume FREE plan so the page always renders
+      setSubscription({
+        plan: "FREE",
+        planLimit: 3,
+        reportsThisMonth: 0,
+        reportsRemaining: 3,
+        expiresAt: null,
+        status: "NONE",
+      });
     } finally {
       setLoading(false);
     }
@@ -75,29 +101,28 @@ export default function BillingPage() {
   }, [fetchData]);
 
   useEffect(() => {
-    if (searchParams.get("success") === "true") {
+    if (showSuccess) {
       toast.success("Payment successful", {
-        description: "Your subscription is now active.",
+        description: "Welcome to your new plan.",
+        duration: 5000,
       });
     }
-  }, [searchParams]);
+  }, [showSuccess]);
 
   const handleCancel = async () => {
     setCancelling(true);
     try {
-      const result = await subscriptionService.cancel();
-      if (result.success) {
-        toast.success("Subscription cancelled", {
-          description: "You'll keep access until the end of the current period.",
-        });
+      const data = await subscriptionService.cancel();
+      if (data.success) {
+        toast.success("Subscription cancelled", { description: data.message });
         setConfirmCancel(false);
-        fetchData();
+        await fetchData();
       } else {
-        toast.error(result.message || "Could not cancel subscription");
+        toast.error("Couldn't cancel", { description: data.message });
       }
     } catch (err) {
-      toast.error("Could not cancel subscription", {
-        description: err?.response?.data?.message || err.message,
+      toast.error("Cancel failed", {
+        description: err?.data?.message || err?.message || "Please try again.",
       });
     } finally {
       setCancelling(false);
@@ -106,177 +131,324 @@ export default function BillingPage() {
 
   if (loading) {
     return (
-      <div className="mx-auto w-full max-w-[1400px] p-6 space-y-6">
-        <div className="h-8 w-48 rounded-lg bg-gray-100 dark:bg-[#1c2128] animate-pulse" />
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-          {[1, 2, 3].map((i) => (
-            <div key={i} className="h-40 rounded-2xl bg-gray-100 dark:bg-[#161b22] animate-pulse" />
-          ))}
+      <div className="max-w-[1400px] mx-auto px-6 py-8">
+        <div className="flex items-center justify-center py-32">
+          <Loader2 className="h-6 w-6 animate-spin text-emerald-500" />
         </div>
       </div>
     );
   }
 
-  const planKey = data?.plan || "FREE";
-  const meta = PLAN_META[planKey] || PLAN_META.FREE;
-  const PlanIcon = meta.icon;
-  const reportsRemaining = data?.reportsRemaining ?? 0;
-  const reportsThisMonth = data?.reportsThisMonth ?? 0;
-  const planLimit = data?.planLimit ?? 3;
-  const usagePct = planLimit > 0 ? Math.min(100, Math.round((reportsThisMonth / planLimit) * 100)) : 100;
+  const sub = subscription || {
+    plan: "FREE",
+    planLimit: 3,
+    reportsThisMonth: 0,
+    reportsRemaining: 3,
+    expiresAt: null,
+    status: "NONE",
+  };
+
+  const meta = PLAN_META[sub.plan] || PLAN_META.FREE;
+  const isFree = sub.plan === "FREE";
+  // Unlimited = backend sentinel (-1) OR the raw Integer.MAX_VALUE
+  // sentinel (defensive — protects against older backend responses)
+  const isUnlimited =
+    sub.planLimit < 0 ||
+    sub.reportsRemaining === -1 ||
+    sub.planLimit === 2147483647 ||
+    !isFree;
+  const isActive = sub.status === "ACTIVE";
+  const isCancelled = sub.status === "CANCELLED";
+
+  const usagePercent = isUnlimited
+    ? 0
+    : sub.planLimit > 0
+    ? Math.min(100, (sub.reportsThisMonth / sub.planLimit) * 100)
+    : 0;
+
+  const usageColor =
+    usagePercent >= 90
+      ? "bg-red-500"
+      : usagePercent >= 70
+      ? "bg-amber-500"
+      : "bg-emerald-500";
 
   return (
-    <div className="mx-auto w-full max-w-[1400px] p-6 space-y-8">
+    <div className="max-w-[1400px] mx-auto px-6 py-8 space-y-8">
       {/* ── Header ── */}
-      <div className="flex flex-wrap items-end justify-between gap-4">
-        <div>
-          <h1 className="text-[28px] font-bold tracking-tight text-gray-900 dark:text-[#e6edf3]">
-            Billing & subscription
-          </h1>
-          <p className="mt-1 text-sm text-gray-500 dark:text-[#7d8590]">
-            Manage your plan, usage, and payment history.
-          </p>
+      <div className="flex items-start justify-between gap-4">
+        <div className="flex items-start gap-4">
+          <div className="h-11 w-11 rounded-xl bg-gradient-to-br from-emerald-500/10 to-teal-500/10 border border-emerald-500/20 flex items-center justify-center flex-shrink-0">
+            <CreditCard className="h-5 w-5 text-emerald-500" />
+          </div>
+          <div>
+            <h1 className="text-[28px] font-bold tracking-tight text-gray-900 dark:text-[#e6edf3]">
+              Billing & subscription
+            </h1>
+            <p className="mt-1 text-sm text-gray-500 dark:text-[#7d8590]">
+              Manage your plan, view usage, and download invoices.
+            </p>
+          </div>
         </div>
-        {planKey === "FREE" && (
-          <Link
-            href="/pricing"
-            className="inline-flex h-11 items-center gap-2 rounded-xl bg-gradient-to-br from-[#22C55E] to-[#16a34a] px-5 text-sm font-bold text-white shadow-[0_10px_30px_rgba(34,197,94,0.4)] transition-all hover:scale-[1.02]"
+
+        {!isFree && isActive && !isCancelled && (
+          <button
+            onClick={() => setConfirmCancel(true)}
+            className="hidden sm:inline-flex h-10 items-center gap-2 rounded-xl border border-gray-200 dark:border-[#30363d] bg-white dark:bg-[#161b22] px-4 text-sm font-medium text-gray-700 dark:text-[#e6edf3] hover:bg-gray-50 dark:hover:bg-[#1c2128] transition"
           >
-            <ArrowUpRight size={16} /> Upgrade plan
-          </Link>
+            Cancel subscription
+          </button>
         )}
       </div>
 
-      {/* ── Current plan card ── */}
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-        <div className="rounded-2xl border border-gray-100 dark:border-[#30363d] bg-white dark:bg-[#161b22] shadow-sm p-6">
-          <div className="flex items-center gap-3">
-            <div className={`flex h-10 w-10 items-center justify-center rounded-xl ${meta.bg}`}>
-              <PlanIcon size={18} className={meta.color} />
-            </div>
-            <div>
-              <p className="text-sm font-black text-gray-900 dark:text-[#e6edf3]">{meta.label} plan</p>
-              <p className="text-xs text-gray-500 dark:text-[#7d8590]">{meta.tagline}</p>
-            </div>
+      {/* ── Success banner ── */}
+      {showSuccess && (
+        <div className="rounded-2xl border border-emerald-500/30 bg-emerald-500/[0.04] px-5 py-4 flex items-center gap-3">
+          <div className="h-9 w-9 rounded-full bg-emerald-500/15 flex items-center justify-center flex-shrink-0">
+            <Sparkles className="h-4 w-4 text-emerald-500" />
           </div>
-          <div className="mt-5 space-y-3">
-            <div className="flex items-center justify-between text-sm">
-              <span className="text-gray-500 dark:text-[#7d8590]">Status</span>
-              <span className="inline-flex items-center gap-1.5 text-xs font-bold text-green-600 dark:text-green-400">
-                <CheckCircle2 size={13} />
-                {data?.status === "CANCELLED" ? "Cancelled (access until expiry)" : data?.status === "NONE" ? "Free" : data?.status}
-              </span>
-            </div>
-            <div className="flex items-center justify-between text-sm">
-              <span className="flex items-center gap-1.5 text-gray-500 dark:text-[#7d8590]">
-                <Calendar size={13} /> Expires
-              </span>
-              <span className="text-xs font-semibold text-gray-900 dark:text-[#e6edf3]">
-                {data?.expiresAt ? new Date(data.expiresAt).toLocaleDateString() : "Never"}
-              </span>
-            </div>
+          <div className="flex-1">
+            <p className="text-sm font-semibold text-gray-900 dark:text-[#e6edf3]">
+              Welcome to {meta.label} 🎉
+            </p>
+            <p className="text-[13px] text-gray-500 dark:text-[#7d8590] mt-0.5">
+              Your subscription is active. Enjoy unlimited reports and premium features.
+            </p>
           </div>
         </div>
+      )}
 
-        {/* ── Usage card ── */}
-        <div className="rounded-2xl border border-gray-100 dark:border-[#30363d] bg-white dark:bg-[#161b22] shadow-sm p-6">
-          <p className="text-sm font-black text-gray-900 dark:text-[#e6edf3]">Reports this month</p>
-          <div className="mt-4 flex items-baseline gap-2">
-            <span className="text-3xl font-black text-gray-900 dark:text-[#e6edf3] tabular-nums">{reportsThisMonth}</span>
-            <span className="text-sm text-gray-400 dark:text-[#7d8590]">
-              / {planLimit === 2147483647 ? "∞" : planLimit} used
-            </span>
+      {/* ── Cancelled banner ── */}
+      {isCancelled && sub.expiresAt && (
+        <div className="rounded-2xl border border-amber-500/30 bg-amber-500/[0.04] px-5 py-4 flex items-center gap-3">
+          <div className="h-9 w-9 rounded-full bg-amber-500/15 flex items-center justify-center flex-shrink-0">
+            <AlertCircle className="h-4 w-4 text-amber-500" />
           </div>
-          <div className="mt-4 h-2 w-full rounded-full bg-gray-100 dark:bg-[#1c2128] overflow-hidden">
-            <div
-              className="h-full rounded-full bg-gradient-to-r from-[#22C55E] to-[#16a34a] transition-all"
-              style={{ width: `${usagePct}%` }}
-            />
+          <div className="flex-1">
+            <p className="text-sm font-semibold text-gray-900 dark:text-[#e6edf3]">
+              Subscription cancelled
+            </p>
+            <p className="text-[13px] text-gray-500 dark:text-[#7d8590] mt-0.5">
+              You'll keep {meta.label} access until{" "}
+              {new Date(sub.expiresAt).toLocaleDateString("en-IN", {
+                day: "numeric",
+                month: "long",
+                year: "numeric",
+              })}
+              .
+            </p>
           </div>
-          <p className="mt-3 text-xs text-gray-400 dark:text-[#7d8590]">
-            {planKey === "FREE" && reportsRemaining <= 1 && reportsRemaining > 0
-              ? `${reportsRemaining} report remaining this month`
-              : planKey === "FREE" && reportsRemaining === 0
-              ? "Monthly limit reached — upgrade for unlimited reports"
-              : "Unlimited reports on your plan"}
-          </p>
-          {planKey === "FREE" && reportsRemaining === 0 && (
-            <Link
-              href="/checkout?plan=pro"
-              className="mt-4 inline-flex h-9 items-center gap-1.5 rounded-lg bg-amber-500/10 border border-amber-500/30 px-3.5 text-xs font-bold text-amber-600 dark:text-amber-400 hover:bg-amber-500/20 transition"
-            >
-              <AlertTriangle size={13} /> Upgrade to Pro
-            </Link>
+        </div>
+      )}
+
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+        {/* ── Current plan card ── */}
+        <div
+          className={`lg:col-span-2 rounded-2xl border border-gray-200/70 dark:border-[#30363d] bg-gradient-to-br ${meta.accent} bg-white dark:bg-[#161b22] p-6 ring-1 ${meta.ring}`}
+        >
+          <div className="flex items-start justify-between gap-4">
+            <div>
+              <p className="text-[11px] font-semibold tracking-[0.15em] uppercase text-gray-500 dark:text-[#7d8590]">
+                Current plan
+              </p>
+              <div className="mt-2 flex items-baseline gap-2.5">
+                <h2 className={`text-3xl font-bold ${meta.text}`}>{meta.label}</h2>
+                <span className="text-sm font-medium text-gray-500 dark:text-[#7d8590]">
+                  {meta.price}
+                </span>
+              </div>
+              <p className="mt-2 text-[13px] text-gray-600 dark:text-[#7d8590]">
+                {meta.tagline}
+              </p>
+            </div>
+
+            {isFree ? (
+              <Link
+                href="/checkout?plan=pro"
+                className="inline-flex h-10 items-center gap-2 rounded-xl bg-gradient-to-br from-emerald-500 to-emerald-600 px-4 text-sm font-bold text-white shadow-[0_8px_20px_rgba(34,197,94,0.3)] hover:scale-[1.02] transition"
+              >
+                <Zap className="h-4 w-4" />
+                Upgrade to Pro
+              </Link>
+            ) : (
+              <div className="hidden sm:flex h-10 items-center gap-1.5 rounded-full bg-emerald-500/10 border border-emerald-500/30 px-3.5 text-[12px] font-semibold text-emerald-500">
+                <CheckCircle2 className="h-3.5 w-3.5" />
+                {isCancelled ? "Cancelling" : "Active"}
+              </div>
+            )}
+          </div>
+
+          {sub.expiresAt && !isCancelled && (
+            <div className="mt-6 pt-6 border-t border-gray-200/60 dark:border-[#30363d]/60 flex items-center gap-2 text-[13px] text-gray-500 dark:text-[#7d8590]">
+              <Calendar className="h-4 w-4" />
+              Renews on{" "}
+              <span className="text-gray-900 dark:text-[#e6edf3] font-medium">
+                {new Date(sub.expiresAt).toLocaleDateString("en-IN", {
+                  day: "numeric",
+                  month: "long",
+                  year: "numeric",
+                })}
+              </span>
+            </div>
           )}
         </div>
 
-        {/* ── Actions card ── */}
-        <div className="rounded-2xl border border-gray-100 dark:border-[#30363d] bg-white dark:bg-[#161b22] shadow-sm p-6">
-          <p className="text-sm font-black text-gray-900 dark:text-[#e6edf3]">Actions</p>
-          <div className="mt-4 space-y-2.5">
-            <Link
-              href={planKey === "FREE" ? "/checkout?plan=pro" : "/checkout?plan=business"}
-              className="flex w-full items-center justify-center gap-2 h-10 rounded-xl bg-gradient-to-br from-[#22C55E] to-[#16a34a] text-sm font-bold text-white transition hover:opacity-95"
-            >
-              <CreditCard size={15} />
-              {planKey === "FREE" ? "Upgrade to Pro" : planKey === "PRO" ? "Upgrade to Business" : "Manage plan"}
-            </Link>
-            {planKey !== "FREE" && (
-              <button
-                onClick={() => setConfirmCancel(true)}
-                disabled={cancelling}
-                className="flex w-full items-center justify-center gap-2 h-10 rounded-xl border border-red-200 dark:border-red-900 bg-white dark:bg-[#1c2128] text-sm font-bold text-red-600 dark:text-red-400 transition hover:border-red-400 hover:bg-red-50 dark:hover:bg-red-950/30 disabled:opacity-50"
+        {/* ── Usage card ── */}
+        <div className="rounded-2xl border border-gray-200/70 dark:border-[#30363d] bg-white dark:bg-[#161b22] p-6">
+          <div className="flex items-center gap-2.5 mb-4">
+            <div className="h-8 w-8 rounded-lg bg-emerald-500/10 flex items-center justify-center">
+              <FileText className="h-4 w-4 text-emerald-500" />
+            </div>
+            <p className="text-[11px] font-semibold tracking-[0.15em] uppercase text-gray-500 dark:text-[#7d8590]">
+              Reports this month
+            </p>
+          </div>
+
+          {isUnlimited ? (
+            <div>
+              <div className="flex items-baseline gap-2">
+                <span className="text-3xl font-bold text-gray-900 dark:text-[#e6edf3]">
+                  {sub.reportsThisMonth}
+                </span>
+                <span className="text-sm text-gray-500 dark:text-[#7d8590] flex items-center gap-1">
+                  / <InfinityIcon className="h-3.5 w-3.5" /> unlimited
+                </span>
+              </div>
+              <p className="mt-3 text-[12px] text-emerald-500 font-medium">
+                No limits on your plan
+              </p>
+            </div>
+          ) : (
+            <div>
+              <div className="flex items-baseline gap-2">
+                <span className="text-3xl font-bold text-gray-900 dark:text-[#e6edf3]">
+                  {sub.reportsThisMonth}
+                </span>
+                <span className="text-sm text-gray-500 dark:text-[#7d8590]">
+                  / {sub.planLimit}
+                </span>
+              </div>
+
+              <div className="mt-4 h-2 w-full rounded-full bg-gray-100 dark:bg-[#30363d] overflow-hidden">
+                <div
+                  className={`h-full rounded-full transition-all duration-500 ${usageColor}`}
+                  style={{ width: `${usagePercent}%` }}
+                />
+              </div>
+
+              <p className="mt-3 text-[12px] text-gray-500 dark:text-[#7d8590]">
+                {sub.reportsRemaining} remaining ·{" "}
+                <Link
+                  href="/checkout?plan=pro"
+                  className="text-emerald-500 hover:text-emerald-400 font-medium inline-flex items-center gap-0.5"
+                >
+                  Get unlimited <ArrowUpRight className="h-3 w-3" />
+                </Link>
+              </p>
+            </div>
+          )}
+        </div>
+      </div>
+
+      {/* ── Features included ── */}
+      <div className="rounded-2xl border border-gray-200/70 dark:border-[#30363d] bg-white dark:bg-[#161b22] p-6">
+        <h3 className="text-sm font-bold text-gray-900 dark:text-[#e6edf3] mb-4">
+          What's included in {meta.label}
+        </h3>
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-x-8 gap-y-3">
+          {getFeaturesFor(sub.plan).map((f) => (
+            <div key={f} className="flex items-start gap-2.5">
+              <CheckCircle2 className="h-4 w-4 text-emerald-500 flex-shrink-0 mt-0.5" />
+              <span className="text-[13px] text-gray-700 dark:text-[#e6edf3]">{f}</span>
+            </div>
+          ))}
+        </div>
+
+        {isFree && (
+          <div className="mt-6 pt-6 border-t border-gray-200 dark:border-[#30363d]">
+            <p className="text-[13px] text-gray-500 dark:text-[#7d8590] mb-3">
+              Ready to unlock everything?
+            </p>
+            <div className="flex flex-wrap gap-3">
+              <Link
+                href="/checkout?plan=pro"
+                className="inline-flex h-10 items-center gap-2 rounded-xl bg-gradient-to-br from-emerald-500 to-emerald-600 px-4 text-sm font-bold text-white shadow-[0_8px_20px_rgba(34,197,94,0.3)] hover:scale-[1.02] transition"
               >
-                {cancelling ? <Loader2 size={15} className="animate-spin" /> : "Cancel subscription"}
-              </button>
-            )}
+                <Zap className="h-4 w-4" />
+                Upgrade to Pro · ₹499/mo
+              </Link>
+              <Link
+                href="/pricing"
+                className="inline-flex h-10 items-center rounded-xl border border-gray-200 dark:border-[#30363d] bg-white dark:bg-[#0d1117] px-4 text-sm font-medium text-gray-700 dark:text-[#e6edf3] hover:bg-gray-50 dark:hover:bg-[#1c2128] transition"
+              >
+                Compare plans
+              </Link>
+            </div>
           </div>
-          <p className="mt-3 text-[11px] text-gray-400 dark:text-[#6e7681]">
-            Cancelling keeps your access until the end of the paid period. Data is never deleted on downgrade.
-          </p>
-        </div>
+        )}
       </div>
 
-      {/* ── Payment history ── */}
-      <div className="rounded-2xl border border-gray-100 dark:border-[#30363d] bg-white dark:bg-[#161b22] shadow-sm overflow-hidden">
-        <div className="px-6 py-4 border-b border-gray-100 dark:border-[#30363d]">
-          <h2 className="text-sm font-black text-gray-900 dark:text-[#e6edf3]">Payment history</h2>
-          <p className="text-xs text-gray-400 dark:text-[#6e7681]">Last 6 transactions</p>
-        </div>
-        <div className="divide-y divide-gray-50 dark:divide-[#1c2128]">
-          <div className="px-6 py-4 text-center text-sm text-gray-400 dark:text-[#7d8590]">
-            No payments yet — your first subscription will appear here after checkout.
-          </div>
-        </div>
-      </div>
+      {/* Mobile cancel button */}
+      {!isFree && isActive && !isCancelled && (
+        <button
+          onClick={() => setConfirmCancel(true)}
+          className="sm:hidden w-full h-10 rounded-xl border border-gray-200 dark:border-[#30363d] bg-white dark:bg-[#161b22] px-4 text-sm font-medium text-gray-700 dark:text-[#e6edf3] hover:bg-gray-50 dark:hover:bg-[#1c2128] transition"
+        >
+          Cancel subscription
+        </button>
+      )}
 
-      {/* ── Cancel confirmation ── */}
+      {/* ── Cancel confirmation modal ── */}
       {confirmCancel && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4">
-          <div className="w-full max-w-md rounded-2xl border border-gray-100 dark:border-[#30363d] bg-white dark:bg-[#161b22] p-6 shadow-xl">
-            <h3 className="text-lg font-black text-gray-900 dark:text-[#e6edf3]">Cancel subscription?</h3>
+        <div className="fixed inset-0 z-[60] flex items-center justify-center bg-black/50 p-4">
+          <div className="w-full max-w-md rounded-2xl border border-gray-100 dark:border-[#30363d] bg-white dark:bg-[#161b22] p-6 shadow-2xl">
+            <div className="flex items-start justify-between">
+              <div className="h-11 w-11 rounded-xl bg-red-500/10 ring-1 ring-red-500/30 flex items-center justify-center">
+                <AlertCircle className="h-5 w-5 text-red-500" />
+              </div>
+              <button
+                onClick={() => setConfirmCancel(false)}
+                className="h-8 w-8 rounded-lg text-gray-400 hover:text-gray-700 dark:hover:text-white hover:bg-gray-100 dark:hover:bg-[#1c2128] flex items-center justify-center"
+              >
+                <X className="h-4 w-4" />
+              </button>
+            </div>
+            <h3 className="mt-4 text-lg font-bold text-gray-900 dark:text-[#e6edf3]">
+              Cancel {meta.label} subscription?
+            </h3>
             <p className="mt-2 text-sm text-gray-500 dark:text-[#7d8590] leading-relaxed">
-              You'll keep access until{" "}
-              <span className="font-semibold text-gray-900 dark:text-[#e6edf3]">
-                {data?.expiresAt ? new Date(data.expiresAt).toLocaleDateString() : "the end of the period"}
+              You'll keep full access until{" "}
+              <span className="text-gray-900 dark:text-[#e6edf3] font-medium">
+                {sub.expiresAt
+                  ? new Date(sub.expiresAt).toLocaleDateString("en-IN", {
+                      day: "numeric",
+                      month: "long",
+                      year: "numeric",
+                    })
+                  : "the end of your billing period"}
               </span>
-              . After that your account returns to the Free plan. Your properties, reports, and history are preserved.
+              . After that, your account will move to the Free plan.
             </p>
             <div className="mt-6 flex gap-3">
               <button
                 onClick={() => setConfirmCancel(false)}
                 disabled={cancelling}
-                className="flex-1 h-10 rounded-xl border border-gray-200 dark:border-[#30363d] text-sm font-bold text-gray-700 dark:text-[#e6edf3] hover:bg-gray-50 dark:hover:bg-[#1c2128] transition disabled:opacity-50"
+                className="flex-1 h-10 rounded-xl border border-gray-200 dark:border-[#30363d] text-sm font-semibold text-gray-700 dark:text-[#e6edf3] hover:bg-gray-50 dark:hover:bg-[#1c2128] transition"
               >
-                Keep subscription
+                Keep {meta.label}
               </button>
               <button
                 onClick={handleCancel}
                 disabled={cancelling}
-                className="flex-1 h-10 rounded-xl bg-red-600 text-sm font-bold text-white hover:bg-red-700 transition disabled:opacity-50 inline-flex items-center justify-center gap-2"
+                className="flex-1 h-10 rounded-xl bg-red-500 hover:bg-red-600 text-sm font-semibold text-white transition disabled:opacity-50 flex items-center justify-center gap-2"
               >
-                {cancelling && <Loader2 size={14} className="animate-spin" />}
-                Cancel it
+                {cancelling ? (
+                  <>
+                    <Loader2 className="h-4 w-4 animate-spin" /> Cancelling…
+                  </>
+                ) : (
+                  "Confirm cancel"
+                )}
               </button>
             </div>
           </div>
@@ -284,4 +456,44 @@ export default function BillingPage() {
       )}
     </div>
   );
+}
+
+function getFeaturesFor(plan) {
+  switch (plan) {
+    case "PRO":
+      return [
+        "Unlimited property reports",
+        "All export formats (PDF, Excel, CSV)",
+        "Priority report generation (< 15s)",
+        "Priority email support (12h response)",
+        "Detailed risk factor explanations",
+        "White-label PDFs (no watermark)",
+      ];
+    case "BUSINESS":
+      return [
+        "Everything in Pro",
+        "5 team seats included",
+        "REST API access (10,000 calls/mo)",
+        "Custom branding on all reports",
+        "Bulk property upload (CSV import)",
+        "Dedicated account manager",
+      ];
+    case "ENTERPRISE":
+      return [
+        "Everything in Business",
+        "Unlimited team seats",
+        "Custom SLA (up to 99.99% uptime)",
+        "Dedicated infrastructure",
+        "On-premise deployment option",
+        "24/7 phone support",
+      ];
+    default:
+      return [
+        "3 property reports per month",
+        "PDF export (with watermark)",
+        "Basic risk analysis",
+        "Community support",
+        "Email notifications",
+      ];
+  }
 }
