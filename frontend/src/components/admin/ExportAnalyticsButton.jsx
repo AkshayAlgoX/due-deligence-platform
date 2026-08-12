@@ -36,43 +36,8 @@ export default function ExportAnalyticsButton({ defaultFormat = "excel" }) {
       const base = (i18n.language ?? "en").slice(0, 2).toLowerCase();
       const language = SUPPORTED.has(base) ? base : "en";
 
-      const blob = await exportDashboardAnalytics(
-        format,
-        language
-      );
-
-      if (!blob || blob.size === 0) {
-        throw new Error("Empty export file");
-      }
-
-      // Detect JSON error disguised as blob
-      const header = await blob.slice(0, 100).text();
-      if (header.startsWith('{"success":false')) {
-        const full = await blob.text();
-        try {
-          const parsed = JSON.parse(full);
-          throw new Error(parsed.message || "Export failed");
-        } catch (e) {
-          if (e.message && !e.message.startsWith("Export failed")) throw e;
-          throw new Error("Export failed — server error");
-        }
-      }
-
-      const extensionMap = {
-        excel: "xlsx",
-        csv: "csv",
-        pdf: "pdf",
-      };
-
-      const extension = extensionMap[format] || "xlsx";
-
-      const filename =
-        `admin-analytics-${new Date()
-          .toISOString()
-          .slice(0, 10)}.${extension}`;
-
-      const { downloadBlob } = await import("@/utils/downloadUtils");
-      downloadBlob(blob, filename);
+      const { downloadUrl } = await import("@/utils/downloadUtils");
+      downloadUrl(`/api/admin/dashboard/export?format=${format}&language=${language}&period=30d`);
     } catch (error) {
       console.error("Analytics export failed:", error);
       toast.error(t("nav.admin.exportFailed"));

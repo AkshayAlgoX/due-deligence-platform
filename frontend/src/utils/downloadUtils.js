@@ -1,3 +1,25 @@
+/**
+ * Downloads a file via a direct server URL. Uses the browser's cookie-based
+ * auth (auth_token cookie set at login) — no blob URLs, no CSP issues.
+ * The server must respond with Content-Disposition: attachment.
+ */
+export function downloadUrl(url) {
+  // Use an invisible iframe — most reliable cross-browser approach
+  // for cookie-based auth + Content-Disposition downloads
+  const iframe = document.createElement("iframe");
+  iframe.style.display = "none";
+  iframe.src = url;
+  document.body.appendChild(iframe);
+  setTimeout(() => {
+    iframe.remove();
+  }, 5000);
+}
+
+/**
+ * Downloads a client-side generated Blob (e.g. react-pdf).
+ * Only use this for blobs that were generated IN the browser —
+ * for server-side files, use downloadUrl() instead.
+ */
 export function downloadBlob(blob, filename = "download") {
   if (!blob || !(blob instanceof Blob)) {
     throw new Error("Invalid blob provided for download");
@@ -16,11 +38,10 @@ export function downloadBlob(blob, filename = "download") {
   document.body.appendChild(link);
   link.click();
 
-  // Delay cleanup to ensure browser initiates download before revoking the blob URL
   setTimeout(() => {
     link.remove();
     window.URL.revokeObjectURL(url);
-  }, 100);
+  }, 200);
 }
 
 export function formatBytes(bytes, decimals = 1) {
