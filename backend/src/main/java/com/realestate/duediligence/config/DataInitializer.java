@@ -64,23 +64,33 @@ public class DataInitializer {
         }
     }
 
-    // ── Seed the initial admin user (only if none exists with that email) ───
-    // ── Seed the initial admin user (only if none exists with that email) ───
+    // ── Seed the initial admin user, and ensure its role is always ADMIN ────
 private void seedInitialAdmin(
         UserRepository userRepository,
         RoleRepository roleRepository,
         PasswordEncoder passwordEncoder
 ) {
-    // Skip if admin with this email already exists (idempotent on restart)
-    if (userRepository.findByEmail(adminEmail).isPresent()) {
-        log.info("Admin user '{}' already exists — skipping seed.", adminEmail);
-        return;
-    }
-
     // Fetch the ADMIN role (must exist because seedRoles ran first)
     Role adminRole = roleRepository.findByRoleName(RoleType.ADMIN)
             .orElseThrow(() -> new IllegalStateException(
                     "ADMIN role not found — role seeding must run before admin user seed."));
+
+    java.util.Optional<User> existing = userRepository.findByEmail(adminEmail);
+
+    if (existing.isPresent()) {
+        User admin = existing.get();
+        // Guard: if the stored role is not ADMIN (e.g. corrupted by a merge or
+        // accidental role-change via UI), repair it silently on startup.
+        if (admin.getRole() == null
+                || admin.getRole().getRoleName() != RoleType.ADMIN) {
+            admin.setRole(adminRole);
+            userRepository.save(admin);
+            log.warn("Admin user '{}' had wrong role — repaired to ADMIN.", adminEmail);
+        } else {
+            log.info("Admin user '{}' already exists with correct role — skipping seed.", adminEmail);
+        }
+        return;
+    }
 
     User admin = new User();
     admin.setFullName(adminFullName);
