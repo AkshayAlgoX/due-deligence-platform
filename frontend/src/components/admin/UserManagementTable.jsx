@@ -4,6 +4,12 @@ import { Eye } from "lucide-react";
 import { useTranslation } from "react-i18next";
 import { Table, TableHeader, TableBody, TableRow, TableHead, TableCell } from "@/components/ui/table";
 import { Badge } from "@/components/ui/badge";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+} from "@/components/ui/select";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/Skeleton";
@@ -69,19 +75,24 @@ export default function UserManagementTable({
                 <TableCell>{u.email}</TableCell>
 
                 <TableCell>
-                  <select
+                  <Select
                     value={u.role}
-                    onChange={(e) =>
-                      onRoleChange(u.id, e.target.value)
-                    }
-                    className="bg-white text-gray-900 dark:bg-[#161b22] dark:text-[#e6edf3] border border-gray-200 dark:border-[#30363d] rounded px-2 py-1 text-sm"
+                    onValueChange={(value) => onRoleChange(u.id, value)}
                   >
-                    {ROLES.map((r) => (
-                      <option key={r} value={r}>
-                        {r}
-                      </option>
-                    ))}
-                  </select>
+                    <SelectTrigger
+                      size="sm"
+                      className="w-auto min-w-[10rem] bg-white dark:bg-[#161b22] border-gray-200 dark:border-[#30363d] text-gray-900 dark:text-[#e6edf3] hover:bg-gray-50 dark:hover:bg-[#1c2128] focus-visible:ring-green-500"
+                    >
+                      {u.role}
+                    </SelectTrigger>
+                    <SelectContent align="start">
+                      {ROLES.map((r) => (
+                        <SelectItem key={r} value={r}>
+                          {r}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
                 </TableCell>
 
                 <TableCell>
