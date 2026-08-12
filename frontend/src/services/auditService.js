@@ -87,43 +87,17 @@ export const getAuditStatistics = async () => {
 /**
  * Download the exported audit log file.
  *
- * GET /api/audit-logs/export → blob → trigger download
- * Uses shared download utilities for consistent behavior.
+ * Uses direct URL download with cookie-based auth (auth_token cookie).
+ * No blob URLs — server sends Content-Disposition: attachment.
  */
 export const downloadAuditLogs = async (filters = {}) => {
-  const { downloadBlob } = await import("@/utils/downloadUtils");
+  const { downloadUrl } = await import("@/utils/downloadUtils");
 
-  const response = await api.get("/api/audit-logs/export", {
-    params: {
-      format: "csv",
-      ...(filters.action ? { action: filters.action } : {}),
-      ...(filters.userId ? { userId: filters.userId } : {}),
-      ...(filters.from ? { from: filters.from } : {}),
-      ...(filters.to ? { to: filters.to } : {}),
-    },
-    responseType: "blob",
-  });
+  const params = new URLSearchParams({ format: "csv" });
+  if (filters.action) params.set("action", filters.action);
+  if (filters.userId) params.set("userId", String(filters.userId));
+  if (filters.from) params.set("from", filters.from);
+  if (filters.to) params.set("to", filters.to);
 
-  // Detect JSON error responses disguised as blobs
-  const blob = response.data;
-  if (!blob || !(blob instanceof Blob)) {
-    throw new Error("Invalid response from server");
-  }
-  if (blob.size === 0) {
-    throw new Error("Server returned an empty CSV file");
-  }
-  // Check if response is JSON error (backend returns 4xx/5xx as JSON)
-  const header = await blob.slice(0, 100).text();
-  if (header.startsWith('{"success":false')) {
-    const full = await blob.text();
-    try {
-      const parsed = JSON.parse(full);
-      throw new Error(parsed.message || "Failed to export audit logs");
-    } catch (e) {
-      if (e.message && !e.message.startsWith("Failed to export")) throw e;
-      throw new Error("Failed to export audit logs");
-    }
-  }
-
-  downloadBlob(blob, "audit_logs.csv");
+  downloadUrl(`/api/audit-logs/export?${params.toString()}`);
 };
