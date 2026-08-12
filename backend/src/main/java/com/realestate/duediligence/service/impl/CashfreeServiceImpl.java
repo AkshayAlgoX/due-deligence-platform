@@ -156,6 +156,12 @@ public class CashfreeServiceImpl implements com.realestate.duediligence.service.
 
     @Override
     public boolean isOrderPaid(String orderId) {
+        String status = getOrderStatus(orderId);
+        return "PAID".equalsIgnoreCase(status);
+    }
+
+    @Override
+    public String getOrderStatus(String orderId) {
         try {
             String responseBody = cashfreeClient.get()
                     .uri("/orders/" + orderId)
@@ -163,12 +169,25 @@ public class CashfreeServiceImpl implements com.realestate.duediligence.service.
                     .bodyToMono(String.class)
                     .block();
 
+            log.info("[cashfree-verify] Raw order response for {}: {}", orderId, responseBody);
+
             JsonNode json = objectMapper.readTree(responseBody);
+
+            // Cashfree error payloads contain a "message" — surface it loudly
+            if (json.hasNonNull("message") && !json.has("order_status")) {
+                log.warn("[cashfree-verify] Cashfree returned an error for {}: {}", orderId,
+                        json.path("message").asText("unknown error"));
+                return "";
+            }
+
             String status = json.path("order_status").asText("");
-            return "PAID".equalsIgnoreCase(status);
+            log.info("[cashfree-verify] Order {} status = '{}' → paid={}", orderId, status,
+                    "PAID".equalsIgnoreCase(status));
+            return status;
         } catch (Exception e) {
-            log.error("Cashfree order status check failed for {}: {}", orderId, e.getMessage());
-            return false;
+            log.error("[cashfree-verify] Order status check failed for {}: {}",
+                    orderId, e.getMessage(), e);
+            return "";
         }
     }
 }
