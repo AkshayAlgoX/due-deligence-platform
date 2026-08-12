@@ -74,35 +74,6 @@ export const getAuditLogsByProperty = async (propertyId) => {
 };
 
 /**
- * Export audit logs.
- *
- * GET /api/audit-logs/export
- *
- * Current backend export format:
- * CSV
- */
-export const exportAuditLogs = async ({
-  format = "csv",
-  action,
-  userId,
-  from,
-  to,
-} = {}) => {
-  const response = await api.get("/api/audit-logs/export", {
-    params: {
-      format,
-      ...(action ? { action } : {}),
-      ...(userId ? { userId } : {}),
-      ...(from ? { from } : {}),
-      ...(to ? { to } : {}),
-    },
-    responseType: "blob",
-  });
-
-  return response;
-};
-
-/**
  * Get audit dashboard statistics.
  *
  * GET /api/audit-logs/stats
@@ -116,24 +87,43 @@ export const getAuditStatistics = async () => {
 /**
  * Download the exported audit log file.
  *
- * This helper creates a browser download from the Axios blob response.
+ * GET /api/audit-logs/export → blob → trigger download
+ * Uses shared download utilities for consistent behavior.
  */
 export const downloadAuditLogs = async (filters = {}) => {
-  const response = await exportAuditLogs(filters);
+  const { downloadBlob } = await import("@/utils/downloadUtils");
 
-  const blob = new Blob([response.data], {
-    type: "text/csv;charset=utf-8;",
+  const response = await api.get("/api/audit-logs/export", {
+    params: {
+      format: "csv",
+      ...(filters.action ? { action: filters.action } : {}),
+      ...(filters.userId ? { userId: filters.userId } : {}),
+      ...(filters.from ? { from: filters.from } : {}),
+      ...(filters.to ? { to: filters.to } : {}),
+    },
+    responseType: "blob",
   });
 
-  const url = window.URL.createObjectURL(blob);
+  // Detect JSON error responses disguised as blobs
+  const blob = response.data;
+  if (!blob || !(blob instanceof Blob)) {
+    throw new Error("Invalid response from server");
+  }
+  if (blob.size === 0) {
+    throw new Error("Server returned an empty CSV file");
+  }
+  // Check if response is JSON error (backend returns 4xx/5xx as JSON)
+  const header = await blob.slice(0, 100).text();
+  if (header.startsWith('{"success":false')) {
+    const full = await blob.text();
+    try {
+      const parsed = JSON.parse(full);
+      throw new Error(parsed.message || "Failed to export audit logs");
+    } catch (e) {
+      if (e.message && !e.message.startsWith("Failed to export")) throw e;
+      throw new Error("Failed to export audit logs");
+    }
+  }
 
-  const link = document.createElement("a");
-  link.href = url;
-  link.download = "audit_logs.csv";
-
-  document.body.appendChild(link);
-  link.click();
-
-  link.remove();
-  window.URL.revokeObjectURL(url);
+  downloadBlob(blob, "audit_logs.csv");
 };
