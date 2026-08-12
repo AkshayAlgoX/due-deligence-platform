@@ -14,7 +14,7 @@ import {
   Bell,
   ClipboardList,
   History,
-  User, 
+  User,
   LifeBuoy,
   Bookmark,
   Settings,
@@ -22,6 +22,7 @@ import {
   Users,
   BarChart3,
   Server,
+  CreditCard,
 } from "lucide-react";
 
 import { getUser } from "@/utils/helpers";
@@ -46,6 +47,7 @@ const ROUTE_ROLES = {
 
   "/dashboard/profile":            ["BUYER", "REAL_ESTATE_AGENT", "LEGAL_REVIEWER", "FINANCIAL_INSTITUTION", "ADMIN"],
   "/dashboard/settings":           ["BUYER", "REAL_ESTATE_AGENT", "LEGAL_REVIEWER", "FINANCIAL_INSTITUTION", "ADMIN"],
+  "/dashboard/billing":            ["BUYER", "REAL_ESTATE_AGENT", "LEGAL_REVIEWER", "FINANCIAL_INSTITUTION", "ADMIN"],
   "/support":                      ["BUYER", "REAL_ESTATE_AGENT", "LEGAL_REVIEWER", "FINANCIAL_INSTITUTION", "ADMIN"],
 };
 
@@ -96,6 +98,7 @@ const MENU_SECTION_CONFIGS_ADMIN = [
     collapsible: true,
     items: [
       { titleKey: "nav.profile",  href: "/dashboard/profile",  icon: User,     badge: null },
+      { titleKey: "nav.billing",  href: "/dashboard/billing",  icon: CreditCard, badge: null },
       { titleKey: "nav.settings", href: "/dashboard/settings", icon: Settings, badge: null },
     ],
   },
@@ -138,6 +141,7 @@ const MENU_SECTION_CONFIGS_USER = [
     collapsible: true,
     items: [
       { titleKey: "nav.profile",  href: "/dashboard/profile",  icon: User,     badge: null },
+      { titleKey: "nav.billing",  href: "/dashboard/billing",  icon: CreditCard, badge: null },
       { titleKey: "nav.settings", href: "/dashboard/settings", icon: Settings, badge: null },
       { titleKey: "nav.support",  href: "/support",            icon: LifeBuoy, badge: null },
     ],
