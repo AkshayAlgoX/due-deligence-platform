@@ -75,18 +75,12 @@ export default function DownloadPDFButton({ property }) {
         />
       ).toBlob();
 
-      const url      = URL.createObjectURL(blob);
       const filename = `due-diligence-${property.id}-${property.city ?? "property"}.pdf`
         .toLowerCase()
         .replace(/\s+/g, "-");
 
-      const link = document.createElement("a");
-      link.href     = url;
-      link.download = filename;
-      document.body.appendChild(link);
-      link.click();
-      document.body.removeChild(link);
-      URL.revokeObjectURL(url);
+      const { downloadBlob } = await import("@/utils/downloadUtils");
+      downloadBlob(blob, filename);
     } catch (err) {
       console.error("PDF generation failed:", err);
       toast.error(t("property.pdf.downloadFailed"), {

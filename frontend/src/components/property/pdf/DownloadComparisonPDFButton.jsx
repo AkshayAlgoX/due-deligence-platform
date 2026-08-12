@@ -66,17 +66,11 @@ export default function DownloadComparisonPDFButton({
         />
       ).toBlob();
 
-      const url      = URL.createObjectURL(blob);
       const ids      = properties.filter(Boolean).map((p) => p.id).join("-");
       const filename = `comparison-${ids}.pdf`;
 
-      const link = document.createElement("a");
-      link.href     = url;
-      link.download = filename;
-      document.body.appendChild(link);
-      link.click();
-      document.body.removeChild(link);
-      URL.revokeObjectURL(url);
+      const { downloadBlob } = await import("@/utils/downloadUtils");
+      downloadBlob(blob, filename);
     } catch (err) {
       console.error("Comparison PDF failed:", err);
       toast.error("Download failed", {
