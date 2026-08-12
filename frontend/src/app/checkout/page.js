@@ -48,13 +48,28 @@ export default function CheckoutPage() {
   const [authChecked, setAuthChecked] = useState(false);
   const [authenticated, setAuthenticated] = useState(false);
   const [loading, setLoading] = useState(false);
+  const [currentPlan, setCurrentPlan] = useState(null); // null = unknown
 
   // ── Auth guard — check token before anything else ──
   useEffect(() => {
     const token = getToken();
     setAuthenticated(!!token);
     setAuthChecked(true);
+    if (token) {
+      subscriptionService
+        .getCurrent()
+        .then((data) => {
+          if (data?.success) setCurrentPlan(data.plan || "FREE");
+        })
+        .catch(() => setCurrentPlan("FREE"));
+    }
   }, []);
+
+  const alreadyOnPaidPlan =
+    currentPlan === "PRO" || currentPlan === "BUSINESS" || currentPlan === "ENTERPRISE";
+  const extensionNotice = alreadyOnPaidPlan
+    ? `You're already on the ${currentPlan} plan — this payment extends your subscription by one month from your current expiry. You won't be double-charged.`
+    : null;
 
   const handleProceed = async () => {
     setLoading(true);
@@ -195,6 +210,12 @@ export default function CheckoutPage() {
 
           {/* ── Payment ── */}
           <div className="lg:col-span-3">
+            {extensionNotice && (
+              <div className="mb-4 rounded-xl border border-emerald-500/20 bg-emerald-500/[0.06] px-5 py-3.5 text-[13px] leading-relaxed text-white/70">
+                <span className="font-semibold text-emerald-400">Renewal notice:</span>{" "}
+                {extensionNotice}
+              </div>
+            )}
             <div className="rounded-2xl border border-white/[0.06] bg-white/[0.02] p-8 flex flex-col items-center justify-center min-h-[380px] text-center">
               <div className="h-12 w-12 rounded-full bg-emerald-500/10 flex items-center justify-center mb-5">
                 <Lock className="h-5 w-5 text-emerald-400" />

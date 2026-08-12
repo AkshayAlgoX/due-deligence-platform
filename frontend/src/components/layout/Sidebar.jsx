@@ -98,7 +98,6 @@ const MENU_SECTION_CONFIGS_ADMIN = [
     collapsible: true,
     items: [
       { titleKey: "nav.profile",  href: "/dashboard/profile",  icon: User,     badge: null },
-      { titleKey: "nav.billing",  href: "/dashboard/billing",  icon: CreditCard, badge: null },
       { titleKey: "nav.settings", href: "/dashboard/settings", icon: Settings, badge: null },
     ],
   },

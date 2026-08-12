@@ -149,13 +149,7 @@ public class SubscriptionController {
                 return ResponseEntity.ok(successMap("Unknown order"));
             }
 
-            sub.setStatus("ACTIVE");
-            sub.setCashfreePaymentId(paymentId);
-            sub.setExpiresAt(LocalDateTime.now().plusMonths(1));
-            subscriptionRepository.save(sub);
-
-            log.info("Subscription activated: userId={} plan={} order={}",
-                    sub.getUserId(), sub.getPlan(), orderId);
+            activateSubscription(sub, paymentId, "webhook");
 
             userRepository.findById(sub.getUserId()).ifPresent(u -> {
                 try {
@@ -200,7 +194,9 @@ public class SubscriptionController {
             long reportsThisMonth = countReportsThisMonth(user.getId(), monthStart);
 
             int limit = plan.getMonthlyReportLimit();
-            long remaining = limit < 0
+            // Integer.MAX_VALUE is the "unlimited" sentinel — report it as -1
+            // so the frontend renders "∞ unlimited" instead of raw numbers.
+            long remaining = (limit < 0 || limit == Integer.MAX_VALUE)
                     ? -1  // -1 signals "unlimited" to the frontend
                     : Math.max(0, limit - reportsThisMonth);
 
@@ -300,12 +296,7 @@ public class SubscriptionController {
                     "note", "Order paid but no pending subscription row found"));
         }
 
-        sub.setStatus("ACTIVE");
-        sub.setExpiresAt(LocalDateTime.now().plusMonths(1));
-        subscriptionRepository.save(sub);
-
-        log.info("[subscription-verify] Subscription activated: userId={} plan={} order={}",
-                sub.getUserId(), sub.getPlan(), orderId);
+        activateSubscription(sub, null, "verify-order");
 
         return ResponseEntity.ok(Map.of(
                 "success", true,
@@ -360,6 +351,43 @@ public class SubscriptionController {
     }
 
     // ── Helpers ──────────────────────────────────────────────────
+
+    /**
+     * Activates a subscription after payment confirmation.
+     *
+     * Re-purchase handling: if the user already has an ACTIVE subscription,
+     * the new payment EXTENDS it by one month from the current expiry
+     * (big-website pattern — no overlapping subscriptions, no lost days).
+     * The old row is marked SUPERSEDED and the new row becomes the
+     * authoritative one.
+     */
+    private void activateSubscription(Subscription sub, String paymentId, String source) {
+        LocalDateTime start;
+        var existingActive = subscriptionRepository
+                .findFirstByUserIdAndStatus(sub.getUserId(), "ACTIVE")
+                .filter(s -> s.getExpiresAt() != null && s.getExpiresAt().isAfter(LocalDateTime.now()));
+
+        if (existingActive.isPresent()) {
+            Subscription old = existingActive.get();
+            start = old.getExpiresAt();
+            old.setStatus("SUPERSEDED");
+            subscriptionRepository.save(old);
+            log.info("Re-purchase: extending from existing expiry {} for userId={}",
+                    start, sub.getUserId());
+        } else {
+            start = LocalDateTime.now();
+        }
+
+        sub.setStatus("ACTIVE");
+        if (paymentId != null && !paymentId.isBlank()) {
+            sub.setCashfreePaymentId(paymentId);
+        }
+        sub.setExpiresAt(start.plusMonths(1));
+        subscriptionRepository.save(sub);
+
+        log.info("Subscription activated via {}: userId={} plan={} order={} expiresAt={}",
+                source, sub.getUserId(), sub.getPlan(), sub.getCashfreeOrderId(), sub.getExpiresAt());
+    }
 
     private User requireUser(Authentication authentication) {
         if (authentication == null || authentication.getName() == null) return null;
