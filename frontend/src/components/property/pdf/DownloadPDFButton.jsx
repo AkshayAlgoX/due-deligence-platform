@@ -87,10 +87,6 @@ export default function DownloadPDFButton({ property }) {
       link.click();
       document.body.removeChild(link);
       URL.revokeObjectURL(url);
-
-      toast.success(t("property.pdf.downloaded"), {
-        description: t("property.pdf.savedTo", { filename }),
-      });
     } catch (err) {
       console.error("PDF generation failed:", err);
       toast.error(t("property.pdf.downloadFailed"), {

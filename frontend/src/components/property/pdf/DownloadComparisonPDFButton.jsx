@@ -77,10 +77,6 @@ export default function DownloadComparisonPDFButton({
       link.click();
       document.body.removeChild(link);
       URL.revokeObjectURL(url);
-
-      toast.success("Comparison report downloaded", {
-        description: `${filename} saved to your downloads folder.`,
-      });
     } catch (err) {
       console.error("Comparison PDF failed:", err);
       toast.error("Download failed", {
