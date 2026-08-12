@@ -181,6 +181,22 @@ public class CashfreeServiceImpl implements com.realestate.duediligence.service.
             }
 
             String status = json.path("order_status").asText("");
+
+            // Sandbox edge case: order_status sometimes lags behind the actual
+            // payment. If any payment on the order is SUCCESS, treat as PAID.
+            if (!"PAID".equalsIgnoreCase(status)) {
+                JsonNode payments = json.path("payments");
+                if (payments != null && payments.isArray()) {
+                    for (JsonNode p : payments) {
+                        if ("SUCCESS".equalsIgnoreCase(p.path("payment_status").asText(""))) {
+                            log.info("[cashfree-verify] Order {} status='{}' but found a SUCCESS payment {} — treating as PAID",
+                                    orderId, status, p.path("cf_payment_id").asText(""));
+                            return "PAID";
+                        }
+                    }
+                }
+            }
+
             log.info("[cashfree-verify] Order {} status = '{}' → paid={}", orderId, status,
                     "PAID".equalsIgnoreCase(status));
             return status;
