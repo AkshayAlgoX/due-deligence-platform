@@ -19,8 +19,10 @@ import {
   ChevronRight,
   ChevronDown,
   Home,
+  FileText,
 } from "lucide-react";
 import Link from "next/link";
+import { toast } from "sonner";
 
 import { useReport } from "@/hooks/useReport";
 import { useExport } from "@/hooks/useExport";
@@ -32,6 +34,7 @@ import FilterBar from "@/components/reports/FilterBar";
 import EmptyState from "@/components/reports/EmptyState";
 import ConfirmDialog from "@/components/reports/ConfirmDialog";
 import ExportProgressModal from "@/components/export/ExportProgressModal";
+import PageHeader from "@/components/ui/PageHeader";
 
 const PAGE_SIZE = 20;
 
@@ -175,10 +178,13 @@ export default function ReportsPage() {
     setIsDeleting(true);
     try {
       await reportService.delete(deleteTarget.id);
+      toast.success("Report deleted successfully");
       setDeleteTarget(null);
       refreshList();
     } catch (err) {
       console.error("Delete failed:", err);
+      const msg = err?.response?.data?.message || err.message || "Failed to delete report. Please try again.";
+      toast.error(msg);
       setDeleteTarget(null);
     } finally {
       setIsDeleting(false);
@@ -194,9 +200,12 @@ export default function ReportsPage() {
     async (reportId) => {
       try {
         await reportService.regenerate(reportId);
+        toast.success("Report regeneration started");
         refreshList();
       } catch (err) {
         console.error("Regenerate failed:", err);
+        const msg = err?.response?.data?.message || err.message || "Failed to regenerate report. Please try again.";
+        toast.error(msg);
       }
     },
     [refreshList]
@@ -204,7 +213,9 @@ export default function ReportsPage() {
 
   const handleCopyLink = useCallback((reportId) => {
     const url = `${window.location.origin}/reports/${reportId}`;
-    navigator.clipboard?.writeText(url).catch(() => {});
+    navigator.clipboard?.writeText(url)
+      .then(() => toast.success("Report link copied to clipboard"))
+      .catch(() => toast.error("Failed to copy link"));
   }, []);
 
   const syncUrl = useCallback(
@@ -271,7 +282,7 @@ export default function ReportsPage() {
 
   return (
     <div className="w-full">
-      <div className="max-w-6xl mx-auto px-6 py-8 lg:px-10 space-y-6">
+      <div className="max-w-[1400px] mx-auto px-6 py-8 lg:px-10 space-y-6">
 
         {/* ══ BREADCRUMB ═══════════════════════════════════════════════ */}
         <nav aria-label="Breadcrumb" className="flex items-center gap-2">
@@ -287,21 +298,16 @@ export default function ReportsPage() {
           <span className="text-sm text-gray-900 dark:text-[#e6edf3] font-semibold">My Reports</span>
         </nav>
 
-        {/* ══ HERO — Dashboard card style ══════════════════════════════ */}
-        <section className="rounded-2xl border border-gray-100 dark:border-[#30363d] bg-white dark:bg-[#161b22] shadow-sm p-6 lg:p-8">
-          <div className="flex items-center justify-between gap-6 flex-wrap lg:flex-nowrap">
-            {/* Left: title + subtitle */}
-            <div className="flex-1 min-w-0">
-              <h1 className="text-3xl lg:text-4xl font-bold tracking-tight text-gray-900 dark:text-[#e6edf3] leading-tight">
-                Due Diligence Reports
-              </h1>
-              <p className="text-sm text-gray-500 dark:text-[#7d8590] mt-2">
-                Every report. Every risk. Every insight , all in one place.
-              </p>
-            </div>
-
-            {/* Right: actions */}
-            <div className="flex items-center gap-2.5 flex-shrink-0">
+        {/* ══ HERO ══════════════════════════════════════════════════════ */}
+        <PageHeader
+          icon={FileText}
+          iconGradient="from-emerald-500/10 to-teal-500/10 dark:from-emerald-500/20 dark:to-teal-500/20"
+          iconBorder="border-emerald-500/20"
+          iconColor="text-emerald-600 dark:text-emerald-400"
+          title="Due Diligence Reports"
+          subtitle="Every report. Every risk. Every insight, all in one place."
+          actions={
+            <>
               <Link
                 href="/reports/export-history"
                 className="flex items-center gap-2 h-10 px-4 rounded-xl bg-gray-50 dark:bg-[#1c2128] border border-gray-200 dark:border-[#30363d] text-sm font-medium text-gray-700 dark:text-[#e6edf3] hover:bg-gray-100 dark:hover:bg-[#22282f] hover:border-gray-300 dark:hover:border-[#3a424c] transition-all duration-150 focus:outline-none focus-visible:ring-2 focus-visible:ring-[#22C55E]/50"
@@ -316,9 +322,9 @@ export default function ReportsPage() {
                 <Plus size={16} strokeWidth={2.5} aria-hidden="true" />
                 <span>New report</span>
               </Link>
-            </div>
-          </div>
-        </section>
+            </>
+          }
+        />
 
         {/* ══ KPI CARDS ════════════════════════════════════════════════ */}
         <section aria-label="Report statistics">
