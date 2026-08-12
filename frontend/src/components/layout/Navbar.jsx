@@ -41,7 +41,11 @@ export default function Navbar({ toggleSidebar }) {
   const menuRef = useRef(null);
 
   // ── Fetch subscription plan for the Upgrade button (Vercel pattern) ──
+  // Admins are platform operators and are exempt from subscription —
+  // no Upgrade button or plan badge for them (big-website pattern).
   useEffect(() => {
+    const currentUser = getUser();
+    if (currentUser?.role === "ADMIN") return;
     let cancelled = false;
     subscriptionService
       .getCurrent()
