@@ -125,6 +125,56 @@ public class EmailService {
     }
 
     // ══════════════════════════════════════════════════════════════
+    //  8. CONTACT FORM NOTIFICATION
+    // ══════════════════════════════════════════════════════════════
+
+    @Async
+    public void sendContactNotification(com.realestate.duediligence.entity.ContactMessage msg) {
+        sendEmail(
+                fromAddress,
+                "New contact form submission: " + msg.getTopic() + " — " + msg.getName(),
+                buildContactNotificationHtml(msg),
+                "contact notification"
+        );
+    }
+
+    private String buildContactNotificationHtml(com.realestate.duediligence.entity.ContactMessage msg) {
+        String safeName = (msg.getName() != null && !msg.getName().isBlank()) ? msg.getName() : "Unknown";
+        String safeEmail = (msg.getEmail() != null) ? msg.getEmail() : "Unknown";
+        String safeCompany = (msg.getCompany() != null && !msg.getCompany().isBlank()) ? msg.getCompany() : "—";
+        String safeMessage = (msg.getMessage() != null) ? msg.getMessage() : "—";
+
+        return emailWrapper("New Contact Submission", """
+            <h2 style="margin: 0 0 16px; color: #111827; font-size: 22px; font-weight: 800;">
+                New contact form submission
+            </h2>
+            <table style="width: 100%%; border-collapse: collapse; background: #f9fafb; border-radius: 12px; margin: 16px 0;">
+                <tr>
+                    <td style="padding: 12px 16px; border-bottom: 1px solid #e5e7eb; font-size: 12px; font-weight: 600; color: #6b7280; text-transform: uppercase; letter-spacing: 1px;">Name</td>
+                    <td style="padding: 12px 16px; border-bottom: 1px solid #e5e7eb; font-size: 14px; color: #111827; font-weight: 600;">%s</td>
+                </tr>
+                <tr>
+                    <td style="padding: 12px 16px; border-bottom: 1px solid #e5e7eb; font-size: 12px; font-weight: 600; color: #6b7280; text-transform: uppercase; letter-spacing: 1px;">Email</td>
+                    <td style="padding: 12px 16px; border-bottom: 1px solid #e5e7eb; font-size: 14px; color: #111827; font-weight: 600;">%s</td>
+                </tr>
+                <tr>
+                    <td style="padding: 12px 16px; border-bottom: 1px solid #e5e7eb; font-size: 12px; font-weight: 600; color: #6b7280; text-transform: uppercase; letter-spacing: 1px;">Company</td>
+                    <td style="padding: 12px 16px; border-bottom: 1px solid #e5e7eb; font-size: 14px; color: #111827; font-weight: 600;">%s</td>
+                </tr>
+                <tr>
+                    <td style="padding: 12px 16px; border-bottom: 1px solid #e5e7eb; font-size: 12px; font-weight: 600; color: #6b7280; text-transform: uppercase; letter-spacing: 1px;">Topic</td>
+                    <td style="padding: 12px 16px; border-bottom: 1px solid #e5e7eb; font-size: 14px; color: #16a34a; font-weight: 700; text-transform: uppercase;">%s</td>
+                </tr>
+                <tr>
+                    <td style="padding: 12px 16px; font-size: 12px; font-weight: 600; color: #6b7280; text-transform: uppercase; letter-spacing: 1px;">Message</td>
+                    <td style="padding: 12px 16px; font-size: 14px; color: #111827; line-height: 1.6;">%s</td>
+                </tr>
+            </table>
+            """.formatted(safeName, safeEmail, safeCompany,
+                msg.getTopic() != null ? msg.getTopic().toUpperCase() : "GENERAL", safeMessage));
+    }
+
+    // ══════════════════════════════════════════════════════════════
     //  CORE SENDER (reusable)
     // ══════════════════════════════════════════════════════════════
         // ══════════════════════════════════════════════════════════════
@@ -141,7 +191,7 @@ public class EmailService {
         );
     }
 
-    private void sendEmail(String toEmail, String subject, String htmlBody, String label) {
+    public void sendEmail(String toEmail, String subject, String htmlBody, String label) {
         try {
             MimeMessage message = mailSender.createMimeMessage();
             MimeMessageHelper helper = new MimeMessageHelper(message, "UTF-8");
