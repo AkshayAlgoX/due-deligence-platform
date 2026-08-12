@@ -22,6 +22,16 @@ const subscriptionService = {
   cancel() {
     return api.post("/api/subscription/cancel").then((r) => r.data);
   },
+
+  /**
+   * Verify an order's payment status directly with Cashfree.
+   * Backup for the hosted-checkout redirect flow when the webhook lags.
+   */
+  verifyOrder(orderId) {
+    return api
+      .get("/api/subscription/verify-order", { params: { orderId } })
+      .then((r) => r.data);
+  },
 };
 
 export default subscriptionService;

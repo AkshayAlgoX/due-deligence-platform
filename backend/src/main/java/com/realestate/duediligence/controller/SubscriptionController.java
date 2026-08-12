@@ -1,6 +1,7 @@
 package com.realestate.duediligence.controller;
 
 import java.time.LocalDateTime;
+import java.util.HashMap;
 import java.util.Map;
 
 import org.slf4j.Logger;
@@ -12,6 +13,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.fasterxml.jackson.databind.JsonNode;
@@ -65,7 +67,15 @@ public class SubscriptionController {
                 CreateOrderResponse.builder().success(false).message("Not authenticated").build());
         }
 
-        SubscriptionPlan plan = SubscriptionPlan.fromName(request.getPlan());
+        SubscriptionPlan plan;
+        try {
+            plan = SubscriptionPlan.fromName(request.getPlan());
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body(
+                CreateOrderResponse.builder().success(false)
+                    .message("Unknown plan: " + request.getPlan()).build());
+        }
+
         if (plan == SubscriptionPlan.FREE || plan == SubscriptionPlan.ENTERPRISE) {
             return ResponseEntity.badRequest().body(
                 CreateOrderResponse.builder()
@@ -75,23 +85,35 @@ public class SubscriptionController {
                     .build());
         }
 
-        CreateOrderResponse response = cashfreeService.createOrder(
-                user.getId(), user.getEmail(), user.getFullName(), plan);
+        CreateOrderResponse response;
+        try {
+            response = cashfreeService.createOrder(
+                    user.getId(), user.getEmail(), user.getFullName(), plan);
+        } catch (Exception e) {
+            log.error("Cashfree order creation crashed: {}", e.getMessage(), e);
+            return ResponseEntity.status(502).body(
+                CreateOrderResponse.builder().success(false)
+                    .message("Payment gateway unavailable. Please try again.").build());
+        }
 
         if (!response.isSuccess()) {
             return ResponseEntity.status(502).body(response);
         }
 
-        // Record the pending order as a FAILED subscription row — activated on webhook
-        Subscription pending = Subscription.builder()
-                .userId(user.getId())
-                .plan(plan)
-                .status("FAILED")
-                .cashfreeOrderId(response.getOrderId())
-                .amount(response.getAmount())
-                .currency(response.getCurrency())
-                .build();
-        subscriptionRepository.save(pending);
+        // Record the pending order — activated on webhook
+        try {
+            Subscription pending = Subscription.builder()
+                    .userId(user.getId())
+                    .plan(plan)
+                    .status("PENDING")
+                    .cashfreeOrderId(response.getOrderId())
+                    .amount(response.getAmount())
+                    .currency(response.getCurrency())
+                    .build();
+            subscriptionRepository.save(pending);
+        } catch (Exception e) {
+            log.warn("Could not persist pending subscription: {}", e.getMessage());
+        }
 
         return ResponseEntity.ok(response);
     }
@@ -103,10 +125,9 @@ public class SubscriptionController {
             @RequestBody String rawPayload,
             @RequestHeader(value = "x-webhook-signature", required = false) String signature) {
 
-        // 1. Verify signature — reject forged payloads outright
         if (!cashfreeService.verifyWebhookSignature(rawPayload, signature)) {
             log.warn("Rejected Cashfree webhook with invalid signature");
-            return ResponseEntity.status(401).body(Map.of("success", false, "message", "Invalid signature"));
+            return ResponseEntity.status(401).body(errorMap("Invalid signature"));
         }
 
         try {
@@ -119,16 +140,15 @@ public class SubscriptionController {
             log.info("Cashfree webhook: type={} order={} status={}", eventType, orderId, orderStatus);
 
             if (!"PAYMENT_SUCCESS_WEBHOOK".equals(eventType) || !"PAID".equalsIgnoreCase(orderStatus)) {
-                return ResponseEntity.ok(Map.of("success", true, "message", "Ignored non-payment event"));
+                return ResponseEntity.ok(successMap("Ignored non-payment event"));
             }
 
             Subscription sub = subscriptionRepository.findByCashfreeOrderId(orderId).orElse(null);
             if (sub == null) {
                 log.warn("Webhook for unknown order {}", orderId);
-                return ResponseEntity.ok(Map.of("success", true, "message", "Unknown order"));
+                return ResponseEntity.ok(successMap("Unknown order"));
             }
 
-            // Activate the subscription
             sub.setStatus("ACTIVE");
             sub.setCashfreePaymentId(paymentId);
             sub.setExpiresAt(LocalDateTime.now().plusMonths(1));
@@ -137,14 +157,19 @@ public class SubscriptionController {
             log.info("Subscription activated: userId={} plan={} order={}",
                     sub.getUserId(), sub.getPlan(), orderId);
 
-            userRepository.findById(sub.getUserId()).ifPresent(u ->
-                emailService.sendWelcomeEmail(u.getEmail(), u.getFullName()));
+            userRepository.findById(sub.getUserId()).ifPresent(u -> {
+                try {
+                    emailService.sendWelcomeEmail(u.getEmail(), u.getFullName());
+                } catch (Exception e) {
+                    log.warn("Welcome email failed: {}", e.getMessage());
+                }
+            });
 
-            return ResponseEntity.ok(Map.of("success", true, "message", "Subscription activated"));
+            return ResponseEntity.ok(successMap("Subscription activated"));
 
         } catch (Exception e) {
             log.error("Webhook processing failed: {}", e.getMessage(), e);
-            return ResponseEntity.status(500).body(Map.of("success", false, "message", e.getMessage()));
+            return ResponseEntity.status(500).body(errorMap(e.getMessage()));
         }
     }
 
@@ -154,33 +179,123 @@ public class SubscriptionController {
     public ResponseEntity<Map<String, Object>> current(Authentication authentication) {
         User user = requireUser(authentication);
         if (user == null) {
-            return ResponseEntity.status(401).body(Map.of("success", false));
+            return ResponseEntity.status(401).body(errorMap("Not authenticated"));
         }
 
-        Subscription sub = subscriptionRepository
-                .findFirstByUserIdOrderByCreatedAtDesc(user.getId())
-                .orElse(null);
+        try {
+            Subscription sub = subscriptionRepository
+                    .findFirstByUserIdOrderByCreatedAtDesc(user.getId())
+                    .orElse(null);
 
-        SubscriptionPlan plan = (sub != null && "ACTIVE".equals(sub.getStatus())
-                && sub.getExpiresAt() != null && sub.getExpiresAt().isAfter(LocalDateTime.now()))
-                ? sub.getPlan()
-                : SubscriptionPlan.FREE;
+            boolean hasActivePaid = sub != null
+                    && "ACTIVE".equals(sub.getStatus())
+                    && sub.getExpiresAt() != null
+                    && sub.getExpiresAt().isAfter(LocalDateTime.now())
+                    && sub.getPlan() != SubscriptionPlan.FREE;
 
-        LocalDateTime monthStart = LocalDateTime.now().withDayOfMonth(1).withHour(0).withMinute(0).withSecond(0);
-        long reportsThisMonth = countReportsThisMonth(user.getId(), monthStart);
+            SubscriptionPlan plan = hasActivePaid ? sub.getPlan() : SubscriptionPlan.FREE;
 
-        int limit = plan.getMonthlyReportLimit();
-        long remaining = Math.max(0, limit - reportsThisMonth);
+            LocalDateTime monthStart = LocalDateTime.now()
+                    .withDayOfMonth(1).withHour(0).withMinute(0).withSecond(0).withNano(0);
+            long reportsThisMonth = countReportsThisMonth(user.getId(), monthStart);
+
+            int limit = plan.getMonthlyReportLimit();
+            long remaining = limit < 0
+                    ? -1  // -1 signals "unlimited" to the frontend
+                    : Math.max(0, limit - reportsThisMonth);
+
+            // HashMap tolerates null values — Map.of() crashes on null
+            Map<String, Object> body = new HashMap<>();
+            body.put("success", true);
+            body.put("plan", plan.name());
+            body.put("planLimit", limit);
+            body.put("reportsThisMonth", reportsThisMonth);
+            body.put("reportsRemaining", remaining);
+            body.put("expiresAt",
+                    hasActivePaid && sub.getExpiresAt() != null
+                            ? sub.getExpiresAt().toString()
+                            : null);
+            body.put("status", sub != null ? sub.getStatus() : "NONE");
+            body.put("cashfreeOrderId",
+                    hasActivePaid ? sub.getCashfreeOrderId() : null);
+            body.put("amount", hasActivePaid ? sub.getAmount() : 0);
+            body.put("currency", hasActivePaid ? sub.getCurrency() : "INR");
+
+            return ResponseEntity.ok(body);
+        } catch (Exception e) {
+            log.error("Failed to load subscription for user {}: {}",
+                    user.getId(), e.getMessage(), e);
+            return ResponseEntity.status(500).body(errorMap(
+                    "Could not load subscription info. Please refresh."));
+        }
+    }
+
+    // ── GET /api/subscription/verify-order ───────────────────────
+    // Backup verification for the hosted-checkout redirect flow.
+    // Cashfree webhooks can lag 5-30s, so the success page polls this
+    // endpoint until the order is PAID and the subscription is ACTIVE.
+
+    @GetMapping("/verify-order")
+    public ResponseEntity<Map<String, Object>> verifyOrder(
+            @RequestParam String orderId,
+            Authentication authentication) {
+
+        User user = requireUser(authentication);
+        if (user == null) {
+            return ResponseEntity.status(401).body(errorMap("Not authenticated"));
+        }
+
+        // 1. Already activated by webhook?
+        Subscription sub = subscriptionRepository.findByCashfreeOrderId(orderId).orElse(null);
+        if (sub != null && "ACTIVE".equals(sub.getStatus())) {
+            return ResponseEntity.ok(Map.of(
+                    "success", true,
+                    "status", "PAID",
+                    "plan", sub.getPlan().name(),
+                    "amount", sub.getAmount(),
+                    "currency", sub.getCurrency(),
+                    "expiresAt", sub.getExpiresAt() != null ? sub.getExpiresAt().toString() : null));
+        }
+
+        // 2. Ask Cashfree for the order status
+        boolean paid;
+        try {
+            paid = cashfreeService.isOrderPaid(orderId);
+        } catch (Exception e) {
+            log.error("verify-order failed for {}: {}", orderId, e.getMessage(), e);
+            return ResponseEntity.status(502).body(errorMap("Payment gateway unavailable. Please retry."));
+        }
+
+        if (!paid) {
+            return ResponseEntity.ok(Map.of("success", true, "status", "PENDING"));
+        }
+
+        // 3. Paid — activate the subscription (idempotent)
+        if (sub == null) {
+            return ResponseEntity.ok(Map.of(
+                    "success", true,
+                    "status", "PAID",
+                    "plan", "UNKNOWN",
+                    "amount", 0,
+                    "currency", "INR",
+                    "expiresAt", null,
+                    "note", "Order paid but no pending subscription row found"));
+        }
+
+        sub.setStatus("ACTIVE");
+        sub.setExpiresAt(LocalDateTime.now().plusMonths(1));
+        subscriptionRepository.save(sub);
+
+        log.info("Subscription activated via verify-order: userId={} plan={} order={}",
+                sub.getUserId(), sub.getPlan(), orderId);
 
         return ResponseEntity.ok(Map.of(
                 "success", true,
-                "plan", plan.name(),
-                "planLimit", limit,
-                "reportsThisMonth", reportsThisMonth,
-                "reportsRemaining", remaining,
-                "expiresAt", sub != null && sub.getExpiresAt() != null ? sub.getExpiresAt().toString() : null,
-                "status", sub != null ? sub.getStatus() : "NONE"
-        ));
+                "status", "PAID",
+                "plan", sub.getPlan().name(),
+                "amount", sub.getAmount(),
+                "currency", sub.getCurrency(),
+                "expiresAt", sub.getExpiresAt().toString()));
     }
 
     // ── POST /api/subscription/cancel ────────────────────────────
@@ -189,7 +304,7 @@ public class SubscriptionController {
     public ResponseEntity<Map<String, Object>> cancel(Authentication authentication) {
         User user = requireUser(authentication);
         if (user == null) {
-            return ResponseEntity.status(401).body(Map.of("success", false));
+            return ResponseEntity.status(401).body(errorMap("Not authenticated"));
         }
 
         Subscription sub = subscriptionRepository
@@ -197,7 +312,10 @@ public class SubscriptionController {
                 .orElse(null);
 
         if (sub == null || !"ACTIVE".equals(sub.getStatus())) {
-            return ResponseEntity.ok(Map.of("success", false, "message", "No active subscription"));
+            Map<String, Object> body = new HashMap<>();
+            body.put("success", false);
+            body.put("message", "No active subscription to cancel");
+            return ResponseEntity.ok(body);
         }
 
         sub.setStatus("CANCELLED");
@@ -205,15 +323,22 @@ public class SubscriptionController {
         subscriptionRepository.save(sub);
 
         try {
+            String expiryText = sub.getExpiresAt() != null
+                    ? sub.getExpiresAt().toString()
+                    : "the end of your current billing period";
             emailService.sendEmail(user.getEmail(), "Subscription cancelled",
                 "<p>Your " + sub.getPlan() + " subscription has been cancelled. "
-                + "You'll keep access until " + sub.getExpiresAt() + ".</p>",
+                + "You'll keep access until " + expiryText + ".</p>",
                 "subscription cancellation");
-        } catch (Exception ignored) {}
+        } catch (Exception e) {
+            log.warn("Cancellation email failed: {}", e.getMessage());
+        }
 
-        return ResponseEntity.ok(Map.of(
-                "success", true,
-                "message", "Subscription cancelled. Access continues until " + sub.getExpiresAt()));
+        Map<String, Object> body = new HashMap<>();
+        body.put("success", true);
+        body.put("message", "Subscription cancelled. Access continues until " +
+                (sub.getExpiresAt() != null ? sub.getExpiresAt() : "end of billing period"));
+        return ResponseEntity.ok(body);
     }
 
     // ── Helpers ──────────────────────────────────────────────────
@@ -230,5 +355,19 @@ public class SubscriptionController {
             log.warn("Could not count user reports for plan enforcement: {}", e.getMessage());
             return 0;
         }
+    }
+
+    private Map<String, Object> errorMap(String message) {
+        Map<String, Object> m = new HashMap<>();
+        m.put("success", false);
+        m.put("message", message);
+        return m;
+    }
+
+    private Map<String, Object> successMap(String message) {
+        Map<String, Object> m = new HashMap<>();
+        m.put("success", true);
+        m.put("message", message);
+        return m;
     }
 }

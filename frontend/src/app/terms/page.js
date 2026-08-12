@@ -43,7 +43,7 @@ const SECTIONS = [
       <ul>
         <li>You must provide accurate registration information and keep it current.</li>
         <li>You are solely responsible for maintaining the confidentiality of your password. We will never ask for your password or OTP by email or phone.</li>
-        <li>Notify us immediately at support@redd.in if you believe your account has been compromised. The "Sign out of all devices" control is available in your Profile for exactly this situation.</li>
+        <li>Notify us immediately at duedeligence8@gmail.com if you believe your account has been compromised. The "Sign out of all devices" control is available in your Profile for exactly this situation.</li>
         <li>One account per natural person. Sharing credentials between team members is prohibited — paid plans include team seats for this purpose.</li>
         <li>We may suspend or terminate accounts that violate these terms, pose a security risk, or are used for unlawful purposes.</li>
       </ul>
