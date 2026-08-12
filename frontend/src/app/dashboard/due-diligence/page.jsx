@@ -35,6 +35,7 @@ import {
 
 import { getAllProperties } from "@/services/propertyService";
 import { useReport } from "@/hooks/useReport";
+import { downloadBlob } from "@/utils/downloadUtils";
 
 // ─── Constants ────────────────────────────────────────────────────────────────
 
@@ -230,7 +231,6 @@ function exportCSV(properties, reports) {
   const csv = [headers.join(","), ...rows].join("\n");
   const blob = new Blob([csv], { type: "text/csv;charset=utf-8;" });
   const ts = new Date().toISOString().split("T")[0];
-  const { downloadBlob } = await import("@/utils/downloadUtils");
   downloadBlob(blob, `due_diligence_portfolio_${ts}.csv`);
 }
 

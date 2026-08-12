@@ -4,6 +4,7 @@ import { useState } from "react";
 import { useTranslation } from "react-i18next";
 import { Download, Loader2 } from "lucide-react";
 import { toast } from "sonner";
+import { downloadUrl } from "@/utils/downloadUtils";
 
 export default function ExportAnalyticsButton({ defaultFormat = "excel" }) {
   const { t, i18n } = useTranslation();
@@ -35,7 +36,6 @@ export default function ExportAnalyticsButton({ defaultFormat = "excel" }) {
       const base = (i18n.language ?? "en").slice(0, 2).toLowerCase();
       const language = SUPPORTED.has(base) ? base : "en";
 
-      const { downloadUrl } = await import("@/utils/downloadUtils");
       downloadUrl(`/api/admin/dashboard/export?format=${format}&language=${language}&period=30d`);
     } catch (error) {
       console.error("Analytics export failed:", error);

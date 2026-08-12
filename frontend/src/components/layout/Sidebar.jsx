@@ -14,7 +14,7 @@ import {
   Bell,
   ClipboardList,
   History,
-  User,
+  User, 
   LifeBuoy,
   Bookmark,
   Settings,

@@ -1,4 +1,5 @@
 import api from "./api";
+import { downloadUrl } from "@/utils/downloadUtils";
 
 // ─────────────────────────────────────────────────────────────
 // Audit Log API Service
@@ -91,8 +92,6 @@ export const getAuditStatistics = async () => {
  * No blob URLs — server sends Content-Disposition: attachment.
  */
 export const downloadAuditLogs = async (filters = {}) => {
-  const { downloadUrl } = await import("@/utils/downloadUtils");
-
   const params = new URLSearchParams({ format: "csv" });
   if (filters.action) params.set("action", filters.action);
   if (filters.userId) params.set("userId", String(filters.userId));
