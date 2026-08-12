@@ -45,6 +45,19 @@ export default function ExportAnalyticsButton({ defaultFormat = "excel" }) {
         throw new Error("Empty export file");
       }
 
+      // Detect JSON error disguised as blob
+      const header = await blob.slice(0, 100).text();
+      if (header.startsWith('{"success":false')) {
+        const full = await blob.text();
+        try {
+          const parsed = JSON.parse(full);
+          throw new Error(parsed.message || "Export failed");
+        } catch (e) {
+          if (e.message && !e.message.startsWith("Export failed")) throw e;
+          throw new Error("Export failed — server error");
+        }
+      }
+
       const extensionMap = {
         excel: "xlsx",
         csv: "csv",
