@@ -38,6 +38,9 @@ export function useExport() {
 
         const blob = await exportService.exportPdf(reportId);
 
+        // Detect JSON error disguised as blob (backend 500 returns JSON with responseType:"blob")
+        await throwIfJsonError(blob);
+
         setProgressStage(EXPORT_STAGES.DOWNLOADING);
         setProgressPercent(90);
 
@@ -71,6 +74,8 @@ export function useExport() {
         setProgressPercent(60);
 
         const blob = await exportService.exportExcel(reportId);
+
+        await throwIfJsonError(blob);
 
         setProgressStage(EXPORT_STAGES.DOWNLOADING);
         setProgressPercent(90);
@@ -109,6 +114,8 @@ export function useExport() {
 
         const blob = await exportService.exportBulk(reportIds, format);
 
+        await throwIfJsonError(blob);
+
         setProgressStage(EXPORT_STAGES.DOWNLOADING);
         setProgressPercent(90);
 
@@ -145,6 +152,8 @@ export function useExport() {
     async (exportId, filename = "export.pdf") => {
       try {
         const blob = await exportService.downloadFromHistory(exportId);
+
+        await throwIfJsonError(blob);
 
         if (!blob || !(blob instanceof Blob) || blob.size === 0) {
           try {
@@ -205,4 +214,28 @@ export function useExport() {
     fetchHistory,
     downloadFromHistoryItem,
   };
+}
+
+/**
+ * Detects JSON error responses disguised as blobs when using responseType:"blob".
+ * Backend returns {"success":false,"message":"..."} for errors,
+ * but Axios wraps them as Blobs since we requested blob response type.
+ *
+ * Without this check, the JSON error gets "downloaded" as a .pdf/.xlsx file
+ * and the user sees no error feedback — total silent failure.
+ */
+async function throwIfJsonError(blob) {
+  if (!blob || !(blob instanceof Blob) || blob.size === 0) return;
+  // Check first 100 bytes — JSON errors start with {"success":false
+  const header = await blob.slice(0, 100).text();
+  if (header.startsWith('{"success":false')) {
+    const full = await blob.text();
+    try {
+      const parsed = JSON.parse(full);
+      throw new Error(parsed.message || "Server returned an error");
+    } catch (e) {
+      if (e.message && e.message.startsWith("Server returned")) throw e;
+      throw new Error("Export failed — server returned an error");
+    }
+  }
 }
