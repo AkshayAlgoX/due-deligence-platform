@@ -40,75 +40,105 @@ public class ExportController {
     // ── 1. Full Versioned Report Downloads ───────────────────────────────────
 
     @GetMapping("/report/{reportId}/pdf")
-    public ResponseEntity<byte[]> exportReportPdf(
+    public ResponseEntity<?> exportReportPdf(
             @PathVariable Long reportId,
             Authentication authentication) {
 
         Long userId = getUserId(authentication);
-        byte[] pdfBytes = exportService.exportReportPdf(reportId, userId);
-        DueDiligenceReportResponse report = reportService.getReport(reportId);
+        try {
+            byte[] pdfBytes = exportService.exportReportPdf(reportId, userId);
+            DueDiligenceReportResponse report = reportService.getReport(reportId);
+            String fileName = formatReportFileName(report, "pdf");
 
-        String fileName = formatReportFileName(report, "pdf");
-
-        return ResponseEntity.ok()
-                .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + fileName + "\"")
-                .contentType(MediaType.APPLICATION_PDF)
-                .contentLength(pdfBytes.length)
-                .body(pdfBytes);
+            return ResponseEntity.ok()
+                    .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + fileName + "\"")
+                    .contentType(MediaType.APPLICATION_PDF)
+                    .contentLength(pdfBytes.length)
+                    .body(pdfBytes);
+        } catch (Exception e) {
+            org.slf4j.LoggerFactory.getLogger(ExportController.class)
+                .error("PDF export failed for report {}: {}", reportId, e.getMessage(), e);
+            return ResponseEntity.status(500).body(
+                java.util.Map.of("success", false, "message",
+                    "Failed to generate PDF. The report may have been deleted. " + e.getMessage()));
+        }
     }
 
     @GetMapping("/report/{reportId}/excel")
-    public ResponseEntity<byte[]> exportReportExcel(
+    public ResponseEntity<?> exportReportExcel(
             @PathVariable Long reportId,
             Authentication authentication) {
 
         Long userId = getUserId(authentication);
-        byte[] excelBytes = exportService.exportReportExcel(reportId, userId);
-        DueDiligenceReportResponse report = reportService.getReport(reportId);
+        try {
+            byte[] excelBytes = exportService.exportReportExcel(reportId, userId);
+            DueDiligenceReportResponse report = reportService.getReport(reportId);
+            String fileName = formatReportFileName(report, "xlsx");
+            MediaType excelMediaType = MediaType.parseMediaType("application/vnd.openxmlformats-officedocument.spreadsheetml.sheet");
 
-        String fileName = formatReportFileName(report, "xlsx");
-        MediaType excelMediaType = MediaType.parseMediaType("application/vnd.openxmlformats-officedocument.spreadsheetml.sheet");
-
-        return ResponseEntity.ok()
-                .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + fileName + "\"")
-                .contentType(excelMediaType)
-                .contentLength(excelBytes.length)
-                .body(excelBytes);
+            return ResponseEntity.ok()
+                    .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + fileName + "\"")
+                    .contentType(excelMediaType)
+                    .contentLength(excelBytes.length)
+                    .body(excelBytes);
+        } catch (Exception e) {
+            org.slf4j.LoggerFactory.getLogger(ExportController.class)
+                .error("Excel export failed for report {}: {}", reportId, e.getMessage(), e);
+            return ResponseEntity.status(500).body(
+                java.util.Map.of("success", false, "message",
+                    "Failed to generate Excel. The report may have been deleted. " + e.getMessage()));
+        }
     }
 
     // ── 2. Quick Property Snapshot Downloads ─────────────────────────────────
 
     @GetMapping("/property/{propertyId}/pdf")
-    public ResponseEntity<byte[]> exportPropertySnapshotPdf(
+    public ResponseEntity<?> exportPropertySnapshotPdf(
             @PathVariable Long propertyId,
             Authentication authentication) {
 
         Long userId = getUserId(authentication);
-        byte[] pdfBytes = exportService.exportPropertySnapshotPdf(propertyId, userId);
-        String fileName = "DueDiligence_Snapshot_Property_" + propertyId + "_" + LocalDate.now() + ".pdf";
+        try {
+            byte[] pdfBytes = exportService.exportPropertySnapshotPdf(propertyId, userId);
+            String fileName = "DueDiligence_Snapshot_Property_" + propertyId + "_" + LocalDate.now() + ".pdf";
 
-        return ResponseEntity.ok()
-                .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + fileName + "\"")
-                .contentType(MediaType.APPLICATION_PDF)
-                .contentLength(pdfBytes.length)
-                .body(pdfBytes);
+            return ResponseEntity.ok()
+                    .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + fileName + "\"")
+                    .contentType(MediaType.APPLICATION_PDF)
+                    .contentLength(pdfBytes.length)
+                    .body(pdfBytes);
+        } catch (Exception e) {
+            org.slf4j.LoggerFactory.getLogger(ExportController.class)
+                .error("Property PDF export failed for property {}: {}", propertyId, e.getMessage(), e);
+            return ResponseEntity.status(500).body(
+                java.util.Map.of("success", false, "message",
+                    "Failed to generate property PDF snapshot. " + e.getMessage()));
+        }
     }
 
     @GetMapping("/property/{propertyId}/excel")
-    public ResponseEntity<byte[]> exportPropertySnapshotExcel(
+    public ResponseEntity<?> exportPropertySnapshotExcel(
             @PathVariable Long propertyId,
             Authentication authentication) {
 
         Long userId = getUserId(authentication);
-        byte[] excelBytes = exportService.exportPropertySnapshotExcel(propertyId, userId);
-        String fileName = "DueDiligence_Snapshot_Property_" + propertyId + "_" + LocalDate.now() + ".xlsx";
-        MediaType excelMediaType = MediaType.parseMediaType("application/vnd.openxmlformats-officedocument.spreadsheetml.sheet");
+        try {
+            byte[] excelBytes = exportService.exportPropertySnapshotExcel(propertyId, userId);
+            String fileName = "DueDiligence_Snapshot_Property_" + propertyId + "_" + LocalDate.now() + ".xlsx";
+            MediaType excelMediaType = MediaType.parseMediaType("application/vnd.openxmlformats-officedocument.spreadsheetml.sheet");
 
-        return ResponseEntity.ok()
-                .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + fileName + "\"")
-                .contentType(excelMediaType)
-                .contentLength(excelBytes.length)
-                .body(excelBytes);
+            return ResponseEntity.ok()
+                    .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + fileName + "\"")
+                    .contentType(excelMediaType)
+                    .contentLength(excelBytes.length)
+                    .body(excelBytes);
+        } catch (Exception e) {
+            org.slf4j.LoggerFactory.getLogger(ExportController.class)
+                .error("Property Excel export failed for property {}: {}", propertyId, e.getMessage(), e);
+            return ResponseEntity.status(500).body(
+                java.util.Map.of("success", false, "message",
+                    "Failed to generate property Excel snapshot. " + e.getMessage()));
+        }
     }
 
     // ── 3. Preview & Bulk & History Endpoints ─────────────────────────────────
@@ -124,20 +154,27 @@ public class ExportController {
     }
 
     @PostMapping("/bulk")
-    public ResponseEntity<byte[]> exportBulk(
+    public ResponseEntity<?> exportBulk(
             @RequestBody ExportRequest request,
             Authentication authentication) {
 
         Long userId = getUserId(authentication);
-        byte[] zipBytes = exportService.exportBulk(request, userId);
+        try {
+            byte[] zipBytes = exportService.exportBulk(request, userId);
+            String fileName = "DueDiligence_Bulk_Reports_" + LocalDate.now() + ".zip";
 
-        String fileName = "DueDiligence_Bulk_Reports_" + LocalDate.now() + ".zip";
-
-        return ResponseEntity.ok()
-                .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + fileName + "\"")
-                .contentType(MediaType.parseMediaType("application/zip"))
-                .contentLength(zipBytes.length)
-                .body(zipBytes);
+            return ResponseEntity.ok()
+                    .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + fileName + "\"")
+                    .contentType(MediaType.parseMediaType("application/zip"))
+                    .contentLength(zipBytes.length)
+                    .body(zipBytes);
+        } catch (Exception e) {
+            org.slf4j.LoggerFactory.getLogger(ExportController.class)
+                .error("Bulk export failed: {}", e.getMessage(), e);
+            return ResponseEntity.status(500).body(
+                java.util.Map.of("success", false, "message",
+                    "Failed to generate bulk export. One or more reports may have been deleted. " + e.getMessage()));
+        }
     }
 
     @GetMapping("/history")

@@ -58,17 +58,8 @@ export default function ExportAnalyticsButton({ defaultFormat = "excel" }) {
           .toISOString()
           .slice(0, 10)}.${extension}`;
 
-      const url = window.URL.createObjectURL(blob);
-
-      const link = document.createElement("a");
-      link.href = url;
-      link.download = filename;
-
-      document.body.appendChild(link);
-      link.click();
-      document.body.removeChild(link);
-
-      window.URL.revokeObjectURL(url);
+      const { downloadBlob } = await import("@/utils/downloadUtils");
+      downloadBlob(blob, filename);
     } catch (error) {
       console.error("Analytics export failed:", error);
       toast.error(t("nav.admin.exportFailed"));

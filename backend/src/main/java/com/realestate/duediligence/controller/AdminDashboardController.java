@@ -41,39 +41,47 @@ public class AdminDashboardController {
     }
 
     @GetMapping("/export")
-    public ResponseEntity<byte[]> exportDashboard(
+    public ResponseEntity<?> exportDashboard(
             @RequestParam(defaultValue = "excel") String format,
             @RequestParam(defaultValue = "30d") String period,
             @RequestParam(defaultValue = "en") String language) {
 
         int days = parsePeriodToDays(period);
 
-        byte[] fileBytes = adminExportService.exportDashboard(
-                format,
-                days,
-                language);
+        try {
+            byte[] fileBytes = adminExportService.exportDashboard(
+                    format,
+                    days,
+                    language);
 
-        String filename;
-        MediaType mediaType;
+            String filename;
+            MediaType mediaType;
 
-        if ("pdf".equalsIgnoreCase(format)) {
-            filename = "admin-analytics.pdf";
-            mediaType = MediaType.APPLICATION_PDF;
-        } else if ("csv".equalsIgnoreCase(format)) {
-            filename = "admin-analytics.csv";
-            mediaType = MediaType.parseMediaType("text/csv");
-        } else {
-            filename = "admin-analytics.xlsx";
-            mediaType = MediaType.parseMediaType(
-                    "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet");
+            if ("pdf".equalsIgnoreCase(format)) {
+                filename = "admin-analytics.pdf";
+                mediaType = MediaType.APPLICATION_PDF;
+            } else if ("csv".equalsIgnoreCase(format)) {
+                filename = "admin-analytics.csv";
+                mediaType = MediaType.parseMediaType("text/csv");
+            } else {
+                filename = "admin-analytics.xlsx";
+                mediaType = MediaType.parseMediaType(
+                        "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet");
+            }
+
+            return ResponseEntity.ok()
+                    .contentType(mediaType)
+                    .header(
+                            HttpHeaders.CONTENT_DISPOSITION,
+                            "attachment; filename=\"" + filename + "\"")
+                    .body(fileBytes);
+        } catch (Exception e) {
+            org.slf4j.LoggerFactory.getLogger(AdminDashboardController.class)
+                .error("Dashboard export failed (format={}, period={}): {}", format, days, e.getMessage(), e);
+            return ResponseEntity.status(500).body(
+                java.util.Map.of("success", false, "message",
+                    "Failed to generate dashboard export. " + e.getMessage()));
         }
-
-        return ResponseEntity.ok()
-                .contentType(mediaType)
-                .header(
-                        HttpHeaders.CONTENT_DISPOSITION,
-                        "attachment; filename=\"" + filename + "\"")
-                .body(fileBytes);
     }
 
     @GetMapping("/risk-distribution")

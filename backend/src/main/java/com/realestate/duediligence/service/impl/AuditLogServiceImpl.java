@@ -149,16 +149,26 @@ public byte[] exportLogs(AuditLogFilterRequest request, String format) {
 
     for (AuditLogDto log : logs) {
 
-        csv.append(log.getId()).append(",");
-        csv.append(log.getUserName()).append(",");
-        csv.append(log.getAction()).append(",");
-        csv.append(log.getEntityType()).append(",");
-        csv.append(log.getEntityId()).append(",");
-        csv.append(log.getIpAddress()).append(",");
-        csv.append(log.getCreatedAt()).append("\n");
+        csv.append(esc(log.getId())).append(",");
+        csv.append(esc(log.getUserName())).append(",");
+        csv.append(esc(log.getAction())).append(",");
+        csv.append(esc(log.getEntityType())).append(",");
+        csv.append(esc(log.getEntityId())).append(",");
+        csv.append(esc(log.getIpAddress())).append(",");
+        csv.append(esc(log.getCreatedAt())).append("\n");
     }
 
     return csv.toString().getBytes(StandardCharsets.UTF_8);
+}
+
+/** Null-safe CSV value escaper — quotes values containing commas, quotes, or newlines */
+private static String esc(Object value) {
+    if (value == null) return "";
+    String s = value.toString();
+    if (s.contains(",") || s.contains("\"") || s.contains("\n")) {
+        return "\"" + s.replace("\"", "\"\"") + "\"";
+    }
+    return s;
 }
 
 @Override
