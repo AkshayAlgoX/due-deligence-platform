@@ -87,6 +87,11 @@ public class SecurityConfig {
     "/api/auth/verify-otp",
     "/api/auth/reset-password",
 
+    // Public marketing endpoints
+    "/api/contact/submit",
+    // Cashfree webhook — signature-verified inside the controller
+    "/api/subscription/webhook",
+
     // Swagger
     "/swagger-ui.html",
     "/swagger-ui/**",

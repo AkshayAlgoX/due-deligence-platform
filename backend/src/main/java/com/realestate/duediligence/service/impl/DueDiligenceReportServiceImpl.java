@@ -31,6 +31,7 @@ import com.realestate.duediligence.enums.ReportStatus;
 import com.realestate.duediligence.repository.DueDiligenceReportRepository;
 import com.realestate.duediligence.repository.PropertyRepository;
 import com.realestate.duediligence.repository.ReportSectionRepository;
+import com.realestate.duediligence.repository.SubscriptionRepository;
 import com.realestate.duediligence.repository.UserRepository;
 import com.realestate.duediligence.service.DueDiligenceReportService;
 
@@ -68,6 +69,7 @@ public class DueDiligenceReportServiceImpl implements DueDiligenceReportService 
     private final PropertyRepository propertyRepository;
     private final UserRepository userRepository;
     private final ReportGenerationExecutor executor;
+    private final SubscriptionRepository subscriptionRepository;
 
     // ══════════════════════════════════════════════════════════════
     // PUBLIC API
@@ -77,6 +79,10 @@ public class DueDiligenceReportServiceImpl implements DueDiligenceReportService 
     @Transactional
     public DueDiligenceReportResponse generate(GenerateReportRequest request) {
         User user = requireCurrentUser();
+
+        // ── Plan-limit enforcement (FREE plan: 3 reports/month) ──
+        enforcePlanLimit(user);
+
         Property property = propertyRepository.findById(request.getPropertyId())
                 .orElseThrow(() -> new RuntimeException(
                         "Property not found: " + request.getPropertyId()));
@@ -236,7 +242,45 @@ public class DueDiligenceReportServiceImpl implements DueDiligenceReportService 
     // HELPERS
     // ══════════════════════════════════════════════════════════════
 
+    /**
+     * Enforces the FREE plan's monthly report limit.
+     * PRO/BUSINESS/ENTERPRISE have unlimited reports; admins are exempt.
+     */
+    private void enforcePlanLimit(User user) {
+        if (isAdmin(user)) return;
+
+        // Resolve the user's active plan — FREE by default
+        var sub = subscriptionRepository
+                .findFirstByUserIdOrderByCreatedAtDesc(user.getId())
+                .orElse(null);
+
+        boolean hasPaidPlan = sub != null
+                && "ACTIVE".equals(sub.getStatus())
+                && sub.getExpiresAt() != null
+                && sub.getExpiresAt().isAfter(java.time.LocalDateTime.now())
+                && sub.getPlan() != com.realestate.duediligence.enums.SubscriptionPlan.FREE;
+
+        if (hasPaidPlan) return;
+
+        // FREE plan: 3 reports per calendar month
+        int limit = com.realestate.duediligence.enums.SubscriptionPlan.FREE.getMonthlyReportLimit();
+        LocalDateTime monthStart = java.time.LocalDateTime.now()
+                .withDayOfMonth(1).withHour(0).withMinute(0).withSecond(0).withNano(0);
+
+        long reportsThisMonth = reportRepository
+                .countByGeneratedByIdAndCreatedAtAfter(user.getId(), monthStart);
+
+        if (reportsThisMonth >= limit) {
+            log.info("Plan limit reached: user={} reportsThisMonth={} limit={}",
+                    user.getId(), reportsThisMonth, limit);
+            throw new com.realestate.duediligence.exception.PlanLimitExceededException(
+                    "Free plan limit reached. You've generated " + limit
+                    + " reports this month. Upgrade to Pro for unlimited reports.");
+        }
+    }
+
     private User requireCurrentUser() {
+
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         if (auth == null || !auth.isAuthenticated() || auth.getName() == null) {
             throw new RuntimeException("Authentication required");
