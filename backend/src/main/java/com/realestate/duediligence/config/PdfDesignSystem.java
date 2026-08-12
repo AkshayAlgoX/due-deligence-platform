@@ -8,6 +8,8 @@ import com.itextpdf.kernel.font.PdfFont;
 import com.realestate.duediligence.enums.RiskCategory;
 import com.realestate.duediligence.enums.RiskLevel;
 import com.realestate.duediligence.pdf.util.PdfFontManager;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 
 /**
  * Complete design system for premium PDF reports.
@@ -23,9 +25,20 @@ import com.realestate.duediligence.pdf.util.PdfFontManager;
  * <p>Design language: <b>Inter typography</b> + <b>Bloomberg Terminal</b>
  * data density + <b>Stripe Docs</b> whitespace.
  */
-public final class PdfDesignSystem {
+@Component
+public class PdfDesignSystem {
 
-    private PdfDesignSystem() { /* constants only */ }
+    private static PdfDesignSystem INSTANCE;
+
+    @Autowired
+    private PdfFontManager fontManager;
+
+    @Autowired
+    public void setInstance() {
+        PdfDesignSystem.INSTANCE = this;
+    }
+
+    public PdfDesignSystem() { /* Spring-managed singleton */ }
 
     // ═══════════════════════════════════════════════════════════════
     // TYPOGRAPHY SCALE (modular scale, ratio ~1.25)
@@ -118,22 +131,22 @@ public final class PdfDesignSystem {
 
     /** Body copy — Inter Regular (400). Default for all prose. */
     public static PdfFont fontRegular() {
-        return PdfFontManager.regular();
+        return INSTANCE.fontManager.regular();
     }
 
     /** Subtle emphasis — Inter Medium (500). For value cells, dense data. */
     public static PdfFont fontMedium() {
-        return PdfFontManager.medium();
+        return INSTANCE.fontManager.medium();
     }
 
     /** Premium emphasis — Inter SemiBold (600). For card titles, subsection headers. */
     public static PdfFont fontSemibold() {
-        return PdfFontManager.semibold();
+        return INSTANCE.fontManager.semibold();
     }
 
     /** Maximum emphasis — Inter Bold (700). For display numbers and H1 headers only. */
     public static PdfFont fontBold() {
-        return PdfFontManager.bold();
+        return INSTANCE.fontManager.bold();
     }
 
     // ═══════════════════════════════════════════════════════════════
