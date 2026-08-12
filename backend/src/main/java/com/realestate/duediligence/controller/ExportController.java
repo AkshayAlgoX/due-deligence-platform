@@ -153,18 +153,39 @@ public class ExportController {
     }
 
     @GetMapping("/{exportId}/download")
-    public ResponseEntity<byte[]> downloadFromHistory(
+    public ResponseEntity<?> downloadFromHistory(
             @PathVariable Long exportId,
             Authentication authentication) {
 
         Long userId = getUserId(authentication);
-        byte[] bytes = exportService.downloadExportFromHistory(exportId, userId);
+        try {
+            byte[] bytes = exportService.downloadExportFromHistory(exportId, userId);
 
-        return ResponseEntity.ok()
-                .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"export_" + exportId + ".pdf\"")
-                .contentType(MediaType.APPLICATION_PDF)
-                .contentLength(bytes.length)
-                .body(bytes);
+            if (bytes == null || bytes.length == 0) {
+                return ResponseEntity.status(410).body(
+                    java.util.Map.of("success", false, "message",
+                        "Export file no longer available. The original report may have been deleted. Please generate a new export."));
+            }
+
+            return ResponseEntity.ok()
+                    .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"export_" + exportId + ".pdf\"")
+                    .contentType(MediaType.APPLICATION_PDF)
+                    .contentLength(bytes.length)
+                    .body(bytes);
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.status(404).body(
+                java.util.Map.of("success", false, "message", e.getMessage()));
+        } catch (SecurityException e) {
+            return ResponseEntity.status(403).body(
+                java.util.Map.of("success", false, "message", e.getMessage()));
+        } catch (Exception e) {
+            // Log full stack trace for debugging
+            org.slf4j.LoggerFactory.getLogger(ExportController.class)
+                .error("Failed to download export {}: {}", exportId, e.getMessage(), e);
+            return ResponseEntity.status(500).body(
+                java.util.Map.of("success", false, "message",
+                    "Export file could not be generated. The report data may no longer be available. Please try generating a new export."));
+        }
     }
 
     // ── Helpers ──────────────────────────────────────────────────────────────

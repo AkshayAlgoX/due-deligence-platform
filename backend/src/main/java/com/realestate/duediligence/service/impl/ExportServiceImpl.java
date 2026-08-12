@@ -187,18 +187,50 @@ public class ExportServiceImpl implements ExportService {
         history.setDownloadCount(history.getDownloadCount() + 1);
         exportHistoryRepository.save(history);
 
-        if (history.getReportId() != null
-                && !history.getReportId().startsWith("BULK")
-                && !history.getReportId().startsWith("PROP")) {
-            Long rId = Long.parseLong(history.getReportId());
-            if ("EXCEL".equalsIgnoreCase(history.getFormat())) {
-                return exportReportExcel(rId, userId);
-            } else {
-                return exportReportPdf(rId, userId);
+        String reportId = history.getReportId();
+        String format = history.getFormat();
+
+        // BULK exports: regenerate on-the-fly from constituent report IDs
+        if (reportId != null && reportId.startsWith("BULK")) {
+            throw new IllegalArgumentException(
+                    "Bulk export " + exportId + " cannot be re-downloaded. Please run a new bulk export.");
+        }
+
+        // PROP snapshot exports: regenerate from property
+        if (reportId != null && reportId.startsWith("PROP")) {
+            try {
+                Long propertyId = Long.parseLong(reportId.replace("PROP_", ""));
+                if ("EXCEL".equalsIgnoreCase(format)) {
+                    return exportPropertySnapshotExcel(propertyId, userId);
+                } else {
+                    return exportPropertySnapshotPdf(propertyId, userId);
+                }
+            } catch (NumberFormatException e) {
+                throw new IllegalArgumentException(
+                        "Property snapshot export is malformed. Please regenerate.");
             }
         }
 
-        return new byte[0];
+        // Regular report exports: regenerate on-the-fly
+        if (reportId != null) {
+            try {
+                Long rId = Long.parseLong(reportId);
+                if ("EXCEL".equalsIgnoreCase(format)) {
+                    return exportReportExcel(rId, userId);
+                } else {
+                    return exportReportPdf(rId, userId);
+                }
+            } catch (NumberFormatException e) {
+                throw new IllegalArgumentException(
+                        "Export record is malformed. Please regenerate.");
+            } catch (Exception e) {
+                throw new IllegalArgumentException(
+                        "Export cannot be regenerated — the original report may have been deleted. Please generate a new export.");
+            }
+        }
+
+        throw new IllegalArgumentException(
+                "Export record has no associated report. Please generate a new export.");
     }
 
     private DueDiligenceReportResponse resolvePropertyReport(Long propertyId) {
