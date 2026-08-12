@@ -4,6 +4,7 @@
 import { useState, useEffect } from "react";
 import { FileDown, Loader2 } from "lucide-react";
 import { toast } from "sonner";
+import { downloadBlob } from "@/utils/downloadUtils";
 
 /**
  * DownloadComparisonPDFButton
@@ -69,7 +70,6 @@ export default function DownloadComparisonPDFButton({
       const ids      = properties.filter(Boolean).map((p) => p.id).join("-");
       const filename = `comparison-${ids}.pdf`;
 
-      const { downloadBlob } = await import("@/utils/downloadUtils");
       downloadBlob(blob, filename);
     } catch (err) {
       console.error("Comparison PDF failed:", err);
