@@ -145,12 +145,43 @@ export function useExport() {
     async (exportId, filename = "export.pdf") => {
       try {
         const blob = await exportService.downloadFromHistory(exportId);
+
+        if (!blob || !(blob instanceof Blob) || blob.size === 0) {
+          try {
+            const text = blob ? await blob.text() : "";
+            const parsed = text ? JSON.parse(text) : null;
+            throw new Error(parsed?.message || "Export file is empty");
+          } catch (parseErr) {
+            if (parseErr.message && parseErr.message !== "Export file is empty") {
+              throw parseErr;
+            }
+            throw new Error("Export file is empty or corrupted");
+          }
+        }
+
         downloadBlob(blob, filename);
       } catch (error) {
         console.error("Re-download failed:", error);
-        toast.error("Re-download Failed", {
-          description: "Could not fetch past export file.",
-        });
+
+        // Extract meaningful message from error
+        const message = error?.message || "";
+        if (message.includes("no longer available") || message.includes("deleted")) {
+          toast.error("Export no longer available", {
+            description: "The original report was deleted. Please generate a new export.",
+          });
+        } else if (message.includes("Access denied") || error?.status === 403) {
+          toast.error("Access denied", {
+            description: "You don't have permission to download this export.",
+          });
+        } else if (message.includes("not found") || error?.status === 404) {
+          toast.error("Export not found", {
+            description: "This export record no longer exists.",
+          });
+        } else {
+          toast.error("Download failed", {
+            description: message || "Could not download the export file.",
+          });
+        }
       }
     },
     []
