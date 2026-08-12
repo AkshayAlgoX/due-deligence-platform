@@ -47,7 +47,7 @@ const ROUTE_ROLES = {
   "/dashboard/profile":            ["BUYER", "REAL_ESTATE_AGENT", "LEGAL_REVIEWER", "FINANCIAL_INSTITUTION", "ADMIN"],
   "/dashboard/settings":           ["BUYER", "REAL_ESTATE_AGENT", "LEGAL_REVIEWER", "FINANCIAL_INSTITUTION", "ADMIN"],
   "/support":                      ["BUYER", "REAL_ESTATE_AGENT", "LEGAL_REVIEWER", "FINANCIAL_INSTITUTION", "ADMIN"],
-};;
+};
 
 function canAccess(href, role) {
   if (!role) return true;
@@ -56,7 +56,52 @@ function canAccess(href, role) {
   return allowed.includes(role);
 }
 
-const MENU_SECTION_CONFIGS = [
+// ==========================================
+// SIDEBAR MENU CONFIGS — Role-based (Option B)
+// Admin gets platform-management sidebar (Vercel/Shopify pattern)
+// Regular users (BUYER/AGENT/LEGAL/FINANCIAL) get transactional sidebar
+// ==========================================
+
+const MENU_SECTION_CONFIGS_ADMIN = [
+  {
+    id: "overview",
+    sectionKey: "nav.sections.overview",
+    collapsible: true,
+    items: [
+      { titleKey: "nav.dashboard",       href: "/dashboard",                 icon: LayoutDashboard, badge: null },
+      { titleKey: "nav.admin.analytics", href: "/dashboard/admin/analytics", icon: BarChart3,       badge: null },
+    ],
+  },
+  {
+    id: "platform",
+    sectionKey: "nav.sections.platform",
+    collapsible: true,
+    items: [
+      { titleKey: "nav.admin.users",  href: "/dashboard/admin/users",  icon: Users,         badge: null },
+      { titleKey: "nav.admin.system", href: "/dashboard/admin/system", icon: Server,        badge: null },
+      { titleKey: "nav.auditLogs",    href: "/dashboard/audit-logs",   icon: ClipboardList, badge: null },
+    ],
+  },
+  {
+    id: "activity",
+    sectionKey: "nav.sections.activity",
+    collapsible: true,
+    items: [
+      { titleKey: "nav.notifications", href: "/dashboard/notifications", icon: Bell, badge: null },
+    ],
+  },
+  {
+    id: "account",
+    sectionKey: "nav.sections.account",
+    collapsible: true,
+    items: [
+      { titleKey: "nav.profile",  href: "/dashboard/profile",  icon: User,     badge: null },
+      { titleKey: "nav.settings", href: "/dashboard/settings", icon: Settings, badge: null },
+    ],
+  },
+];
+
+const MENU_SECTION_CONFIGS_USER = [
   {
     id: "main",
     sectionKey: "nav.sections.main",
@@ -82,21 +127,9 @@ const MENU_SECTION_CONFIGS = [
     sectionKey: "nav.sections.activity",
     collapsible: true,
     items: [
-      { titleKey: "nav.reports",       href: "/reports",                      icon: FileText,      badge: null },
-      { titleKey: "nav.notifications", href: "/dashboard/notifications",      icon: Bell,          badge: null },
-      { titleKey: "nav.auditLogs",     href: "/dashboard/audit-logs",         icon: ClipboardList, badge: null },
-      { titleKey: "nav.reportHistory", href: "/dashboard/report-history",     icon: History,       badge: null },
-    ],
-  },
-  {
-    id: "admin",
-    sectionKey: "nav.sections.admin",
-    collapsible: true,
-    items: [
-      { titleKey: "nav.admin.dashboard", href: "/dashboard/admin",           icon: LayoutDashboard, badge: null },
-      { titleKey: "nav.admin.users",     href: "/dashboard/admin/users",     icon: Users,           badge: null },
-      { titleKey: "nav.admin.analytics", href: "/dashboard/admin/analytics", icon: BarChart3,       badge: null },
-      { titleKey: "nav.admin.system",    href: "/dashboard/admin/system",    icon: Server,          badge: null },
+      { titleKey: "nav.reports",       href: "/reports",                  icon: FileText, badge: null },
+      { titleKey: "nav.notifications", href: "/dashboard/notifications",  icon: Bell,     badge: null },
+      { titleKey: "nav.reportHistory", href: "/dashboard/report-history", icon: History,  badge: null },
     ],
   },
   {
@@ -128,12 +161,25 @@ export default function Sidebar({ isOpen = true, onClose, isDesktopRail = false 
   const { t } = useTranslation();
   const [sessionStart] = useState(() => new Date());
   const [, tick] = useState(0);
-  const [userRole, setUserRole] = useState("");
+
+  // Read role synchronously on first render to avoid buyer-sidebar flash for admins
+  const [userRole, setUserRole] = useState(() => {
+    if (typeof window === "undefined") return "";  // SSR safety — returns empty string on server
+    try {
+      const user = getUser();
+      return user?.role ?? "";
+    } catch {
+      return "";
+    }
+  });
+
   const [collapsedSections, setCollapsedSections] = useState({});
 
+  // Re-check role once mounted (handles rare edge case where user object updates after initial render)
   useEffect(() => {
     const user = getUser();
-    setUserRole(user?.role ?? "");
+    const role = user?.role ?? "";
+    setUserRole((prev) => (prev === role ? prev : role));
   }, []);
 
   useEffect(() => {
@@ -150,18 +196,24 @@ export default function Sidebar({ isOpen = true, onClose, isDesktopRail = false 
     }
   }, []);
 
+  // Pick sidebar config based on role (Admin sees platform view, others see user view)
+  const MENU_SECTION_CONFIGS = userRole === "ADMIN"
+    ? MENU_SECTION_CONFIGS_ADMIN
+    : MENU_SECTION_CONFIGS_USER;
+
   useEffect(() => {
     if (!pathname) return;
-    for (const section of MENU_SECTION_CONFIGS) {
+    const configs = userRole === "ADMIN" ? MENU_SECTION_CONFIGS_ADMIN : MENU_SECTION_CONFIGS_USER;
+    for (const section of configs) {
       if (!section.collapsible) continue;
       const hasActive = section.items.some((item) =>
         item.href === "/dashboard"
-  ? pathname === "/dashboard"
-  : item.href === "/dashboard/admin"
-  ? pathname === "/dashboard/admin"
-  : item.href === "/support"
-  ? pathname === "/support"
-  : pathname.startsWith(item.href)
+          ? pathname === "/dashboard"
+          : item.href === "/dashboard/admin"
+          ? pathname === "/dashboard/admin"
+          : item.href === "/support"
+          ? pathname === "/support"
+          : pathname.startsWith(item.href)
       );
       if (hasActive && collapsedSections[section.id]) {
         setCollapsedSections((prev) => {
@@ -172,7 +224,7 @@ export default function Sidebar({ isOpen = true, onClose, isDesktopRail = false 
       }
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [pathname]);
+  }, [pathname, userRole]);
 
   const toggleSection = (id) => {
     setCollapsedSections((prev) => {
@@ -181,6 +233,34 @@ export default function Sidebar({ isOpen = true, onClose, isDesktopRail = false 
       return next;
     });
   };
+
+  // Don't render sidebar content until we know the role (prevents wrong-sidebar flash)
+  if (!userRole) {
+    return (
+      <>
+        {isOpen && (
+          <div
+            className="fixed inset-0 z-30 bg-black/40 lg:hidden"
+            onClick={onClose}
+            role="presentation"
+          />
+        )}
+        <aside
+          className={`
+            w-64 flex flex-col h-full
+            bg-white dark:bg-[#161b22]
+            border-r border-gray-100 dark:border-[#30363d]
+            ${isDesktopRail
+              ? "relative"
+              : `fixed inset-y-0 left-0 z-40 transition-transform duration-300 ease-in-out ${
+                  isOpen ? "translate-x-0" : "-translate-x-full"
+                }`
+            }
+          `}
+        />
+      </>
+    );
+  }
 
   return (
     <>
@@ -246,14 +326,14 @@ export default function Sidebar({ isOpen = true, onClose, isDesktopRail = false 
                 >
                   {visibleItems.map((item) => {
                     const Icon = item.icon;
-                   const isActive =
-  item.href === "/dashboard"
-    ? pathname === "/dashboard"
-    : item.href === "/dashboard/admin"
-    ? pathname === "/dashboard/admin"
-    : item.href === "/support"
-    ? pathname === "/support"
-    : pathname?.startsWith(item.href);
+                    const isActive =
+                      item.href === "/dashboard"
+                        ? pathname === "/dashboard"
+                        : item.href === "/dashboard/admin"
+                        ? pathname === "/dashboard/admin"
+                        : item.href === "/support"
+                        ? pathname === "/support"
+                        : pathname?.startsWith(item.href);
                     return (
                       <Link
                         key={item.titleKey}
