@@ -443,7 +443,7 @@ const AuditLogDetailModal = ({
         {/* =========================================================
             FOOTER
         ========================================================= */}
-        <div className="flex justify-end border-t bg-gray-50 px-6 py-4 dark:border-[#30363d] dark:bg-[#0d1117]">
+        <div className="sticky bottom-0 z-10 flex justify-end border-t bg-gray-50 px-6 py-4 dark:border-[#30363d] dark:bg-[#0d1117]">
           <button
             type="button"
             onClick={onClose}
