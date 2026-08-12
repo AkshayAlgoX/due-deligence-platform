@@ -51,15 +51,18 @@ export default function CheckoutSuccessPage() {
       }
       // Track the raw Cashfree status for smarter messaging
       setCashfreeStatus(data?.cashfreeStatus || null);
-      // "ACTIVE" means the order was created but payment was never
-      // completed on the hosted page — no point polling further.
-      if (data?.cashfreeStatus === "ACTIVE" || data?.cashfreeStatus === "EXPIRED") {
+      // Keep polling the full window — Cashfree sandbox sometimes reports
+      // ACTIVE for a few seconds even when the payment is processing.
+      // EXPIRED is terminal though — stop early on that.
+      if (data?.cashfreeStatus === "EXPIRED" || data?.cashfreeStatus === "FAILED") {
         setPhase("notcompleted");
         return;
       }
       attemptsRef.current += 1;
       if (attemptsRef.current >= MAX_ATTEMPTS) {
-        setPhase("pending");
+        // After the full poll window, classify: ACTIVE means payment
+        // never completed; anything else means genuine lag.
+        setPhase(data?.cashfreeStatus === "ACTIVE" ? "notcompleted" : "pending");
         return;
       }
       timerRef.current = setTimeout(verify, 2000);
