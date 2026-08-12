@@ -724,7 +724,9 @@
       "insights": "Insights",
       "activity": "Activity",
       "account": "Account",
-      "admin": "Admin"
+      "admin": "Admin",
+      "overview": "OVERVIEW",
+  "platform": "PLATFORM MANAGEMENT"
     },
     "admin": {
       "title": "Property Labels",
@@ -2023,6 +2025,27 @@
       "selectPlaceholder": "Select language",
       "saved": "Language updated",
       "savedDescription": "The interface language has been changed to {{language}}."
+    },
+    "admin": {
+      "subtitle": "Manage platform preferences and account security.",
+      "sections": {
+        "notifications": "Notifications",
+        "notificationsDesc": "Critical system alerts and platform events.",
+        "account": "Account",
+        "accountDesc": "Manage your admin account credentials."
+      },
+      "notifications": {
+        "systemAlerts": "System Notifications",
+        "systemAlertsDesc": "Critical platform alerts, errors, and system events"
+      },
+      "account": {
+        "changePassword": "Account password",
+        "changePasswordDesc": "Update your password to keep your admin account secure.",
+        "changePasswordButton": "Change password"
+      }
+    },
+    "buyer": {
+      "subtitle": "Manage your preferences and application configuration."
     }
   },
   "commandPalette": {
