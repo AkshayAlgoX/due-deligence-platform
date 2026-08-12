@@ -247,8 +247,28 @@ public class DueDiligenceReportServiceImpl implements DueDiligenceReportService 
     }
 
     private boolean isAdmin(User user) {
-        return user != null && user.getRole() != null
-                && "ADMIN".equals(user.getRole().getRoleName().name());
+        // Primary check: user entity role
+        if (user != null && user.getRole() != null && user.getRole().getRoleName() != null) {
+            String roleName = user.getRole().getRoleName().name();
+            if ("ADMIN".equalsIgnoreCase(roleName) || "ROLE_ADMIN".equalsIgnoreCase(roleName)) {
+                return true;
+            }
+        }
+
+        // Fallback: Spring Security context (entity role may be null from lazy loading)
+        try {
+            Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+            if (auth != null && auth.getAuthorities() != null) {
+                for (var authority : auth.getAuthorities()) {
+                    String a = authority.getAuthority();
+                    if ("ROLE_ADMIN".equalsIgnoreCase(a) || "ADMIN".equalsIgnoreCase(a)) {
+                        return true;
+                    }
+                }
+            }
+        } catch (Exception ignored) {}
+
+        return false;
     }
 
     private DueDiligenceReport findAndAuthorize(Long reportId) {
