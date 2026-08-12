@@ -131,9 +131,31 @@ export default function DashboardPage() {
 
   const isEmpty = stats && stats.totalProperties === 0;
 
-  // Guard: redirect admin to /dashboard/admin, show nothing until role known
+    // Guard: redirect admin to /dashboard/admin, show skeleton until role known
   if (!userRole || userRole === "ADMIN") {
-    return null;
+    return (
+      <div className="mx-auto w-full max-w-[1400px] space-y-8">
+        {/* Header skeleton */}
+        <div className="flex flex-wrap items-end justify-between gap-4">
+          <div className="space-y-2">
+            <div className="h-8 w-64 rounded-lg bg-gray-100 dark:bg-[#1c2128] animate-pulse" />
+            <div className="h-4 w-48 rounded bg-gray-100 dark:bg-[#1c2128] animate-pulse" />
+          </div>
+          <div className="flex gap-3">
+            <div className="h-11 w-11 rounded-xl bg-gray-100 dark:bg-[#1c2128] animate-pulse" />
+            <div className="h-11 w-36 rounded-xl bg-gray-100 dark:bg-[#1c2128] animate-pulse" />
+          </div>
+        </div>
+        {/* KPI skeleton grid */}
+        <div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-4">
+          {[1, 2, 3, 4].map((i) => (
+            <StatsCardSkeleton key={i} />
+          ))}
+        </div>
+        {/* Content skeleton */}
+        <div className="h-64 rounded-2xl bg-gray-100 dark:bg-[#161b22] animate-pulse" />
+      </div>
+    );
   }
 
   return (
@@ -142,7 +164,7 @@ export default function DashboardPage() {
       {/* ── Header ─────────────────────────────────────────────────── */}
       <div className="flex flex-wrap items-end justify-between gap-4">
         <div>
-          <h1 className="text-[32px] font-extrabold tracking-tight text-gray-900 dark:text-[#e6edf3]">
+                    <h1 className="text-[28px] font-bold tracking-tight text-gray-900 dark:text-[#e6edf3]">
             {getGreeting(t)}
             {firstName ? (
               <span className="text-[#22C55E]">, {firstName}</span>

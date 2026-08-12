@@ -1,14 +1,16 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { usePathname } from "next/navigation";
 import Link from "next/link";
 
 /**
  * Shared layout for all marketing pages (pricing, docs, privacy, terms, contact).
- * Reuses same nav/footer as landing page.
+ * Auto-scrolls to top on route change and reset navigation.
  */
 export default function MarketingLayout({ children }) {
   const [scrolled, setScrolled] = useState(false);
+  const pathname = usePathname();
 
   useEffect(() => {
     document.documentElement.classList.add("dark");
@@ -16,6 +18,11 @@ export default function MarketingLayout({ children }) {
     window.addEventListener("scroll", onScroll, { passive: true });
     return () => window.removeEventListener("scroll", onScroll);
   }, []);
+
+  // Scroll to top when route changes (fixes: click Contact from Contact → stays at top)
+  useEffect(() => {
+    window.scrollTo({ top: 0, behavior: "instant" });
+  }, [pathname]);
 
   return (
     <div className="min-h-screen bg-[#0a0a0a] text-white antialiased">
@@ -25,14 +32,32 @@ export default function MarketingLayout({ children }) {
           backgroundImage: `url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E")`,
         }}
       />
-      <MarketingNav scrolled={scrolled} />
+      <MarketingNav scrolled={scrolled} pathname={pathname} />
       <main className="relative">{children}</main>
       <MarketingFooter />
     </div>
   );
 }
 
-function MarketingNav({ scrolled }) {
+function MarketingNav({ scrolled, pathname }) {
+  const navLinks = [
+    { href: "/#features", label: "Features", isHash: true },
+    { href: "/#how", label: "How it works", isHash: true },
+    { href: "/pricing", label: "Pricing", isHash: false },
+    { href: "/docs", label: "Docs", isHash: false },
+  ];
+
+  // If we're on a subpage and user clicks a hash link, go to landing then scroll
+  const handleHashClick = (e, href) => {
+    if (pathname === "/") {
+      e.preventDefault();
+      const id = href.replace("/#", "");
+      const el = document.getElementById(id);
+      if (el) el.scrollIntoView({ behavior: "smooth", block: "start" });
+    }
+    // else: let Link navigate to landing page — browser auto-scrolls to hash
+  };
+
   return (
     <header
       className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${
@@ -55,10 +80,18 @@ function MarketingNav({ scrolled }) {
         </Link>
 
         <nav className="hidden md:flex items-center gap-8 text-[13px] text-white/60">
-          <Link href="/#features" className="hover:text-white transition-colors">Features</Link>
-          <Link href="/#how" className="hover:text-white transition-colors">How it works</Link>
-          <Link href="/pricing" className="hover:text-white transition-colors">Pricing</Link>
-          <Link href="/docs" className="hover:text-white transition-colors">Docs</Link>
+          {navLinks.map((link) => (
+            <Link
+              key={link.href}
+              href={link.href}
+              onClick={link.isHash ? (e) => handleHashClick(e, link.href) : undefined}
+              className={`hover:text-white transition-colors ${
+                pathname === link.href ? "text-white" : ""
+              }`}
+            >
+              {link.label}
+            </Link>
+          ))}
         </nav>
 
         <div className="flex items-center gap-2">
@@ -98,7 +131,7 @@ function MarketingFooter() {
             <span className="text-[13px] font-semibold text-white">
               Real Estate Due Diligence
             </span>
-            <span className="text-[12px] text-white/30 ml-2">Built in Bengaluru · 2026</span>
+            <span className="text-[12px] text-white/30 ml-2">Remote-first · India · 2026</span>
           </div>
           <div className="flex items-center gap-6 text-[12px] text-white/50">
             <Link href="/privacy" className="hover:text-white transition">Privacy</Link>

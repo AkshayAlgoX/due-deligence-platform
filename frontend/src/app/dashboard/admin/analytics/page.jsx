@@ -17,6 +17,7 @@ import {
   Tooltip,
 } from "recharts";
 import { Skeleton } from "@/components/ui/Skeleton";
+import { BarChart3 } from "lucide-react";
 import { toast } from "sonner";
 import {
   getRiskDistribution,
@@ -117,19 +118,26 @@ export default function AdminAnalyticsPage() {
     },
   };
 
-  return (
-    <div className="space-y-6 p-6">
-      <div className="flex items-center justify-between">
-        <div>
-          <h1 className="text-xl font-bold text-gray-900 dark:text-[#e6edf3]">
-            {t("nav.admin.analytics")}
-          </h1>
-          <p className="mt-1 text-sm text-gray-400 dark:text-[#7d8590]">
-            {t("nav.admin.analyticsSubtitle")}
-          </p>
-        </div>
-        <DateRangePicker value={period} onChange={setPeriod} />
-      </div>
+    return (
+    <div className="min-h-screen">
+      <div className="mx-auto max-w-[1400px] px-6 py-8 space-y-8">
+        <header className="flex items-start justify-between flex-wrap gap-4">
+          <div className="flex items-start gap-4">
+            <div className="hidden sm:flex h-11 w-11 items-center justify-center rounded-xl bg-gradient-to-br from-emerald-500/10 to-teal-500/10 dark:from-emerald-500/20 dark:to-teal-500/20 border border-emerald-500/20">
+              <BarChart3 className="h-5 w-5 text-emerald-600 dark:text-emerald-400" />
+            </div>
+            <div>
+              <h1 className="text-[28px] leading-tight font-bold tracking-tight text-gray-900 dark:text-[#e6edf3]">
+                {t("nav.admin.analytics")}
+              </h1>
+              <p className="mt-1 text-sm text-gray-500 dark:text-[#7d8590]">
+                {t("nav.admin.analyticsSubtitle")}
+              </p>
+            </div>
+          </div>
+          <DateRangePicker value={period} onChange={setPeriod} />
+        </header>
+        
 
       {loading ? (
         <div className="grid grid-cols-1 gap-4 lg:grid-cols-2">
@@ -194,29 +202,54 @@ export default function AdminAnalyticsPage() {
             </ResponsiveContainer>
           </ChartCardShell>
 
-          <ChartCardShell
+                    <ChartCardShell
             title={t("nav.admin.riskDistribution")}
             subtitle={t("nav.admin.riskDistributionSubtitle")}
           >
-            <ResponsiveContainer width="100%" height={240}>
-              <PieChart>
-                <Pie
-                  data={riskData}
-                  dataKey="value"
-                  nameKey="name"
-                  innerRadius={60}
-                  outerRadius={90}
-                  paddingAngle={3}
-                >
-                  {riskData.map((entry, i) => (
-                    <Cell key={i} fill={entry.color} />
-                  ))}
-                </Pie>
-                <Tooltip {...tooltipStyle} />
-              </PieChart>
-            </ResponsiveContainer>
+            <div className="flex flex-col items-center">
+              <ResponsiveContainer width="100%" height={220}>
+                <PieChart>
+                  <Pie
+                    data={riskData}
+                    dataKey="value"
+                    nameKey="name"
+                    innerRadius={55}
+                    outerRadius={85}
+                    paddingAngle={3}
+                    stroke="none"
+                  >
+                    {riskData.map((entry, i) => (
+                      <Cell key={i} fill={entry.color} />
+                    ))}
+                  </Pie>
+                  <Tooltip
+                    {...tooltipStyle}
+                    formatter={(value, name) => [`${value} properties`, name]}
+                  />
+                </PieChart>
+              </ResponsiveContainer>
+              <div className="mt-4 flex flex-wrap justify-center gap-4 px-2">
+                {riskData.map((entry, i) => {
+                  const total = riskData.reduce((s, r) => s + (r.value || 0), 0);
+                  const pct = total > 0 ? ((entry.value / total) * 100).toFixed(1) : 0;
+                  return (
+                    <div key={i} className="flex items-center gap-2">
+                      <span
+                        className="h-2.5 w-2.5 rounded-full"
+                        style={{ backgroundColor: entry.color }}
+                      />
+                      <span className="text-[13px] font-medium text-gray-700 dark:text-[#e6edf3]">
+                        {entry.name}
+                      </span>
+                      <span className="text-[12px] text-gray-500 dark:text-[#7d8590]">
+                        {pct}%
+                      </span>
+                    </div>
+                  );
+                })}
+              </div>
+            </div>
           </ChartCardShell>
-
           <ChartCardShell
             title={t("nav.admin.topCities")}
             subtitle={t("nav.admin.topCitiesSubtitle")}
@@ -248,8 +281,9 @@ export default function AdminAnalyticsPage() {
               </BarChart>
             </ResponsiveContainer>
           </ChartCardShell>
-        </div>
+                </div>
       )}
+      </div>
     </div>
   );
 }
