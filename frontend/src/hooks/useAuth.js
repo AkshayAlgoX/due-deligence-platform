@@ -118,8 +118,9 @@ export function useAuth() {
       description: t("completeProfile.toasts.signedOut.description"),
     });
 
-    // 5. Redirect to login
-    router.push("/login");
+    // 5. Redirect to login — replace() so the back button can't
+    //    restore the authenticated dashboard from bfcache
+    router.replace("/login");
   };
 
  return {

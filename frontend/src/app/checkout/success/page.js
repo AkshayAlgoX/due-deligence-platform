@@ -4,7 +4,7 @@ import { useState, useEffect, useRef, useCallback } from "react";
 import Link from "next/link";
 import { useSearchParams } from "next/navigation";
 import MarketingLayout from "@/components/landing/MarketingLayout";
-import { CheckCircle2, Loader2, LayoutDashboard, CreditCard, FileText, Mail } from "lucide-react";
+import { CheckCircle2, Loader2, LayoutDashboard, CreditCard, FileText, Mail, RefreshCw } from "lucide-react";
 import subscriptionService from "@/services/subscriptionService";
 import { getUser } from "@/utils/helpers";
 
@@ -28,8 +28,9 @@ export default function CheckoutSuccessPage() {
   const searchParams = useSearchParams();
   const orderId = searchParams.get("order_id");
 
-  const [phase, setPhase] = useState("verifying"); // verifying | paid | pending
+  const [phase, setPhase] = useState("verifying"); // verifying | paid | pending | notcompleted
   const [result, setResult] = useState(null);
+  const [cashfreeStatus, setCashfreeStatus] = useState(null);
   const attemptsRef = useRef(0);
   const timerRef = useRef(null);
 
@@ -38,7 +39,7 @@ export default function CheckoutSuccessPage() {
 
   const verify = useCallback(async () => {
     if (!orderId) {
-      setPhase("pending");
+      setPhase("notcompleted");
       return;
     }
     try {
@@ -46,6 +47,14 @@ export default function CheckoutSuccessPage() {
       if (data?.status === "PAID") {
         setResult(data);
         setPhase("paid");
+        return;
+      }
+      // Track the raw Cashfree status for smarter messaging
+      setCashfreeStatus(data?.cashfreeStatus || null);
+      // "ACTIVE" means the order was created but payment was never
+      // completed on the hosted page — no point polling further.
+      if (data?.cashfreeStatus === "ACTIVE" || data?.cashfreeStatus === "EXPIRED") {
+        setPhase("notcompleted");
         return;
       }
       attemptsRef.current += 1;
@@ -181,6 +190,37 @@ export default function CheckoutSuccessPage() {
                 className="w-full inline-flex h-11 items-center justify-center gap-2 rounded-lg bg-amber-500 hover:bg-amber-400 px-6 text-sm font-semibold text-[#0a0a0a] transition"
               >
                 <CreditCard className="h-4 w-4" /> Check billing page
+              </Link>
+              <Link
+                href="/dashboard"
+                className="w-full inline-flex h-11 items-center justify-center gap-2 rounded-lg border border-white/10 hover:border-white/20 bg-white/[0.02] hover:bg-white/[0.04] px-6 text-sm font-semibold text-white transition"
+              >
+                <LayoutDashboard className="h-4 w-4" /> Go to Dashboard
+              </Link>
+            </div>
+          </div>
+        )}
+
+        {phase === "notcompleted" && (
+          <div className="rounded-2xl border border-rose-500/20 bg-rose-500/[0.04] p-12 flex flex-col items-center text-center">
+            <div className="h-14 w-14 rounded-full bg-rose-500/10 flex items-center justify-center mb-5">
+              <RefreshCw className="h-7 w-7 text-rose-400" />
+            </div>
+            <h1 className="text-2xl font-bold text-white">Payment wasn't completed</h1>
+            <p className="mt-3 text-[14px] text-white/50 max-w-md leading-relaxed">
+              Cashfree shows this order as{" "}
+              <span className="text-white/80 font-mono text-[13px]">{cashfreeStatus || "ACTIVE"}</span>{" "}
+              — no payment went through, and you haven't been charged.
+            </p>
+            <p className="mt-2 text-[13px] text-white/40">
+              It's safe to try again with the same card — each attempt creates a fresh order.
+            </p>
+            <div className="mt-8 flex flex-col sm:flex-row items-center justify-center gap-3 w-full max-w-sm">
+              <Link
+                href="/checkout?plan=pro"
+                className="w-full inline-flex h-11 items-center justify-center gap-2 rounded-lg bg-emerald-500 hover:bg-emerald-400 px-6 text-sm font-semibold text-[#0a0a0a] transition"
+              >
+                <RefreshCw className="h-4 w-4" /> Try payment again
               </Link>
               <Link
                 href="/dashboard"
