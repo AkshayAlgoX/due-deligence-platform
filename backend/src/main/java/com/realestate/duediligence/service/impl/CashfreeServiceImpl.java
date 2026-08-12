@@ -63,68 +63,71 @@ public class CashfreeServiceImpl implements com.realestate.duediligence.service.
     @Override
     public CreateOrderResponse createOrder(Long userId, String userEmail, String userName,
                                            SubscriptionPlan plan) {
-        String orderId = "order_" + UUID.randomUUID().toString().replace("-", "");
+        // Use the Payment Links API — POST /links returns link_url, the
+        // hosted checkout page URL. (POST /orders does NOT return a
+        // payment link in the sandbox; the link is the Stripe-style flow.)
+        String linkId = "order_" + UUID.randomUUID().toString().replace("-", "");
 
         Map<String, Object> payload = Map.of(
-                "order_id", orderId,
-                "order_amount", plan.getPricePaise() / 100.0,   // Cashfree accepts rupees with paise decimals
-                "order_currency", "INR",
-                "order_note", "Subscription: " + plan.name() + " plan",
+                "link_id", linkId,
+                "link_amount", plan.getPricePaise() / 100.0,
+                "link_currency", "INR",
+                "link_purpose", "Subscription: " + plan.name() + " plan",
                 "customer_details", Map.of(
-                        "customer_id", String.valueOf(userId),
                         "customer_email", userEmail,
                         "customer_name", userName,
                         "customer_phone", "9999999999"
                 ),
-                "order_meta", Map.of(
-                        "return_url", "http://localhost:3000/checkout/success?order_id=" + orderId,
+                "link_meta", Map.of(
+                        "return_url", "http://localhost:3000/checkout/success?order_id=" + linkId,
                         "notify_url", "http://localhost:8080/api/subscription/webhook"
                 )
         );
 
         try {
             String responseBody = cashfreeClient.post()
-                    .uri("/orders")
+                    .uri("/links")
                     .bodyValue(payload)
                     .retrieve()
                     .bodyToMono(String.class)
                     .block();
 
-            log.info("Cashfree create-order response: {}", responseBody);
+            log.info("[cashfree-create] Link response for {}: {}", linkId, responseBody);
 
             JsonNode json = objectMapper.readTree(responseBody);
-            String paymentSessionId = json.path("payment_session_id").asText("");
-            String returnedOrderId = json.path("order_id").asText(orderId);
-            String paymentLink = json.path("payment_link").asText("");
+            String linkUrl = json.path("link_url").asText("");
+            String returnedLinkId = json.path("link_id").asText(linkId);
 
-            if (paymentSessionId.isEmpty() && paymentLink.isEmpty()) {
-                String msg = json.path("message").asText("Cashfree order creation failed");
+            if (linkUrl.isEmpty()) {
+                String msg = json.path("message").asText("Cashfree link creation failed");
                 return CreateOrderResponse.builder()
                         .success(false)
                         .message(msg)
-                        .orderId(returnedOrderId)
+                        .orderId(returnedLinkId)
                         .plan(plan.name())
                         .amount(plan.getPricePaise())
                         .currency("INR")
                         .build();
             }
 
+            log.info("[cashfree-create] Hosted checkout link ready: {} → {}", returnedLinkId, linkUrl);
+
             return CreateOrderResponse.builder()
                     .success(true)
-                    .paymentSessionId(paymentSessionId)
-                    .paymentLink(paymentLink)
-                    .orderId(returnedOrderId)
+                    .paymentSessionId("")
+                    .paymentLink(linkUrl)
+                    .orderId(returnedLinkId)
                     .plan(plan.name())
                     .amount(plan.getPricePaise())
                     .currency("INR")
                     .build();
 
         } catch (Exception e) {
-            log.error("Cashfree order creation failed for user {}: {}", userId, e.getMessage(), e);
+            log.error("Cashfree link creation failed for user {}: {}", userId, e.getMessage(), e);
             return CreateOrderResponse.builder()
                     .success(false)
                     .message("Payment gateway error: " + e.getMessage())
-                    .orderId(orderId)
+                    .orderId(linkId)
                     .plan(plan.name())
                     .amount(plan.getPricePaise())
                     .currency("INR")
@@ -162,6 +165,30 @@ public class CashfreeServiceImpl implements com.realestate.duediligence.service.
 
     @Override
     public String getOrderStatus(String orderId) {
+        // Primary: Payment Links API — the link_status field is the
+        // authoritative state for hosted-checkout payments.
+        try {
+            String linkBody = cashfreeClient.get()
+                    .uri("/links/" + orderId)
+                    .retrieve()
+                    .bodyToMono(String.class)
+                    .block();
+
+            log.info("[cashfree-verify] Raw link response for {}: {}", orderId, linkBody);
+
+            JsonNode linkJson = objectMapper.readTree(linkBody);
+            if (linkJson.has("link_status")) {
+                String linkStatus = linkJson.path("link_status").asText("");
+                log.info("[cashfree-verify] Link {} status = '{}' → paid={}", orderId, linkStatus,
+                        "PAID".equalsIgnoreCase(linkStatus));
+                return linkStatus;
+            }
+        } catch (Exception e) {
+            log.warn("[cashfree-verify] Links API lookup failed for {}: {} — falling back to Orders API",
+                    orderId, e.getMessage());
+        }
+
+        // Fallback: Orders API (links create an order with link_id as order_id)
         try {
             String responseBody = cashfreeClient.get()
                     .uri("/orders/" + orderId)
