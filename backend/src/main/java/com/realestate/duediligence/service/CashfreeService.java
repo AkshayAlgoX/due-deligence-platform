@@ -29,4 +29,10 @@ public interface CashfreeService {
 
     /** Verifies an order's payment status directly via Cashfree Orders API. */
     boolean isOrderPaid(String orderId);
+
+    /**
+     * Returns the raw order_status from Cashfree (ACTIVE, PAID, EXPIRED, FAILED…)
+     * or empty string if the order can't be fetched.
+     */
+    String getOrderStatus(String orderId);
 }

@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { isAuthenticated } from "@/utils/helpers";
 import Link from "next/link";
 import { motion, useScroll, useTransform } from "framer-motion";
 
@@ -64,6 +65,12 @@ export default function LandingPage() {
    NAV
    ═══════════════════════════════════════════════════════════════ */
 function Nav({ scrolled }) {
+  const [authed, setAuthed] = useState(false);
+
+  useEffect(() => {
+    setAuthed(!!isAuthenticated());
+  }, []);
+
   return (
     <header
       className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${
@@ -91,21 +98,35 @@ function Nav({ scrolled }) {
           <Link href="/docs" className="hover:text-white transition-colors">Docs</Link>
         </nav>
         <div className="flex items-center gap-2">
-          <Link
-            href="/login"
-            className="hidden sm:inline-flex h-8 items-center px-3 text-[13px] font-medium text-white/70 hover:text-white transition"
-          >
-            Sign in
-          </Link>
-          <Link
-            href="/register"
-            className="inline-flex h-8 items-center gap-1.5 rounded-md bg-white text-black px-3 text-[13px] font-semibold hover:bg-white/90 transition-all"
-          >
-            Start free
-            <svg viewBox="0 0 20 20" className="h-3.5 w-3.5" fill="currentColor">
-              <path d="M7.5 5l5 5-5 5" stroke="currentColor" strokeWidth="1.5" fill="none" strokeLinecap="round" />
-            </svg>
-          </Link>
+          {authed ? (
+            <Link
+              href="/dashboard"
+              className="inline-flex h-8 items-center gap-1.5 rounded-md bg-emerald-500 text-[#0a0a0a] px-3.5 text-[13px] font-semibold hover:bg-emerald-400 transition-all"
+            >
+              Dashboard
+              <svg viewBox="0 0 20 20" className="h-3.5 w-3.5" fill="currentColor">
+                <path d="M7.5 5l5 5-5 5" stroke="currentColor" strokeWidth="1.5" fill="none" strokeLinecap="round" />
+              </svg>
+            </Link>
+          ) : (
+            <>
+              <Link
+                href="/login"
+                className="hidden sm:inline-flex h-8 items-center px-3 text-[13px] font-medium text-white/70 hover:text-white transition"
+              >
+                Sign in
+              </Link>
+              <Link
+                href="/register"
+                className="inline-flex h-8 items-center gap-1.5 rounded-md bg-white text-black px-3 text-[13px] font-semibold hover:bg-white/90 transition-all"
+              >
+                Start free
+                <svg viewBox="0 0 20 20" className="h-3.5 w-3.5" fill="currentColor">
+                  <path d="M7.5 5l5 5-5 5" stroke="currentColor" strokeWidth="1.5" fill="none" strokeLinecap="round" />
+                </svg>
+              </Link>
+            </>
+          )}
         </div>
       </div>
     </header>
@@ -696,10 +717,10 @@ function Footer() {
             </span>
           </div>
           <div className="flex items-center gap-6 text-[12px] text-white/50">
-            <a href="#" className="hover:text-white transition">Privacy</a>
-            <a href="#" className="hover:text-white transition">Terms</a>
-            <a href="#" className="hover:text-white transition">Security</a>
-            <a href="#" className="hover:text-white transition">Contact</a>
+            <Link href="/privacy" className="hover:text-white transition">Privacy</Link>
+            <Link href="/terms" className="hover:text-white transition">Terms</Link>
+            <Link href="/security" className="hover:text-white transition">Security</Link>
+            <Link href="/contact" className="hover:text-white transition">Contact</Link>
           </div>
         </div>
       </div>

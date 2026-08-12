@@ -242,12 +242,20 @@ public class SubscriptionController {
 
         User user = requireUser(authentication);
         if (user == null) {
+            log.warn("[subscription-verify] verify-order called without auth for {}", orderId);
             return ResponseEntity.status(401).body(errorMap("Not authenticated"));
         }
 
+        log.info("[subscription-verify] verify-order for {} by userId={}", orderId, user.getId());
+
         // 1. Already activated by webhook?
         Subscription sub = subscriptionRepository.findByCashfreeOrderId(orderId).orElse(null);
+        log.info("[subscription-verify] DB lookup: sub={} status={}",
+                sub != null ? sub.getId() : "MISSING",
+                sub != null ? sub.getStatus() : "-");
+
         if (sub != null && "ACTIVE".equals(sub.getStatus())) {
+            log.info("[subscription-verify] Already ACTIVE — returning PAID");
             return ResponseEntity.ok(Map.of(
                     "success", true,
                     "status", "PAID",
@@ -258,20 +266,30 @@ public class SubscriptionController {
         }
 
         // 2. Ask Cashfree for the order status
-        boolean paid;
+        String cashfreeStatus;
         try {
-            paid = cashfreeService.isOrderPaid(orderId);
+            cashfreeStatus = cashfreeService.getOrderStatus(orderId);
         } catch (Exception e) {
-            log.error("verify-order failed for {}: {}", orderId, e.getMessage(), e);
+            log.error("[subscription-verify] verify-order failed for {}: {}", orderId, e.getMessage(), e);
             return ResponseEntity.status(502).body(errorMap("Payment gateway unavailable. Please retry."));
         }
 
+        boolean paid = "PAID".equalsIgnoreCase(cashfreeStatus);
+
         if (!paid) {
-            return ResponseEntity.ok(Map.of("success", true, "status", "PENDING"));
+            // Include the raw Cashfree status so the frontend can distinguish
+            // "payment still being processed" from "payment never completed"
+            log.info("[subscription-verify] Cashfree status '{}' for {} — returning PENDING",
+                    cashfreeStatus, orderId);
+            return ResponseEntity.ok(Map.of(
+                    "success", true,
+                    "status", "PENDING",
+                    "cashfreeStatus", cashfreeStatus.isEmpty() ? "UNKNOWN" : cashfreeStatus));
         }
 
         // 3. Paid — activate the subscription (idempotent)
         if (sub == null) {
+            log.warn("[subscription-verify] Order {} PAID but no pending row exists", orderId);
             return ResponseEntity.ok(Map.of(
                     "success", true,
                     "status", "PAID",
@@ -286,7 +304,7 @@ public class SubscriptionController {
         sub.setExpiresAt(LocalDateTime.now().plusMonths(1));
         subscriptionRepository.save(sub);
 
-        log.info("Subscription activated via verify-order: userId={} plan={} order={}",
+        log.info("[subscription-verify] Subscription activated: userId={} plan={} order={}",
                 sub.getUserId(), sub.getPlan(), orderId);
 
         return ResponseEntity.ok(Map.of(
