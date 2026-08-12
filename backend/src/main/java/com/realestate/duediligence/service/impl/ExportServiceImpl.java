@@ -181,7 +181,10 @@ public class ExportServiceImpl implements ExportService {
                         "Export history record not found"));
 
         if (!history.getUserId().equals(userId)) {
-            throw new SecurityException("Access denied to export record");
+            // Allow admin to download any user's export
+            if (!isCallerAdmin()) {
+                throw new SecurityException("Access denied to export record");
+            }
         }
 
         history.setDownloadCount(history.getDownloadCount() + 1);
@@ -266,5 +269,21 @@ public class ExportServiceImpl implements ExportService {
         } catch (Exception e) {
             // Silently swallow DB logging errors to ensure download completes
         }
+    }
+
+    private boolean isCallerAdmin() {
+        try {
+            org.springframework.security.core.Authentication auth =
+                org.springframework.security.core.context.SecurityContextHolder.getContext().getAuthentication();
+            if (auth != null && auth.getAuthorities() != null) {
+                for (org.springframework.security.core.GrantedAuthority authority : auth.getAuthorities()) {
+                    String a = authority.getAuthority();
+                    if ("ROLE_ADMIN".equalsIgnoreCase(a) || "ADMIN".equalsIgnoreCase(a)) {
+                        return true;
+                    }
+                }
+            }
+        } catch (Exception ignored) {}
+        return false;
     }
 }
