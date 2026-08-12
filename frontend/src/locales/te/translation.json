@@ -1621,6 +1621,27 @@
       "selectPlaceholder": "భాష ఎంచుకో",
       "saved": "భాష నవీకరించబడింది",
       "savedDescription": "ఇంటర్‌ఫేస్ భాష {{language}} కి మార్చబడింది."
+    },
+    "admin": {
+      "subtitle": "Manage platform preferences and account security.",
+      "sections": {
+        "notifications": "Notifications",
+        "notificationsDesc": "Critical system alerts and platform events.",
+        "account": "Account",
+        "accountDesc": "Manage your admin account credentials."
+      },
+      "notifications": {
+        "systemAlerts": "System Notifications",
+        "systemAlertsDesc": "Critical platform alerts, errors, and system events"
+      },
+      "account": {
+        "changePassword": "Account password",
+        "changePasswordDesc": "Update your password to keep your admin account secure.",
+        "changePasswordButton": "Change password"
+      }
+    },
+    "buyer": {
+      "subtitle": "Manage your preferences and application configuration."
     }
   },
   "commandPalette": {
