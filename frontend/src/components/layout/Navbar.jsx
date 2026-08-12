@@ -11,6 +11,8 @@ import {
   LogOut,
   User,
   ChevronDown,
+  Zap,
+  CreditCard,
 } from "lucide-react";
 
 import { useAuth } from "@/hooks/useAuth";
@@ -23,6 +25,7 @@ import { useCommandPalette } from "@/hooks/useCommandPalette";
 import ThemeToggle from "@/components/ThemeToggle";
 import LanguageTrigger from "@/components/language/LanguageTrigger";
 import UnreadBadge from "@/components/notifications/UnreadBadge";
+import subscriptionService from "@/services/subscriptionService";
 
 export default function Navbar({ toggleSidebar }) {
   const router = useRouter();
@@ -34,7 +37,24 @@ export default function Navbar({ toggleSidebar }) {
   const [menuOpen, setMenuOpen] = useState(false);
   const [logoutModalOpen, setLogoutModalOpen] = useState(false);
   const [isMac, setIsMac] = useState(false);
+  const [plan, setPlan] = useState(null); // null = unknown/loading
   const menuRef = useRef(null);
+
+  // ── Fetch subscription plan for the Upgrade button (Vercel pattern) ──
+  useEffect(() => {
+    let cancelled = false;
+    subscriptionService
+      .getCurrent()
+      .then((data) => {
+        if (!cancelled && data?.success) setPlan(data.plan || "FREE");
+      })
+      .catch(() => {
+        if (!cancelled) setPlan("FREE");
+      });
+    return () => {
+      cancelled = true;
+    };
+  }, []);
 
   // Real-time notification bell
   const { unreadCount, refresh: refreshCount, incrementUnread } = useUnreadCount();
@@ -192,6 +212,40 @@ export default function Navbar({ toggleSidebar }) {
 
           {/* Divider */}
           <div className="h-8 w-px bg-gray-200 dark:bg-[#30363d]" />
+
+          {/* ── PATH A: Upgrade button / plan badge (Vercel/Linear pattern) ── */}
+          {plan === "FREE" ? (
+            <button
+              type="button"
+              onClick={() => router.push("/checkout?plan=pro")}
+              className="group relative inline-flex h-9 items-center gap-1.5 overflow-hidden rounded-lg bg-gradient-to-br from-[#22C55E] to-[#16a34a] px-3.5 text-[13px] font-bold text-white shadow-[0_4px_12px_rgba(34,197,94,0.35)] transition-all hover:scale-[1.03] hover:shadow-[0_6px_16px_rgba(34,197,94,0.5)] active:scale-[0.97]"
+            >
+              <span className="absolute inset-0 -translate-x-full bg-gradient-to-r from-transparent via-white/25 to-transparent transition-transform duration-700 group-hover:translate-x-full" />
+              <Zap size={14} strokeWidth={2.5} className="relative" />
+              <span className="relative">Upgrade</span>
+            </button>
+          ) : plan === "PRO" ? (
+            <button
+              type="button"
+              onClick={() => router.push("/dashboard/billing")}
+              className="inline-flex h-8 items-center gap-1.5 rounded-full bg-emerald-500/10 border border-emerald-500/30 px-3 text-[11px] font-black tracking-wider text-emerald-600 dark:text-emerald-400 transition hover:bg-emerald-500/20"
+              title="Pro plan — view billing"
+            >
+              <Zap size={11} strokeWidth={2.5} />
+              PRO
+            </button>
+          ) : plan === "BUSINESS" ? (
+            <button
+              type="button"
+              onClick={() => router.push("/dashboard/billing")}
+              className="inline-flex h-8 items-center gap-1.5 rounded-full bg-violet-500/10 border border-violet-500/30 px-3 text-[11px] font-black tracking-wider text-violet-600 dark:text-violet-400 transition hover:bg-violet-500/20"
+              title="Business plan — view billing"
+            >
+              <Zap size={11} strokeWidth={2.5} />
+              BUSINESS
+            </button>
+          ) : null}
+
           {/* User menu */}
           <div className="relative" ref={menuRef}>
             <button
@@ -280,6 +334,19 @@ export default function Navbar({ toggleSidebar }) {
                   >
                     <User size={16} className="text-gray-400 dark:text-[#7d8590]" />
                     {t("navbar.myProfile")}
+                  </button>
+
+                  {/* ── PATH B: Billing in user dropdown (GitHub/Stripe pattern) ── */}
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setMenuOpen(false);
+                      router.push("/dashboard/billing");
+                    }}
+                    className="flex w-full items-center gap-3 rounded-xl px-3 py-2.5 text-sm text-gray-700 dark:text-[#e6edf3] transition hover:bg-gray-50 dark:hover:bg-[#1c2128]"
+                  >
+                    <CreditCard size={16} className="text-gray-400 dark:text-[#7d8590]" />
+                    {t("nav.billing", "Billing & plans")}
                   </button>
 
                   <button

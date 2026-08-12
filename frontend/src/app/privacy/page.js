@@ -124,7 +124,7 @@ const SECTIONS = [
           For any privacy-related request, complaint, or question about this policy, contact:
         </p>
         <ul>
-          <li><strong>Data Protection Officer</strong> — dpo@redd.in</li>
+          <li><strong>Data Protection Officer</strong> — duedeligence8@gmail.com</li>
           <li><strong>Postal address</strong> — Real Estate Due Diligence Platform, HSR Layout Sector 3, Bengaluru, Karnataka 560102, India</li>
           <li><strong>Response time</strong> — we acknowledge all privacy requests within 72 hours and resolve them within 30 days.</li>
         </ul>

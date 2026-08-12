@@ -5,7 +5,7 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-/** Response for POST /api/subscription/create-order — feeds the Cashfree drop-in SDK. */
+/** Response for POST /api/subscription/create-order — feeds the Cashfree hosted checkout. */
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
@@ -18,5 +18,7 @@ public class CreateOrderResponse {
     private String plan;
     private long amount;
     private String currency;
+    /** Cashfree hosted checkout URL — browser redirects here to pay. */
+    private String paymentLink;
     private String message;
 }

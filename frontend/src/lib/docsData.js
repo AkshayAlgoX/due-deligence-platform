@@ -82,7 +82,7 @@ export const DOCS_ARTICLES = [
         <p>Three ways to reach us, in order of speed:</p>
         <ul>
           <li><strong>In-app support page</strong> — <code>/support</code> has a searchable FAQ covering the 20 most common questions.</li>
-          <li><strong>Email</strong> — support@redd.in. We reply within 24 hours on business days; enterprise customers have a 4-hour SLA.</li>
+          <li><strong>Email</strong> — duedeligence8@gmail.com. We reply within 24 hours on business days; enterprise customers have a 4-hour SLA.</li>
           <li><strong>Contact form</strong> — <code>/contact</code> for enterprise sales, partnerships, and billing questions.</li>
         </ul>
         <p>If you're reporting a bug, include the property ID, report ID, and the time the error occurred. Our audit logs let us trace the exact request.</p>

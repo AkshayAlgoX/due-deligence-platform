@@ -77,7 +77,8 @@ public class CashfreeServiceImpl implements com.realestate.duediligence.service.
                         "customer_phone", "9999999999"
                 ),
                 "order_meta", Map.of(
-                        "return_url", "http://localhost:3000/dashboard/billing?success=true"
+                        "return_url", "http://localhost:3000/checkout/success?order_id=" + orderId,
+                        "notify_url", "http://localhost:8080/api/subscription/webhook"
                 )
         );
 
@@ -94,8 +95,9 @@ public class CashfreeServiceImpl implements com.realestate.duediligence.service.
             JsonNode json = objectMapper.readTree(responseBody);
             String paymentSessionId = json.path("payment_session_id").asText("");
             String returnedOrderId = json.path("order_id").asText(orderId);
+            String paymentLink = json.path("payment_link").asText("");
 
-            if (paymentSessionId.isEmpty()) {
+            if (paymentSessionId.isEmpty() && paymentLink.isEmpty()) {
                 String msg = json.path("message").asText("Cashfree order creation failed");
                 return CreateOrderResponse.builder()
                         .success(false)
@@ -110,6 +112,7 @@ public class CashfreeServiceImpl implements com.realestate.duediligence.service.
             return CreateOrderResponse.builder()
                     .success(true)
                     .paymentSessionId(paymentSessionId)
+                    .paymentLink(paymentLink)
                     .orderId(returnedOrderId)
                     .plan(plan.name())
                     .amount(plan.getPricePaise())

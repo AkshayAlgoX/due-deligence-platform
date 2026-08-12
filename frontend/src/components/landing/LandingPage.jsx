@@ -24,6 +24,19 @@ export default function LandingPage() {
     return () => window.removeEventListener("scroll", onScroll);
   }, []);
 
+  // ── Scroll to hash section when arriving from another page ──
+  // (e.g. /contact → "Features" → /#features). Next.js doesn't auto-scroll
+  // to anchors on client-side navigation, so we do it after first paint.
+  useEffect(() => {
+    if (typeof window !== "undefined" && window.location.hash) {
+      const id = window.location.hash.replace("#", "");
+      const timeout = setTimeout(() => {
+        document.getElementById(id)?.scrollIntoView({ behavior: "smooth", block: "start" });
+      }, 150);
+      return () => clearTimeout(timeout);
+    }
+  }, []);
+
   return (
     <div className="min-h-screen bg-[#0a0a0a] text-white overflow-x-hidden antialiased">
       {/* Grain texture overlay */}
