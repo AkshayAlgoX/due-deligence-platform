@@ -19,25 +19,35 @@ import {
   Bookmark,
   Settings,
   ChevronDown,
+  Users,
+  BarChart3,
+  Server,
 } from "lucide-react";
 
 import { getUser } from "@/utils/helpers";
 
 const ROUTE_ROLES = {
-  "/dashboard":                     ["BUYER", "REAL_ESTATE_AGENT", "LEGAL_REVIEWER", "FINANCIAL_INSTITUTION", "ADMIN"],
-  "/dashboard/property-search":     ["BUYER", "REAL_ESTATE_AGENT", "LEGAL_REVIEWER", "FINANCIAL_INSTITUTION", "ADMIN"],
-  "/dashboard/due-diligence":       ["BUYER", "REAL_ESTATE_AGENT", "LEGAL_REVIEWER", "FINANCIAL_INSTITUTION", "ADMIN"],
-  "/dashboard/risk-assessment":     ["BUYER", "REAL_ESTATE_AGENT", "LEGAL_REVIEWER", "FINANCIAL_INSTITUTION", "ADMIN"],
-  "/dashboard/property-comparison": ["BUYER", "REAL_ESTATE_AGENT", "LEGAL_REVIEWER", "FINANCIAL_INSTITUTION", "ADMIN"],
-  "/dashboard/saved-comparisons":   ["BUYER", "REAL_ESTATE_AGENT", "LEGAL_REVIEWER", "FINANCIAL_INSTITUTION", "ADMIN"],
-  "/reports":                       ["BUYER", "REAL_ESTATE_AGENT", "LEGAL_REVIEWER", "FINANCIAL_INSTITUTION", "ADMIN"],
-  "/dashboard/notifications":       ["BUYER", "REAL_ESTATE_AGENT", "LEGAL_REVIEWER", "FINANCIAL_INSTITUTION", "ADMIN"],
-  "/dashboard/audit-logs":          ["ADMIN"],
-  "/dashboard/report-history":      ["BUYER", "REAL_ESTATE_AGENT", "LEGAL_REVIEWER", "FINANCIAL_INSTITUTION", "ADMIN"],
-  "/dashboard/profile":             ["BUYER", "REAL_ESTATE_AGENT", "LEGAL_REVIEWER", "FINANCIAL_INSTITUTION", "ADMIN"],
-  "/dashboard/settings":            ["BUYER", "REAL_ESTATE_AGENT", "LEGAL_REVIEWER", "FINANCIAL_INSTITUTION", "ADMIN"],
-  "/support":                       ["BUYER", "REAL_ESTATE_AGENT", "LEGAL_REVIEWER", "FINANCIAL_INSTITUTION", "ADMIN"],
-};
+  "/dashboard":                    ["BUYER", "REAL_ESTATE_AGENT", "LEGAL_REVIEWER", "FINANCIAL_INSTITUTION", "ADMIN"],
+  "/dashboard/property-search":    ["BUYER", "REAL_ESTATE_AGENT", "LEGAL_REVIEWER", "FINANCIAL_INSTITUTION", "ADMIN"],
+  "/dashboard/due-diligence":      ["BUYER", "REAL_ESTATE_AGENT", "LEGAL_REVIEWER", "FINANCIAL_INSTITUTION", "ADMIN"],
+  "/dashboard/risk-assessment":    ["BUYER", "REAL_ESTATE_AGENT", "LEGAL_REVIEWER", "FINANCIAL_INSTITUTION", "ADMIN"],
+  "/dashboard/property-comparison":["BUYER", "REAL_ESTATE_AGENT", "LEGAL_REVIEWER", "FINANCIAL_INSTITUTION", "ADMIN"],
+  "/dashboard/saved-comparisons":  ["BUYER", "REAL_ESTATE_AGENT", "LEGAL_REVIEWER", "FINANCIAL_INSTITUTION", "ADMIN"],
+  "/reports":                      ["BUYER", "REAL_ESTATE_AGENT", "LEGAL_REVIEWER", "FINANCIAL_INSTITUTION", "ADMIN"],
+  "/dashboard/notifications":      ["BUYER", "REAL_ESTATE_AGENT", "LEGAL_REVIEWER", "FINANCIAL_INSTITUTION", "ADMIN"],
+  "/dashboard/audit-logs":         ["ADMIN"],
+  "/dashboard/report-history":     ["BUYER", "REAL_ESTATE_AGENT", "LEGAL_REVIEWER", "FINANCIAL_INSTITUTION", "ADMIN"],
+
+  // Admin routes
+  "/dashboard/admin":              ["ADMIN"],
+  "/dashboard/admin/users":        ["ADMIN"],
+  "/dashboard/admin/analytics":    ["ADMIN"],
+  "/dashboard/admin/system":       ["ADMIN"],
+
+  "/dashboard/profile":            ["BUYER", "REAL_ESTATE_AGENT", "LEGAL_REVIEWER", "FINANCIAL_INSTITUTION", "ADMIN"],
+  "/dashboard/settings":           ["BUYER", "REAL_ESTATE_AGENT", "LEGAL_REVIEWER", "FINANCIAL_INSTITUTION", "ADMIN"],
+  "/support":                      ["BUYER", "REAL_ESTATE_AGENT", "LEGAL_REVIEWER", "FINANCIAL_INSTITUTION", "ADMIN"],
+};;
 
 function canAccess(href, role) {
   if (!role) return true;
@@ -76,6 +86,17 @@ const MENU_SECTION_CONFIGS = [
       { titleKey: "nav.notifications", href: "/dashboard/notifications",      icon: Bell,          badge: null },
       { titleKey: "nav.auditLogs",     href: "/dashboard/audit-logs",         icon: ClipboardList, badge: null },
       { titleKey: "nav.reportHistory", href: "/dashboard/report-history",     icon: History,       badge: null },
+    ],
+  },
+  {
+    id: "admin",
+    sectionKey: "nav.sections.admin",
+    collapsible: true,
+    items: [
+      { titleKey: "nav.admin.dashboard", href: "/dashboard/admin",           icon: LayoutDashboard, badge: null },
+      { titleKey: "nav.admin.users",     href: "/dashboard/admin/users",     icon: Users,           badge: null },
+      { titleKey: "nav.admin.analytics", href: "/dashboard/admin/analytics", icon: BarChart3,       badge: null },
+      { titleKey: "nav.admin.system",    href: "/dashboard/admin/system",    icon: Server,          badge: null },
     ],
   },
   {
@@ -135,10 +156,12 @@ export default function Sidebar({ isOpen = true, onClose, isDesktopRail = false 
       if (!section.collapsible) continue;
       const hasActive = section.items.some((item) =>
         item.href === "/dashboard"
-          ? pathname === "/dashboard"
-          : item.href === "/support"
-          ? pathname === "/support"
-          : pathname.startsWith(item.href)
+  ? pathname === "/dashboard"
+  : item.href === "/dashboard/admin"
+  ? pathname === "/dashboard/admin"
+  : item.href === "/support"
+  ? pathname === "/support"
+  : pathname.startsWith(item.href)
       );
       if (hasActive && collapsedSections[section.id]) {
         setCollapsedSections((prev) => {
@@ -223,13 +246,14 @@ export default function Sidebar({ isOpen = true, onClose, isDesktopRail = false 
                 >
                   {visibleItems.map((item) => {
                     const Icon = item.icon;
-                    const isActive =
-                      item.href === "/dashboard"
-                        ? pathname === "/dashboard"
-                        : item.href === "/support"
-                        ? pathname === "/support"
-                        : pathname?.startsWith(item.href);
-
+                   const isActive =
+  item.href === "/dashboard"
+    ? pathname === "/dashboard"
+    : item.href === "/dashboard/admin"
+    ? pathname === "/dashboard/admin"
+    : item.href === "/support"
+    ? pathname === "/support"
+    : pathname?.startsWith(item.href);
                     return (
                       <Link
                         key={item.titleKey}

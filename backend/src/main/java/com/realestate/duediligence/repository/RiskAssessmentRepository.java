@@ -42,4 +42,8 @@ public interface RiskAssessmentRepository extends JpaRepository<RiskAssessment, 
     List<RiskAssessment> findAllByLatestLevel(@Param("level") RiskLevel level);
 
     boolean existsByPropertyIdAndIsLatestTrue(Long propertyId);
+
+    /** Average overall score across all currently-active assessments. */
+    @Query("SELECT COALESCE(AVG(r.overallScore), 0.0) FROM RiskAssessment r WHERE r.isLatest = true")
+    Double avgOverallScore();
 }

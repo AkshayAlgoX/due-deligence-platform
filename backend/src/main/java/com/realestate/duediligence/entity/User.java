@@ -90,8 +90,16 @@ public class User {
      */
     @Column(name = "token_valid_from")
     private LocalDateTime tokenValidFrom;
+    // ── Admin Dashboard: Account status ────────────────────────────
+    /** Whether the account is active. Defaults to true for all users. */
+    @Column(name = "is_active")
+    private Boolean isActive = true;
 
-        // ── Milestone 3: Due Diligence Reports ──────────────────────────
+    /** Whether an admin has banned this account. Defaults to false. */
+    @Column(name = "is_banned")
+    private Boolean isBanned = false;
+
+    // ── Milestone 3: Due Diligence Reports ──────────────────────────
     @OneToMany(mappedBy = "generatedBy", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
     private List<DueDiligenceReport> reports = new ArrayList<>();
 }
