@@ -24,10 +24,11 @@ import PermitsSection from "@/components/property/aggregation/PermitsSection";
 import EnvironmentalCard from "@/components/property/aggregation/EnvironmentalCard";
 import DataCompletenessCard from "@/components/property/aggregation/DataCompletenessCard";
 import Breadcrumbs from "@/components/ui/Breadcrumbs";
-
-// ⭐ NEW: Admin label management
 import PropertyLabelsAdmin from "@/components/property/PropertyLabelsAdmin";
 import { getUser } from "@/utils/helpers";
+
+// ⭐ AI Assistant
+import FloatingChatButton from "@/components/agent/FloatingChatButton";
 
 export default function PropertyDetailPage() {
   const { t } = useTranslation();
@@ -43,8 +44,6 @@ export default function PropertyDetailPage() {
   const [loadingProperty, setLoadingProperty] = useState(true);
   const [loadingAggregated, setLoadingAggregated] = useState(false);
   const [editModalOpen, setEditModalOpen] = useState(false);
-
-  // ⭐ NEW: Check if current user is admin
   const [isAdmin, setIsAdmin] = useState(false);
 
   useEffect(() => {
@@ -168,7 +167,6 @@ export default function PropertyDetailPage() {
             </div>
           </div>
 
-          {/* ⭐ NEW: Admin-only label management section */}
           {isAdmin && (
             <ErrorBoundary>
               <PropertyLabelsAdmin propertyId={property.id} />
@@ -182,6 +180,12 @@ export default function PropertyDetailPage() {
         onClose={() => setEditModalOpen(false)}
         property={property}
         onSuccess={handleEditSuccess}
+      />
+
+      {/* ⭐ AI Floating Chat — context-aware for this property */}
+      <FloatingChatButton
+        propertyId={Number(id)}
+        propertyAddress={property?.address}
       />
     </div>
   );
