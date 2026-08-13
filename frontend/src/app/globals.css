@@ -333,3 +333,29 @@ html[dir="rtl"] .rtl-flip {
 *:hover::-webkit-scrollbar-thumb {
   opacity: 1;
 }
+
+/* ─────────────────────────────────────────────────────────
+   Command Palette (cmdk)
+   ───────────────────────────────────────────────────────── */
+
+[cmdk-group-heading] {
+  padding: 8px 12px 4px;
+  font-size: 10px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: rgb(107 114 128);
+  /* gray-500 */
+}
+
+.dark [cmdk-group-heading] {
+  color: rgb(255 255 255 / 0.4);
+}
+
+.cmd-group+.cmd-group [cmdk-group-heading] {
+  margin-top: 8px;
+}
+
+[cmdk-item] {
+  outline: none;
+}

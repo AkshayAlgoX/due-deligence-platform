@@ -2,6 +2,7 @@ package com.realestate.duediligence.security;
 
 import java.util.List;
 
+import jakarta.servlet.DispatcherType;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
@@ -24,18 +25,8 @@ import com.realestate.duediligence.service.impl.CustomUserDetailsService;
 
 import lombok.RequiredArgsConstructor;
 
-/**
- * SecurityConfig — the security backbone.
- *
- * Key decisions:
- *  - Stateless (JWT only, no server sessions)
- *  - CSRF disabled (JWT doesn't need it)
- *  - Method-level security ENABLED (@PreAuthorize now works)
- *  - CORS whitelist for localhost:3000 (dev frontend)
- *  - Clean 401/403 JSON responses (no HTML error pages)
- */
 @Configuration
-@EnableMethodSecurity  // ← CRITICAL: activates @PreAuthorize on methods
+@EnableMethodSecurity
 @RequiredArgsConstructor
 public class SecurityConfig {
 
@@ -49,13 +40,12 @@ public class SecurityConfig {
         http
             .csrf(csrf -> csrf.disable())
 
-            // ── NEW: Security headers (protects against XSS, clickjacking, MIME sniffing) ──
             .headers(headers -> headers
-                .frameOptions(frame -> frame.deny())                          // X-Frame-Options: DENY (no clickjacking)
-                .contentTypeOptions(opts -> {})                               // X-Content-Type-Options: nosniff
-                .httpStrictTransportSecurity(hsts -> hsts                     // HSTS for HTTPS enforcement
+                .frameOptions(frame -> frame.deny())
+                .contentTypeOptions(opts -> {})
+                .httpStrictTransportSecurity(hsts -> hsts
                     .includeSubDomains(true)
-                    .maxAgeInSeconds(31536000)                                // 1 year
+                    .maxAgeInSeconds(31536000)
                 )
                 .referrerPolicy(ref -> ref.policy(
                     org.springframework.security.web.header.writers.ReferrerPolicyHeaderWriter.ReferrerPolicy.STRICT_ORIGIN_WHEN_CROSS_ORIGIN
@@ -65,66 +55,78 @@ public class SecurityConfig {
                     "img-src 'self' data: blob: https:; " +
                     "script-src 'self' 'unsafe-inline' blob: https://accounts.google.com; " +
                     "style-src 'self' 'unsafe-inline'; " +
-                    "connect-src 'self' http://localhost:8080 https://accounts.google.com; " +
+                    "connect-src 'self' http://localhost:8080 https://accounts.google.com https://api.groq.com; " +
                     "frame-src https://accounts.google.com"
                 ))
             )
 
-            // Enable CORS with our custom config
             .cors(cors -> cors.configurationSource(corsConfigurationSource()))
 
             .sessionManagement(session ->
                 session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
 
             .authorizeHttpRequests(auth -> auth
-                // ── Public endpoints (auth flow) ──────────────────────
+
+                // ── Async + error re-dispatches ───────────────────────
+                // SSE endpoints (SseEmitter) re-enter the security chain on
+                // ASYNC/ERROR dispatches without a usable auth context. Without
+                // this, AuthorizationFilter throws on the committed response and
+                // the connection dies with "Network Error". The original REQUEST
+                // dispatch is still fully secured below.
+                .dispatcherTypeMatchers(DispatcherType.ASYNC, DispatcherType.ERROR).permitAll()
+
+                // ── Public endpoints ──────────────────────────────────
                 .requestMatchers(
-    "/api/auth/register/**",
-    "/api/auth/login",
-    "/api/auth/google",
-    "/api/auth/complete-google-signup",
-    "/api/auth/forgot-password",
-    "/api/auth/verify-otp",
-    "/api/auth/reset-password",
+                    "/api/auth/register/**",
+                    "/api/auth/login",
+                    "/api/auth/google",
+                    "/api/auth/complete-google-signup",
+                    "/api/auth/forgot-password",
+                    "/api/auth/verify-otp",
+                    "/api/auth/reset-password",
 
-    // Public marketing endpoints
-    "/api/contact/submit",
-    // Cashfree webhook — signature-verified inside the controller
-    "/api/subscription/webhook",
+                    // Public marketing
+                    "/api/contact/submit",
 
-    // Swagger
-    "/swagger-ui.html",
-    "/swagger-ui/**",
-    "/v3/api-docs",
-    "/v3/api-docs/**",
-    "/v3/api-docs.yaml",
-    "/swagger-resources/**",
-    "/webjars/**",
+                    // Cashfree webhook — signature-verified inside controller
+                    "/api/subscription/webhook",
 
-    // ── Actuator health + info (safe to be public) ──
-    "/actuator/health",
-    "/actuator/health/**",
-    "/actuator/info",
+                    // Swagger
+                    "/swagger-ui.html",
+                    "/swagger-ui/**",
+                    "/v3/api-docs",
+                    "/v3/api-docs/**",
+                    "/v3/api-docs.yaml",
+                    "/swagger-resources/**",
+                    "/webjars/**",
 
-    // ── SSE: EventSource cannot send Authorization headers.
-    //    The JWT filter still runs on this endpoint — the controller
-    //    checks auth.getName() and returns 401 if not authenticated.
-    //    We permit here only to avoid Spring Security rejecting it
-    //    before the JWT filter has a chance to set the context.
-    "/api/sse/notifications"
-).permitAll()
+                    // Actuator
+                    "/actuator/health",
+                    "/actuator/health/**",
+                    "/actuator/info",
+
+                    // SSE notifications — JWT filter handles auth internally
+                    "/api/sse/notifications"
+                ).permitAll()
 
                 .requestMatchers("/error").permitAll()
 
-                // Preflight OPTIONS for CORS
+                // Preflight
                 .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()
 
                 // ── Role-gated endpoints ──────────────────────────────
                 .requestMatchers("/api/admin/**").hasRole("ADMIN")
                 .requestMatchers("/api/buyer/**").hasRole("BUYER")
-                .requestMatchers("/api/agent/**").hasRole("REAL_ESTATE_AGENT")
                 .requestMatchers("/api/legal/**").hasRole("LEGAL_REVIEWER")
                 .requestMatchers("/api/financial/**").hasRole("FINANCIAL_INSTITUTION")
+
+                // ── AI Agent chat — ALL authenticated users (any role) ─
+                // MUST be before the old /api/agent/** role rule
+                .requestMatchers("/api/agent/chat/**").authenticated()
+
+                // ── Real estate agent role-gated routes ───────────────
+                // Only non-chat /api/agent/** routes need REAL_ESTATE_AGENT role
+                .requestMatchers("/api/agent/**").hasRole("REAL_ESTATE_AGENT")
 
                 // ── Export endpoints ──────────────────────────────────
                 .requestMatchers("/api/export/**").authenticated()
@@ -133,7 +135,6 @@ public class SecurityConfig {
                 .anyRequest().authenticated()
             )
 
-            // Custom 401/403 responses in clean JSON (no HTML)
             .exceptionHandling(exceptions -> exceptions
                 .authenticationEntryPoint((request, response, authException) -> {
                     response.setStatus(HttpStatus.UNAUTHORIZED.value());
@@ -158,8 +159,6 @@ public class SecurityConfig {
                 UsernamePasswordAuthenticationFilter.class
             )
 
-            // Rate limiter runs BEFORE JWT filter — rejects flooding
-            // requests before any expensive auth work is done
             .addFilterBefore(
                 rateLimitFilter,
                 JwtAuthenticationFilter.class
@@ -168,28 +167,29 @@ public class SecurityConfig {
         return http.build();
     }
 
-    /**
-     * CORS whitelist — only allow trusted frontend origins.
-     *
-     * Production TODO: add your deployed frontend URL here (e.g. "https://yourdomain.com")
-     * Never use "*" — that defeats the purpose of CORS.
-     */
     @Bean
     CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration cors = new CorsConfiguration();
 
-        // Frontend origins (dev + future prod)
         cors.setAllowedOrigins(List.of(
             "http://localhost:3000",
-            "http://localhost:3001"  // sometimes Next.js falls back to 3001
-            // "https://your-production-domain.com"  // uncomment when deploying
+            "http://localhost:3001"
         ));
 
         cors.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS"));
         cors.setAllowedHeaders(List.of("*"));
-        cors.setExposedHeaders(List.of("Authorization", "Content-Type", "Cache-Control"));
+
+        // ⭐ Added: text/event-stream headers for SSE streaming to work cross-origin
+        cors.setExposedHeaders(List.of(
+            "Authorization",
+            "Content-Type",
+            "Cache-Control",
+            "X-Accel-Buffering",        // tells nginx not to buffer SSE
+            "Transfer-Encoding"          // needed for chunked SSE responses
+        ));
+
         cors.setAllowCredentials(true);
-        cors.setMaxAge(3600L);  // cache preflight 1 hour
+        cors.setMaxAge(3600L);
 
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
         source.registerCorsConfiguration("/**", cors);
