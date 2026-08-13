@@ -109,7 +109,7 @@ const FAQ = [
   },
   {
     q: "What payment methods are accepted?",
-    a: "UPI, Credit/Debit cards, Net Banking via Razorpay. Enterprise plans support wire transfer.",
+    a: "UPI, Credit/Debit cards, Net Banking, and Wallets — all via Cashfree (PCI-DSS Level 1 certified). Enterprise plans support wire transfer and custom invoicing.",
   },
   {
     q: "Where is my data stored?",
