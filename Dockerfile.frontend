@@ -1,0 +1,33 @@
+# syntax=docker/dockerfile:1
+# Dockerfile.frontend — Next.js 16 standalone output, multi-stage (Alpine, ~200MB target)
+
+# ── Stage 1: deps — npm ci for reproducible installs ───────────────
+FROM node:20-alpine AS deps
+WORKDIR /app
+COPY frontend/package.json frontend/package-lock.json ./
+RUN npm ci
+
+# ── Stage 2: builder — Next build with standalone output ───────────
+FROM node:20-alpine AS builder
+WORKDIR /app
+# Bake the backend rewrite target at BUILD time (rewrites live in routes-manifest)
+ARG API_PROXY_URL=http://backend:8080
+ENV API_PROXY_URL=$API_PROXY_URL NEXT_TELEMETRY_DISABLED=1
+COPY --from=deps /app/node_modules ./node_modules
+COPY frontend/ .
+RUN npm run build
+
+# ── Stage 3: runtime — standalone server, non-root user ────────────
+FROM node:20-alpine AS runtime
+WORKDIR /app
+ENV NODE_ENV=production PORT=3000 HOSTNAME=0.0.0.0
+RUN addgroup --system --gid 1001 nodejs \
+    && adduser --system --uid 1001 nextjs
+COPY --from=builder --chown=nextjs:nodejs /app/.next/standalone ./
+COPY --from=builder --chown=nextjs:nodejs /app/.next/static ./.next/static
+COPY --from=builder --chown=nextjs:nodejs /app/public ./public
+USER nextjs
+EXPOSE 3000
+HEALTHCHECK --interval=30s --timeout=5s --start-period=30s --retries=3 \
+  CMD wget -q --spider http://localhost:3000 || exit 1
+CMD ["node", "server.js"]
