@@ -38,6 +38,9 @@ const SECTION_RENDERERS = {
   APPENDIX: ReportAppendix,
 };
 
+// AI summary card
+import AISummaryCard from "@/components/reports/AISummaryCard";
+
 function ErrorState({ message, onRetry }) {
   const { t } = useTranslation();
   return (
@@ -247,6 +250,9 @@ export default function ReportViewerPage() {
 
             {/* Sections rendered in canonical order */}
             <main className="flex-1 min-w-0 space-y-6">
+              {/* ⭐ AI Summary — auto-generated on first view, cached after */}
+              <AISummaryCard reportId={report.id} />
+
               {sortedSections.map((section) => {
                 const Renderer = SECTION_RENDERERS[section.sectionType];
                 if (!Renderer) return null;
