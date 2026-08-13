@@ -207,16 +207,6 @@ function Hero() {
               <path d="M4 10h12M11 5l5 5-5 5" strokeLinecap="round" strokeLinejoin="round" />
             </svg>
           </Link>
-          <Link
-            href="/login"
-            className="inline-flex items-center gap-2 rounded-lg border border-white/10 hover:border-white/20 bg-white/[0.02] hover:bg-white/[0.04] h-11 px-5 text-[14px] font-medium text-white/80 hover:text-white transition-all"
-          >
-            <svg viewBox="0 0 20 20" className="h-4 w-4" fill="currentColor">
-              <circle cx="10" cy="10" r="8" fill="none" stroke="currentColor" strokeWidth="1.5" />
-              <path d="M8 7l5 3-5 3V7z" />
-            </svg>
-            Watch demo
-          </Link>
         </motion.div>
 
         {/* Trust text */}

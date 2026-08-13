@@ -1,0 +1,70 @@
+# application-test.yml — test-only profile.
+# Activated via: mvn test -Dspring.profiles.active=test
+# Never used in production.
+
+spring:
+  datasource:
+    url: jdbc:h2:mem:testdb;MODE=PostgreSQL;DB_CLOSE_DELAY=-1;DATABASE_TO_LOWER=TRUE
+    driver-class-name: org.h2.Driver
+    username: sa
+    password: ""
+
+  jpa:
+    hibernate:
+      ddl-auto: create-drop
+    show-sql: false
+    properties:
+      hibernate:
+        format_sql: false
+
+  # Mail — disable actual sending during tests
+  mail:
+    host: localhost
+    port: 2525
+    username: ""
+    password: ""
+    properties:
+      mail:
+        smtp:
+          auth: false
+          starttls:
+            enable: false
+            required: false
+          connectiontimeout: 1000
+          timeout: 1000
+          writetimeout: 1000
+
+# JWT — deterministic test secret (>= 64 bytes, never used outside tests)
+jwt:
+  secret: test-secret-key-for-junit-only-not-production-use-64bytes-minimum
+  expiration: 3600000
+
+# External integrations — dummy values so no real calls are made
+groq:
+  api:
+    key: test
+cashfree:
+  app-id: test
+  secret-key: test
+  environment: sandbox
+  webhook-secret: test
+google:
+  oauth:
+    client-id: test
+
+# Sender identity
+app:
+  mail:
+    from: test@example.com
+    from-name: Test Suite
+  admin:
+    email: admin@test.local
+    password: Admin@123
+    full-name: Test Admin
+    phone-number: "9876543210"
+
+# Logging — quiet but visible for com.realestate
+logging:
+  level:
+    root: WARN
+    com.realestate: INFO
