@@ -18,6 +18,7 @@ import Link from "next/link";
 import { useParams, useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
+import { getUser } from "@/utils/helpers";
 
 import api from "@/services/api";
 import { API_ROUTES } from "@/constants/apiRoutes";
@@ -39,6 +40,13 @@ export default function GenerateReportPage() {
   const [forceRecalculate, setForceRecalculate] = useState(false);
   const [modalOpen, setModalOpen] = useState(false);
   const [planLimitReached, setPlanLimitReached] = useState(false);
+  const [user, setUser] = useState(null);
+
+  useEffect(() => {
+    setUser(getUser());
+  }, []);
+
+  const isAdmin = user?.role === "ADMIN";
 
   const {
     report,
@@ -344,7 +352,7 @@ export default function GenerateReportPage() {
       />
 
       {/* ── Plan-limit upgrade modal ── */}
-      {planLimitReached && (
+      {!isAdmin && planLimitReached && (
         <div className="fixed inset-0 z-[60] flex items-center justify-center bg-black/50 p-4">
           <div className="w-full max-w-md rounded-2xl border border-gray-100 dark:border-[#30363d] bg-white dark:bg-[#161b22] p-6 shadow-xl">
             <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-amber-500/10 ring-1 ring-amber-500/30 mb-4">
