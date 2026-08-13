@@ -1,0 +1,46 @@
+# ── Dependencies / build output (regenerated inside the image) ─────
+node_modules
+**/node_modules
+.next
+**/.next
+target
+**/target
+frontend/out
+coverage
+.nyc_output
+
+# ── VCS / editors ───────────────────────────────────────────────────
+.git
+.gitignore
+.github
+.idea
+.vscode
+*.iml
+
+# ── Secrets — NEVER bake into images (compose reads .env on the host)
+.env
+.env.local
+.env.*.local
+*.pem
+*.key
+
+# ── Docs / logs / tests artifacts ───────────────────────────────────
+README.md
+**/*.md
+!LICENSE
+docs/
+*.log
+test-results
+playwright-report
+
+# ── Avoid recursive context ─────────────────────────────────────────
+Dockerfile*
+docker-compose*.yml
+.dockerignore
+
+# ── Maven wrapper binary (re-downloaded by the maven image) ─────────
+backend/.mvn/wrapper/maven-wrapper.jar
+
+# ── OS noise ────────────────────────────────────────────────────────
+.DS_Store
+Thumbs.db
