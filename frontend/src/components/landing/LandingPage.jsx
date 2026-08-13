@@ -49,13 +49,15 @@ export default function LandingPage() {
       />
 
       <Nav scrolled={scrolled} />
-      <Hero />
-      <TrustBar />
-      <FeatureGrid />
-      <ProductShowcase />
-      <RiskScoreSection />
-      <Testimonial />
-      <FinalCTA />
+      <main id="main-content">
+        <Hero />
+        <TrustBar />
+        <FeatureGrid />
+        <ProductShowcase />
+        <RiskScoreSection />
+        <Testimonial />
+        <FinalCTA />
+      </main>
       <Footer />
     </div>
   );
@@ -222,7 +224,7 @@ function Hero() {
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={{ duration: 0.6, delay: 0.4 }}
-          className="text-[12px] text-white/40"
+          className="text-[12px] text-white/60"
         >
           Free forever · No card required · 3-minute setup
         </motion.p>
@@ -255,7 +257,7 @@ function HeroMockup() {
           <div className="h-2.5 w-2.5 rounded-full bg-white/10" />
           <div className="h-2.5 w-2.5 rounded-full bg-white/10" />
           <div className="ml-4 h-5 flex-1 max-w-md rounded bg-white/[0.03] flex items-center px-3">
-            <span className="text-[11px] text-white/40 truncate">
+            <span className="text-[11px] text-white/60 truncate">
               diligence.app/reports/2847
             </span>
           </div>
@@ -317,8 +319,8 @@ function HeroMockup() {
                 { label: "Zoning", value: "5", color: "emerald" },
               ].map((f) => (
                 <div key={f.label} className="rounded-lg bg-white/[0.02] border border-white/[0.05] p-3">
-                  <div className="text-[10px] text-white/40 uppercase tracking-wider mb-1">{f.label}</div>
-                  <div className="text-lg font-semibold text-white/90">{f.value}<span className="text-xs text-white/40">/100</span></div>
+                  <div className="text-[10px] text-white/60 uppercase tracking-wider mb-1">{f.label}</div>
+                  <div className="text-lg font-semibold text-white/90">{f.value}<span className="text-xs text-white/60">/100</span></div>
                   <div className="mt-2 h-1 rounded-full bg-white/[0.05] overflow-hidden">
                     <div className="h-full bg-emerald-400 rounded-full" style={{ width: `${f.value}%` }} />
                   </div>
@@ -351,7 +353,7 @@ function TrustBar() {
             <div className="text-[26px] font-semibold tracking-tight text-white mb-1">
               {item.number}
             </div>
-            <div className="text-[12px] text-white/40 uppercase tracking-wider">
+            <div className="text-[12px] text-white/60 uppercase tracking-wider">
               {item.label}
             </div>
           </div>
@@ -517,7 +519,7 @@ function ShowcaseCard() {
     <div className="relative rounded-2xl border border-white/[0.08] bg-[#0f0f0f] p-6 shadow-2xl">
       <div className="flex items-center justify-between mb-5">
         <div>
-          <div className="text-[11px] text-white/40 uppercase tracking-wider mb-1">Report ID · 2847</div>
+          <div className="text-[11px] text-white/60 uppercase tracking-wider mb-1">Report ID · 2847</div>
           <div className="text-[15px] font-semibold text-white">Villa 42, Whitefield</div>
           <div className="text-[12px] text-white/50">Bangalore, Karnataka 560066</div>
         </div>
@@ -549,14 +551,14 @@ function ShowcaseCard() {
                 style={{ width: `${cat.score}%` }}
               />
             </div>
-            <div className="text-[11px] text-white/40 w-12 text-right font-mono">{cat.score}</div>
-            <div className="text-[9px] text-white/30 w-8 text-right font-mono">{cat.weight}</div>
+            <div className="text-[11px] text-white/60 w-12 text-right font-mono">{cat.score}</div>
+            <div className="text-[9px] text-white/60 w-8 text-right font-mono">{cat.weight}</div>
           </div>
         ))}
       </div>
 
       <div className="mt-5 pt-4 border-t border-white/[0.06] flex items-center justify-between text-[11px]">
-        <div className="flex items-center gap-2 text-white/40">
+        <div className="flex items-center gap-2 text-white/60">
           <div className="h-1.5 w-1.5 rounded-full bg-emerald-400 animate-pulse" />
           Generated 4 seconds ago
         </div>
@@ -589,18 +591,18 @@ function RiskScoreSection() {
         </p>
 
         <div className="inline-flex flex-wrap items-center justify-center gap-3 rounded-2xl border border-white/[0.08] bg-white/[0.02] px-6 py-5 font-mono text-[13px]">
-          <span className="text-white/40">Overall</span>
-          <span className="text-white/20">=</span>
+          <span className="text-white/60">Overall</span>
+          <span className="text-white/60">=</span>
           <ScoreChip color="emerald" label="Flood" pct="0.25" />
-          <span className="text-white/30">+</span>
+          <span className="text-white/60">+</span>
           <ScoreChip color="blue" label="Legal" pct="0.20" />
-          <span className="text-white/30">+</span>
+          <span className="text-white/60">+</span>
           <ScoreChip color="amber" label="Tax" pct="0.15" />
-          <span className="text-white/30">+</span>
+          <span className="text-white/60">+</span>
           <ScoreChip color="purple" label="Zoning" pct="0.15" />
-          <span className="text-white/30">+</span>
+          <span className="text-white/60">+</span>
           <ScoreChip color="cyan" label="Env" pct="0.15" />
-          <span className="text-white/30">+</span>
+          <span className="text-white/60">+</span>
           <ScoreChip color="rose" label="Market" pct="0.10" />
         </div>
       </div>
@@ -712,7 +714,7 @@ function Footer() {
             <span className="text-[13px] font-semibold text-white">
               Real Estate Due Diligence
             </span>
-            <span className="text-[12px] text-white/30 ml-2">
+            <span className="text-[12px] text-white/60 ml-2">
               Built in Bengaluru · 2026
             </span>
           </div>
