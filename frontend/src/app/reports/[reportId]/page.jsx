@@ -25,6 +25,8 @@ import ReportComparableSection from "@/components/reports/sections/ReportCompara
 import ReportFinancialSection from "@/components/reports/sections/ReportFinancialSection";
 import ReportRecommendations from "@/components/reports/sections/ReportRecommendations";
 import ReportAppendix from "@/components/reports/sections/ReportAppendix";
+import HighRiskBanner from "@/components/reports/HighRiskBanner";
+import { celebrateOnce } from "@/lib/celebrate";
 
 // Section renderer map — order enforced by sortSections() in reportUtils
 const SECTION_RENDERERS = {
@@ -142,24 +144,33 @@ export default function ReportViewerPage() {
   }, [fetchReport]);
 
   // Poll if report is in progress
-  useEffect(() => {
-    if (!report) return;
-    if (report.status === "COMPLETED" || report.status === "FAILED") return;
+ useEffect(() => {
+  if (!report) return;
+  if (report.status === "COMPLETED" || report.status === "FAILED") {
+    // 🎉 Celebrate first-time completion
+    if (report.status === "COMPLETED") {
+      celebrateOnce(`report-${report.id}`, "report-complete");
+    }
+    return;
+  }
 
-    const interval = setInterval(async () => {
-      try {
-        const data = await reportService.getById(reportId);
-        setReport(data);
-        if (data.status === "COMPLETED" || data.status === "FAILED") {
-          clearInterval(interval);
-        }
-      } catch {
+  const interval = setInterval(async () => {
+    try {
+      const data = await reportService.getById(reportId);
+      setReport(data);
+      if (data.status === "COMPLETED") {
+        celebrateOnce(`report-${data.id}`, "report-complete");
+        clearInterval(interval);
+      } else if (data.status === "FAILED") {
         clearInterval(interval);
       }
-    }, 3000);
+    } catch {
+      clearInterval(interval);
+    }
+  }, 3000);
 
-    return () => clearInterval(interval);
-  }, [report?.status, reportId]);
+  return () => clearInterval(interval);
+}, [report?.status, reportId]);
 
   async function handleRegenerate() {
     if (!report) return;
@@ -251,6 +262,7 @@ export default function ReportViewerPage() {
             {/* Sections rendered in canonical order */}
             <main className="flex-1 min-w-0 space-y-6">
               {/* ⭐ AI Summary — auto-generated on first view, cached after */}
+              <HighRiskBanner score={report.riskScoreSnapshot} />
               <AISummaryCard reportId={report.id} />
 
               {sortedSections.map((section) => {

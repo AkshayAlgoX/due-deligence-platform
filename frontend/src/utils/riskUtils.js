@@ -213,3 +213,37 @@ export const getDeltaTrend = (delta) => {
   if (delta == null || Math.abs(delta) < 0.5) return "same";
   return delta > 0 ? "worse" : "better";
 };
+
+// ─────────────────────────────────────────────────────────────
+// Fraud alert helpers — used by RiskBadge, banners, cards
+// ─────────────────────────────────────────────────────────────
+
+/**
+ * Returns true if risk requires prominent visual alert (HIGH or CRITICAL).
+ * @param {number|string} scoreOrLevel — score (number) or level (string)
+ */
+export function isHighRisk(scoreOrLevel) {
+  if (scoreOrLevel == null) return false;
+  if (typeof scoreOrLevel === "string") {
+    return scoreOrLevel === "HIGH" || scoreOrLevel === "CRITICAL";
+  }
+  return scoreOrLevel > 50; // matches RiskLevel.fromScore
+}
+
+/**
+ * Returns true if risk is CRITICAL (>75 or "CRITICAL").
+ */
+export function isCriticalRisk(scoreOrLevel) {
+  if (scoreOrLevel == null) return false;
+  if (typeof scoreOrLevel === "string") return scoreOrLevel === "CRITICAL";
+  return scoreOrLevel > 75;
+}
+
+/**
+ * Returns true if risk is low (≤25 or "LOW") — safe to show verified badge.
+ */
+export function isLowRisk(scoreOrLevel) {
+  if (scoreOrLevel == null) return false;
+  if (typeof scoreOrLevel === "string") return scoreOrLevel === "LOW";
+  return scoreOrLevel <= 25;
+}

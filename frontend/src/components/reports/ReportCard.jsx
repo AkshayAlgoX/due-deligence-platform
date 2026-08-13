@@ -24,6 +24,7 @@ import {
 import RiskScoreBadge from "./RiskScoreBadge";
 import InlineActions from "./InlineActions";
 import { formatRelativeTime, formatAbsoluteDate } from "@/utils/formatDate";
+import FraudAlertBadge from "@/components/property/FraudAlertBadge";
 
 function getRiskBarColor(status, score) {
   if (status === "FAILED") return "#dc2626";
@@ -380,14 +381,17 @@ export default function ReportCard({
           </div>
 
           <div
-            className="flex items-center gap-2 flex-shrink-0 ml-2"
-            onClick={(e) => e.stopPropagation()}
-          >
-            <RiskScoreBadge
-              score={report.riskScoreSnapshot}
-              status={report.status}
-              size="sm"
-            />
+  className="flex items-center gap-2 flex-shrink-0 ml-2"
+  onClick={(e) => e.stopPropagation()}
+>
+  {isCompleted && report.riskScoreSnapshot != null && (
+    <FraudAlertBadge score={report.riskScoreSnapshot} size="sm" iconOnly />
+  )}
+  <RiskScoreBadge
+    score={report.riskScoreSnapshot}
+    status={report.status}
+    size="sm"
+  />
 
             {isCompleted && (
               <InlineActions
