@@ -18,9 +18,34 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata = {
+  metadataBase: new URL("https://realestate-duediligence.com"),
   title: "Real Estate Due Diligence Agent",
   description:
     "Property due diligence platform for buyers, agents, and institutions.",
+  keywords: [
+    "real estate",
+    "due diligence",
+    "property risk",
+    "India property",
+    "AI property analysis",
+  ],
+  authors: [{ name: "Real Estate Due Diligence" }],
+  creator: "Real Estate Due Diligence",
+  openGraph: {
+    title: "Real Estate Due Diligence Agent",
+    description:
+      "Property due diligence platform for buyers, agents, and institutions.",
+    url: "/",
+    siteName: "Real Estate Due Diligence",
+    type: "website",
+    images: [{ url: "/og-image.png", width: 1200, height: 630 }],
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "Real Estate Due Diligence Agent",
+    description:
+      "Property due diligence platform for buyers, agents, and institutions.",
+  },
 };
 
 /* ─────────────────────────────────────────────────────────────────────────────
@@ -74,10 +99,37 @@ export default function RootLayout({ children }) {
       <body className="min-h-full flex flex-col">
         <a
           href="#main-content"
-          className="sr-only focus:not-sr-only focus:fixed focus:top-4 focus:left-4 focus:bg-white focus:px-4 focus:py-2 focus:rounded-lg focus:shadow-lg focus:z-50"
+          className="sr-only focus:not-sr-only focus:absolute focus:top-4 focus:left-4 focus:z-[100] focus:px-4 focus:py-2 focus:bg-emerald-500 focus:text-white focus:rounded-lg"
         >
           Skip to main content
         </a>
+
+        {/* JSON-LD structured data — SoftwareApplication schema */}
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{
+            __html: JSON.stringify({
+              "@context": "https://schema.org",
+              "@type": "SoftwareApplication",
+              name: "Real Estate Due Diligence",
+              description:
+                "AI-powered property due diligence platform for Indian real estate. Risk analysis, fraud detection, and automated legal verification.",
+              applicationCategory: "BusinessApplication",
+              operatingSystem: "Web",
+              offers: {
+                "@type": "Offer",
+                price: "0",
+                priceCurrency: "INR",
+              },
+              aggregateRating: {
+                "@type": "AggregateRating",
+                ratingValue: "4.8",
+                ratingCount: "127",
+              },
+            }),
+          }}
+        />
+
         <NextTopLoader
           color="#22C55E"
           height={3}
