@@ -140,4 +140,12 @@ public class DueDiligenceReport {
     protected void onUpdate() {
         this.updatedAt = LocalDateTime.now();
     }
+
+        /** AI-generated executive summary (JSON: verdict + bullets + rationale). */
+    @Column(name = "ai_summary", columnDefinition = "TEXT")
+    private String aiSummary;
+
+    /** When aiSummary was last generated. */
+    @Column(name = "ai_summary_generated_at")
+    private LocalDateTime aiSummaryGeneratedAt;
 }
