@@ -1,0 +1,326 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`RiskSpectrum > matches a stable snapshot 1`] = `
+<div>
+  <div
+    class="w-full"
+  >
+    <div
+      class="flex flex-col lg:flex-row lg:items-center gap-8 lg:gap-10"
+    >
+      <div
+        class="relative flex items-center justify-center flex-shrink-0 mx-auto lg:mx-0"
+      >
+        <div
+          class="absolute inset-0 rounded-full blur-2xl opacity-30"
+          style="background-color: rgb(239, 68, 68);"
+        />
+        <svg
+          class="relative -rotate-90"
+          height="200"
+          width="200"
+        >
+          <circle
+            class="text-gray-100 dark:text-[#21262d]"
+            cx="100"
+            cy="100"
+            fill="none"
+            r="93"
+            stroke="currentColor"
+            stroke-width="14"
+          />
+          <defs>
+            <lineargradient
+              id="ringGrad"
+              x1="0%"
+              x2="100%"
+              y1="0%"
+              y2="100%"
+            >
+              <stop
+                offset="0%"
+                stop-color="#EF4444"
+                stop-opacity="1"
+              />
+              <stop
+                offset="100%"
+                stop-color="#EF4444"
+                stop-opacity="0.7"
+              />
+            </lineargradient>
+          </defs>
+          <circle
+            cx="100"
+            cy="100"
+            fill="none"
+            r="93"
+            stroke="url(#ringGrad)"
+            stroke-dasharray="584.3362335677015"
+            stroke-linecap="round"
+            stroke-width="14"
+            style="stroke-dashoffset: 584.3362335677015;"
+          />
+        </svg>
+        <div
+          class="absolute inset-0 flex flex-col items-center justify-center"
+        >
+          <div
+            class="text-5xl font-black tabular-nums tracking-tight leading-none"
+            style="color: rgb(239, 68, 68);"
+          >
+            <span>
+              0.0
+            </span>
+          </div>
+          <div
+            class="text-[10px] font-black uppercase tracking-[0.15em] mt-2 text-gray-500 dark:text-[#7d8590]"
+          >
+            out of 100
+          </div>
+          <div
+            class="mt-3 px-3 py-1 rounded-full text-[10px] font-black uppercase tracking-[0.15em]"
+            style="background-color: rgba(239, 68, 68, 0.094); color: rgb(239, 68, 68);"
+          >
+            CRITICAL
+             
+            risk
+          </div>
+        </div>
+      </div>
+      <div
+        class="flex-1 space-y-4 min-w-0"
+      >
+        <div
+          class="flex items-start gap-3"
+        >
+          <div
+            class="w-9 h-9 rounded-lg bg-gray-100 dark:bg-[#1c2128] border border-gray-200 dark:border-[#30363d] flex items-center justify-center flex-shrink-0"
+          >
+            <svg
+              aria-hidden="true"
+              class="lucide lucide-clock w-4 h-4 text-gray-500 dark:text-[#7d8590]"
+              fill="none"
+              height="24"
+              stroke="currentColor"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-width="2"
+              viewBox="0 0 24 24"
+              width="24"
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              <circle
+                cx="12"
+                cy="12"
+                r="10"
+              />
+              <path
+                d="M12 6v6l4 2"
+              />
+            </svg>
+          </div>
+          <div
+            class="min-w-0"
+          >
+            <div
+              class="text-[10px] font-bold uppercase tracking-widest text-gray-400 dark:text-[#6e7681] mb-0.5"
+            >
+              Last calculated
+            </div>
+            <div
+              class="text-sm font-semibold text-gray-900 dark:text-[#e6edf3]"
+            >
+              12d ago
+            </div>
+          </div>
+        </div>
+        <div
+          class="flex items-start gap-3"
+        >
+          <div
+            class="w-9 h-9 rounded-lg bg-gray-100 dark:bg-[#1c2128] border border-gray-200 dark:border-[#30363d] flex items-center justify-center flex-shrink-0"
+          >
+            <svg
+              aria-hidden="true"
+              class="lucide lucide-database w-4 h-4 text-gray-500 dark:text-[#7d8590]"
+              fill="none"
+              height="24"
+              stroke="currentColor"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-width="2"
+              viewBox="0 0 24 24"
+              width="24"
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              <ellipse
+                cx="12"
+                cy="5"
+                rx="9"
+                ry="3"
+              />
+              <path
+                d="M3 5V19A9 3 0 0 0 21 19V5"
+              />
+              <path
+                d="M3 12A9 3 0 0 0 21 12"
+              />
+            </svg>
+          </div>
+          <div
+            class="min-w-0 flex-1"
+          >
+            <div
+              class="text-[10px] font-bold uppercase tracking-widest text-gray-400 dark:text-[#6e7681] mb-1.5"
+            >
+              Data confidence
+            </div>
+            <div
+              class="flex items-center gap-3"
+            >
+              <div
+                class="flex items-end gap-[3px] h-7"
+              >
+                <div
+                  class="w-[5px] rounded-sm"
+                  style="background-color: rgb(34, 197, 94); opacity: 1; box-shadow: 0 0 6px #22C55E55;"
+                />
+                <div
+                  class="w-[5px] rounded-sm"
+                  style="background-color: rgb(34, 197, 94); opacity: 1; box-shadow: 0 0 6px #22C55E55;"
+                />
+                <div
+                  class="w-[5px] rounded-sm"
+                  style="background-color: rgb(34, 197, 94); opacity: 1; box-shadow: 0 0 6px #22C55E55;"
+                />
+                <div
+                  class="w-[5px] rounded-sm"
+                  style="background-color: rgb(34, 197, 94); opacity: 1; box-shadow: 0 0 6px #22C55E55;"
+                />
+                <div
+                  class="w-[5px] rounded-sm"
+                  style="background-color: rgb(34, 197, 94); opacity: 1; box-shadow: 0 0 6px #22C55E55;"
+                />
+                <div
+                  class="w-[5px] rounded-sm"
+                  style="background-color: rgb(34, 197, 94); opacity: 1; box-shadow: 0 0 6px #22C55E55;"
+                />
+              </div>
+              <div
+                class="text-sm font-semibold text-gray-900 dark:text-[#e6edf3] tabular-nums"
+              >
+                6
+                <span
+                  class="text-gray-400 dark:text-[#6e7681] font-normal"
+                >
+                  /
+                  6
+                </span>
+                <span
+                  class="ml-1.5 text-xs font-medium text-gray-500 dark:text-[#7d8590]"
+                >
+                  sources verified
+                </span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div
+      class="mt-8 pt-5 border-t border-gray-100 dark:border-[#21262d]"
+    >
+      <div
+        class="flex flex-wrap items-center justify-between gap-3"
+      >
+        <div
+          class="text-[10px] font-bold uppercase tracking-[0.15em] text-gray-400 dark:text-[#6e7681]"
+        >
+          Risk scale
+        </div>
+        <div
+          class="flex flex-wrap items-center gap-x-5 gap-y-2"
+        >
+          <div
+            class="flex items-center gap-2"
+            style="opacity: 0.55;"
+          >
+            <span
+              class="w-2 h-2 rounded-full"
+              style="background-color: rgb(34, 197, 94); box-shadow: none;"
+            />
+            <span
+              class="text-xs font-bold uppercase tracking-wider"
+            >
+              LOW
+            </span>
+            <span
+              class="text-[11px] text-gray-400 dark:text-[#6e7681] tabular-nums"
+            >
+              0–25
+            </span>
+          </div>
+          <div
+            class="flex items-center gap-2"
+            style="opacity: 0.55;"
+          >
+            <span
+              class="w-2 h-2 rounded-full"
+              style="background-color: rgb(245, 158, 11); box-shadow: none;"
+            />
+            <span
+              class="text-xs font-bold uppercase tracking-wider"
+            >
+              MEDIUM
+            </span>
+            <span
+              class="text-[11px] text-gray-400 dark:text-[#6e7681] tabular-nums"
+            >
+              26–50
+            </span>
+          </div>
+          <div
+            class="flex items-center gap-2"
+            style="opacity: 0.55;"
+          >
+            <span
+              class="w-2 h-2 rounded-full"
+              style="background-color: rgb(249, 115, 22); box-shadow: none;"
+            />
+            <span
+              class="text-xs font-bold uppercase tracking-wider"
+            >
+              HIGH
+            </span>
+            <span
+              class="text-[11px] text-gray-400 dark:text-[#6e7681] tabular-nums"
+            >
+              51–75
+            </span>
+          </div>
+          <div
+            class="flex items-center gap-2"
+            style="opacity: 1;"
+          >
+            <span
+              class="w-2 h-2 rounded-full"
+              style="background-color: rgb(239, 68, 68); box-shadow: 0 0 8px #EF4444;"
+            />
+            <span
+              class="text-xs font-bold uppercase tracking-wider"
+              style="color: rgb(239, 68, 68);"
+            >
+              CRITICAL
+            </span>
+            <span
+              class="text-[11px] text-gray-400 dark:text-[#6e7681] tabular-nums"
+            >
+              76–100
+            </span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+`;
