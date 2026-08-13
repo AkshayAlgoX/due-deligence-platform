@@ -1,23 +1,44 @@
 "use client";
 
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
+import { motion } from "framer-motion";
 import { MapPin, Home, DollarSign, Maximize, ChevronRight } from "lucide-react";
 import Card from "../common/Card";
 import PropertyLabelsStack from "./PropertyLabelsStack";
+import FraudAlertBadge from "./FraudAlertBadge";
 import { usePropertyLabels } from "@/hooks/usePropertyLabels";
 import { translatePropertyType } from "@/utils/enumTranslations";
+import { getPropertyRisk } from "@/services/propertyService";
 
 export default function PropertyCard({ property, isSelected, onSelect }) {
   const { t } = useTranslation();
-
-  // ── Guard clause: don't render if data is missing ────────────────────────
-  if (!property) return null;
-
-  // ── Load labels for this property ────────────────────────────────────────
   const { labels } = usePropertyLabels(property?.id);
 
-  // ── Safe fallbacks for all fields ────────────────────────────────────────
+  // ── Risk level lookup (lazy — only fetches once per card mount) ─────────
+  const [riskLevel, setRiskLevel] = useState(null);
+
+  useEffect(() => {
+    if (!property?.id) return;
+    let cancelled = false;
+
+    getPropertyRisk(property.id)
+      .then((data) => {
+        if (!cancelled && data?.overallLevel) {
+          setRiskLevel(data.overallLevel);
+        }
+      })
+      .catch(() => {
+        // Silent — no badge if risk data unavailable
+      });
+
+    return () => {
+      cancelled = true;
+    };
+  }, [property?.id]);
+
+  if (!property) return null;
+
   const address = property.address || t("property.card.unknownAddress", "Unknown Address");
   const city = property.city || "";
   const state = property.state || "";
@@ -26,29 +47,35 @@ export default function PropertyCard({ property, isSelected, onSelect }) {
   const area = property.area;
   const propertyType = property.propertyType;
 
-  // Build the location line only from present values
   const locationParts = [city, state, zipCode].filter(Boolean);
   const locationLine = locationParts
     .join(", ")
     .replace(", " + zipCode, " " + zipCode);
 
   return (
-    <div
+    <motion.div
       onClick={() => onSelect?.(property)}
-      className={`cursor-pointer transition-all hover:shadow-md ${
+      whileHover={{ y: -2 }}
+      whileTap={{ scale: 0.99 }}
+      transition={{ duration: 0.15 }}
+      className={`cursor-pointer transition-shadow hover:shadow-md ${
         isSelected ? "ring-2 ring-[#22C55E] rounded-xl" : ""
       }`}
     >
       <Card
-        className={`p-4 ${
-          isSelected
-            ? "border-[#22C55E]"
-            : "border-gray-200 dark:border-[#30363d]"
+        className={`p-4 relative overflow-visible ${
+          isSelected ? "border-[#22C55E]" : "border-gray-200 dark:border-[#30363d]"
         }`}
       >
+        {/* ⭐ Fraud badge — top-right corner, floats over card */}
+        {riskLevel && (
+          <div className="absolute -top-2 -right-2 z-10">
+            <FraudAlertBadge score={riskLevel} size="sm" />
+          </div>
+        )}
+
         <div className="flex items-start justify-between">
           <div className="flex-1 min-w-0">
-            {/* Address + Location */}
             <div className="flex items-start space-x-2">
               <Home className="h-4 w-4 text-gray-400 dark:text-[#7d8590] mt-0.5 flex-shrink-0" />
               <div className="min-w-0 flex-1">
@@ -64,7 +91,6 @@ export default function PropertyCard({ property, isSelected, onSelect }) {
               </div>
             </div>
 
-            {/* ⭐ LABELS - Zillow/MagicBricks style, inline below address */}
             {labels.length > 0 && (
               <div className="mt-2.5">
                 <PropertyLabelsStack
@@ -76,14 +102,11 @@ export default function PropertyCard({ property, isSelected, onSelect }) {
               </div>
             )}
 
-            {/* Price + Area */}
             <div className="mt-3 grid grid-cols-2 gap-2">
               <div className="flex items-center text-sm text-gray-600 dark:text-[#7d8590]">
                 <DollarSign className="h-3 w-3 mr-1 text-green-600 flex-shrink-0" />
                 <span className="truncate">
-                  {marketValue != null
-                    ? `$${marketValue.toLocaleString()}`
-                    : "N/A"}
+                  {marketValue != null ? `$${marketValue.toLocaleString()}` : "N/A"}
                 </span>
               </div>
               <div className="flex items-center text-sm text-gray-600 dark:text-[#7d8590]">
@@ -94,7 +117,6 @@ export default function PropertyCard({ property, isSelected, onSelect }) {
               </div>
             </div>
 
-            {/* Property Type Badge */}
             {propertyType && (
               <span className="mt-2 inline-block px-2 py-0.5 bg-gray-100 dark:bg-[#1c2128] text-gray-600 dark:text-[#7d8590] text-xs rounded-full">
                 {translatePropertyType(t, propertyType)}
@@ -104,13 +126,11 @@ export default function PropertyCard({ property, isSelected, onSelect }) {
 
           <ChevronRight
             className={`h-5 w-5 flex-shrink-0 transition ${
-              isSelected
-                ? "text-[#22C55E]"
-                : "text-gray-300 dark:text-[#6e7681]"
+              isSelected ? "text-[#22C55E]" : "text-gray-300 dark:text-[#6e7681]"
             }`}
           />
         </div>
       </Card>
-    </div>
+    </motion.div>
   );
 }

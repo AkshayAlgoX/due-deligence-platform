@@ -7,6 +7,7 @@ import MarketingLayout from "@/components/landing/MarketingLayout";
 import { CheckCircle2, Loader2, LayoutDashboard, CreditCard, FileText, Mail, RefreshCw } from "lucide-react";
 import subscriptionService from "@/services/subscriptionService";
 import { getUser } from "@/utils/helpers";
+import { celebrateOnce } from "@/lib/celebrate";
 
 const PLAN_LABELS = {
   PRO: "Pro",
@@ -83,6 +84,15 @@ export default function CheckoutSuccessPage() {
       if (timerRef.current) clearTimeout(timerRef.current);
     };
   }, [verify]);
+
+  // Big violet + green confetti when the subscription activates (once per order)
+  useEffect(() => {
+    if (phase !== "paid" || !orderId) return;
+    const timer = setTimeout(() => {
+      celebrateOnce(`upgrade-${orderId}`, "upgrade");
+    }, 500);
+    return () => clearTimeout(timer);
+  }, [phase, orderId]);
 
   const plan = result?.plan || "UNKNOWN";
   const planLabel = PLAN_LABELS[plan] || plan;
