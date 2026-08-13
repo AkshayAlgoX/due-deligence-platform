@@ -118,6 +118,8 @@ export default function Navbar({ toggleSidebar }) {
     .slice(0, 2)
     .toUpperCase();
 
+  const isAdmin = user?.role === "ADMIN";
+
   return (
     <>
       <header className="h-[68px] border-b border-gray-100 dark:border-[#30363d] bg-white dark:bg-[#161b22] px-6 flex items-center justify-between z-[1000] relative shadow-sm">
@@ -341,17 +343,19 @@ export default function Navbar({ toggleSidebar }) {
                   </button>
 
                   {/* ── PATH B: Billing in user dropdown (GitHub/Stripe pattern) ── */}
-                  <button
-                    type="button"
-                    onClick={() => {
-                      setMenuOpen(false);
-                      router.push("/dashboard/billing");
-                    }}
-                    className="flex w-full items-center gap-3 rounded-xl px-3 py-2.5 text-sm text-gray-700 dark:text-[#e6edf3] transition hover:bg-gray-50 dark:hover:bg-[#1c2128]"
-                  >
-                    <CreditCard size={16} className="text-gray-400 dark:text-[#7d8590]" />
-                    {t("nav.billing", "Billing & plans")}
-                  </button>
+                  {!isAdmin && (
+                    <button
+                      type="button"
+                      onClick={() => {
+                        setMenuOpen(false);
+                        router.push("/dashboard/billing");
+                      }}
+                      className="flex w-full items-center gap-3 rounded-xl px-3 py-2.5 text-sm text-gray-700 dark:text-[#e6edf3] transition hover:bg-gray-50 dark:hover:bg-[#1c2128]"
+                    >
+                      <CreditCard size={16} className="text-gray-400 dark:text-[#7d8590]" />
+                      {t("nav.billing", "Billing & plans")}
+                    </button>
+                  )}
 
                   <button
                     type="button"
