@@ -9,3 +9,4 @@ tmp/
 backend/.env
 !.env.example
 !backend/.env.example
+node_modules/ 
