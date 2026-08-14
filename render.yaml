@@ -1,0 +1,60 @@
+# render.yaml — Render Blueprint (free tier)
+# One-click deploy: render.com → New → Blueprint → connect springboardmentor198/team-03
+# Docs: docs/DEPLOYMENT.md
+#
+# IMPORTANT: replace YOUR-BACKEND.onrender.com in frontend/vercel.json with the
+# actual service URL after the first deploy (Render assigns the subdomain).
+
+services:
+  - type: web
+    name: dd-backend
+    runtime: docker
+    dockerfilePath: ./Dockerfile.backend
+    dockerContext: .
+    plan: free
+    region: singapore
+    autoDeploy: true
+    healthCheckPath: /actuator/health
+    envVars:
+      - key: SPRING_PROFILES_ACTIVE
+        value: docker
+      # NOTE: Render's connectionString is postgres://... — Spring Boot's JDBC
+      # driver rejects it ("URL must start with 'jdbc'"), so paste the converted
+      # JDBC URL in the dashboard instead. Conversion (see docs/DEPLOYMENT.md §B.5):
+      #   Internal Database URL  postgres://user:pass@host/db
+      #   →                      jdbc:postgresql://user:pass@host:5432/db
+      - key: SPRING_DATASOURCE_URL
+        sync: false
+      - key: SPRING_DATASOURCE_USERNAME
+        fromDatabase:
+          name: dd-postgres
+          property: user
+      - key: SPRING_DATASOURCE_PASSWORD
+        fromDatabase:
+          name: dd-postgres
+          property: password
+      - key: JWT_SECRET
+        generateValue: true
+      - key: GROQ_API_KEY
+        sync: false
+      - key: CASHFREE_APP_ID
+        sync: false
+      - key: CASHFREE_SECRET_KEY
+        sync: false
+      - key: GOOGLE_OAUTH_CLIENT_SECRET
+        sync: false
+      - key: MAIL_HOST
+        value: smtp.gmail.com
+      - key: MAIL_PORT
+        value: "587"
+      - key: MAIL_USERNAME
+        sync: false
+      - key: MAIL_PASSWORD
+        sync: false
+
+databases:
+  - name: dd-postgres
+    plan: free
+    region: singapore
+    databaseName: duediligence
+    user: dduser
