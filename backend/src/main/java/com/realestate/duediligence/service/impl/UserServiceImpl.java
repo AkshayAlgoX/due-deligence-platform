@@ -332,6 +332,16 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public AuthResponse login(LoginRequest request) {
+        // Google-only accounts have no password — point them to Google Sign-In
+        // instead of a generic "invalid credentials" (same message as forgot-password).
+        userRepository.findByEmail(request.getEmail()).ifPresent(user -> {
+            if ("GOOGLE".equals(user.getAuthProvider())
+                    && (user.getPassword() == null || user.getPassword().isBlank())) {
+                throw new IllegalArgumentException(
+                        "This account uses Google Sign-In. Please continue with Google.");
+            }
+        });
+
         authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(
                         request.getEmail(),

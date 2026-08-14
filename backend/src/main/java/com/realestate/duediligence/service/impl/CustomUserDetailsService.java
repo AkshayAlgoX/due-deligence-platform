@@ -24,7 +24,10 @@ public class CustomUserDetailsService implements UserDetailsService {
                 .orElseThrow(() ->
                         new UsernameNotFoundException("User not found"));
 
-        boolean active = Boolean.TRUE.equals(user.getIsActive());
+        // Legacy rows created before the is_active column existed have NULL in
+        // the DB (ddl-auto=update doesn't backfill). Entity default is "active",
+        // so treat NULL as active — disable only on an explicit false.
+        boolean active = !Boolean.FALSE.equals(user.getIsActive());
         boolean banned = Boolean.TRUE.equals(user.getIsBanned());
 
         return org.springframework.security.core.userdetails.User
