@@ -54,11 +54,20 @@ export default function PropertyCard({ property, isSelected, onSelect }) {
 
   return (
     <motion.div
+      role="button"
+      tabIndex={0}
+      aria-label={t("property.card.ariaSelect", { defaultValue: `Select property at ${address}` })}
       onClick={() => onSelect?.(property)}
+      onKeyDown={(e) => {
+        if (e.key === "Enter" || e.key === " ") {
+          e.preventDefault();
+          onSelect?.(property);
+        }
+      }}
       whileHover={{ y: -2 }}
       whileTap={{ scale: 0.99 }}
       transition={{ duration: 0.15 }}
-      className={`cursor-pointer transition-shadow hover:shadow-md ${
+      className={`cursor-pointer transition-shadow hover:shadow-md focus:outline-none focus-visible:ring-2 focus-visible:ring-[#22C55E] rounded-xl ${
         isSelected ? "ring-2 ring-[#22C55E] rounded-xl" : ""
       }`}
     >
