@@ -64,7 +64,7 @@ public class ComparablePropertyController {
     }
 
     @PostMapping("/{id}/comparables/search")
-    @PreAuthorize("hasAnyRole('BUYER', 'REAL_ESTATE_AGENT', 'ADMIN')")
+    @PreAuthorize("isAuthenticated()")
     public ResponseEntity<ComparableAnalysisResponse> searchComparables(
             @PathVariable Long id,
             @Valid @RequestBody ComparableSearchRequest request) {
@@ -84,7 +84,7 @@ public class ComparablePropertyController {
     }
 
     @PostMapping("/{id}/valuation/calculate")
-    @PreAuthorize("hasAnyRole('BUYER', 'REAL_ESTATE_AGENT', 'ADMIN')")
+    @PreAuthorize("isAuthenticated()")
     public ResponseEntity<PropertyValuationResponse> calculateValuation(@PathVariable Long id) {
         return ResponseEntity.ok(propertyValuationService.calculateValuation(id));
     }

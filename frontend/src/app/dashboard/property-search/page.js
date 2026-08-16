@@ -166,7 +166,7 @@ function PropertySearchInner() {
     const urlAction = searchParams.get("action");
     const urlFilter = searchParams.get("filter");
 
-    if (urlAction === "add") setModalOpen(true);
+    if (urlAction === "add" && canAddProperty) setModalOpen(true);
     if (urlFilter === "verified")   setFilter("verifiedOnly", true);
     if (urlFilter === "pending")    setFilter("pendingOnly", true);
     if (urlFilter === "high-risk")  setFilter("highRisk", true);

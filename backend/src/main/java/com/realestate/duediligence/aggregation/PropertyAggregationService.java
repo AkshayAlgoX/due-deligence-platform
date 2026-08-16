@@ -33,6 +33,7 @@ import com.realestate.duediligence.integration.zoning.ZoningProvider;
 import com.realestate.duediligence.entity.User;
 import com.realestate.duediligence.repository.PropertyRepository;
 import com.realestate.duediligence.repository.UserRepository;
+import com.realestate.duediligence.util.RoleUtils;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import com.realestate.duediligence.entity.PropertyDueDiligenceSnapshot;
@@ -107,12 +108,9 @@ public class PropertyAggregationService {
         Property property = propertyRepository.findById(propertyId)
                 .orElseThrow(() -> new RuntimeException("Property not found: " + propertyId));
 
-        // Ownership check — admin bypasses, others must own it
+        // Ownership check — view-all roles bypass, others must own it
         User currentUser = resolveCurrentUser();
-        boolean isAdmin = currentUser != null &&
-                "ADMIN".equals(currentUser.getRole().getRoleName().name());
-        if (!isAdmin && (currentUser == null || property.getCreatedBy() == null ||
-                !property.getCreatedBy().getId().equals(currentUser.getId()))) {
+        if (!RoleUtils.canAccessProperty(currentUser, property)) {
             throw new RuntimeException("Property not found: " + propertyId);
         }
 

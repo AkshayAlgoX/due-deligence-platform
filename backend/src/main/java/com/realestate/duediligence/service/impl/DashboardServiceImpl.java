@@ -21,6 +21,7 @@ import com.realestate.duediligence.entity.User;
 import com.realestate.duediligence.repository.PropertyRepository;
 import com.realestate.duediligence.repository.UserRepository;
 import com.realestate.duediligence.service.DashboardService;
+import com.realestate.duediligence.util.RoleUtils;
 
 import lombok.RequiredArgsConstructor;
 
@@ -38,7 +39,7 @@ public class DashboardServiceImpl implements DashboardService {
     @Override
     public DashboardStatsResponse getStats() {
         User currentUser = resolveCurrentUser();
-        boolean admin = isAdmin();
+        boolean admin = canViewAll();
 
         long totalProperties, verifiedProperties, pendingProperties;
 
@@ -81,7 +82,7 @@ public class DashboardServiceImpl implements DashboardService {
     @Override
     public PortfolioInsightsResponse getPortfolioInsights() {
         User currentUser = resolveCurrentUser();
-        boolean admin = isAdmin();
+        boolean admin = canViewAll();
 
         double totalValue, avgValue;
         long totalCities;
@@ -157,7 +158,7 @@ public class DashboardServiceImpl implements DashboardService {
     @Override
     public List<ActivityItemResponse> getRecentActivity(int limit) {
         User currentUser = resolveCurrentUser();
-        List<Property> recent = (isAdmin() || currentUser == null)
+        List<Property> recent = (canViewAll() || currentUser == null)
                 ? propertyRepository.findTop30ByOrderByUpdatedAtDesc()
                 : propertyRepository.findTop30ByCreatedByIdOrderByUpdatedAtDesc(currentUser.getId());
 
@@ -215,7 +216,7 @@ public class DashboardServiceImpl implements DashboardService {
     @Override
     public DashboardTrendsResponse getTrends() {
         User currentUser = resolveCurrentUser();
-        boolean admin = isAdmin();
+        boolean admin = canViewAll();
 
         LocalDateTime now = LocalDateTime.now();
         LocalDateTime weekAgo = now.minusDays(7);
@@ -261,7 +262,7 @@ public class DashboardServiceImpl implements DashboardService {
 
         User currentUser = resolveCurrentUser();
 
-        List<Property> all = (isAdmin() || currentUser == null)
+        List<Property> all = (canViewAll() || currentUser == null)
                 ? propertyRepository.findAll()
                 : propertyRepository.findByCreatedById(currentUser.getId());
 
@@ -454,10 +455,9 @@ public class DashboardServiceImpl implements DashboardService {
     }
 
     /** True if current user has ADMIN role. */
-    private boolean isAdmin() {
-        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-        return auth != null && auth.getAuthorities().stream()
-                .anyMatch(a -> a.getAuthority().equals("ROLE_ADMIN"));
+    private boolean canViewAll() {
+        User user = resolveCurrentUser();
+        return user != null && RoleUtils.canViewAllProperties(user);
     }
 
     /** Resolves the currently authenticated user, or null if none. */

@@ -47,7 +47,7 @@ const ROUTE_ROLES = {
 
   "/dashboard/profile":            ["BUYER", "REAL_ESTATE_AGENT", "LEGAL_REVIEWER", "FINANCIAL_INSTITUTION", "ADMIN"],
   "/dashboard/settings":           ["BUYER", "REAL_ESTATE_AGENT", "LEGAL_REVIEWER", "FINANCIAL_INSTITUTION", "ADMIN"],
-  "/dashboard/billing":            ["BUYER", "REAL_ESTATE_AGENT", "LEGAL_REVIEWER", "FINANCIAL_INSTITUTION", "ADMIN"],
+  "/dashboard/billing":            ["BUYER", "REAL_ESTATE_AGENT", "ADMIN"],
   "/support":                      ["BUYER", "REAL_ESTATE_AGENT", "LEGAL_REVIEWER", "FINANCIAL_INSTITUTION", "ADMIN"],
 };
 
