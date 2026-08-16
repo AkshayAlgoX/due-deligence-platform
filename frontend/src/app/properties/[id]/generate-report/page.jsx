@@ -1,9 +1,10 @@
 // frontend/src/app/properties/[id]/generate-report/page.jsx
 "use client";
 
-import { motion } from "framer-motion";
+import { motion, AnimatePresence } from "framer-motion";
 import {
   ArrowLeft,
+  AlertTriangle,
   Building2,
   CheckSquare,
   FileText,
@@ -11,13 +12,15 @@ import {
   Loader2,
   MapPin,
   RefreshCw,
+  Sparkles,
   Square,
-  AlertTriangle,
+  X,
 } from "lucide-react";
 import Link from "next/link";
 import { useParams, useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
+import { toast } from "sonner";
 import { getUser } from "@/utils/helpers";
 
 import api from "@/services/api";
@@ -25,6 +28,7 @@ import { API_ROUTES } from "@/constants/apiRoutes";
 import { getPropertyImage } from "@/constants/propertyImages";
 import { useReport } from "@/hooks/useReport";
 import { formatINR } from "@/utils/currency";
+import subscriptionService from "@/services/subscriptionService";
 
 import PropertyImagePlaceholder from "@/components/property/PropertyImagePlaceholder";
 import ReportGeneratingModal from "@/components/reports/ReportGeneratingModal";
@@ -41,12 +45,41 @@ export default function GenerateReportPage() {
   const [modalOpen, setModalOpen] = useState(false);
   const [planLimitReached, setPlanLimitReached] = useState(false);
   const [user, setUser] = useState(null);
+  const [sub, setSub] = useState(null);
 
   useEffect(() => {
     setUser(getUser());
   }, []);
 
   const isAdmin = user?.role === "ADMIN";
+
+  // ── Load subscription usage (best-effort; backend enforces regardless) ──
+  const loadSubscription = async () => {
+    try {
+      const data = await subscriptionService.getCurrent();
+      setSub(data);
+    } catch {
+      setSub(null);
+    }
+  };
+
+  useEffect(() => {
+    loadSubscription();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  const hasSubData = sub != null;
+  const reportsRemaining = sub?.reportsRemaining ?? -1;
+  const planLimit = sub?.planLimit ?? 0;
+  const reportsThisMonth = sub?.reportsThisMonth ?? 0;
+  const planName = sub?.plan ?? "FREE";
+
+  const showUnlimitedPill =
+    !isAdmin && hasSubData && reportsRemaining === -1;
+  const showUsageText =
+    !isAdmin && hasSubData && reportsRemaining > 0 && planLimit > 0;
+  const limitReached =
+    !isAdmin && hasSubData && reportsRemaining === 0;
 
   const {
     report,
@@ -92,9 +125,16 @@ export default function GenerateReportPage() {
       });
     } catch (err) {
       // Plan-limit exceeded → show upgrade modal instead of the failed state
-      if (err?.response?.status === 402 || err?.response?.data?.planLimitReached) {
+      if (
+        err?.response?.status === 402 ||
+        err?.response?.data?.error === "PLAN_LIMIT_EXCEEDED"
+      ) {
+        toast.error(
+          err?.response?.data?.message || "Free plan limit reached"
+        );
         setModalOpen(false);
         setPlanLimitReached(true);
+        loadSubscription();
       } else {
         // Error already captured by hook; modal will show FAILED state
         console.error("Generate failed:", err);
@@ -307,37 +347,98 @@ export default function GenerateReportPage() {
           </div>
         </motion.div>
 
+        {/* ── Subscription usage (above generate button) ── */}
+        {showUnlimitedPill && (
+          <div className="mb-4 flex justify-center">
+            <span className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-emerald-500/10 border border-emerald-500/20 text-xs font-semibold text-emerald-600 dark:text-emerald-400">
+              ✨ {t("report.generate.unlimited", "Unlimited reports")} ·{" "}
+              {planName} {t("report.generate.plan", "plan")}
+            </span>
+          </div>
+        )}
+        {showUsageText && (
+          <p className="mb-4 text-center text-xs text-gray-500 dark:text-[#7d8590]">
+            {reportsThisMonth}{" "}
+            {t("report.generate.usageOf", "of")} {planLimit}{" "}
+            {t(
+              "report.generate.usageText",
+              "free reports used this month"
+            )}{" "}
+            · {reportsRemaining}{" "}
+            {t("report.generate.remaining", "remaining")}
+          </p>
+        )}
+
         {/* ── Actions ── */}
-        <motion.div
-          initial={{ opacity: 0, y: 8 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.2 }}
-          className="flex flex-col sm:flex-row gap-3 sm:justify-end"
-        >
-          <Link
-            href={`/properties/${propertyId}/risk-analysis`}
-            className="inline-flex items-center justify-center gap-2 px-4 py-2.5 rounded-lg text-sm font-semibold text-gray-700 dark:text-[#e6edf3] border border-gray-200 dark:border-[#30363d] hover:bg-gray-50 dark:hover:bg-[#21262d] transition-colors"
+        {limitReached ? (
+          <motion.div
+            initial={{ opacity: 0, y: 8 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.2 }}
+            className="rounded-2xl border border-emerald-500/20 bg-gradient-to-br from-emerald-500/5 to-transparent p-6 text-center"
           >
-            {t("report.generate.cancel", "Cancel")}
-          </Link>
-          <button
-            onClick={handleGenerate}
-            disabled={generating || modalOpen}
-            className="inline-flex items-center justify-center gap-2 px-5 py-2.5 rounded-lg bg-gray-900 dark:bg-white text-white dark:text-gray-900 text-sm font-semibold hover:opacity-90 transition-opacity disabled:opacity-60 disabled:cursor-not-allowed"
+            <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-emerald-500/10 ring-1 ring-emerald-500/30 mx-auto mb-4">
+              <Sparkles className="h-6 w-6 text-emerald-500" />
+            </div>
+            <h3 className="text-lg font-black text-gray-900 dark:text-white">
+              {t(
+                "report.generate.limitHeading",
+                "You've used all 3 free reports this month"
+              )}
+            </h3>
+            <p className="mt-2 text-sm text-gray-500 dark:text-white/60 leading-relaxed">
+              {t(
+                "report.generate.limitSub",
+                "Upgrade to Pro for unlimited reports at ₹499/month"
+              )}
+            </p>
+            <div className="mt-6 flex flex-col sm:flex-row gap-3 sm:justify-center">
+              <button
+                onClick={() => router.push("/checkout?plan=pro")}
+                className="inline-flex items-center justify-center gap-2 px-5 py-2.5 rounded-lg bg-emerald-500 hover:bg-emerald-600 text-white text-sm font-semibold transition-colors"
+              >
+                {t("report.generate.upgradeCta", "Upgrade to Pro")}
+              </button>
+              <Link
+                href="/pricing"
+                className="inline-flex items-center justify-center gap-2 px-5 py-2.5 rounded-lg text-sm font-semibold text-gray-700 dark:text-[#e6edf3] border border-gray-200 dark:border-white/[0.06] hover:bg-gray-50 dark:hover:bg-[#21262d] transition-colors"
+              >
+                {t("report.generate.viewPlans", "View all plans")}
+              </Link>
+            </div>
+          </motion.div>
+        ) : (
+          <motion.div
+            initial={{ opacity: 0, y: 8 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.2 }}
+            className="flex flex-col sm:flex-row gap-3 sm:justify-end"
           >
-            {generating ? (
-              <>
-                <Loader2 className="w-4 h-4 animate-spin" />
-                {t("report.generate.starting", "Starting…")}
-              </>
-            ) : (
-              <>
-                <FileText className="w-4 h-4" strokeWidth={2.25} />
-                {t("report.generate.cta", "Generate Report")}
-              </>
-            )}
-          </button>
-        </motion.div>
+            <Link
+              href={`/properties/${propertyId}/risk-analysis`}
+              className="inline-flex items-center justify-center gap-2 px-4 py-2.5 rounded-lg text-sm font-semibold text-gray-700 dark:text-[#e6edf3] border border-gray-200 dark:border-[#30363d] hover:bg-gray-50 dark:hover:bg-[#21262d] transition-colors"
+            >
+              {t("report.generate.cancel", "Cancel")}
+            </Link>
+            <button
+              onClick={handleGenerate}
+              disabled={generating || modalOpen}
+              className="inline-flex items-center justify-center gap-2 px-5 py-2.5 rounded-lg bg-gray-900 dark:bg-white text-white dark:text-gray-900 text-sm font-semibold hover:opacity-90 transition-opacity disabled:opacity-60 disabled:cursor-not-allowed"
+            >
+              {generating ? (
+                <>
+                  <Loader2 className="w-4 h-4 animate-spin" />
+                  {t("report.generate.starting", "Starting…")}
+                </>
+              ) : (
+                <>
+                  <FileText className="w-4 h-4" strokeWidth={2.25} />
+                  {t("report.generate.cta", "Generate Report")}
+                </>
+              )}
+            </button>
+          </motion.div>
+        )}
       </div>
 
       {/* ── Generating modal ── */}
@@ -352,36 +453,57 @@ export default function GenerateReportPage() {
       />
 
       {/* ── Plan-limit upgrade modal ── */}
-      {!isAdmin && planLimitReached && (
-        <div className="fixed inset-0 z-[60] flex items-center justify-center bg-black/50 p-4">
-          <div className="w-full max-w-md rounded-2xl border border-gray-100 dark:border-[#30363d] bg-white dark:bg-[#161b22] p-6 shadow-xl">
-            <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-amber-500/10 ring-1 ring-amber-500/30 mb-4">
-              <AlertTriangle className="h-6 w-6 text-amber-500" />
+      <AnimatePresence>
+        {!isAdmin && planLimitReached && (
+          <motion.div
+            initial={{ opacity: 0, scale: 0.95 }}
+            animate={{ opacity: 1, scale: 1 }}
+            exit={{ opacity: 0, scale: 0.95 }}
+            transition={{ duration: 0.15 }}
+            className="fixed inset-0 z-[60] flex items-center justify-center bg-black/50 p-4"
+          >
+            <div className="w-full max-w-md rounded-2xl border border-emerald-500/20 bg-gradient-to-br from-emerald-500/5 to-transparent bg-white dark:bg-[#161b22] p-6 shadow-xl">
+              <div className="flex items-start justify-between">
+                <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-emerald-500/10 ring-1 ring-emerald-500/30">
+                  <Sparkles className="h-6 w-6 text-emerald-500" />
+                </div>
+                <button
+                  onClick={() => setPlanLimitReached(false)}
+                  className="text-gray-400 dark:text-[#7d8590] hover:text-gray-600 dark:hover:text-[#e6edf3] transition"
+                >
+                  <X className="h-5 w-5" />
+                </button>
+              </div>
+              <h3 className="mt-4 text-lg font-black text-gray-900 dark:text-white">
+                {t(
+                  "report.generate.limitHeading",
+                  "You've used all 3 free reports this month"
+                )}
+              </h3>
+              <p className="mt-2 text-sm text-gray-500 dark:text-white/60 leading-relaxed">
+                {t(
+                  "report.generate.limitSub",
+                  "Upgrade to Pro for unlimited reports at ₹499/month"
+                )}
+              </p>
+              <div className="mt-6 flex flex-col sm:flex-row gap-3">
+                <button
+                  onClick={() => setPlanLimitReached(false)}
+                  className="flex-1 h-10 rounded-xl border border-gray-200 dark:border-white/[0.06] text-sm font-bold text-gray-700 dark:text-[#e6edf3] hover:bg-gray-50 dark:hover:bg-[#1c2128] transition"
+                >
+                  {t("report.generate.notNow", "Not now")}
+                </button>
+                <button
+                  onClick={() => router.push("/checkout?plan=pro")}
+                  className="flex-1 h-10 rounded-xl bg-emerald-500 hover:bg-emerald-600 text-sm font-bold text-white shadow-[0_8px_20px_rgba(34,197,94,0.3)] hover:scale-[1.02] transition flex items-center justify-center"
+                >
+                  {t("report.generate.upgradeCta", "Upgrade to Pro")}
+                </button>
+              </div>
             </div>
-            <h3 className="text-lg font-black text-gray-900 dark:text-[#e6edf3]">
-              Free plan limit reached
-            </h3>
-            <p className="mt-2 text-sm text-gray-500 dark:text-[#7d8590] leading-relaxed">
-              You've generated 3 reports this month on the Free plan. Upgrade to Pro for
-              unlimited reports, all export formats, and white-label PDFs.
-            </p>
-            <div className="mt-6 flex gap-3">
-              <button
-                onClick={() => setPlanLimitReached(false)}
-                className="flex-1 h-10 rounded-xl border border-gray-200 dark:border-[#30363d] text-sm font-bold text-gray-700 dark:text-[#e6edf3] hover:bg-gray-50 dark:hover:bg-[#1c2128] transition"
-              >
-                Not now
-              </button>
-              <Link
-                href="/checkout?plan=pro"
-                className="flex-1 h-10 rounded-xl bg-gradient-to-br from-[#22C55E] to-[#16a34a] text-sm font-bold text-white shadow-[0_8px_20px_rgba(34,197,94,0.3)] hover:scale-[1.02] transition flex items-center justify-center"
-              >
-                Upgrade to Pro
-              </Link>
-            </div>
-          </div>
-        </div>
-      )}
+          </motion.div>
+        )}
+      </AnimatePresence>
     </div>
   );
 }
