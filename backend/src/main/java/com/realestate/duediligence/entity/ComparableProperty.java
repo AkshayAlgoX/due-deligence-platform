@@ -14,6 +14,8 @@ import jakarta.persistence.Index;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
+import org.hibernate.annotations.OnDelete;
+import org.hibernate.annotations.OnDeleteAction;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -41,10 +43,12 @@ public class ComparableProperty {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "analysis_id", nullable = false)
+    @OnDelete(action = OnDeleteAction.CASCADE)
     private ComparableAnalysis analysis;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "comp_property_id", nullable = false)
+    @OnDelete(action = OnDeleteAction.CASCADE)
     private Property compProperty;
 
     @Column(name = "similarity_score")
