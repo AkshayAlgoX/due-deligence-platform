@@ -6,10 +6,11 @@ import { useTranslation } from "react-i18next";
 import { ArrowLeft } from "lucide-react";
 import { toast } from "sonner";
 
-import { getPropertyById } from "@/services/propertyService";
+import { getPropertyById, deleteProperty } from "@/services/propertyService";
 import { getAggregatedProperty } from "@/services/aggregationService";
 import ErrorBoundary from "@/components/ErrorBoundary";
 import { PropertyHeroSkeleton } from "@/components/ui/Skeleton";
+import ConfirmDialog from "@/components/ui/ConfirmDialog";
 
 import PropertyDetails from "@/components/property/PropertyDetails";
 import BuildingInformationCard from "@/components/property/BuildingInformationCard";
@@ -44,6 +45,8 @@ export default function PropertyDetailPage() {
   const [loadingProperty, setLoadingProperty] = useState(true);
   const [loadingAggregated, setLoadingAggregated] = useState(false);
   const [editModalOpen, setEditModalOpen] = useState(false);
+  const [deleteOpen, setDeleteOpen] = useState(false);
+  const [deleting, setDeleting] = useState(false);
   const [isAdmin, setIsAdmin] = useState(false);
 
   useEffect(() => {
@@ -96,6 +99,29 @@ export default function PropertyDetailPage() {
     loadAggregation(updated.id);
   };
 
+  const handleDelete = async () => {
+    setDeleting(true);
+    try {
+      await deleteProperty(property.id);
+      toast.success(
+        t("property.details.deleteSuccess", {
+          defaultValue: "Property deleted successfully",
+        })
+      );
+      router.push("/dashboard/property-search");
+    } catch (err) {
+      toast.error(
+        t("property.details.deleteFailed", {
+          defaultValue: "Failed to delete property",
+        }),
+        {
+          description: err?.message || t("property.search.tryAgain"),
+        }
+      );
+      setDeleting(false);
+    }
+  };
+
   if (loadingProperty) {
     return (
       <div className="mx-auto w-full max-w-[1400px] space-y-6 pb-16">
@@ -125,7 +151,11 @@ export default function PropertyDetailPage() {
       </button>
 
       <ErrorBoundary>
-        <PropertyDetails property={property} onEdit={handleEdit} />
+        <PropertyDetails
+          property={property}
+          onEdit={handleEdit}
+          onDelete={() => setDeleteOpen(true)}
+        />
       </ErrorBoundary>
 
       <ErrorBoundary>
@@ -180,6 +210,27 @@ export default function PropertyDetailPage() {
         onClose={() => setEditModalOpen(false)}
         property={property}
         onSuccess={handleEditSuccess}
+      />
+
+      <ConfirmDialog
+        isOpen={deleteOpen}
+        onClose={() => setDeleteOpen(false)}
+        onConfirm={handleDelete}
+        title={t("property.details.deleteTitle", {
+          defaultValue: "Delete this property?",
+        })}
+        description={t("property.details.deleteMessage", {
+          defaultValue:
+            "This action cannot be undone. All due diligence reports for this property will remain in your history for reference. Property data will be permanently removed.",
+        })}
+        confirmLabel={t("property.details.deleteConfirm", {
+          defaultValue: "Delete",
+        })}
+        cancelLabel={t("property.details.deleteCancel", {
+          defaultValue: "Cancel",
+        })}
+        variant="danger"
+        loading={deleting}
       />
 
       {/* ⭐ AI Floating Chat — context-aware for this property */}

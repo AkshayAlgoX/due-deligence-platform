@@ -16,7 +16,7 @@ import {
   FileText,
   GitCompare,
   TrendingUp,
-
+  Trash2,
 } from "lucide-react";
 import Link from "next/link";
 import { formatINRFull } from "@/utils/currency";
@@ -30,7 +30,7 @@ const DownloadPDFButton = dynamic(
   { ssr: false }
 );
 
-export default function PropertyDetails({ property, onEdit }) {
+export default function PropertyDetails({ property, onEdit, onDelete }) {
   const { t } = useTranslation();
 
   if (!property) return null;
@@ -223,6 +223,20 @@ export default function PropertyDetails({ property, onEdit }) {
                 >
                   <Pencil className="h-3 w-3" strokeWidth={2.4} />
                   {t("property.details.editDetails")}
+                </button>
+              )}
+
+              {/* Delete Property — owner or admin only */}
+              {canEdit && onDelete && (
+                <button
+                  type="button"
+                  onClick={() => onDelete(property)}
+                  className="flex items-center gap-1.5 rounded-lg border border-red-200 dark:border-red-500/30 bg-white dark:bg-[#1c2128] px-3 py-1.5 text-xs font-semibold text-red-600 dark:text-red-400 transition-all duration-150 hover:bg-red-50 dark:hover:bg-red-500/10 hover:border-red-300 dark:hover:border-red-500/50 active:scale-95"
+                >
+                  <Trash2 className="h-3 w-3" strokeWidth={2.4} />
+                  {t("property.details.deleteProperty", {
+                    defaultValue: "Delete Property",
+                  })}
                 </button>
               )}
             </div>
