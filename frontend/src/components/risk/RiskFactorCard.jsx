@@ -58,7 +58,7 @@ export default function RiskFactorCard({ factor, defaultExpanded = false, index 
       <button
         type="button"
         onClick={() => setExpanded((prev) => !prev)}
-        className="w-full text-left py-4 -mx-6 px-6 group hover:bg-gray-50/60 dark:hover:bg-[#1c2128] transition-colors focus:outline-none"
+        className="w-full text-left py-4 -mx-6 px-6 group hover:bg-gray-50/60 dark:hover:bg-[#1c2128] transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-[#22C55E]/50 focus-visible:ring-offset-2 dark:focus-visible:ring-offset-[#0d1117] rounded-xl"
         aria-expanded={expanded}
       >
         <div className="grid grid-cols-[auto_1fr_auto_auto_auto] items-center gap-4">
