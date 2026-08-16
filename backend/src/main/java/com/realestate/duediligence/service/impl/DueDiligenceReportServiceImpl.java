@@ -34,6 +34,7 @@ import com.realestate.duediligence.repository.ReportSectionRepository;
 import com.realestate.duediligence.repository.SubscriptionRepository;
 import com.realestate.duediligence.repository.UserRepository;
 import com.realestate.duediligence.service.DueDiligenceReportService;
+import com.realestate.duediligence.util.RoleUtils;
 
 import lombok.RequiredArgsConstructor;
 
@@ -86,6 +87,13 @@ public class DueDiligenceReportServiceImpl implements DueDiligenceReportService 
         Property property = propertyRepository.findById(request.getPropertyId())
                 .orElseThrow(() -> new RuntimeException(
                         "Property not found: " + request.getPropertyId()));
+
+        // RBAC: generate only on own properties, or any property for view-all
+        // roles (ADMIN / LEGAL_REVIEWER / FINANCIAL_INSTITUTION)
+        if (!RoleUtils.canAccessProperty(user, property)) {
+            throw new RuntimeException(
+                    "Property not found: " + request.getPropertyId());
+        }
 
         // Idempotency check — return in-flight report if it exists
         Optional<DueDiligenceReport> recent = findRecentInFlightReport(
@@ -195,6 +203,15 @@ public class DueDiligenceReportServiceImpl implements DueDiligenceReportService 
     @Transactional
     public void delete(Long reportId) {
         DueDiligenceReport report = findAndAuthorize(reportId);
+
+        // Paid professional roles are read-only on reports — they can
+        // generate and view, but never delete (even their own).
+        User user = requireCurrentUser();
+        if (RoleUtils.isPaidProfessionalRole(user)) {
+            throw new org.springframework.security.access.AccessDeniedException(
+                    "Legal and financial reviewers cannot delete reports");
+        }
+
         log.info("Deleting report {} (property {})", reportId,
                 report.getProperty() != null ? report.getProperty().getId() : "?");
         reportRepository.delete(report);
@@ -247,7 +264,7 @@ public class DueDiligenceReportServiceImpl implements DueDiligenceReportService 
      * PRO/BUSINESS/ENTERPRISE have unlimited reports; admins are exempt.
      */
     private void enforcePlanLimit(User user) {
-        if (isAdmin(user)) return;
+        if (isAdmin(user) || RoleUtils.isPaidProfessionalRole(user)) return;
 
         // Resolve the user's active plan — FREE by default
         var sub = subscriptionRepository
