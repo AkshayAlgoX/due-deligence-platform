@@ -92,7 +92,7 @@ public class User {
     private LocalDateTime tokenValidFrom;
     // ── Admin Dashboard: Account status ────────────────────────────
     /** Whether the account is active. Defaults to true for all users. */
-    @Column(name = "is_active")
+    @Column(name = "is_active", nullable = false)
     private Boolean isActive = true;
 
     /** Whether an admin has banned this account. Defaults to false. */
