@@ -121,37 +121,6 @@
     "tip": "टीप: दाबा",
     "tipCancel": "रद्द करण्यासाठी"
   },
-  "labels": {
-    "NEW": "नवीन",
-    "HOT": "हॉट",
-    "PRICE_DROP": "किंमत कमी",
-    "FEATURED": "फीचर्ड",
-    "VERIFIED": "सत्यापित",
-    "SOLD": "विकले गेले",
-    "UNDER_OFFER": "ऑफरवर",
-    "PREMIUM": "प्रीमियम",
-    "moreCount": "+{{count}} अधिक",
-    "admin": {
-      "title": "प्रॉपर्टी लेबल",
-      "subtitle": "या मालमत्तेवर दिसणारे लेबल व्यवस्थापित करा",
-      "current": "सध्याचे लेबल",
-      "empty": "अद्याप कोणतेही लेबल लागू नाहीत",
-      "loading": "लेबल लोड होत आहेत...",
-      "addNew": "नवीन लेबल जोडा",
-      "selectType": "लेबल प्रकार",
-      "selectPlaceholder": "एक लेबल निवडा...",
-      "expiresInDays": "समाप्ती (दिवसांत)",
-      "expiresPlaceholder": "उदा., 30",
-      "optional": "पर्यायी",
-      "addButton": "लेबल जोडा",
-      "adding": "जोडत आहे...",
-      "remove": "लेबल काढा",
-      "added": "लेबल यशस्वीरित्या जोडले",
-      "removed": "लेबल काढले",
-      "addError": "लेबल जोडण्यात अयशस्वी",
-      "removeError": "लेबल काढण्यात अयशस्वी"
-    }
-  },
   "passwordStrength": {
     "weak": "कमकुवत",
     "fair": "बरा",

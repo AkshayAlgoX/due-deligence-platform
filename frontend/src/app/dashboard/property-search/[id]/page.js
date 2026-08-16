@@ -25,8 +25,6 @@ import PermitsSection from "@/components/property/aggregation/PermitsSection";
 import EnvironmentalCard from "@/components/property/aggregation/EnvironmentalCard";
 import DataCompletenessCard from "@/components/property/aggregation/DataCompletenessCard";
 import Breadcrumbs from "@/components/ui/Breadcrumbs";
-import PropertyLabelsAdmin from "@/components/property/PropertyLabelsAdmin";
-import { getUser } from "@/utils/helpers";
 
 // ⭐ AI Assistant
 import FloatingChatButton from "@/components/agent/FloatingChatButton";
@@ -47,12 +45,6 @@ export default function PropertyDetailPage() {
   const [editModalOpen, setEditModalOpen] = useState(false);
   const [deleteOpen, setDeleteOpen] = useState(false);
   const [deleting, setDeleting] = useState(false);
-  const [isAdmin, setIsAdmin] = useState(false);
-
-  useEffect(() => {
-    const user = getUser();
-    setIsAdmin(user?.role === "ADMIN");
-  }, []);
 
   const loadAggregation = useCallback(
     async (propertyId) => {
@@ -196,12 +188,6 @@ export default function PropertyDetailPage() {
               />
             </div>
           </div>
-
-          {isAdmin && (
-            <ErrorBoundary>
-              <PropertyLabelsAdmin propertyId={property.id} />
-            </ErrorBoundary>
-          )}
         </div>
       </ErrorBoundary>
 

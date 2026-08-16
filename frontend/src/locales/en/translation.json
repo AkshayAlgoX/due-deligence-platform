@@ -283,9 +283,7 @@
       },
       "viewComparables": "View Comparables",
       "viewComparablesTooltip": "Find similar nearby properties"
-    
     },
-
     "valuation": {
       "title": "Property Valuation",
       "noValuationYet": "No valuation calculated yet",
@@ -317,7 +315,6 @@
       "viewValuation": "Valuation",
       "viewValuationTooltip": "See the estimated market value for this property"
     },
-
     "financial": {
       "eyebrow": "Financial Analysis",
       "title": "Valuation, Ownership & Tax Records",
@@ -526,17 +523,6 @@
     "tip": "Tip: Press",
     "tipCancel": "to cancel"
   },
-  "labels": {
-    "NEW": "New",
-    "HOT": "Hot",
-    "PRICE_DROP": "Price Drop",
-    "FEATURED": "Featured",
-    "VERIFIED": "Verified",
-    "SOLD": "Sold",
-    "UNDER_OFFER": "Under Offer",
-    "PREMIUM": "Premium",
-    "moreCount": "+{{count}} more"
-  },
   "passwordStrength": {
     "weak": "Weak",
     "fair": "Fair",
@@ -727,7 +713,7 @@
       "account": "Account",
       "admin": "Admin",
       "overview": "OVERVIEW",
-  "platform": "PLATFORM MANAGEMENT"
+      "platform": "PLATFORM MANAGEMENT"
     },
     "admin": {
       "title": "Property Labels",
@@ -1019,11 +1005,11 @@
     "pageTitle": "Dashboard | Real Estate Due Diligence Agent",
     "refreshed": "Dashboard updated",
     "quickLinks": {
-  "reportHistory": "Report History",
-  "reportHistoryDescription": "View and manage previously generated reports.",
-  "auditLogs": "Audit Logs",
-  "auditLogsDescription": "Track and review system activity and user actions."
-},
+      "reportHistory": "Report History",
+      "reportHistoryDescription": "View and manage previously generated reports.",
+      "auditLogs": "Audit Logs",
+      "auditLogsDescription": "Track and review system activity and user actions."
+    },
     "stats": {
       "totalProperties": "Total properties",
       "verified": "Verified",
@@ -2459,7 +2445,7 @@
       "SYSTEM": "System"
     }
   },
-    "audit": {
+  "audit": {
     "title": "Audit Logs",
     "description": "Track and review system activity, user actions, and report events.",
     "search": "Search",

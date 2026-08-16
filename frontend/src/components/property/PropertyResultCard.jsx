@@ -21,8 +21,6 @@ import {
 import { formatINR } from "@/utils/currency";
 import { getPropertyImage } from "@/constants/propertyImages";
 import PropertyImagePlaceholder from "./PropertyImagePlaceholder";
-import { usePropertyLabels } from "@/hooks/usePropertyLabels";
-import PropertyLabel from "./PropertyLabel";
 
 // Risk config — supports all 4 levels (LOW/MEDIUM/HIGH/CRITICAL)
 // Translation keys are stored, not raw labels.
@@ -79,9 +77,6 @@ export default function PropertyResultCard({
 }) {
   const { t } = useTranslation();
   const router = useRouter();
-
-  // ── Labels ────────────────────────────────────────────────────────
-  const { labels } = usePropertyLabels(property?.id ?? null);
 
   if (!property) return null;
 
@@ -332,26 +327,6 @@ export default function PropertyResultCard({
 
       {/* CARD BODY */}
       <div className="flex flex-1 min-h-0 flex-col p-5">
-        {/* Labels row — Zillow style, above address */}
-        {labels && labels.length > 0 && (
-          <div
-            className="mb-3 flex flex-wrap items-center gap-1.5"
-            onClick={(e) => e.stopPropagation()}
-          >
-            {labels.slice(0, 3).map((label) => (
-              <PropertyLabel
-                key={label.id ?? label.type}
-                type={label.type}
-                size="sm"
-              />
-            ))}
-            {labels.length > 3 && (
-              <div className="rounded-full bg-gray-100 dark:bg-[#1c2128] px-2 py-0.5 text-[10px] font-bold text-gray-700 dark:text-[#7d8590] ring-1 ring-gray-200 dark:ring-[#30363d]">
-                +{labels.length - 3}
-              </div>
-            )}
-          </div>
-        )}
 
         <div className="flex items-start gap-2">
           <div className="mt-0.5 flex h-5 w-5 flex-shrink-0 items-center justify-center rounded-md bg-green-50 dark:bg-[#0d2818]">
