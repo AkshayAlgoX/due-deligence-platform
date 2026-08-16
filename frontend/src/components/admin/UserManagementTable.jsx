@@ -99,7 +99,7 @@ function RolePill({ role, onChange, userId }) {
 
 function StatusBadge({ user }) {
   const isBanned = user.isBanned;
-  const isActive = user.isActive;
+  const isActive = user.isActive !== false;
 
   if (isBanned) {
     return (
@@ -141,14 +141,14 @@ export default function UserManagementTable({
   const [filter, setFilter] = useState("all");
 
   const filteredUsers = users.filter(u => {
-    if (filter === "active") return u.isActive && !u.isBanned;
+    if (filter === "active") return u.isActive !== false && !u.isBanned;
     if (filter === "banned") return u.isBanned;
     return true;
   });
 
   const counts = {
     all: users.length,
-    active: users.filter(u => u.isActive && !u.isBanned).length,
+    active: users.filter(u => u.isActive !== false && !u.isBanned).length,
     banned: users.filter(u => u.isBanned).length,
   };
 
