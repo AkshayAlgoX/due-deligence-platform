@@ -200,8 +200,9 @@ public class SubscriptionController {
                     .findFirstByUserIdOrderByCreatedAtDesc(user.getId())
                     .orElse(null);
 
+            // CANCELLED-but-not-expired keeps paid access (Netflix/Stripe pattern)
             boolean hasActivePaid = sub != null
-                    && "ACTIVE".equals(sub.getStatus())
+                    && ("ACTIVE".equals(sub.getStatus()) || "CANCELLED".equals(sub.getStatus()))
                     && sub.getExpiresAt() != null
                     && sub.getExpiresAt().isAfter(LocalDateTime.now())
                     && sub.getPlan() != SubscriptionPlan.FREE;

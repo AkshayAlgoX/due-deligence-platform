@@ -271,8 +271,9 @@ public class DueDiligenceReportServiceImpl implements DueDiligenceReportService 
                 .findFirstByUserIdOrderByCreatedAtDesc(user.getId())
                 .orElse(null);
 
+        // CANCELLED-but-not-expired keeps paid access (Netflix/Stripe pattern)
         boolean hasPaidPlan = sub != null
-                && "ACTIVE".equals(sub.getStatus())
+                && ("ACTIVE".equals(sub.getStatus()) || "CANCELLED".equals(sub.getStatus()))
                 && sub.getExpiresAt() != null
                 && sub.getExpiresAt().isAfter(java.time.LocalDateTime.now())
                 && sub.getPlan() != com.realestate.duediligence.enums.SubscriptionPlan.FREE;
