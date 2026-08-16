@@ -71,6 +71,7 @@ const MENU_SECTION_CONFIGS_ADMIN = [
     collapsible: true,
     items: [
       { titleKey: "nav.dashboard",       href: "/dashboard",                 icon: LayoutDashboard, badge: null },
+      { titleKey: "nav.propertySearch",  href: "/dashboard/property-search", icon: Search,          badge: null },
       { titleKey: "nav.admin.analytics", href: "/dashboard/admin/analytics", icon: BarChart3,       badge: null },
     ],
   },

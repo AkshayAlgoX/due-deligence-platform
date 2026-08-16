@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { CheckCircle2 } from "lucide-react";
 import MarketingLayout from "@/components/landing/MarketingLayout";
+import { getUser } from "@/utils/helpers";
 
 const PLANS = [
   {
@@ -116,6 +117,11 @@ const FAQ = [
 ];
 
 export default function PricingPage() {
+  const currentUser = getUser();
+  const isProRole =
+    currentUser?.role === "LEGAL_REVIEWER" ||
+    currentUser?.role === "FINANCIAL_INSTITUTION";
+
   return (
     <MarketingLayout>
       {/* Hero */}
@@ -141,7 +147,15 @@ export default function PricingPage() {
         <div className="max-w-7xl mx-auto px-6">
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
             {PLANS.map((plan) => (
-              <PlanCard key={plan.name} {...plan} />
+              <PlanCard
+                key={plan.name}
+                {...plan}
+                ctaHref={
+                  isProRole && plan.ctaHref?.startsWith("/checkout")
+                    ? "/dashboard"
+                    : plan.ctaHref
+                }
+              />
             ))}
           </div>
         </div>
