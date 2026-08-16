@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import { CheckCircle2 } from "lucide-react";
 import MarketingLayout from "@/components/landing/MarketingLayout";
 
 const PLANS = [
@@ -15,16 +16,14 @@ const PLANS = [
     features: [
       "3 due diligence reports / month",
       "All 6 risk categories analyzed",
-      "PDF export (with watermark)",
-      "Email support (48h response)",
-      "Basic risk score breakdown",
-      "1 saved comparison",
+      "PDF & Excel export",
+      "AI property assistant (chat)",
+      "AI-generated report summary",
+      "1 saved property comparison",
+      "Fraud alert badges",
+      "Email support",
     ],
-    limits: [
-      "No priority queue",
-      "No API access",
-      "No team seats",
-    ],
+    limits: [],
   },
   {
     name: "Pro",
@@ -36,14 +35,14 @@ const PLANS = [
     highlight: true,
     badge: "Most popular",
     features: [
-      "Unlimited reports",
-      "All exports (PDF, Excel, CSV)",
-      "Priority report generation (< 15s)",
-      "Priority support (12h response)",
-      "Detailed risk factor explanations",
+      "Everything in Free",
+      "Unlimited due diligence reports",
       "Unlimited saved comparisons",
       "Export history with re-download",
-      "White-label PDF (no watermark)",
+      "Property comparison (up to 3)",
+      "Comparable properties + valuation",
+      "Risk assessment history & trends",
+      "Multi-language reports (11 languages)",
     ],
     limits: [],
   },
@@ -52,18 +51,18 @@ const PLANS = [
     price: "₹1,999",
     period: "/month",
     tagline: "For real estate firms and brokerages",
-    cta: "Start Business trial",
+    cta: "Upgrade to Business",
     ctaHref: "/checkout?plan=business",
     highlight: false,
     features: [
       "Everything in Pro",
-      "5 team seats included",
-      "REST API access (10k calls/mo)",
-      "Custom branding on reports",
-      "Bulk property upload (CSV)",
       "Advanced analytics dashboard",
-      "Dedicated account manager",
-      "Priority phone support",
+      "Property portfolio insights",
+      "Notification preferences (email + in-app)",
+      "Audit trail on all actions",
+      "Bulk PDF/Excel export",
+      "Real-time updates (SSE)",
+      "Extended report history",
     ],
     limits: [],
   },
@@ -77,14 +76,13 @@ const PLANS = [
     highlight: false,
     features: [
       "Everything in Business",
-      "Unlimited team seats",
-      "Unlimited API calls",
-      "99.9% SLA guarantee",
-      "On-premise deployment option",
-      "SSO / SAML integration",
-      "Custom risk scoring rules",
-      "Compliance certifications (SOC2, ISO)",
-      "Dedicated infrastructure",
+      "Custom deployment options",
+      "Volume-based pricing",
+      "Dedicated onboarding",
+      "Priority integration support",
+      "Custom risk category weights",
+      "Extended data retention",
+      "Direct engineering access",
     ],
     limits: [],
   },
@@ -105,7 +103,7 @@ const FAQ = [
   },
   {
     q: "How is the report count measured?",
-    a: "One property analysis = one report. Regenerating an existing report doesn't count. Comparing properties uses zero reports.",
+    a: "One property analysis = one report. Regenerating an existing report counts as one report. Comparing properties uses zero reports.",
   },
   {
     q: "What payment methods are accepted?",
@@ -113,7 +111,7 @@ const FAQ = [
   },
   {
     q: "Where is my data stored?",
-    a: "AWS Mumbai region (ap-south-1). Encrypted at rest with AES-256. We never sell your data. Ever.",
+    a: "Your data is stored on Render's Singapore region in an encrypted PostgreSQL database. We never sell your data. Ever.",
   },
 ];
 
@@ -210,7 +208,7 @@ function PlanCard({ name, price, period, tagline, cta, ctaHref, highlight, badge
       className={`relative rounded-2xl border p-6 transition-all ${
         highlight
           ? "border-emerald-500/40 bg-gradient-to-b from-emerald-500/[0.06] to-transparent shadow-xl shadow-emerald-500/10 md:scale-[1.02]"
-          : "border-white/[0.08] bg-white/[0.02] hover:bg-white/[0.03]"
+          : "border-white/[0.06] bg-white/[0.02] hover:bg-white/[0.03]"
       }`}
     >
       {badge && (
@@ -231,7 +229,7 @@ function PlanCard({ name, price, period, tagline, cta, ctaHref, highlight, badge
         className={`block text-center rounded-lg h-10 leading-10 text-[13px] font-semibold transition mb-6 ${
           highlight
             ? "bg-white text-black hover:bg-white/90"
-            : "bg-white/[0.05] text-white hover:bg-white/[0.1] border border-white/[0.08]"
+            : "bg-white/[0.05] text-white hover:bg-white/[0.1] border border-white/[0.06]"
         }`}
       >
         {cta}
@@ -239,9 +237,7 @@ function PlanCard({ name, price, period, tagline, cta, ctaHref, highlight, badge
       <div className="space-y-2.5 pt-4 border-t border-white/[0.06]">
         {features.map((f, i) => (
           <div key={i} className="flex items-start gap-2 text-[12.5px] text-white/70">
-            <svg viewBox="0 0 20 20" className="h-4 w-4 flex-shrink-0 text-emerald-400 mt-0.5" fill="none" stroke="currentColor" strokeWidth="2.5">
-              <path d="M5 10l4 4 6-8" strokeLinecap="round" strokeLinejoin="round" />
-            </svg>
+            <CheckCircle2 className="h-4 w-4 flex-shrink-0 text-emerald-400 mt-0.5" strokeWidth={2.5} />
             <span>{f}</span>
           </div>
         ))}
