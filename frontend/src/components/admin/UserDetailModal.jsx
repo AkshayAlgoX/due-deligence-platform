@@ -94,10 +94,10 @@ export default function UserDetailModal({ userId, isOpen, onClose }) {
                   {detail?.fullName || "—"}
                 </h4>
                 <div className="mt-1 flex items-center gap-2">
-                  <Badge variant={detail?.isBanned ? "destructive" : detail?.isActive ? "default" : "secondary"}>
+                  <Badge variant={detail?.isBanned ? "destructive" : detail?.isActive !== false ? "default" : "secondary"}>
                     {detail?.isBanned
                       ? t("nav.admin.userManagement.banned")
-                      : detail?.isActive
+                      : detail?.isActive !== false
                         ? t("nav.admin.userManagement.active")
                         : t("nav.admin.userManagement.inactive")}
                   </Badge>
