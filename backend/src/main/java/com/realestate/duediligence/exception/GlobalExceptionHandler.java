@@ -96,6 +96,21 @@ public class GlobalExceptionHandler {
         return buildResponse(HttpStatus.NOT_FOUND, ex.getMessage(), null);
     }
 
+    // ── 402: Plan limit reached — frontend shows upgrade modal ─────────
+    @ExceptionHandler(PlanLimitExceededException.class)
+    public ResponseEntity<Map<String, Object>> handlePlanLimitExceeded(
+            PlanLimitExceededException ex) {
+        log.warn("Plan limit exceeded: {}", ex.getMessage());
+        return buildResponse(
+                HttpStatus.PAYMENT_REQUIRED,
+                ex.getMessage(),
+                Map.of(
+                        "error", "PLAN_LIMIT_EXCEEDED",
+                        "upgradeUrl", "/checkout?plan=pro"
+                )
+        );
+    }
+
     // ── 500: Runtime exceptions (business logic errors) ───────────────
     @ExceptionHandler(RuntimeException.class)
     public ResponseEntity<Map<String, Object>> handleRuntime(RuntimeException ex) {
