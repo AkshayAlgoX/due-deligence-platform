@@ -65,7 +65,7 @@ api.interceptors.request.use(
 // ── Response interceptor ─────────────────────────────────────────────────────
 api.interceptors.response.use(
   (response) => response,
-  (error) => {
+  async (error) => {
     const status = error?.response?.status;
     const data = error?.response?.data;
     const requestUrl = error?.config?.url || "";
@@ -78,6 +78,9 @@ api.interceptors.response.use(
     if (process.env.NODE_ENV === "development") {
       if (!status) {
         console.error(`[API] Network error on ${requestUrl}`, error?.message);
+      } else if (status >= 500 && (data == null || typeof data !== "object")) {
+        // Proxy blip (backend unreachable) — warn, don't scream with an overlay
+        console.warn(`[API] ${status} on ${requestUrl} — backend unreachable (restarting?)`, data);
       } else if (status >= 500) {
         console.error(`[API] ${status} on ${requestUrl}`, data);
       } else {
@@ -125,8 +128,22 @@ api.interceptors.response.use(
     } else if (status === 429) {
       message = "Too many requests. Please slow down and try again.";
     } else if (status >= 500) {
-      message =
-        data?.message || "Something went wrong on the server. Please try again.";
+      // A 5xx with no JSON body means the Next.js proxy couldn't reach the
+      // backend (e.g. Spring Boot restarting after a recompile). The backend
+      // always returns JSON for real 500s, so this is a proxy blip — retry
+      // once instead of showing a scary "Internal Server Error".
+      const isProxyBlip = data == null || typeof data !== "object";
+      if (isProxyBlip) {
+        if (error?.config && !error.config.__proxyRetried) {
+          error.config.__proxyRetried = true;
+          await new Promise((resolve) => setTimeout(resolve, 2000));
+          return api.request(error.config);
+        }
+        message = "The server is restarting. Please try again in a few seconds.";
+      } else {
+        message =
+          data?.message || "Something went wrong on the server. Please try again.";
+      }
     } else if (!status) {
       // No status = network layer failure
       message = "Can't reach the server. Check your connection.";
