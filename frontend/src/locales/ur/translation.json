@@ -280,6 +280,7 @@
     "reports": "رپورٹس",
     "notifications": "اطلاعات",
     "auditLogs": "آڈٹ لاگز",
+    "reportHistory": "رپورٹ کی تاریخ",
     "profile": "پروفائل",
     "settings": "سیٹنگز",
     "support": "سپورٹ",
@@ -2134,6 +2135,207 @@
       }
     }
   },
+
+   "audit": {
+  "title": "آڈٹ لاگز",
+  "description": "سسٹم کی سرگرمی، صارف کے اقدامات اور رپورٹ کے واقعات کو ٹریک اور جائزہ لیں۔",
+  "search": "تلاش کریں",
+  "detail": {
+    "title": "آڈٹ لاگ کی تفصیلات",
+    "logId": "لاگ آئی ڈی #{{id}}",
+    "close": "بند کریں",
+    "loading": "آڈٹ لاگ کی تفصیلات لوڈ ہو رہی ہیں...",
+    "activity": "سرگرمی",
+    "action": "کارروائی",
+    "createdAt": "بنایا گیا",
+    "user": "صارف",
+    "userId": "صارف آئی ڈی",
+    "entityType": "ادارے کی قسم",
+    "entityId": "ادارے کی آئی ڈی",
+    "requestInformation": "درخواست کی معلومات",
+    "ipAddress": "آئی پی ایڈریس",
+    "userAgent": "یوزر ایجنٹ",
+    "changes": "تبدیلیاں",
+    "previousValue": "پچھلی قدر",
+    "newValue": "نئی قدر / تفصیلات",
+    "unavailable": "آڈٹ لاگ کی تفصیلات دستیاب نہیں ہیں۔"
+  },
+
+  "export": "برآمد کریں",
+  "loading": "آڈٹ لاگز لوڈ ہو رہے ہیں...",
+  "noResults": "کوئی آڈٹ لاگ نہیں ملا۔",
+  "view": "دیکھیں",
+
+  "filters": {
+    "title": "آڈٹ لاگ فلٹرز",
+    "description": "کارروائی، صارف یا تاریخ کے مطابق آڈٹ سرگرمی کو فلٹر کریں۔",
+    "clear": "فلٹرز صاف کریں",
+    "action": "کارروائی",
+    "allActions": "تمام کارروائیاں",
+    "userId": "صارف ID",
+    "userIdPlaceholder": "صارف ID درج کریں",
+    "fromDate": "شروع کی تاریخ",
+    "toDate": "آخری تاریخ"
+  },
+
+  "action": {
+    "LOGIN": "لاگ اِن",
+    "LOGOUT": "لاگ آؤٹ",
+    "PROPERTY_VIEW": "پراپرٹی دیکھی گئی",
+    "PROPERTY_CREATED": "پراپرٹی بنائی گئی",
+    "PROPERTY_UPDATED": "پراپرٹی اپ ڈیٹ کی گئی",
+    "PROPERTY_DELETED": "پراپرٹی حذف کی گئی",
+    "REPORT_GENERATED": "رپورٹ تیار کی گئی",
+    "REPORT_DOWNLOADED": "رپورٹ ڈاؤن لوڈ کی گئی",
+    "RISK_ASSESSED": "خطرے کا جائزہ لیا گیا",
+    "EXPORT_PDF": "PDF برآمد",
+    "EXPORT_EXCEL": "EXCEL برآمد",
+    "USER_REGISTERED": "صارف رجسٹر کیا گیا",
+    "PROFILE_UPDATED": "پروفائل اپ ڈیٹ کیا گیا",
+    "PASSWORD_CHANGED": "پاس ورڈ تبدیل کیا گیا"
+  },
+
+  "resource": {
+    "PROPERTY": "پراپرٹی",
+    "REPORT": "رپورٹ",
+    "USER": "صارف",
+    "PROFILE": "پروفائل",
+    "RISK": "خطرہ",
+    "AUTHENTICATION": "توثیق",
+    "SYSTEM": "سسٹم"
+  },
+
+  "columns": {
+  "user": "صارف",
+  "action": "کارروائی",
+  "resource": "وسیلہ",
+  "resourceId": "وسیلہ کی شناخت",
+  "date": "تخلیق کی تاریخ",
+  "ip": "آئی پی ایڈریس",
+  "details": "تفصیلات",
+  "view": "دیکھیں"
+
+  },
+
+  "timeline": {
+  "title": "سرگرمی کی ٹائم لائن",
+  "description": "حالیہ نظام اور صارف کی سرگرمیاں۔",
+  "performed": "نے انجام دیا",
+  "on": "پر",
+  "at": "بجے",
+  "by": "کی جانب سے",
+  "ipAddress": "آئی پی ایڈریس",
+  "noActivity": "حالیہ سرگرمی نہیں ملی۔"
+
+  },
+
+  "activity": {
+    "title": "صارف کی سرگرمی",
+    "graph": {
+      "description": "گزشتہ 7 دنوں کی آڈٹ سرگرمی۔",
+      "loading": "سرگرمی لوڈ ہو رہی ہے...",
+      "sevenDaysAgo": "7 دن پہلے",
+      "today": "آج",
+      "activities": "سرگرمیاں",
+      "activity": "سرگرمی",
+      "days": {
+        "sun": "اتوار",
+        "mon": "پیر",
+        "tue": "منگل",
+        "wed": "بدھ",
+        "thu": "جمعرات",
+        "fri": "جمعہ",
+        "sat": "ہفتہ"
+      }
+    }
+  },
+
+  "stats": {
+    "totalLogs": "کل لاگز",
+    "loginEvents": "لاگ اِن ایونٹس",
+    "reportsGenerated": "تیار کردہ رپورٹس",
+    "propertiesCreated": "بنائی گئی پراپرٹیز"
+  },
+
+  "errors": {
+    "loadFailed": "آڈٹ لاگز لوڈ کرنے میں ناکامی ہوئی۔"
+  },
+
+  "exporting": "برآمد کیا جا رہا ہے..."
+},
+
+"reportHistory": {
+  "title": "رپورٹ کی تاریخ",
+  "description": "پہلے تیار کی گئی ڈیو ڈیلیجنس رپورٹس دیکھیں اور ان کا انتظام کریں۔",
+  "loading": "رپورٹ کی تاریخ لوڈ ہو رہی ہے...",
+
+  "stats": {
+    "total": "کل",
+    "lowRisk": "کم خطرہ",
+    "mediumRisk": "درمیانہ خطرہ",
+    "highRisk": "زیادہ خطرہ"
+  },
+
+  "showing": "{{count}} رپورٹس دکھائی جا رہی ہیں",
+  "empty": "کوئی رپورٹ نہیں ملی",
+  "emptyDescription": "اپنی تلاش یا فلٹر کے معیار کو تبدیل کرنے کی کوشش کریں۔",
+  "version": "ورژن",
+  "download": "ڈاؤن لوڈ",
+  "share": "شیئر",
+  "archive": "محفوظ کریں",
+  "delete": "حذف کریں",
+
+  "risk": {
+    "all": "تمام خطرے کی سطحیں",
+    "LOW": "کم",
+    "MEDIUM": "درمیانہ",
+    "HIGH": "زیادہ",
+    "CRITICAL": "انتہائی سنگین"
+  },
+
+  "filters": {
+    "search": "تلاش کریں",
+    "searchPlaceholder": "رپورٹس یا پراپرٹیز تلاش کریں...",
+    "riskLevel": "خطرے کی سطح",
+    "allRiskLevels": "تمام خطرے کی سطحیں",
+    "low": "کم",
+    "medium": "درمیانہ",
+    "high": "زیادہ",
+    "critical": "انتہائی سنگین",
+    "date": "تاریخ",
+    "reset": "ری سیٹ"
+  },
+
+  "card": {
+    "defaultTitle": "پراپرٹی ڈیو ڈیلیجنس رپورٹ",
+    "property": "پراپرٹی",
+    "generated": "تیار کردہ",
+    "version": "ورژن",
+    "viewReport": "رپورٹ دیکھیں",
+    "download": "ڈاؤن لوڈ",
+    "share": "شیئر",
+    "archive": "محفوظ کریں",
+    "delete": "حذف کریں",
+    "untitled": "بغیر عنوان رپورٹ",
+    "risk": "خطرہ",
+    "sections": "حصے",
+    "sections_one": "{{count}} حصہ",
+    "sections_other": "{{count}} حصے",
+    "view": "دیکھیں",
+    "openReport": "رپورٹ کھولیں",
+    "moreActions": "مزید کارروائیاں",
+    "copyLink": "لنک کاپی کریں",
+    "copyId": "رپورٹ ID کاپی کریں",
+    "linkCopied": "لنک کلپ بورڈ پر کاپی ہو گیا",
+    "idCopied": "رپورٹ ID کاپی ہو گئی",
+    "copyFailed": "کاپی کرنے میں ناکامی ہوئی"
+  },
+
+  "errors": {
+    "loadFailed": "رپورٹ کی تاریخ لوڈ کرنے میں ناکامی ہوئی۔ براہ کرم دوبارہ کوشش کریں۔"
+  }
+},
+
   "export": {
     "pdf": "پی ڈی ایف دستاویز",
     "excel": "ایکسل ورک بک",

@@ -23,10 +23,17 @@ export default function useReportHistory(initialReports = []) {
         report.property?.name ||
         "";
 
-      const riskLevel =
-        report.riskLevel ||
-        report.risk_level ||
-        "";
+      const riskScore = Number(report.riskScoreSnapshot);
+
+      const riskLevel = Number.isFinite(riskScore)
+        ? riskScore <= 25
+          ? "LOW"
+          : riskScore <= 50
+            ? "MEDIUM"
+            : riskScore <= 75
+              ? "HIGH"
+              : "CRITICAL"
+        : "";
 
       const createdAt =
         report.createdAt ||

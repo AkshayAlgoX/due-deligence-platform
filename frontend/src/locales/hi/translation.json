@@ -626,6 +626,7 @@
     "reports": "रिपोर्ट",
     "notifications": "सूचनाएँ",
     "auditLogs": "ऑडिट लॉग",
+    "reportHistory": "रिपोर्ट इतिहास",
     "profile": "प्रोफ़ाइल",
     "settings": "सेटिंग्स",
     "support": "सहायता",
@@ -2426,6 +2427,205 @@
       "SYSTEM": "सिस्टम"
     }
   },
+
+  "audit": {
+  "title": "ऑडिट लॉग",
+  "description": "सिस्टम गतिविधि, उपयोगकर्ता कार्रवाइयों और रिपोर्ट घटनाओं को ट्रैक और समीक्षा करें।",
+  "search": "खोजें",
+  "detail": {
+    "title": "ऑडिट लॉग विवरण",
+    "logId": "लॉग आईडी #{{id}}",
+    "close": "बंद करें",
+    "loading": "ऑडिट लॉग विवरण लोड हो रहा है...",
+    "activity": "गतिविधि",
+    "action": "क्रिया",
+    "createdAt": "बनाया गया",
+    "user": "उपयोगकर्ता",
+    "userId": "उपयोगकर्ता आईडी",
+    "entityType": "इकाई प्रकार",
+    "entityId": "इकाई आईडी",
+    "requestInformation": "अनुरोध जानकारी",
+    "ipAddress": "आईपी पता",
+    "userAgent": "यूज़र एजेंट",
+    "changes": "परिवर्तन",
+    "previousValue": "पिछला मान",
+    "newValue": "नया मान / विवरण",
+    "unavailable": "ऑडिट लॉग विवरण उपलब्ध नहीं है।"
+  },
+
+  "export": "निर्यात करें",
+  "loading": "ऑडिट लॉग लोड हो रहे हैं...",
+  "noResults": "कोई ऑडिट लॉग नहीं मिला।",
+  "view": "देखें",
+
+  "filters": {
+    "title": "ऑडिट लॉग फ़िल्टर",
+    "description": "कार्रवाई, उपयोगकर्ता या तारीख के अनुसार ऑडिट गतिविधि फ़िल्टर करें।",
+    "clear": "फ़िल्टर साफ़ करें",
+    "action": "कार्रवाई",
+    "allActions": "सभी कार्रवाइयाँ",
+    "userId": "उपयोगकर्ता आईडी",
+    "userIdPlaceholder": "उपयोगकर्ता आईडी दर्ज करें",
+    "fromDate": "आरंभ तारीख",
+    "toDate": "अंतिम तारीख"
+  },
+
+  "action": {
+    "LOGIN": "लॉगिन",
+    "LOGOUT": "लॉगआउट",
+    "PROPERTY_VIEW": "संपत्ति देखी गई",
+    "PROPERTY_CREATED": "संपत्ति बनाई गई",
+    "PROPERTY_UPDATED": "संपत्ति अपडेट की गई",
+    "PROPERTY_DELETED": "संपत्ति हटाई गई",
+    "REPORT_GENERATED": "रिपोर्ट बनाई गई",
+    "REPORT_DOWNLOADED": "रिपोर्ट डाउनलोड की गई",
+    "RISK_ASSESSED": "जोखिम का आकलन किया गया",
+    "EXPORT_PDF": "PDF निर्यात",
+    "EXPORT_EXCEL": "EXCEL निर्यात",
+    "USER_REGISTERED": "उपयोगकर्ता पंजीकृत",
+    "PROFILE_UPDATED": "प्रोफ़ाइल अपडेट की गई",
+    "PASSWORD_CHANGED": "पासवर्ड बदला गया"
+  },
+
+  "resource": {
+    "PROPERTY": "संपत्ति",
+    "REPORT": "रिपोर्ट",
+    "USER": "उपयोगकर्ता",
+    "PROFILE": "प्रोफ़ाइल",
+    "RISK": "जोखिम",
+    "AUTHENTICATION": "प्रमाणीकरण",
+    "SYSTEM": "सिस्टम"
+  },
+
+  "columns": {
+    "user": "उपयोगकर्ता",
+    "action": "कार्रवाई",
+    "resource": "संसाधन",
+    "resourceId": "संसाधन आईडी",
+    "date": "बनाया गया",
+    "ip": "IP पता",
+    "details": "विवरण",
+    "view": "देखें"
+  },
+
+  "timeline": {
+    "title": "गतिविधि समयरेखा",
+    "description": "हाल की सिस्टम और उपयोगकर्ता गतिविधि।",
+    "performed": "द्वारा किया गया",
+    "on": "पर",
+    "at": "को",
+    "by": "द्वारा",
+    "ipAddress": "IP पता",
+    "noActivity": "कोई हाल की गतिविधि नहीं मिली।"
+  },
+
+  "activity": {
+    "title": "उपयोगकर्ता गतिविधि",
+    "graph": {
+      "description": "पिछले 7 दिनों की ऑडिट गतिविधि।",
+      "loading": "गतिविधि लोड हो रही है...",
+      "sevenDaysAgo": "7 दिन पहले",
+      "today": "आज",
+      "activities": "गतिविधियाँ",
+      "activity": "गतिविधि",
+      "days": {
+        "sun": "रवि",
+        "mon": "सोम",
+        "tue": "मंगल",
+        "wed": "बुध",
+        "thu": "गुरु",
+        "fri": "शुक्र",
+        "sat": "शनि"
+      }
+    }
+  },
+
+  "stats": {
+    "totalLogs": "कुल लॉग",
+    "loginEvents": "लॉगिन घटनाएँ",
+    "reportsGenerated": "बनाई गई रिपोर्ट",
+    "propertiesCreated": "बनाई गई संपत्तियाँ"
+  },
+
+  "errors": {
+    "loadFailed": "ऑडिट लॉग लोड करने में विफल।"
+  },
+
+  "exporting": "निर्यात हो रहा है..."
+},
+
+"reportHistory": {
+  "title": "रिपोर्ट इतिहास",
+  "description": "पहले बनाई गई ड्यू डिलिजेंस रिपोर्ट देखें और प्रबंधित करें।",
+  "loading": "रिपोर्ट इतिहास लोड हो रहा है...",
+
+  "stats": {
+    "total": "कुल",
+    "lowRisk": "कम जोखिम",
+    "mediumRisk": "मध्यम जोखिम",
+    "highRisk": "उच्च जोखिम"
+  },
+
+  "showing": "{{count}} रिपोर्ट दिखाई जा रही हैं",
+  "empty": "कोई रिपोर्ट नहीं मिली",
+  "emptyDescription": "अपनी खोज या फ़िल्टर मानदंड बदलने का प्रयास करें।",
+  "version": "संस्करण",
+  "download": "डाउनलोड करें",
+  "share": "साझा करें",
+  "archive": "संग्रहित करें",
+  "delete": "हटाएँ",
+
+  "risk": {
+    "all": "सभी जोखिम स्तर",
+    "LOW": "कम",
+    "MEDIUM": "मध्यम",
+    "HIGH": "उच्च",
+    "CRITICAL": "गंभीर"
+  },
+
+  "filters": {
+    "search": "खोजें",
+    "searchPlaceholder": "रिपोर्ट या संपत्तियाँ खोजें...",
+    "riskLevel": "जोखिम स्तर",
+    "allRiskLevels": "सभी जोखिम स्तर",
+    "low": "कम",
+    "medium": "मध्यम",
+    "high": "उच्च",
+    "critical": "गंभीर",
+    "date": "तारीख",
+    "reset": "रीसेट करें"
+  },
+
+  "card": {
+    "defaultTitle": "संपत्ति ड्यू डिलिजेंस रिपोर्ट",
+    "property": "संपत्ति",
+    "generated": "बनाई गई",
+    "version": "संस्करण",
+    "viewReport": "रिपोर्ट देखें",
+    "download": "डाउनलोड करें",
+    "share": "साझा करें",
+    "archive": "संग्रहित करें",
+    "delete": "हटाएँ",
+    "untitled": "शीर्षक रहित रिपोर्ट",
+    "risk": "जोखिम",
+    "sections": "अनुभाग",
+    "sections_one": "{{count}} अनुभाग",
+    "sections_other": "{{count}} अनुभाग",
+    "view": "देखें",
+    "openReport": "रिपोर्ट खोलें",
+    "moreActions": "अधिक कार्रवाइयाँ",
+    "copyLink": "लिंक कॉपी करें",
+    "copyId": "रिपोर्ट आईडी कॉपी करें",
+    "linkCopied": "लिंक क्लिपबोर्ड पर कॉपी किया गया",
+    "idCopied": "रिपोर्ट आईडी कॉपी की गई",
+    "copyFailed": "कॉपी करने में विफल"
+  },
+
+  "errors": {
+    "loadFailed": "रिपोर्ट इतिहास लोड करने में विफल। कृपया पुनः प्रयास करें।"
+  }
+},
+
   "export": {
     "pdf": "पीडीएफ दस्तावेज़",
     "excel": "एक्सेल वर्कबुक",

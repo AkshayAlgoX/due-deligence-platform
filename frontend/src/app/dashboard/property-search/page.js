@@ -17,6 +17,7 @@ import {
 import { staggerContainer, staggerItem } from "@/utils/animations";
 
 import SearchBar from "@/components/property/SearchBar";
+import useDebounce from "@/hooks/useDebounce";
 import PropertyResultCard from "@/components/property/PropertyResultCard";
 import AddPropertyModal from "@/components/property/AddPropertyModal";
 import EditPropertyModal from "@/components/property/EditPropertyModal";
@@ -232,6 +233,8 @@ function PropertySearchInner() {
     [loadAll, fetchRiskForList, t]
   );
 
+  const debouncedSearch = useDebounce(handleSearch, 400);
+
   const handleSelectSuggestion = useCallback(
     (property) => {
       router.push(`/dashboard/property-search/${property.id}`);
@@ -383,7 +386,7 @@ function PropertySearchInner() {
 
         <div className="mt-6">
           <SearchBar
-            onSearch={handleSearch}
+            onSearch={debouncedSearch}
             onSelectSuggestion={handleSelectSuggestion}
             suggestions={results}
             initialValue={searchValue}

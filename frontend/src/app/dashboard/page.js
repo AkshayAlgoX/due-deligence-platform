@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useState, lazy, Suspense } from "react";
 import { useSearchParams, useRouter } from "next/navigation";
 import { useTranslation } from "react-i18next";
 import { toast } from "sonner";
@@ -16,10 +16,6 @@ import {
 import { fadeInUp } from "@/utils/animations";
 
 import StatsCard from "@/components/dashboard/StatsCard";
-import RecentPropertiesTable from "@/components/dashboard/RecentPropertiesTable";
-import HeroStrip from "@/components/dashboard/HeroStrip";
-import PortfolioBreakdown from "@/components/dashboard/PortfolioBreakdown";
-import ActivityFeed from "@/components/dashboard/ActivityFeed";
 import AddPropertyModal from "@/components/property/AddPropertyModal";
 import { getUser } from "@/utils/helpers";
 import ErrorBoundary from "@/components/ErrorBoundary";
@@ -30,9 +26,43 @@ import {
   getDashboardTrends,
 } from "@/services/dashboardService";
 import { getCurrentUser } from "@/services/authService";
-import PortfolioTrendChart from "@/components/dashboard/PortfolioTrendChart";
-import RecommendationsPanel from "@/components/dashboard/RecommendationsPanel";
-import PortfolioMap from "@/components/dashboard/PortfolioMap";
+
+const RecentPropertiesTable = lazy(
+  () => import("@/components/dashboard/RecentPropertiesTable")
+);
+
+const HeroStrip = lazy(
+  () => import("@/components/dashboard/HeroStrip")
+);
+
+const PortfolioBreakdown = lazy(
+  () => import("@/components/dashboard/PortfolioBreakdown")
+);
+
+const ActivityFeed = lazy(
+  () => import("@/components/dashboard/ActivityFeed")
+);
+
+const PortfolioTrendChart = lazy(
+  () => import("@/components/dashboard/PortfolioTrendChart")
+);
+
+const RecommendationsPanel = lazy(
+  () => import("@/components/dashboard/RecommendationsPanel")
+);
+
+const PortfolioMap = lazy(
+  () => import("@/components/dashboard/PortfolioMap")
+);
+
+function LazyFallback({ className = "h-64" }) {
+  return (
+    <div
+      className={`${className} rounded-2xl bg-gray-100 dark:bg-[#161b22] animate-pulse`}
+    />
+  );
+}
+
 
 export default function DashboardPage() {
   const { t } = useTranslation();
@@ -208,38 +238,49 @@ export default function DashboardPage() {
       {/* ── Hero Strip ─────────────────────────────────────────────── */}
       {!isEmpty && (
         <ErrorBoundary>
-          <HeroStrip
-            stats={stats}
-            loading={loading}
-            key={`hero-${refreshKey}`}
-          />
+          <Suspense fallback={<LazyFallback className="h-40" />}>
+            <HeroStrip
+              stats={stats}
+              loading={loading}
+              key={`hero-${refreshKey}`}
+            />
+          </Suspense>
         </ErrorBoundary>
       )}
 
       {/* ── Portfolio trend chart ──────────────────────────────────── */}
       {!isEmpty && (
         <ErrorBoundary>
-          <PortfolioTrendChart
-            key={`trend-${refreshKey}`}
-            refreshKey={refreshKey}
-          />
+          <Suspense fallback={<LazyFallback />}>
+            <PortfolioTrendChart
+              key={`trend-${refreshKey}`}
+              refreshKey={refreshKey}
+            />
+          </Suspense>
         </ErrorBoundary>
       )}
 
       {/* ── Recommendations ────────────────────────────────────────── */}
       {!isEmpty && (
         <ErrorBoundary>
-          <RecommendationsPanel
-            key={`rec-${refreshKey}`}
-            refreshKey={refreshKey}
-          />
+          <Suspense fallback={<LazyFallback />}>
+            <RecommendationsPanel
+             key={`rec-${refreshKey}`}
+             refreshKey={refreshKey}
+           />
+         </Suspense>
         </ErrorBoundary>
       )}
 
       {/* ── Portfolio map ──────────────────────────────────────────── */}
       {!isEmpty && (
         <ErrorBoundary>
-          <PortfolioMap key={`map-${refreshKey}`} refreshKey={refreshKey} />
+          <Suspense fallback={<LazyFallback />}>
+            <PortfolioMap
+              key={`map-${refreshKey}`}
+              refreshKey={refreshKey}
+            />
+          </Suspense>
         </ErrorBoundary>
       )}
 
@@ -348,12 +389,16 @@ export default function DashboardPage() {
         <div className="grid grid-cols-1 gap-6 lg:grid-cols-5">
           <div className="lg:col-span-3">
             <ErrorBoundary>
-              <RecentPropertiesTable />
+              <Suspense fallback={<LazyFallback />}>
+                <RecentPropertiesTable />
+              </Suspense>
             </ErrorBoundary>
           </div>
           <div className="lg:col-span-2">
             <ErrorBoundary>
-              <PortfolioBreakdown key={`chart-${refreshKey}`} />
+              <Suspense fallback={<LazyFallback />}>
+                <PortfolioBreakdown key={`chart-${refreshKey}`} />
+              </Suspense>
             </ErrorBoundary>
           </div>
         </div>
@@ -362,7 +407,9 @@ export default function DashboardPage() {
       {/* ── Activity feed ──────────────────────────────────────────── */}
       {!loading && !isEmpty && (
         <ErrorBoundary>
-          <ActivityFeed key={`activity-${refreshKey}`} />
+          <Suspense fallback={<LazyFallback />}>
+            <ActivityFeed key={`activity-${refreshKey}`} />
+          </Suspense>
         </ErrorBoundary>
       )}
 

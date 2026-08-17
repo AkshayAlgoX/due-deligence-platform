@@ -4,6 +4,8 @@ import java.time.LocalDateTime;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Caching;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
@@ -23,7 +25,6 @@ import com.realestate.duediligence.service.AuditLogService;
 import com.realestate.duediligence.service.PortfolioSnapshotService;
 import com.realestate.duediligence.service.PropertyService;
 import com.realestate.duediligence.service.PropertyVerificationService;
-import com.realestate.duediligence.service.AuditLogService;
 
 import lombok.RequiredArgsConstructor;
 
@@ -42,7 +43,14 @@ public class PropertyServiceImpl implements PropertyService {
     // ── Add property ──────────────────────────────────────────────
     @Override
     @Transactional
-    public PropertyResponse addProperty(PropertyRequest request) {
+    @Caching(evict = {
+        @CacheEvict(value = "dashboardStats", allEntries = true),
+        @CacheEvict(value = "portfolioInsights", allEntries = true),
+        @CacheEvict(value = "recentActivity", allEntries = true),
+        @CacheEvict(value = "dashboardTrends", allEntries = true),
+        @CacheEvict(value = "dashboardRecommendations", allEntries = true)
+   })
+   public PropertyResponse addProperty(PropertyRequest request) {
         if (!addressValidationService.validateAddress(request.getAddress())) {
             throw new RuntimeException("Invalid property address");
         }
@@ -88,6 +96,13 @@ public class PropertyServiceImpl implements PropertyService {
     // ── Update property ───────────────────────────────────────────
     @Override
     @Transactional
+    @Caching(evict = {
+        @CacheEvict(value = "dashboardStats", allEntries = true),
+        @CacheEvict(value = "portfolioInsights", allEntries = true),
+        @CacheEvict(value = "recentActivity", allEntries = true),
+        @CacheEvict(value = "dashboardTrends", allEntries = true),
+        @CacheEvict(value = "dashboardRecommendations", allEntries = true)
+    })
     public PropertyResponse updateProperty(Long id, PropertyRequest request) {
         Property property = propertyRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Property not found"));
@@ -248,6 +263,13 @@ public class PropertyServiceImpl implements PropertyService {
     // ── Admin: re-verify all ──────────────────────────────────────
     @Override
     @Transactional
+    @Caching(evict = {
+        @CacheEvict(value = "dashboardStats", allEntries = true),
+        @CacheEvict(value = "portfolioInsights", allEntries = true),
+        @CacheEvict(value = "recentActivity", allEntries = true),
+        @CacheEvict(value = "dashboardTrends", allEntries = true),
+        @CacheEvict(value = "dashboardRecommendations", allEntries = true)
+    })
     public int reverifyAllProperties() {
         List<Property> all = propertyRepository.findAll();
         int verifiedCount = 0;
@@ -395,6 +417,13 @@ public class PropertyServiceImpl implements PropertyService {
     // ── Delete property ────────────────────────────────────────────
     @Override
     @Transactional
+    @Caching(evict = {
+        @CacheEvict(value = "dashboardStats", allEntries = true),
+        @CacheEvict(value = "portfolioInsights", allEntries = true),
+        @CacheEvict(value = "recentActivity", allEntries = true),
+        @CacheEvict(value = "dashboardTrends", allEntries = true),
+        @CacheEvict(value = "dashboardRecommendations", allEntries = true)
+    })
     public void deleteProperty(Long id) {
         Property property = propertyRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Property not found"));
