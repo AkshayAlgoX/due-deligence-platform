@@ -53,6 +53,7 @@ public class RiskAssessmentServiceImpl
     private final RiskFactorRepository factorRepository;
 
     private final PropertyRepository propertyRepository;
+
     private final UserRepository userRepository;
 
     // ────────────────────────────────────────────────────────────────
@@ -62,8 +63,8 @@ public class RiskAssessmentServiceImpl
     @Override
     @Transactional
     public RiskAssessmentResponse getOrCompute(Long propertyId) {
-        log.debug("getOrCompute: propertyId={}", propertyId);
-        authorizeProperty(propertyId);
+    log.debug("getOrCompute: propertyId={}", propertyId);
+    authorizeProperty(propertyId);
 
         return assessmentRepository
                 .findByPropertyIdAndIsLatestTrue(propertyId)
@@ -110,13 +111,9 @@ public class RiskAssessmentServiceImpl
         }
     )
     public RiskAssessmentResponse recalculate(Long propertyId) {
-        log.info("recalculate: force re-scoring property {}", propertyId);
-        authorizeProperty(propertyId);
 
-        log.info(
-                "recalculate: force re-scoring property {}",
-                propertyId
-        );
+        log.info("recalculate: force re-scoring property {}", propertyId);
+        authorizeProperty(propertyId); 
 
         if (assessmentRepository
                 .existsByPropertyIdAndIsLatestTrue(propertyId)) {
@@ -149,8 +146,11 @@ public class RiskAssessmentServiceImpl
         key = "#propertyId"
     )
     public RiskBreakdownDto getBreakdown(Long propertyId) {
-        log.debug("getBreakdown: propertyId={}", propertyId);
-        authorizeProperty(propertyId);
+    log.debug(
+       "getBreakdown: propertyId={}",
+       propertyId
+    );
+    authorizeProperty(propertyId);
 
         return assessmentRepository
                 .findByPropertyIdAndIsLatestTrue(propertyId)
@@ -188,13 +188,11 @@ public class RiskAssessmentServiceImpl
         key = "#propertyId"
     )
     public RiskHistoryDto getHistory(Long propertyId) {
-        log.debug("getHistory: propertyId={}", propertyId);
-        authorizeProperty(propertyId);
-
         log.debug(
                 "getHistory: propertyId={}",
                 propertyId
         );
+        authorizeProperty(propertyId);
 
         List<RiskAssessment> all =
                 assessmentRepository
@@ -320,33 +318,45 @@ public class RiskAssessmentServiceImpl
     // ────────────────────────────────────────────────────────────────
     // Internal computation
     // ────────────────────────────────────────────────────────────────
+/**
+ * RBAC: owner or view-all roles (ADMIN / LEGAL_REVIEWER / FINANCIAL_INSTITUTION).
+ */
+private void authorizeProperty(Long propertyId) {
+    Property property = propertyRepository.findById(propertyId)
+        .orElseThrow(() -> new RuntimeException("Property not found: " + propertyId));
 
-    /** RBAC: owner or view-all roles (ADMIN / LEGAL_REVIEWER / FINANCIAL_INSTITUTION). */
-    private void authorizeProperty(Long propertyId) {
-        Property property = propertyRepository.findById(propertyId)
-                .orElseThrow(() -> new RuntimeException("Property not found: " + propertyId));
-        User currentUser = resolveCurrentUser();
-        if (!RoleUtils.canAccessProperty(currentUser, property)) {
-            throw new RuntimeException("Property not found: " + propertyId);
-        }
+    User currentUser = resolveCurrentUser();
+    if (!RoleUtils.canAccessProperty(currentUser, property)) {
+        throw new RuntimeException("Property not found: " + propertyId);
     }
+}
 
-    private User resolveCurrentUser() {
-        try {
-            Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-            if (auth == null || !auth.isAuthenticated()) return null;
-            String email = auth.getName();
-            if (email == null || email.isBlank()) return null;
-            return userRepository.findByEmail(email).orElse(null);
-        } catch (Exception e) {
-            return null;
-        }
+private User resolveCurrentUser() {
+    try {
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        if (auth == null || !auth.isAuthenticated()) return null;
+
+        String email = auth.getName();
+        if (email == null || email.isBlank()) return null;
+
+        return userRepository.findByEmail(email).orElse(null);
+    } catch (Exception e) {
+        return null;
     }
+}
 
-    private RiskAssessmentResponse computeAndPersist(Long propertyId) {
-        Property property = propertyRepository.findById(propertyId)
-                .orElseThrow(() -> new RuntimeException("Property not found: " + propertyId));
 
+    private RiskAssessmentResponse computeAndPersist(
+            Long propertyId) {
+
+         Property property = propertyRepository
+        .findById(propertyId)
+        .orElseThrow(
+            () -> new RuntimeException(
+                "Property not found: " + propertyId
+            )
+        ); 
+        
         RiskScoringEngine.EngineResult result =
                 scoringEngine.compute(propertyId);
 
