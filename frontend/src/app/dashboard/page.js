@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import Link from "next/link";
 import { useSearchParams, useRouter } from "next/navigation";
 import { useTranslation } from "react-i18next";
 import { toast } from "sonner";
@@ -368,7 +369,7 @@ export default function DashboardPage() {
 
       {/* ── Empty state ────────────────────────────────────────────── */}
       {!loading && isEmpty && (
-        <EmptyState onAddClick={() => setModalOpen(true)} />
+        <EmptyState onAddClick={() => setModalOpen(true)} canAdd={canAddProperty} role={currentUser?.role} />
       )}
 
       <AddPropertyModal
@@ -381,8 +382,10 @@ export default function DashboardPage() {
 }
 
 // ─── Empty state ─────────────────────────────────────────────────────
-function EmptyState({ onAddClick }) {
+function EmptyState({ onAddClick, canAdd, role }) {
   const { t } = useTranslation();
+  const isReadOnly =
+    role === "LEGAL_REVIEWER" || role === "FINANCIAL_INSTITUTION";
   return (
     <div className="rounded-2xl border border-gray-100 dark:border-[#30363d] bg-white dark:bg-[#161b22] p-10 shadow-sm">
       <div className="mx-auto flex max-w-md flex-col items-center text-center">
@@ -397,17 +400,32 @@ function EmptyState({ onAddClick }) {
           {t("dashboard.empty.title")}
         </h2>
         <p className="mt-2 text-sm text-gray-500 dark:text-[#7d8590] leading-relaxed">
-          {t("dashboard.empty.description")}
+          {isReadOnly
+            ? t(
+                "dashboard.empty.descriptionReadOnly",
+                "You have view access to every property on the platform. Browse the full catalog for your legal and financial review."
+              )
+            : t("dashboard.empty.description")}
         </p>
 
-        <button
-          type="button"
-          onClick={onAddClick}
-          className="mt-6 flex items-center gap-2 rounded-lg bg-gradient-to-r from-[#22C55E] to-[#16a34a] px-4 py-2.5 text-sm font-semibold text-white shadow-[0_4px_12px_rgba(34,197,94,0.3)] transition-all duration-150 hover:opacity-95 active:scale-95"
-        >
-          <Plus size={16} strokeWidth={2.5} />
-          {t("property.addFirstProperty")}
-        </button>
+        {isReadOnly ? (
+          <Link
+            href="/dashboard/property-search"
+            className="mt-6 flex items-center gap-2 rounded-lg border border-gray-200 dark:border-[#30363d] bg-white dark:bg-[#1c2128] px-4 py-2.5 text-sm font-semibold text-gray-700 dark:text-[#e6edf3] transition-all duration-150 hover:border-[#22C55E] hover:text-[#16a34a] dark:hover:text-green-400 active:scale-95"
+          >
+            <Building2 size={16} strokeWidth={2.5} />
+            {t("dashboard.empty.browseAll", "Browse all properties")}
+          </Link>
+        ) : canAdd ? (
+          <button
+            type="button"
+            onClick={onAddClick}
+            className="mt-6 flex items-center gap-2 rounded-lg bg-gradient-to-r from-[#22C55E] to-[#16a34a] px-4 py-2.5 text-sm font-semibold text-white shadow-[0_4px_12px_rgba(34,197,94,0.3)] transition-all duration-150 hover:opacity-95 active:scale-95"
+          >
+            <Plus size={16} strokeWidth={2.5} />
+            {t("property.addFirstProperty")}
+          </button>
+        ) : null}
       </div>
     </div>
   );

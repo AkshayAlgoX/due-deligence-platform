@@ -108,16 +108,18 @@ function KebabMenu({ onDelete, onVersionHistory, onRegenerate, onClose, t }) {
         {t("report.viewer.kebab.duplicate")}
       </button>
       <div className="my-1 border-t border-gray-100 dark:border-[#30363d]" />
-      <button
-        onClick={() => { onDelete(); onClose(); }}
-        className="w-full flex items-center gap-3 px-4 py-2.5
-          text-[13px] text-red-600 dark:text-red-400
-          hover:bg-red-50 dark:hover:bg-red-900/10
-          transition-colors duration-150 text-left"
-      >
-        <Trash2 className="w-4 h-4" strokeWidth={2} />
-        {t("report.viewer.kebab.delete")}
-      </button>
+      {onDelete && (
+        <button
+          onClick={() => { onDelete(); onClose(); }}
+          className="w-full flex items-center gap-3 px-4 py-2.5
+            text-[13px] text-red-600 dark:text-red-400
+            hover:bg-red-50 dark:hover:bg-red-900/10
+            transition-colors duration-150 text-left"
+        >
+          <Trash2 className="w-4 h-4" strokeWidth={2} />
+          {t("report.viewer.kebab.delete")}
+        </button>
+      )}
     </div>
   );
 }

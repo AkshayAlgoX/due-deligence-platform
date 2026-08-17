@@ -1,18 +1,15 @@
 import React from "react";
-import { render, screen, fireEvent, waitFor } from "@testing-library/react";
+import { render, screen, fireEvent } from "@testing-library/react";
 import { describe, it, expect, vi, beforeEach } from "vitest";
-import PropertyCard from "@/components/property/PropertyCard";
-import * as propertyService from "@/services/propertyService";
+import PropertyResultCard from "@/components/property/PropertyResultCard";
 
-vi.mock("@/services/propertyService", () => ({
-  getPropertyRisk: vi.fn(),
+vi.mock("next/navigation", () => ({
+  useRouter: () => ({
+    push: vi.fn(),
+  }),
 }));
 
-vi.mock("@/hooks/usePropertyLabels", () => ({
-  usePropertyLabels: () => ({ labels: [], loading: false }),
-}));
-
-describe("PropertyCard Component", () => {
+describe("PropertyResultCard Component", () => {
   const mockProperty = {
     id: 101,
     address: "123 Main Street",
@@ -26,53 +23,54 @@ describe("PropertyCard Component", () => {
 
   beforeEach(() => {
     vi.clearAllMocks();
-    propertyService.getPropertyRisk.mockResolvedValue({ overallLevel: "HIGH" });
   });
 
   it("renders property basic details correctly", () => {
-    render(<PropertyCard property={mockProperty} />);
+    render(<PropertyResultCard property={mockProperty} />);
 
     expect(screen.getByText("123 Main Street")).toBeInTheDocument();
-    expect(screen.getByText(/San Francisco, CA 94105/i)).toBeInTheDocument();
-    expect(screen.getByText(/12,50,000|1,250,000/)).toBeInTheDocument();
-    expect(screen.getByText(/2400/)).toBeInTheDocument();
+    expect(screen.getByText(/San Francisco/i)).toBeInTheDocument();
+    expect(screen.getByText(/2,400/)).toBeInTheDocument();
   });
 
   it("renders fallback address when address is missing", () => {
     const propertyWithoutAddress = { ...mockProperty, address: null };
-    render(<PropertyCard property={propertyWithoutAddress} />);
+    render(<PropertyResultCard property={propertyWithoutAddress} />);
 
-    expect(screen.getByText("Unknown Address")).toBeInTheDocument();
+    expect(screen.getByText("property.card.unknownAddress")).toBeInTheDocument();
   });
 
-  it("triggers onSelect callback when clicked", () => {
-    const handleSelect = vi.fn();
-    render(<PropertyCard property={mockProperty} onSelect={handleSelect} />);
+  it("triggers onClick callback when clicked", () => {
+    const handleClick = vi.fn();
+    render(<PropertyResultCard property={mockProperty} onClick={handleClick} />);
 
-    const card = screen.getByText("123 Main Street").closest("div");
+    const card = screen.getByText("123 Main Street").closest('[role="button"]');
     fireEvent.click(card);
 
-    expect(handleSelect).toHaveBeenCalledWith(mockProperty);
+    expect(handleClick).toHaveBeenCalled();
   });
 
   it("applies selection styles when isSelected is true", () => {
-    const { container } = render(<PropertyCard property={mockProperty} isSelected={true} />);
+    const { container } = render(<PropertyResultCard property={mockProperty} isSelected={true} />);
     const outerDiv = container.firstChild;
-    expect(outerDiv.className).toContain("ring-2");
     expect(outerDiv.className).toContain("ring-[#22C55E]");
   });
 
-  it("fetches risk level and renders fraud alert badge when available", async () => {
-    render(<PropertyCard property={mockProperty} />);
+  it("renders risk level badge when riskScore is provided", () => {
+    render(
+      <PropertyResultCard
+        property={mockProperty}
+        riskScore={{ overallLevel: "HIGH", overallScore: 75 }}
+      />
+    );
 
-    expect(propertyService.getPropertyRisk).toHaveBeenCalledWith(101);
-    await waitFor(() => {
-      expect(screen.getByText(/High Risk/i)).toBeInTheDocument();
-    });
+    expect(screen.getByText(/highRisk/i)).toBeInTheDocument();
   });
 
   it("returns null if property prop is not provided", () => {
-    const { container } = render(<PropertyCard property={null} />);
+    const { container } = render(<PropertyResultCard property={null} />);
     expect(container.firstChild).toBeNull();
   });
 });
+
+

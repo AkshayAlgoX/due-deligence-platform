@@ -267,19 +267,21 @@ function KebabMenuWrapper({ report, onDelete, onRegenerate, onCopyLink, onOpenCh
 
           <div className="h-px bg-gray-100 dark:bg-[#30363d] my-1" />
 
-          <button
-            type="button"
-            role="menuitem"
-            onClick={(e) => {
-              e.stopPropagation();
-              onDelete(report.id);
-              setOpen(false);
-            }}
-            className="w-full flex items-center gap-2.5 px-3.5 py-2.5 text-sm text-red-600 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-500/[0.08] transition-colors duration-100"
-          >
-            <Trash2 size={14} strokeWidth={1.75} />
-            Delete
-          </button>
+          {onDelete && (
+            <button
+              type="button"
+              role="menuitem"
+              onClick={(e) => {
+                e.stopPropagation();
+                onDelete(report.id);
+                setOpen(false);
+              }}
+              className="w-full flex items-center gap-2.5 px-3.5 py-2.5 text-sm text-red-600 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-500/[0.08] transition-colors duration-100"
+            >
+              <Trash2 size={14} strokeWidth={1.75} />
+              Delete
+            </button>
+          )}
         </motion.div>
       )}
     </div>

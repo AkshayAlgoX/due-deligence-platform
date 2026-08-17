@@ -3,6 +3,8 @@ package com.realestate.duediligence.service.impl;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 import com.realestate.duediligence.dto.ComparableAnalysisResponse;
@@ -11,11 +13,14 @@ import com.realestate.duediligence.dto.PropertyValuationResponse;
 import com.realestate.duediligence.dto.ValuationBreakdownDto;
 import com.realestate.duediligence.entity.Property;
 import com.realestate.duediligence.entity.PropertyValuation;
+import com.realestate.duediligence.entity.User;
 import com.realestate.duediligence.enums.ValuationMethod;
 import com.realestate.duediligence.repository.PropertyRepository;
 import com.realestate.duediligence.repository.PropertyValuationRepository;
+import com.realestate.duediligence.repository.UserRepository;
 import com.realestate.duediligence.service.ComparablePropertyService;
 import com.realestate.duediligence.service.PropertyValuationService;
+import com.realestate.duediligence.util.RoleUtils;
 
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
@@ -42,9 +47,11 @@ public class PropertyValuationServiceImpl implements PropertyValuationService {
     private final PropertyValuationRepository propertyValuationRepository;
     private final PropertyRepository propertyRepository;
     private final ComparablePropertyService comparablePropertyService;
+    private final UserRepository userRepository;
 
     @Override
     public PropertyValuationResponse getLatestValuation(Long propertyId) {
+        authorizeProperty(propertyId);
         PropertyValuation valuation = propertyValuationRepository
                 .findFirstByPropertyIdOrderByCalculatedAtDesc(propertyId)
                 .orElseThrow(() -> new EntityNotFoundException(
@@ -54,6 +61,7 @@ public class PropertyValuationServiceImpl implements PropertyValuationService {
 
     @Override
     public PropertyValuationResponse calculateValuation(Long propertyId) {
+        authorizeProperty(propertyId);
         Property property = propertyRepository.findById(propertyId)
                 .orElseThrow(() -> new EntityNotFoundException("Property not found: " + propertyId));
 
@@ -73,6 +81,7 @@ public class PropertyValuationServiceImpl implements PropertyValuationService {
 
     @Override
     public ValuationBreakdownDto getMethodsBreakdown(Long propertyId) {
+        authorizeProperty(propertyId);
         Property property = propertyRepository.findById(propertyId)
                 .orElseThrow(() -> new EntityNotFoundException("Property not found: " + propertyId));
         return computeBreakdown(property);
@@ -80,6 +89,7 @@ public class PropertyValuationServiceImpl implements PropertyValuationService {
 
     @Override
     public List<PropertyValuationResponse> getPriceHistory(Long propertyId) {
+        authorizeProperty(propertyId);
         if (!propertyRepository.existsById(propertyId)) {
             throw new EntityNotFoundException("Property not found: " + propertyId);
         }
@@ -89,6 +99,28 @@ public class PropertyValuationServiceImpl implements PropertyValuationService {
     }
 
     // ── Helpers ─────────────────────────────────────────────────────
+
+    /** RBAC: owner or view-all roles (ADMIN / LEGAL_REVIEWER / FINANCIAL_INSTITUTION). */
+    private void authorizeProperty(Long propertyId) {
+        Property property = propertyRepository.findById(propertyId)
+                .orElseThrow(() -> new EntityNotFoundException("Property not found: " + propertyId));
+        User currentUser = resolveCurrentUser();
+        if (!RoleUtils.canAccessProperty(currentUser, property)) {
+            throw new EntityNotFoundException("Property not found: " + propertyId);
+        }
+    }
+
+    private User resolveCurrentUser() {
+        try {
+            Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+            if (auth == null || !auth.isAuthenticated()) return null;
+            String email = auth.getName();
+            if (email == null || email.isBlank()) return null;
+            return userRepository.findByEmail(email).orElse(null);
+        } catch (Exception e) {
+            return null;
+        }
+    }
 
     private ValuationBreakdownDto computeBreakdown(Property property) {
         double comparableValue = computeComparableValue(property);

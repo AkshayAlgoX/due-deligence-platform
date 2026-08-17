@@ -121,37 +121,6 @@
     "tip": "ਟਿਪ: ਦਬਾਓ",
     "tipCancel": "ਰੱਦ ਕਰਨ ਲਈ"
   },
-  "labels": {
-    "NEW": "ਨਵਾਂ",
-    "HOT": "ਹੌਟ",
-    "PRICE_DROP": "ਕੀਮਤ ਘਟੀ",
-    "FEATURED": "ਫੀਚਰਡ",
-    "VERIFIED": "ਤਸਦੀਕਸ਼ੁਦਾ",
-    "SOLD": "ਵਿਕ ਗਿਆ",
-    "UNDER_OFFER": "ਆਫਰ ਤੇ",
-    "PREMIUM": "ਪ੍ਰੀਮੀਅਮ",
-    "moreCount": "+{{count}} ਹੋਰ",
-    "admin": {
-      "title": "ਪ੍ਰਾਪਰਟੀ ਲੇਬਲ",
-      "subtitle": "ਇਸ ਪ੍ਰਾਪਰਟੀ 'ਤੇ ਦਿਖਾਏ ਗਏ ਲੇਬਲਾਂ ਦਾ ਪ੍ਰਬੰਧ ਕਰੋ",
-      "current": "ਮੌਜੂਦਾ ਲੇਬਲ",
-      "empty": "ਹਾਲੇ ਤੱਕ ਕੋਈ ਲੇਬਲ ਲਾਗੂ ਨਹੀਂ ਹੋਏ",
-      "loading": "ਲੇਬਲ ਲੋਡ ਹੋ ਰਹੇ ਹਨ...",
-      "addNew": "ਨਵਾਂ ਲੇਬਲ ਸ਼ਾਮਲ ਕਰੋ",
-      "selectType": "ਲੇਬਲ ਦੀ ਕਿਸਮ",
-      "selectPlaceholder": "ਇੱਕ ਲੇਬਲ ਚੁਣੋ...",
-      "expiresInDays": "ਮਿਆਦ (ਦਿਨਾਂ ਵਿੱਚ)",
-      "expiresPlaceholder": "ਜਿਵੇਂ, 30",
-      "optional": "ਵਿਕਲਪਿਕ",
-      "addButton": "ਲੇਬਲ ਸ਼ਾਮਲ ਕਰੋ",
-      "adding": "ਸ਼ਾਮਲ ਕੀਤਾ ਜਾ ਰਿਹਾ...",
-      "remove": "ਲੇਬਲ ਹਟਾਓ",
-      "added": "ਲੇਬਲ ਸਫਲਤਾਪੂਰਵਕ ਸ਼ਾਮਲ ਕੀਤਾ ਗਿਆ",
-      "removed": "ਲੇਬਲ ਹਟਾ ਦਿੱਤਾ",
-      "addError": "ਲੇਬਲ ਸ਼ਾਮਲ ਕਰਨ ਵਿੱਚ ਅਸਫਲ",
-      "removeError": "ਲੇਬਲ ਹਟਾਉਣ ਵਿੱਚ ਅਸਫਲ"
-    }
-  },
   "passwordStrength": {
     "weak": "ਕਮਜ਼ੋਰ",
     "fair": "ਠੀਕ-ਠਾਕ",

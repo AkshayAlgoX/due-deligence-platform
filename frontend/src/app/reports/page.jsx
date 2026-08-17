@@ -27,6 +27,7 @@ import { toast } from "sonner";
 import { useReport } from "@/hooks/useReport";
 import { useExport } from "@/hooks/useExport";
 import reportService from "@/services/reportService";
+import { getUser } from "@/utils/helpers";
 
 import ReportCard from "@/components/reports/ReportCard";
 import KpiStatCard from "@/components/reports/KpiStatCard";
@@ -103,6 +104,11 @@ export default function ReportsPage() {
   const router = useRouter();
   const pathname = usePathname();
   const searchParams = useSearchParams();
+
+  const currentUser = getUser();
+  const isProRole =
+    currentUser?.role === "LEGAL_REVIEWER" ||
+    currentUser?.role === "FINANCIAL_INSTITUTION";
 
   const urlSort = searchParams.get("sort") || "newest";
   const urlStatus = searchParams.get("status") || "ALL";
@@ -387,7 +393,7 @@ export default function ReportsPage() {
                     report={report}
                     onDownloadPdf={downloadPdf}
                     onDownloadExcel={downloadExcel}
-                    onDelete={handleDeleteRequest}
+                    onDelete={isProRole ? undefined : handleDeleteRequest}
                     onRegenerate={handleRegenerate}
                     onCopyLink={handleCopyLink}
                     isExporting={isGenerating}

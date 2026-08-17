@@ -121,37 +121,6 @@
     "tip": "ટિપ: દબાવો",
     "tipCancel": "રદ કરવા"
   },
-  "labels": {
-    "NEW": "નવું",
-    "HOT": "હોટ",
-    "PRICE_DROP": "કિંમત ઘટાડો",
-    "FEATURED": "ફીચર્ડ",
-    "VERIFIED": "ચકાસાયેલ",
-    "SOLD": "વેચાઈ ગયું",
-    "UNDER_OFFER": "ઓફર પર",
-    "PREMIUM": "પ્રીમિયમ",
-    "moreCount": "+{{count}} વધુ",
-    "admin": {
-      "title": "પ્રોપર્ટી લેબલ્સ",
-      "subtitle": "આ પ્રોપર્ટી પર દેખાતા લેબલ્સનું સંચાલન કરો",
-      "current": "વર્તમાન લેબલ્સ",
-      "empty": "હજી સુધી કોઈ લેબલ લાગુ કરેલા નથી",
-      "loading": "લેબલ્સ લોડ થઈ રહ્યા છે...",
-      "addNew": "નવું લેબલ ઉમેરો",
-      "selectType": "લેબલ પ્રકાર",
-      "selectPlaceholder": "એક લેબલ પસંદ કરો...",
-      "expiresInDays": "સમાપ્તિ (દિવસોમાં)",
-      "expiresPlaceholder": "દા.ત., 30",
-      "optional": "વૈકલ્પિક",
-      "addButton": "લેબલ ઉમેરો",
-      "adding": "ઉમેરી રહ્યાં છીએ...",
-      "remove": "લેબલ દૂર કરો",
-      "added": "લેબલ સફળતાપૂર્વક ઉમેરાયું",
-      "removed": "લેબલ દૂર કરાયું",
-      "addError": "લેબલ ઉમેરવામાં નિષ્ફળ",
-      "removeError": "લેબલ દૂર કરવામાં નિષ્ફળ"
-    }
-  },
   "passwordStrength": {
     "weak": "નબળો",
     "fair": "ઠીક",
@@ -566,11 +535,11 @@
     "pageTitle": "ડૅશબોર્ડ | Real Estate Due Diligence Agent",
     "refreshed": "ડૅશબોર્ડ આપડેટ હયેછે",
     "quickLinks": {
-  "reportHistory": "રિપોર્ટ ઇતિહાસ",
-  "reportHistoryDescription": "અગાઉ બનાવેલા અહેવાલો જુઓ અને સંચાલિત કરો.",
-  "auditLogs": "ઑડિટ લૉગ્સ",
-  "auditLogsDescription": "સિસ્ટમ પ્રવૃત્તિ અને વપરાશકર્તાની ક્રિયાઓને ટ્રૅક અને સમીક્ષા કરો."
-},
+      "reportHistory": "રિપોર્ટ ઇતિહાસ",
+      "reportHistoryDescription": "અગાઉ બનાવેલા અહેવાલો જુઓ અને સંચાલિત કરો.",
+      "auditLogs": "ઑડિટ લૉગ્સ",
+      "auditLogsDescription": "સિસ્ટમ પ્રવૃત્તિ અને વપરાશકર્તાની ક્રિયાઓને ટ્રૅક અને સમીક્ષા કરો."
+    },
     "stats": {
       "totalProperties": "કુલ મિલકતો",
       "verified": "ચકાસાયેલી",
@@ -2141,7 +2110,7 @@
       }
     }
   },
-    "audit": {
+  "audit": {
     "title": "ઑડિટ લૉગ્સ",
     "description": "સિસ્ટમ પ્રવૃત્તિ, વપરાશકર્તાની ક્રિયાઓ અને રિપોર્ટ ઇવેન્ટ્સને ટ્રૅક અને સમીક્ષા કરો.",
     "search": "શોધો",

@@ -6,7 +6,7 @@ import MarketingLayout from "@/components/landing/MarketingLayout";
 import { Loader2, Check, ShieldCheck, Lock, ArrowLeft, LogIn } from "lucide-react";
 import { toast } from "sonner";
 import subscriptionService from "@/services/subscriptionService";
-import { getToken } from "@/utils/helpers";
+import { getToken, getUser } from "@/utils/helpers";
 
 const PLANS = {
   pro: {
@@ -15,12 +15,12 @@ const PLANS = {
     period: "/month",
     tagline: "For serious buyers and independent agents",
     features: [
-      "Unlimited reports",
-      "All exports (PDF, Excel, CSV)",
-      "Priority report generation (< 15s)",
-      "Priority support (12h response)",
-      "Detailed risk factor explanations",
-      "White-label PDF (no watermark)",
+      "Unlimited due diligence reports",
+      "Unlimited saved comparisons",
+      "Property comparison (up to 3)",
+      "Comparable properties + valuation",
+      "Multi-language reports (11 languages)",
+      "Export history with re-download",
     ],
   },
   business: {
@@ -30,11 +30,11 @@ const PLANS = {
     tagline: "For real estate firms and brokerages",
     features: [
       "Everything in Pro",
-      "5 team seats included",
-      "REST API access (10k calls/mo)",
-      "Custom branding on reports",
-      "Bulk property upload (CSV)",
-      "Dedicated account manager",
+      "Analytics dashboard",
+      "Portfolio insights",
+      "Audit trail",
+      "Bulk export",
+      "Real-time SSE updates",
     ],
   },
 };
@@ -55,6 +55,18 @@ export default function CheckoutPage() {
     const token = getToken();
     setAuthenticated(!!token);
     setAuthChecked(true);
+
+    // Professional roles have unlimited access — never let them start checkout
+    const user = getUser();
+    if (
+      user?.role === "LEGAL_REVIEWER" ||
+      user?.role === "FINANCIAL_INSTITUTION"
+    ) {
+      toast.info("Your account has unlimited access — no subscription needed.");
+      router.replace("/dashboard");
+      return;
+    }
+
     if (token) {
       subscriptionService
         .getCurrent()
@@ -63,6 +75,7 @@ export default function CheckoutPage() {
         })
         .catch(() => setCurrentPlan("FREE"));
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const alreadyOnPaidPlan =
