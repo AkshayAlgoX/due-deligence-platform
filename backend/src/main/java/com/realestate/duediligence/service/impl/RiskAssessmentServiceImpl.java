@@ -99,17 +99,21 @@ public class RiskAssessmentServiceImpl
     @Override
     @Transactional
     @Caching(
-        evict = {
-            @CacheEvict(
-                value = "riskAssessmentHistory",
-                key = "#propertyId"
-            ),
-            @CacheEvict(
-                value = "riskBreakdown",
-                key = "#propertyId"
-            )
-        }
-    )
+    evict = {
+        @CacheEvict(
+            value = "riskAssessmentHistory",
+            key = "T(org.springframework.security.core.context.SecurityContextHolder)"
+                + ".getContext().getAuthentication().getName()"
+                + " + '_' + #propertyId"
+        ),
+        @CacheEvict(
+            value = "riskBreakdown",
+            key = "T(org.springframework.security.core.context.SecurityContextHolder)"
+                + ".getContext().getAuthentication().getName()"
+                + " + '_' + #propertyId"
+        )
+    }
+)
     public RiskAssessmentResponse recalculate(Long propertyId) {
 
         log.info("recalculate: force re-scoring property {}", propertyId);
@@ -143,7 +147,10 @@ public class RiskAssessmentServiceImpl
     @Transactional
     @Cacheable(
         value = "riskBreakdown",
-        key = "#propertyId"
+        key = "T(org.springframework.security.core.context.SecurityContextHolder)"
+            + ".getContext().getAuthentication().getName()"
+            + " + '_' + #propertyId",
+        sync = true
     )
     public RiskBreakdownDto getBreakdown(Long propertyId) {
     log.debug(
@@ -185,7 +192,10 @@ public class RiskAssessmentServiceImpl
     @Transactional(readOnly = true)
     @Cacheable(
         value = "riskAssessmentHistory",
-        key = "#propertyId"
+        key = "T(org.springframework.security.core.context.SecurityContextHolder)"
+            + ".getContext().getAuthentication().getName()"
+            + " + '_' + #propertyId",
+        sync = true
     )
     public RiskHistoryDto getHistory(Long propertyId) {
         log.debug(
@@ -356,7 +366,7 @@ private User resolveCurrentUser() {
                 "Property not found: " + propertyId
             )
         ); 
-        
+
         RiskScoringEngine.EngineResult result =
                 scoringEngine.compute(propertyId);
 

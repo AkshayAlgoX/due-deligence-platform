@@ -42,7 +42,8 @@ public class DashboardServiceImpl implements DashboardService {
     @Cacheable(
        value = "dashboardStats",
         key = "T(org.springframework.security.core.context.SecurityContextHolder)"
-            + ".getContext().getAuthentication().getName()"
+            + ".getContext().getAuthentication().getName()",
+        sync = true
     )
     public DashboardStatsResponse getStats() {
 
@@ -110,7 +111,8 @@ public class DashboardServiceImpl implements DashboardService {
     @Cacheable(
         value = "portfolioInsights",
         key = "T(org.springframework.security.core.context.SecurityContextHolder)"
-            + ".getContext().getAuthentication().getName()"
+            + ".getContext().getAuthentication().getName()",
+        sync = true    
     )
     public PortfolioInsightsResponse getPortfolioInsights() {
 
@@ -238,7 +240,8 @@ public class DashboardServiceImpl implements DashboardService {
         value = "recentActivity",
         key = "T(org.springframework.security.core.context.SecurityContextHolder)"
             + ".getContext().getAuthentication().getName()"
-            + " + '_' + #limit"
+            + " + '_' + #limit",
+        sync = true    
     )
     public List<ActivityItemResponse> getRecentActivity(int limit) {
 
@@ -330,7 +333,8 @@ public class DashboardServiceImpl implements DashboardService {
     @Cacheable(
         value = "dashboardTrends",
         key = "T(org.springframework.security.core.context.SecurityContextHolder)"
-            + ".getContext().getAuthentication().getName()"
+            + ".getContext().getAuthentication().getName()",
+        sync = true    
     )
     public DashboardTrendsResponse getTrends() {
 
@@ -477,7 +481,8 @@ public class DashboardServiceImpl implements DashboardService {
     @Cacheable(
          value = "dashboardRecommendations",
          key = "T(org.springframework.security.core.context.SecurityContextHolder)"
-             + ".getContext().getAuthentication().getName()"
+             + ".getContext().getAuthentication().getName()",
+        sync = true     
     )
     public List<RecommendationResponse> getRecommendations() {
 
