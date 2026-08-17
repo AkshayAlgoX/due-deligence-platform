@@ -10,13 +10,7 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import com.realestate.duediligence.dto.DueDiligenceReportResponse;
 import com.realestate.duediligence.dto.ExportRequest;
@@ -26,228 +20,241 @@ import com.realestate.duediligence.repository.UserRepository;
 import com.realestate.duediligence.service.DueDiligenceReportService;
 import com.realestate.duediligence.service.ExportService;
 
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 
 @RestController
 @RequestMapping("/api/export")
 @RequiredArgsConstructor
+@Tag(name = "Export",
+        description = "Download due-diligence reports and property snapshots as PDF or Excel, " +
+                "bulk-export multiple reports as a ZIP, and view export download history.")
 public class ExportController {
 
     private final ExportService exportService;
     private final DueDiligenceReportService reportService;
     private final UserRepository userRepository;
 
-    // ── 1. Full Versioned Report Downloads ───────────────────────────────────
-
     @GetMapping("/report/{reportId}/pdf")
+    @Operation(
+            summary = "Export report as PDF",
+            description = "Generates a full due-diligence report PDF and streams it as a file attachment. " +
+                    "The file name encodes the report title, version, and date.")
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "PDF file attachment"),
+            @ApiResponse(responseCode = "401", description = "Missing or invalid JWT token"),
+            @ApiResponse(responseCode = "404", description = "Report not found"),
+            @ApiResponse(responseCode = "500", description = "PDF generation failed")
+    })
     public ResponseEntity<?> exportReportPdf(
-            @PathVariable Long reportId,
+            @Parameter(description = "Report ID", required = true) @PathVariable Long reportId,
             Authentication authentication) {
-
         Long userId = getUserId(authentication);
         try {
-            byte[] pdfBytes = exportService.exportReportPdf(reportId, userId);
+            byte[] bytes = exportService.exportReportPdf(reportId, userId);
             DueDiligenceReportResponse report = reportService.getReport(reportId);
-            String fileName = formatReportFileName(report, "pdf");
-
             return ResponseEntity.ok()
-                    .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + fileName + "\"")
+                    .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + formatReportFileName(report, "pdf") + "\"")
                     .contentType(MediaType.APPLICATION_PDF)
-                    .contentLength(pdfBytes.length)
-                    .body(pdfBytes);
+                    .contentLength(bytes.length)
+                    .body(bytes);
         } catch (Exception e) {
-            org.slf4j.LoggerFactory.getLogger(ExportController.class)
-                .error("PDF export failed for report {}: {}", reportId, e.getMessage(), e);
-            return ResponseEntity.status(500).body(
-                java.util.Map.of("success", false, "message",
-                    "Failed to generate PDF. The report may have been deleted. " + e.getMessage()));
+            org.slf4j.LoggerFactory.getLogger(ExportController.class).error("PDF export failed for report {}: {}", reportId, e.getMessage(), e);
+            return ResponseEntity.status(500).body(java.util.Map.of("success", false, "message", "Failed to generate PDF. " + e.getMessage()));
         }
     }
 
     @GetMapping("/report/{reportId}/excel")
+    @Operation(
+            summary = "Export report as Excel (.xlsx)",
+            description = "Generates a structured Excel workbook from the report data with separate sheets " +
+                    "for summary, risk factors, comparables, and financial data.")
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "Excel file attachment"),
+            @ApiResponse(responseCode = "401", description = "Missing or invalid JWT token"),
+            @ApiResponse(responseCode = "404", description = "Report not found"),
+            @ApiResponse(responseCode = "500", description = "Excel generation failed")
+    })
     public ResponseEntity<?> exportReportExcel(
-            @PathVariable Long reportId,
+            @Parameter(description = "Report ID", required = true) @PathVariable Long reportId,
             Authentication authentication) {
-
         Long userId = getUserId(authentication);
         try {
-            byte[] excelBytes = exportService.exportReportExcel(reportId, userId);
+            byte[] bytes = exportService.exportReportExcel(reportId, userId);
             DueDiligenceReportResponse report = reportService.getReport(reportId);
-            String fileName = formatReportFileName(report, "xlsx");
-            MediaType excelMediaType = MediaType.parseMediaType("application/vnd.openxmlformats-officedocument.spreadsheetml.sheet");
-
+            MediaType excelType = MediaType.parseMediaType("application/vnd.openxmlformats-officedocument.spreadsheetml.sheet");
             return ResponseEntity.ok()
-                    .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + fileName + "\"")
-                    .contentType(excelMediaType)
-                    .contentLength(excelBytes.length)
-                    .body(excelBytes);
+                    .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + formatReportFileName(report, "xlsx") + "\"")
+                    .contentType(excelType).contentLength(bytes.length).body(bytes);
         } catch (Exception e) {
-            org.slf4j.LoggerFactory.getLogger(ExportController.class)
-                .error("Excel export failed for report {}: {}", reportId, e.getMessage(), e);
-            return ResponseEntity.status(500).body(
-                java.util.Map.of("success", false, "message",
-                    "Failed to generate Excel. The report may have been deleted. " + e.getMessage()));
+            org.slf4j.LoggerFactory.getLogger(ExportController.class).error("Excel export failed for report {}: {}", reportId, e.getMessage(), e);
+            return ResponseEntity.status(500).body(java.util.Map.of("success", false, "message", "Failed to generate Excel. " + e.getMessage()));
         }
     }
 
-    // ── 2. Quick Property Snapshot Downloads ─────────────────────────────────
-
     @GetMapping("/property/{propertyId}/pdf")
+    @Operation(
+            summary = "Export property snapshot as PDF",
+            description = "Generates a quick single-page PDF snapshot of a property's current state " +
+                    "(details, risk score, labels) without requiring a full report generation.")
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "Property snapshot PDF attachment"),
+            @ApiResponse(responseCode = "401", description = "Missing or invalid JWT token"),
+            @ApiResponse(responseCode = "404", description = "Property not found"),
+            @ApiResponse(responseCode = "500", description = "PDF generation failed")
+    })
     public ResponseEntity<?> exportPropertySnapshotPdf(
-            @PathVariable Long propertyId,
+            @Parameter(description = "Property ID", required = true) @PathVariable Long propertyId,
             Authentication authentication) {
-
         Long userId = getUserId(authentication);
         try {
-            byte[] pdfBytes = exportService.exportPropertySnapshotPdf(propertyId, userId);
+            byte[] bytes = exportService.exportPropertySnapshotPdf(propertyId, userId);
             String fileName = "DueDiligence_Snapshot_Property_" + propertyId + "_" + LocalDate.now() + ".pdf";
-
             return ResponseEntity.ok()
                     .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + fileName + "\"")
-                    .contentType(MediaType.APPLICATION_PDF)
-                    .contentLength(pdfBytes.length)
-                    .body(pdfBytes);
+                    .contentType(MediaType.APPLICATION_PDF).contentLength(bytes.length).body(bytes);
         } catch (Exception e) {
-            org.slf4j.LoggerFactory.getLogger(ExportController.class)
-                .error("Property PDF export failed for property {}: {}", propertyId, e.getMessage(), e);
-            return ResponseEntity.status(500).body(
-                java.util.Map.of("success", false, "message",
-                    "Failed to generate property PDF snapshot. " + e.getMessage()));
+            org.slf4j.LoggerFactory.getLogger(ExportController.class).error("Property PDF failed for {}: {}", propertyId, e.getMessage(), e);
+            return ResponseEntity.status(500).body(java.util.Map.of("success", false, "message", "Failed to generate property PDF. " + e.getMessage()));
         }
     }
 
     @GetMapping("/property/{propertyId}/excel")
+    @Operation(
+            summary = "Export property snapshot as Excel",
+            description = "Generates a quick Excel snapshot of a property's current state.")
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "Property snapshot Excel attachment"),
+            @ApiResponse(responseCode = "401", description = "Missing or invalid JWT token"),
+            @ApiResponse(responseCode = "404", description = "Property not found"),
+            @ApiResponse(responseCode = "500", description = "Excel generation failed")
+    })
     public ResponseEntity<?> exportPropertySnapshotExcel(
-            @PathVariable Long propertyId,
+            @Parameter(description = "Property ID", required = true) @PathVariable Long propertyId,
             Authentication authentication) {
-
         Long userId = getUserId(authentication);
         try {
-            byte[] excelBytes = exportService.exportPropertySnapshotExcel(propertyId, userId);
+            byte[] bytes = exportService.exportPropertySnapshotExcel(propertyId, userId);
             String fileName = "DueDiligence_Snapshot_Property_" + propertyId + "_" + LocalDate.now() + ".xlsx";
-            MediaType excelMediaType = MediaType.parseMediaType("application/vnd.openxmlformats-officedocument.spreadsheetml.sheet");
-
+            MediaType excelType = MediaType.parseMediaType("application/vnd.openxmlformats-officedocument.spreadsheetml.sheet");
             return ResponseEntity.ok()
                     .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + fileName + "\"")
-                    .contentType(excelMediaType)
-                    .contentLength(excelBytes.length)
-                    .body(excelBytes);
+                    .contentType(excelType).contentLength(bytes.length).body(bytes);
         } catch (Exception e) {
-            org.slf4j.LoggerFactory.getLogger(ExportController.class)
-                .error("Property Excel export failed for property {}: {}", propertyId, e.getMessage(), e);
-            return ResponseEntity.status(500).body(
-                java.util.Map.of("success", false, "message",
-                    "Failed to generate property Excel snapshot. " + e.getMessage()));
+            return ResponseEntity.status(500).body(java.util.Map.of("success", false, "message", "Failed to generate property Excel. " + e.getMessage()));
         }
     }
 
-    // ── 3. Preview & Bulk & History Endpoints ─────────────────────────────────
-
     @GetMapping("/report/{reportId}/preview")
+    @Operation(
+            summary = "Get export preview metadata",
+            description = "Returns metadata about a report export (file size estimate, section count, last export date) " +
+                    "without generating the actual file. Used by the frontend preview modal.")
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "Preview metadata returned"),
+            @ApiResponse(responseCode = "401", description = "Missing or invalid JWT token"),
+            @ApiResponse(responseCode = "404", description = "Report not found")
+    })
     public ResponseEntity<ExportResponse> getPreview(
-            @PathVariable Long reportId,
+            @Parameter(description = "Report ID", required = true) @PathVariable Long reportId,
             Authentication authentication) {
-
-        Long userId = getUserId(authentication);
-        ExportResponse preview = exportService.getReportPreview(reportId, userId);
-        return ResponseEntity.ok(preview);
+        return ResponseEntity.ok(exportService.getReportPreview(reportId, getUserId(authentication)));
     }
 
     @PostMapping("/bulk")
+    @Operation(
+            summary = "Bulk export multiple reports as ZIP",
+            description = "Generates a ZIP archive containing PDF or Excel files for multiple reports in one request. " +
+                    "Specify report IDs and format in the request body.")
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "ZIP file attachment"),
+            @ApiResponse(responseCode = "400", description = "Invalid request — no report IDs provided"),
+            @ApiResponse(responseCode = "401", description = "Missing or invalid JWT token"),
+            @ApiResponse(responseCode = "500", description = "ZIP generation failed")
+    })
     public ResponseEntity<?> exportBulk(
             @RequestBody ExportRequest request,
             Authentication authentication) {
-
         Long userId = getUserId(authentication);
         try {
-            byte[] zipBytes = exportService.exportBulk(request, userId);
+            byte[] zip = exportService.exportBulk(request, userId);
             String fileName = "DueDiligence_Bulk_Reports_" + LocalDate.now() + ".zip";
-
             return ResponseEntity.ok()
                     .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + fileName + "\"")
                     .contentType(MediaType.parseMediaType("application/zip"))
-                    .contentLength(zipBytes.length)
-                    .body(zipBytes);
+                    .contentLength(zip.length).body(zip);
         } catch (Exception e) {
-            org.slf4j.LoggerFactory.getLogger(ExportController.class)
-                .error("Bulk export failed: {}", e.getMessage(), e);
-            return ResponseEntity.status(500).body(
-                java.util.Map.of("success", false, "message",
-                    "Failed to generate bulk export. One or more reports may have been deleted. " + e.getMessage()));
+            return ResponseEntity.status(500).body(java.util.Map.of("success", false, "message", "Bulk export failed. " + e.getMessage()));
         }
     }
 
     @GetMapping("/history")
+    @Operation(
+            summary = "Get export download history",
+            description = "Returns a paginated list of past export downloads for the authenticated user, " +
+                    "including format, file size, and download count.")
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "Export history page returned"),
+            @ApiResponse(responseCode = "401", description = "Missing or invalid JWT token")
+    })
     public ResponseEntity<Page<ExportResponse>> getHistory(
-            @RequestParam(defaultValue = "0") int page,
-            @RequestParam(defaultValue = "10") int size,
+            @Parameter(description = "Page number (0-based)", example = "0") @RequestParam(defaultValue = "0") int page,
+            @Parameter(description = "Page size (1–50)", example = "10") @RequestParam(defaultValue = "10") int size,
             Authentication authentication) {
-
-        Long userId = getUserId(authentication);
         Pageable pageable = PageRequest.of(Math.max(0, page), Math.min(Math.max(1, size), 50));
-        Page<ExportResponse> history = exportService.getExportHistory(userId, pageable);
-        return ResponseEntity.ok(history);
+        return ResponseEntity.ok(exportService.getExportHistory(getUserId(authentication), pageable));
     }
 
     @GetMapping("/{exportId}/download")
+    @Operation(
+            summary = "Re-download an export from history",
+            description = "Re-downloads a previously generated export file using its history record ID. " +
+                    "Returns 410 Gone if the original file is no longer available.")
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "File re-downloaded successfully"),
+            @ApiResponse(responseCode = "401", description = "Missing or invalid JWT token"),
+            @ApiResponse(responseCode = "403", description = "Export belongs to a different user"),
+            @ApiResponse(responseCode = "404", description = "Export record not found"),
+            @ApiResponse(responseCode = "410", description = "Export file no longer available — generate a new one")
+    })
     public ResponseEntity<?> downloadFromHistory(
-            @PathVariable Long exportId,
+            @Parameter(description = "Export history record ID", required = true) @PathVariable Long exportId,
             Authentication authentication) {
-
         Long userId = getUserId(authentication);
         try {
             byte[] bytes = exportService.downloadExportFromHistory(exportId, userId);
-
             if (bytes == null || bytes.length == 0) {
-                return ResponseEntity.status(410).body(
-                    java.util.Map.of("success", false, "message",
-                        "Export file no longer available. The original report may have been deleted. Please generate a new export."));
+                return ResponseEntity.status(410).body(java.util.Map.of("success", false, "message", "Export file no longer available. Please generate a new export."));
             }
-
             return ResponseEntity.ok()
                     .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"export_" + exportId + ".pdf\"")
-                    .contentType(MediaType.APPLICATION_PDF)
-                    .contentLength(bytes.length)
-                    .body(bytes);
+                    .contentType(MediaType.APPLICATION_PDF).contentLength(bytes.length).body(bytes);
         } catch (IllegalArgumentException e) {
-            return ResponseEntity.status(404).body(
-                java.util.Map.of("success", false, "message", e.getMessage()));
+            return ResponseEntity.status(404).body(java.util.Map.of("success", false, "message", e.getMessage()));
         } catch (SecurityException e) {
-            return ResponseEntity.status(403).body(
-                java.util.Map.of("success", false, "message", e.getMessage()));
+            return ResponseEntity.status(403).body(java.util.Map.of("success", false, "message", e.getMessage()));
         } catch (Exception e) {
-            // Log full stack trace for debugging
-            org.slf4j.LoggerFactory.getLogger(ExportController.class)
-                .error("Failed to download export {}: {}", exportId, e.getMessage(), e);
-            return ResponseEntity.status(500).body(
-                java.util.Map.of("success", false, "message",
-                    "Export file could not be generated. The report data may no longer be available. Please try generating a new export."));
+            return ResponseEntity.status(500).body(java.util.Map.of("success", false, "message", "Export could not be generated. " + e.getMessage()));
         }
     }
 
-    // ── Helpers ──────────────────────────────────────────────────────────────
+    // ── Helpers ───────────────────────────────────────────────────────────────
 
     private Long getUserId(Authentication authentication) {
-        if (authentication == null || authentication.getName() == null) {
-            org.slf4j.LoggerFactory.getLogger(ExportController.class)
-                .warn("[AUTHZ-DEBUG] getUserId: authentication is null or name is null → defaulting to 1");
-            return 1L;
-        }
+        if (authentication == null || authentication.getName() == null) return 1L;
         User user = userRepository.findByEmail(authentication.getName()).orElse(null);
-        Long resolvedId = user != null ? user.getId() : 1L;
-        org.slf4j.LoggerFactory.getLogger(ExportController.class)
-            .info("[AUTHZ-DEBUG] getUserId: authName={} | resolvedId={} | userFound={}",
-                authentication.getName(), resolvedId, user != null);
-        return resolvedId;
+        return user != null ? user.getId() : 1L;
     }
 
     private String formatReportFileName(DueDiligenceReportResponse report, String extension) {
         String propName = report != null && report.getTitle() != null
-                ? report.getTitle().replaceAll("[^a-zA-Z0-9_-]", "_")
-                : "Report";
+                ? report.getTitle().replaceAll("[^a-zA-Z0-9_-]", "_") : "Report";
         int version = report != null && report.getVersion() != null ? report.getVersion() : 1;
-        String date = LocalDate.now().format(DateTimeFormatter.ISO_LOCAL_DATE);
-
-        return String.format("DueDiligence_Report_%s_v%d_%s.%s", propName, version, date, extension);
+        return String.format("DueDiligence_Report_%s_v%d_%s.%s",
+                propName, version, LocalDate.now().format(DateTimeFormatter.ISO_LOCAL_DATE), extension);
     }
 }

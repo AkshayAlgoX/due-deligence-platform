@@ -1,221 +1,164 @@
-<div align="center">
-
 # Real Estate Due Diligence Platform
 
-**Property risk, uncovered in seconds.**
-
-[![CI](https://github.com/springboardmentor198/team-03/actions/workflows/ci.yml/badge.svg)](https://github.com/springboardmentor198/team-03/actions/workflows/ci.yml)
-[![Backend tests](https://img.shields.io/badge/backend%20tests-58%20passing-brightgreen)](https://github.com/springboardmentor198/team-03/tree/develop/backend)
-[![Frontend tests](https://img.shields.io/badge/frontend%20tests-33%20total-yellow)](https://github.com/springboardmentor198/team-03/tree/develop/frontend)
-[![Coverage](https://img.shields.io/badge/coverage-33.8%25%20lines-orange)](https://github.com/springboardmentor198/team-03/tree/develop/backend)
-[![License](https://img.shields.io/badge/license-MIT-blue)](./LICENSE)
-
-[![Spring Boot](https://img.shields.io/badge/Spring%20Boot-4.1-6DB33F?logo=springboot)](https://spring.io/projects/spring-boot)
-[![Java](https://img.shields.io/badge/Java-17-007396?logo=openjdk)](https://adoptium.net/)
-[![Next.js](https://img.shields.io/badge/Next.js-16-000000?logo=nextdotjs)](https://nextjs.org/)
-[![PostgreSQL](https://img.shields.io/badge/PostgreSQL-16-4169E1?logo=postgresql)](https://www.postgresql.org/)
-[![Tailwind](https://img.shields.io/badge/Tailwind-4-38B2AC?logo=tailwindcss)](https://tailwindcss.com/)
-[![Docker](https://img.shields.io/badge/Docker-✓-2496ED?logo=docker)](https://www.docker.com/)
-[![Groq](https://img.shields.io/badge/Groq-Llama%203.3%2070B-orange)](https://groq.com/)
-[![Cashfree](https://img.shields.io/badge/payments-Cashfree-8A2BE2)](https://www.cashfree.com/)
-
-</div>
+A full-stack web application that automates property due diligence for buyers,
+real estate agents, and legal/financial professionals in India. Built for
+**Milestone 3** of the university capstone project by **Team 03**.
 
 ---
 
-## Screenshots
+## What it does
 
-> Capture these from the live site using the [E2E demo script](docs/E2E_DEMO_SCRIPT.md)
-> and commit them to `docs/screenshots/` before submission.
+Upload or search for any property. The platform instantly:
 
-<p align="center">
-  <img src="https://raw.githubusercontent.com/springboardmentor198/team-03/develop/docs/screenshots/01-landing-hero.png" alt="Landing page" width="45%">
-  <img src="https://raw.githubusercontent.com/springboardmentor198/team-03/develop/docs/screenshots/07-ai-chat.png" alt="AI chat" width="45%">
-  <img src="https://raw.githubusercontent.com/springboardmentor198/team-03/develop/docs/screenshots/09-report-view.png" alt="Risk report" width="45%">
-  <img src="https://raw.githubusercontent.com/springboardmentor198/team-03/develop/docs/screenshots/11-fraud-alert.png" alt="Fraud alert" width="45%">
-</p>
+1. **Aggregates** data from 6 external providers (flood zone, legal encumbrances,
+   tax history, zoning, environmental hazards, market data)
+2. **Scores** the property across 6 risk categories and produces an overall
+   LOW / MEDIUM / HIGH / CRITICAL risk rating
+3. **Generates** a multi-section due-diligence PDF report with risk breakdown,
+   comparable market analysis, financial projections, and AI executive summary
+4. **Exports** reports as PDF or Excel and tracks download history
+5. **Notifies** users in-app and by email when reports are ready or risk alerts fire
 
-## What is this?
+---
 
-Buying property in India means wading through flood maps, zoning laws, tax
-records, and registry fraud — usually across a dozen government portals.
-This platform compresses that into one flow: add an address, and an AI agent
-pulls data from multiple sources, scores six risk categories with weighted,
-traceable evidence, and produces a due diligence report with a plain-English
-verdict: **BUY, NEGOTIATE, or AVOID**.
+## Key features
 
-Built as a Spring Boot backend with a Next.js frontend, it includes a
-streaming AI chat that answers property questions with cited sources, fraud
-badges that flag high-risk assets, PDF/Excel exports, Cashfree UPI payments,
-and an English/Hindi i18n layer. Everything runs on free tiers — Vercel,
-Render, and Postgres — so the full stack costs nothing to host.
+| Feature | Details |
+|---------|---------|
+| Authentication | Email + OTP registration, email/password login, Google Sign-In |
+| Role-based access | 5 roles: Buyer, Real Estate Agent, Legal Reviewer, Financial Institution, Admin |
+| Property management | Add, edit, delete, search; geocoded to lat/lng via Nominatim |
+| Risk scoring | Rule-based engine across 6 categories, fully explainable |
+| Report generation | Async PDF generation with section-by-section progress |
+| AI summaries | Groq Llama 3.3 70B powers executive summaries and property chat |
+| Comparable analysis | Nearest-neighbour search with similarity scoring and price trends |
+| Property valuation | Three-method automated valuation (comparable, cost, income) |
+| Export | PDF (iText7 + OpenPDF) and Excel (Apache POI) for reports and admin analytics |
+| Notifications | In-app + email; real-time delivery via Server-Sent Events |
+| Admin dashboard | Platform analytics, user management, audit logs, system health |
+| Subscriptions | Cashfree UPI payment gateway; FREE / PRO / BUSINESS / ENTERPRISE plans |
+| Internationalisation | 11 languages: English, Hindi, Bengali, Gujarati, Kannada, Malayalam, Marathi, Punjabi, Tamil, Telugu, Urdu |
 
-## Live Demo
+---
 
-- Frontend: https://team-03.vercel.app (update with your Vercel URL after deploy)
-- Backend API: https://dd-backend.onrender.com/actuator/health
-- Swagger UI: https://dd-backend.onrender.com/swagger-ui.html
-
-## Features
-
-- 🛡️ **6-category risk scoring** — Flood, Legal, Tax, Zoning, Environment,
-  Market, each with a weighted score and traceable sources
-- 🤖 **AI chat** — streaming answers from Groq Llama 3.3 70B with cited sources
-- 📄 **AI executive summary** — 3-sentence summary + BUY/NEGOTIATE/AVOID verdict
-- 🚨 **Fraud detection** — rule-based flags with a pulsing red badge on
-  high-risk properties
-- 📊 **PDF + Excel export** — charts in the PDF, 3 sheets (summary, risk
-  factors, chronology) in the XLSX
-- ⚡ **Command palette** — Ctrl+K to jump anywhere in the app
-- 💳 **Cashfree payments** — UPI, cards, and netbanking for premium reports
-- 🌐 **i18n ready** — English + Hindi via react-i18next
-
-## Tech Stack
+## Tech stack summary
 
 | Layer | Technology |
-|---|---|
-| Frontend | Next.js 16 (App Router), React 19, Tailwind 4, shadcn-style UI, Leaflet maps, Recharts |
-| Backend | Spring Boot 4.1, Java 17, Spring Security (JWT + OAuth2), Bucket4j rate limiting |
-| Database | PostgreSQL 16 (JSONB report sections), H2 for tests |
-| AI | Groq API — `llama-3.3-70b-versatile` (streaming, ~500 tok/s) |
-| Payments | Cashfree (sandbox) |
-| Infra | Docker Compose (local), GitHub Actions CI, Vercel + Render (free tier) |
+|-------|------------|
+| Backend | Spring Boot 4.1, Java 17, Spring Security, Spring Data JPA |
+| Database | PostgreSQL 16 (Hibernate ORM, ddl-auto=update) |
+| Frontend | Next.js 16 (App Router), React 19, Tailwind CSS 4 |
+| Authentication | JWT (JJWT 0.12.7), BCrypt, Google OAuth 2.0 |
+| AI | Groq API (Llama 3.3 70B) via Spring WebFlux |
+| PDF / Excel | iText 7.2.5, OpenPDF 1.3.39, Apache POI 5.2.5 |
+| Maps | Leaflet + OpenStreetMap, Nominatim geocoding |
+| Payments | Cashfree payment gateway (UPI-native, sandbox mode) |
+| API docs | springdoc-openapi 2.8.0 — Swagger UI at `/swagger-ui.html` |
 
-## Getting Started (Local)
+→ Full version list: [docs/TECH_STACK.md](docs/TECH_STACK.md)
+
+---
+
+## Quick start
 
 ### Prerequisites
+Java 17, Maven 3.9+, Node.js 20+, PostgreSQL 14+
 
-- JDK 17+ ([Temurin](https://adoptium.net/))
-- Node.js 20+
-- PostgreSQL 16 running on `localhost:5432`
-- (or skip all three and use Docker — see below)
+### 1. Clone and set up
 
-### 1. Backend
+```bash
+git clone https://github.com/<org>/team-03.git
+cd team-03
+git checkout develop
+```
 
-```cmd
+### 2. Backend
+
+```bash
 cd backend
-copy .env.example .env
+cp .env.example .env   # fill in DB_PASSWORD, MAIL_*, GOOGLE_CLIENT_ID, JWT_SECRET
+./mvnw spring-boot:run
+# → http://localhost:8080  |  Swagger: http://localhost:8080/swagger-ui.html
 ```
 
-Fill in `backend/.env` (DB password, Gmail SMTP, Groq/Cashfree/Google keys).
-Create the database the app expects:
+### 3. Frontend
 
-```sql
-CREATE DATABASE real_estate_due_diligence;
-```
-
-Then run:
-
-```cmd
-mvnw.cmd spring-boot:run
-```
-
-Backend starts on http://localhost:8080 — Swagger at
-http://localhost:8080/swagger-ui.html.
-
-### 2. Frontend
-
-```cmd
+```bash
 cd frontend
-copy .env.example .env.local
-npm ci
+npm install
 npm run dev
+# → http://localhost:3000
 ```
 
-Frontend starts on http://localhost:3000 and proxies `/api/*` to
-`localhost:8080` via `next.config.mjs`.
+### 4. Default admin login
 
-## Getting Started (Docker)
-
-One command for the full stack (Postgres + backend + frontend):
-
-```cmd
-copy .env.docker.example .env
-docker-compose up --build
+```
+Email:    admin@duediligence.local
+Password: Admin@12345
 ```
 
-Fill in the root `.env` first. Details, ports, and troubleshooting:
-[docs/DOCKER.md](docs/DOCKER.md).
+→ Full setup instructions: [docs/SETUP_GUIDE.md](docs/SETUP_GUIDE.md)
 
-## Testing
+---
 
-- **Backend:** `cd backend && mvnw.cmd test -Dspring.profiles.active=test`
-  → **58 tests, 0 failures** (H2 in-memory DB, no external calls).
-  JaCoCo: 33.8% line / 15.7% branch coverage.
-- **Frontend:** `cd frontend && npm run test:run`
-  → **33 tests** (32 passing; one RiskSpectrum snapshot needs a one-time
-  refresh with `npx vitest run -u` — see
-  [docs/SUBMISSION_CHECKLIST.md](docs/SUBMISSION_CHECKLIST.md)).
-- **CI:** GitHub Actions runs both suites + Docker builds on every push/PR
-  ([`.github/workflows/ci.yml`](.github/workflows/ci.yml)).
+## Project structure
 
-## Deployment
-
-Free-tier production deployment (Vercel + Render + Postgres/Neon) — full
-walkthrough: [docs/DEPLOYMENT.md](docs/DEPLOYMENT.md). Blueprint:
-[`render.yaml`](render.yaml).
-
-## Project Structure
-
-```text
-.
-├── backend/                Spring Boot 4.1 API (Java 17)
+```
+team-03/
+├── backend/          Spring Boot backend
 │   ├── src/main/java/com/realestate/duediligence/
-│   │   ├── controller/     REST + SSE endpoints
-│   │   ├── service/        risk scoring, reports, payments, notifications
-│   │   ├── integration/    flood/zoning/tax/environmental data providers
-│   │   ├── export/         Excel export
-│   │   ├── pdf/            PDF report renderer
-│   │   ├── security/       JWT filter, CORS, rate limiting
-│   │   └── scheduled/      background jobs
-│   └── src/test/           58 tests (H2, `test` profile)
-├── frontend/               Next.js 16 (App Router)
-│   └── src/
-│       ├── app/            pages: landing, auth, dashboard, reports, admin
-│       ├── components/     UI, agent chat, export, command palette
-│       └── __tests__/      Vitest suites
-├── docs/                   api.md, DOCKER.md, DEPLOYMENT.md, SECURITY.md, ...
-├── postman/                Postman collection + environment
-├── render.yaml             Render Blueprint (backend + Postgres)
-├── docker-compose.yml      full local stack
-└── .github/workflows/ci.yml
+│   │   ├── controller/    23 REST controllers
+│   │   ├── service/       Business logic (interface + Impl pattern)
+│   │   ├── entity/        22 JPA entities
+│   │   ├── dto/           Request/response DTOs
+│   │   ├── repository/    Spring Data JPA repositories
+│   │   ├── security/      JWT filter, SecurityConfig, rate limiting
+│   │   ├── config/        OpenAPI, async, cache, data-init
+│   │   └── integration/   6 mock external data providers
+│   └── src/main/resources/
+│       ├── application.properties
+│       └── fonts/         Noto Sans fonts for multilingual PDF export
+├── frontend/         Next.js frontend
+│   ├── src/app/      ~40 pages (App Router)
+│   ├── src/components/ React components
+│   ├── src/services/  API call layer
+│   ├── src/hooks/     Custom hooks
+│   └── src/locales/   i18n JSON (11 languages)
+└── docs/             Documentation (you are here)
 ```
 
-## API Documentation
+---
 
-- Swagger UI: http://localhost:8080/swagger-ui.html (or
-  https://dd-backend.onrender.com/swagger-ui.html when deployed)
-- Markdown reference: [docs/api.md](docs/api.md)
-- Postman collection: [`postman/`](postman/)
+## Documentation
 
-## E2E Demo
+| Document | Description |
+|----------|-------------|
+| [docs/SETUP_GUIDE.md](docs/SETUP_GUIDE.md) | Local development setup (backend, frontend, DB, .env) |
+| [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md) | System architecture, data flow, tech decisions |
+| [docs/DATABASE_SCHEMA.md](docs/DATABASE_SCHEMA.md) | ERD (Mermaid) and table descriptions |
+| [docs/TECH_STACK.md](docs/TECH_STACK.md) | All libraries with versions and rationale |
+| [docs/CONTRIBUTING.md](docs/CONTRIBUTING.md) | Branching, commit conventions, PR process |
+| [docs/api.md](docs/api.md) | REST API reference |
+| [docs/DEPLOYMENT.md](docs/DEPLOYMENT.md) | Vercel + Render deployment instructions |
+| [docs/SECURITY.md](docs/SECURITY.md) | Security model, rate limiting, threat model |
+| [docs/user-manual/](docs/user-manual/) | End-user guide (7 chapters) |
+| [docs/presentation/](docs/presentation/) | Project report and presentation materials |
 
-A 15-step, ~5-minute demo script for judges — every step with expected UI
-state, API endpoint, and screenshot target:
-[docs/E2E_DEMO_SCRIPT.md](docs/E2E_DEMO_SCRIPT.md).
+---
 
-## Architecture
+## Team 03 — Member responsibilities
 
-System diagram, tech decisions, security model, and free-tier limits:
-[docs/ARCHITECTURE.md](docs/ARCHITECTURE.md).
+| Member | Area |
+|--------|------|
+| Akshay | Risk Assessment Module + Due Diligence Report Generation |
+| Member 2 | Comparable Property Analysis + Property Valuation |
+| Member 3 | Admin Dashboard + Analytics |
+| Member 4 | PDF + Excel Export |
+| Member 5 | Notification System (M3) · API Documentation + Project Docs (M4) |
+| Member 6 | Audit Logging + Report History Tracking |
 
-## Contributing
-
-Team 03 — contributors (from commit history):
-
-- **Akshaya R** (lead) — backend, auth/security, deployment
-- **MelvinBritto**, **Bhavana-Bhat-528**, **tanishaalone-lab**, **subashs0411**,
-  **DempRepo**, **2311cs010477** — features across backend and frontend
-- Mentored by **springboardmentor198** (Springboard)
-
-Workflow: branch off `develop`, open a PR, CI runs tests + Docker builds,
-Vercel/Render auto-deploy previews. Tag the mentor on the final PR.
+---
 
 ## License
 
-[MIT](./LICENSE) © 2026 springboardmentor198
-
-## Credits
-
-- Springboard mentor and reviewers
-- Security contact: duedeligence8@gmail.com (see [docs/SECURITY.md](docs/SECURITY.md))
+Internal use only — university capstone project. Not for public distribution.

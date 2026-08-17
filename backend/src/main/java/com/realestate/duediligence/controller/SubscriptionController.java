@@ -29,6 +29,11 @@ import com.realestate.duediligence.repository.UserRepository;
 import com.realestate.duediligence.service.CashfreeService;
 import com.realestate.duediligence.service.EmailService;
 
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 
@@ -43,6 +48,7 @@ import lombok.RequiredArgsConstructor;
 @RestController
 @RequestMapping("/api/subscription")
 @RequiredArgsConstructor
+@Tag(name = "Subscription", description = "Subscription plans, payment orders, and webhook handling (Cashfree)")
 public class SubscriptionController {
 
     private static final Logger log = LoggerFactory.getLogger(SubscriptionController.class);
@@ -57,6 +63,15 @@ public class SubscriptionController {
     // ── POST /api/subscription/create-order ──────────────────────
 
     @PostMapping("/create-order")
+    @Operation(summary = "Create payment order",
+            description = "Creates a new subscription payment order via the Cashfree payment gateway. " +
+                    "Returns a payment_session_id the frontend uses to open the Cashfree checkout widget.")
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "Order created — payment session ID returned"),
+            @ApiResponse(responseCode = "400", description = "Unknown or non-purchasable plan"),
+            @ApiResponse(responseCode = "401", description = "Missing or invalid JWT token"),
+            @ApiResponse(responseCode = "502", description = "Cashfree gateway unavailable")
+    })
     public ResponseEntity<CreateOrderResponse> createOrder(
             @Valid @RequestBody CreateOrderRequest request,
             Authentication authentication) {
@@ -121,6 +136,14 @@ public class SubscriptionController {
     // ── POST /api/subscription/webhook ───────────────────────────
 
     @PostMapping("/webhook")
+    @Operation(summary = "Payment webhook",
+            description = "Receives and verifies Cashfree webhook events (PAYMENT_SUCCESS). " +
+                    "Signature-verified via x-webhook-signature header — no user auth required. " +
+                    "Activates the subscription on successful payment.")
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "Webhook processed"),
+            @ApiResponse(responseCode = "401", description = "Invalid webhook signature")
+    })
     public ResponseEntity<Map<String, Object>> webhook(
             @RequestBody String rawPayload,
             @RequestHeader(value = "x-webhook-signature", required = false) String signature) {
@@ -170,6 +193,13 @@ public class SubscriptionController {
     // ── GET /api/subscription/current ────────────────────────────
 
     @GetMapping("/current")
+    @Operation(summary = "Get current subscription",
+            description = "Returns the authenticated user's active subscription plan, usage this month, " +
+                    "reports remaining, expiry date, and payment status.")
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "Subscription status returned"),
+            @ApiResponse(responseCode = "401", description = "Missing or invalid JWT token")
+    })
     public ResponseEntity<Map<String, Object>> current(Authentication authentication) {
         User user = requireUser(authentication);
         if (user == null) {
@@ -232,6 +262,15 @@ public class SubscriptionController {
     // endpoint until the order is PAID and the subscription is ACTIVE.
 
     @GetMapping("/verify-order")
+    @Operation(summary = "Verify payment order",
+            description = "Verifies the status of a Cashfree order by its order ID. " +
+                    "Polls the gateway for PAID status and activates the subscription if confirmed. " +
+                    "Used as a fallback when webhooks are delayed (5-30 s).")
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "Order status returned (status=PAID or PENDING)"),
+            @ApiResponse(responseCode = "401", description = "Missing or invalid JWT token"),
+            @ApiResponse(responseCode = "502", description = "Cashfree gateway unavailable")
+    })
     public ResponseEntity<Map<String, Object>> verifyOrder(
             @RequestParam String orderId,
             Authentication authentication) {
@@ -310,6 +349,13 @@ public class SubscriptionController {
     // ── POST /api/subscription/cancel ────────────────────────────
 
     @PostMapping("/cancel")
+    @Operation(summary = "Cancel subscription",
+            description = "Marks the authenticated user's active subscription as CANCELLED. " +
+                    "Access continues until the existing expiry date. A cancellation confirmation email is sent.")
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "Subscription cancelled (or no active subscription message)"),
+            @ApiResponse(responseCode = "401", description = "Missing or invalid JWT token")
+    })
     public ResponseEntity<Map<String, Object>> cancel(Authentication authentication) {
         User user = requireUser(authentication);
         if (user == null) {
