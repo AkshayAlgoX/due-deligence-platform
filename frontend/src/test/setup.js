@@ -85,7 +85,15 @@ vi.mock("next/link", () => ({
 
 // ── react-i18next — resolve t() to the provided default value ─────
 vi.mock("react-i18next", () => ({
-  useTranslation: () => ({ t: (key, defaultValue) => defaultValue ?? key }),
+  useTranslation: () => ({
+    t: (key, defaultValue) => {
+      if (defaultValue && typeof defaultValue === "object" && defaultValue.defaultValue) {
+        return defaultValue.defaultValue;
+      }
+      return typeof defaultValue === "string" ? defaultValue : key;
+    },
+    i18n: { language: "en", resolvedLanguage: "en", changeLanguage: vi.fn() },
+  }),
 }));
 
 // ── sonner toast ──────────────────────────────────────────────────
