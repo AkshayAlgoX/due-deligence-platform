@@ -45,13 +45,13 @@ This report documents the backend and frontend performance optimizations impleme
 | Dashboard Load Time | ~800ms | ~200ms | ~75% faster | 
 | Risk Breakdown API Response | ~450ms | ~60ms | ~87% faster | 
  
-The after measurements were verified using Chrome DevTools Network monitoring with the backend running successfully. Dashboard API requests consistently completed in approximately 130ΓÇô205ms, while the risk breakdown API requests completed in approximately 54ΓÇô61ms. 
+The after measurements were verified using Chrome DevTools Network monitoring with the backend running successfully. Dashboard API requests consistently completed in approximately 130-205ms, while the risk breakdown API requests completed in approximately 54-61ms. 
 ---
 
 ## 4. Summary
 
-**Backend query optimization** ΓÇö eliminated all N+1 query problems via JPA `@EntityGraph` and `JOIN FETCH`, added 12+ database indexes on hot columns (`propertyId`, `userId`, `createdAt`), configured HikariCP connection pool for optimal throughput, and added Caffeine in-memory cache on frequently-read endpoints (dashboard stats, risk breakdown).
+**Backend query optimization** - eliminated all N+1 query problems via JPA `@EntityGraph` and `JOIN FETCH`, added 12+ database indexes on hot columns (`propertyId`, `userId`, `createdAt`), configured HikariCP connection pool for optimal throughput, and added Caffeine in-memory cache on frequently-read endpoints (dashboard stats, risk breakdown).
 
-**Frontend performance** ΓÇö lazy-loaded heavy dashboard components, added search input debouncing, and enabled Next.js image optimization.
+**Frontend performance** - lazy-loaded heavy dashboard components, added search input debouncing, and enabled Next.js image optimization.
 
 **Result** - Dashboard load time reduced from ~800ms to ~200ms (~75% improvement), while risk breakdown API response time reduced from ~450ms to ~60ms (~87% improvement). 
