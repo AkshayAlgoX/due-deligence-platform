@@ -153,8 +153,8 @@ public class PropertyServiceImpl implements PropertyService {
         User currentUser = resolveCurrentUser();
         if (currentUser == null) return List.of();
 
-        // ⭐ ADMIN sees ALL properties from ALL users (god mode)
-        if (isAdmin(currentUser)) {
+        // ⭐ ADMIN / LEGAL_REVIEWER / FINANCIAL_INSTITUTION see ALL properties
+        if (canViewAllProperties(currentUser)) {
             return propertyRepository.findAll()
                     .stream()
                     .map(this::mapToResponse)
@@ -174,8 +174,8 @@ public class PropertyServiceImpl implements PropertyService {
         Property property = propertyRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Property not found"));
 
-        // ⭐ ADMIN can view ANY property
-        if (isAdmin(currentUser)) {
+        // ⭐ ADMIN / LEGAL_REVIEWER / FINANCIAL_INSTITUTION can view ANY property
+        if (canViewAllProperties(currentUser)) {
 
              saveAuditLog(
                       currentUser,
@@ -215,8 +215,8 @@ public class PropertyServiceImpl implements PropertyService {
 
         String q = query.toLowerCase().trim();
 
-        // ⭐ ADMIN searches across ALL properties
-        if (isAdmin(currentUser)) {
+        // ⭐ ADMIN / LEGAL_REVIEWER / FINANCIAL_INSTITUTION search across ALL properties
+        if (canViewAllProperties(currentUser)) {
             return propertyRepository.findAll()
                     .stream()
                     .filter(p -> matchesQuery(p, q))
@@ -236,8 +236,8 @@ public class PropertyServiceImpl implements PropertyService {
         User currentUser = resolveCurrentUser();
         if (currentUser == null) return List.of();
 
-        // ⭐ ADMIN sees 5 most recent across ALL users
-        if (isAdmin(currentUser)) {
+        // ⭐ ADMIN / LEGAL_REVIEWER / FINANCIAL_INSTITUTION see 5 most recent across ALL users
+        if (canViewAllProperties(currentUser)) {
             return propertyRepository.findAll()
                     .stream()
                     .sorted((a, b) -> {
@@ -315,6 +315,12 @@ public class PropertyServiceImpl implements PropertyService {
         return "ADMIN".equals(user.getRole().getRoleName().name());
     }
 
+    private boolean canViewAllProperties(User user) {
+        if (user == null || user.getRole() == null || user.getRole().getRoleName() == null) return false;
+        String role = user.getRole().getRoleName().name();
+        return "ADMIN".equals(role) || "LEGAL_REVIEWER".equals(role) || "FINANCIAL_INSTITUTION".equals(role);
+    }
+
     /**
      * In-memory match for admin search across all properties.
      * Matches query against address, city, state, zipCode, propertyType.
@@ -384,8 +390,8 @@ public class PropertyServiceImpl implements PropertyService {
         User currentUser = resolveCurrentUser();
         if (currentUser == null) return List.of();
 
-        // ⭐ ADMIN sees ALL properties on map
-        if (isAdmin(currentUser)) {
+        // ⭐ ADMIN / LEGAL_REVIEWER / FINANCIAL_INSTITUTION see ALL properties on map
+        if (canViewAllProperties(currentUser)) {
             return propertyRepository.findAll()
                     .stream()
                     .filter(p -> p.getLatitude() != null && p.getLongitude() != null)

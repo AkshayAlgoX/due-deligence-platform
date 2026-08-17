@@ -22,7 +22,7 @@ public class SavedComparisonController {
 
     // ─── POST /api/comparisons ───────────────────────────────────────────────────
     @PostMapping
-    @PreAuthorize("hasAnyRole('BUYER', 'REAL_ESTATE_AGENT', 'ADMIN')")
+    @PreAuthorize("isAuthenticated()")
     public ResponseEntity<Map<String, Object>> save(
             @Valid @RequestBody SavedComparisonRequest request) {
 
@@ -36,7 +36,7 @@ public class SavedComparisonController {
 
     // ─── GET /api/comparisons ────────────────────────────────────────────────────
     @GetMapping
-    @PreAuthorize("hasAnyRole('BUYER', 'REAL_ESTATE_AGENT', 'ADMIN')")
+    @PreAuthorize("isAuthenticated()")
     public ResponseEntity<Map<String, Object>> getMyComparisons() {
 
         List<SavedComparisonResponse> comparisons = savedComparisonService.getMyComparisons();
@@ -49,7 +49,7 @@ public class SavedComparisonController {
 
     // ─── GET /api/comparisons/{id} ───────────────────────────────────────────────
     @GetMapping("/{id}")
-    @PreAuthorize("hasAnyRole('BUYER', 'REAL_ESTATE_AGENT', 'ADMIN')")
+    @PreAuthorize("isAuthenticated()")
     public ResponseEntity<Map<String, Object>> getById(@PathVariable Long id) {
 
         SavedComparisonResponse response = savedComparisonService.getById(id);
@@ -61,7 +61,7 @@ public class SavedComparisonController {
 
     // ─── PATCH /api/comparisons/{id} ────────────────────────────────────────────
     @PatchMapping("/{id}")
-    @PreAuthorize("hasAnyRole('BUYER', 'REAL_ESTATE_AGENT', 'ADMIN')")
+    @PreAuthorize("isAuthenticated()")
     public ResponseEntity<Map<String, Object>> update(
             @PathVariable Long id,
             @Valid @RequestBody SavedComparisonRequest request) {
@@ -76,7 +76,7 @@ public class SavedComparisonController {
 
     // ─── DELETE /api/comparisons/{id} ───────────────────────────────────────────
     @DeleteMapping("/{id}")
-    @PreAuthorize("hasAnyRole('BUYER', 'REAL_ESTATE_AGENT', 'ADMIN')")
+    @PreAuthorize("isAuthenticated()")
     public ResponseEntity<Map<String, Object>> delete(@PathVariable Long id) {
 
         savedComparisonService.delete(id);

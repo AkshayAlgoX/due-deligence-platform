@@ -10,18 +10,20 @@
 
 1. [Project Overview](#1-project-overview)
 2. [Architecture](#2-architecture)
-3. [Feature List](#3-feature-list)
-4. [Database Schema](#4-database-schema)
-5. [API Endpoints](#5-api-endpoints)
-6. [Frontend Pages & Routes](#6-frontend-pages--routes)
-7. [Security Measures](#7-security-measures)
-8. [Testing](#8-testing)
-9. [DevOps & Deployment](#9-devops--deployment)
-10. [Project Structure](#10-project-structure)
-11. [Design System](#11-design-system)
-12. [Third-Party Integrations](#12-third-party-integrations)
-13. [Known Issues & Fixes Applied](#13-known-issues--fixes-applied)
-14. [Future Scope](#14-future-scope)
+3. [Role-Based Access Control (RBAC)](#3-role-based-access-control-rbac)
+4. [Feature List](#4-feature-list)
+5. [Database Schema](#5-database-schema)
+6. [API Endpoints](#6-api-endpoints)
+7. [Frontend Pages & Routes](#7-frontend-pages--routes)
+8. [Security Measures](#8-security-measures)
+9. [Testing](#9-testing)
+10. [DevOps & Deployment](#10-devops--deployment)
+11. [Project Structure](#11-project-structure)
+12. [Design System](#12-design-system)
+13. [Third-Party Integrations](#13-third-party-integrations)
+14. [Known Issues & Fixes Applied](#14-known-issues--fixes-applied)
+15. [Future Scope](#15-future-scope)
+16. [Recent Changes / Changelog](#16-recent-changes--changelog)
 
 ---
 
@@ -169,7 +171,22 @@ A second SSE channel (`GET /api/sse/notifications?token=…`) delivers notificat
    every 2 s (max 8 attempts) → activates on PAID → confetti
 ```
 
-Plans: `FREE` ₹0 (3 reports/mo) · `PRO` ₹499/mo (unlimited) · `BUSINESS` ₹1,999/mo (unlimited) · `ENTERPRISE` custom. Re-purchase extends an active subscription (old row `SUPERSEDED`, expiry +1 month).
+Plans: `FREE` ₹0 (3 reports/mo) · `PRO` ₹499/mo (unlimited) · `BUSINESS` ₹1,999/mo (unlimited) · `ENTERPRISE` custom.
+
+**Cancel behavior (Netflix/Stripe pattern):**
+- Cancel sets `status=CANCELLED`, `cancelled_at=NOW()`, but `expires_at` is **UNCHANGED**.
+- User keeps full paid access until `expires_at`.
+- After expiry, auto-downgrades to FREE (checked on every `/current` call and in `enforcePlanLimit`).
+- Backend check: `("ACTIVE".equals(status) || "CANCELLED".equals(status)) && expiresAt.isAfter(NOW())`.
+
+**Re-purchase behavior:**
+- Buying again while still ACTIVE extends by +1 month from current expiry (no lost days).
+- Old subscription row marked `SUPERSEDED`, new row becomes authoritative.
+
+**Plan enforcement (`DueDiligenceReportServiceImpl.enforcePlanLimit`):**
+- ADMIN + LEGAL_REVIEWER + FINANCIAL_INSTITUTION: bypass entirely (unlimited).
+- FREE plan or no subscription: 3 reports/month, throws `PlanLimitExceededException` → HTTP 402 `{error: "PLAN_LIMIT_EXCEEDED", upgradeUrl: "/checkout?plan=pro"}`.
+- PRO/BUSINESS/ENTERPRISE with valid (ACTIVE or CANCELLED-not-expired) subscription: unlimited.
 
 ### 2.6 Report pipeline
 
@@ -187,11 +204,48 @@ POST /api/reports/generate { propertyId, title, forceRiskRecalculation }
 
 ---
 
-## 3. Feature List
+## 3. Role-Based Access Control (RBAC)
+
+Five roles with strict boundaries enforced on both backend (`@PreAuthorize` + service-layer role checks) and frontend (route guards + UI visibility).
+
+| Feature | ADMIN | BUYER | AGENT | LEGAL_REVIEWER | FINANCIAL_INSTITUTION |
+|---|:---:|:---:|:---:|:---:|:---:|
+| View all properties | ✅ ALL | Own only | Own only | ✅ ALL | ✅ ALL |
+| Add property | ✅ | ✅ | ✅ | ❌ Hidden | ❌ Hidden |
+| Edit property | ✅ Any | Own only | Own only | ❌ Hidden | ❌ Hidden |
+| Delete property | ✅ Any | Own only | Own only | ❌ Hidden | ❌ Hidden |
+| Generate report | ✅ Unlimited | Plan limit | Plan limit | ✅ Unlimited | ✅ Unlimited |
+| Delete report | ✅ | ✅ Own | ✅ Own | ❌ 403 | ❌ 403 |
+| AI chat | ✅ | ✅ | ✅ | ✅ | ✅ |
+| Export PDF/Excel | ✅ | ✅ | ✅ | ✅ | ✅ |
+| Compare properties | ✅ | ✅ | ✅ | ✅ | ✅ |
+| View comparables/valuation | ✅ | ✅ Own | ✅ Own | ✅ Any | ✅ Any |
+| Risk assessment | ✅ | ✅ Own | ✅ Own | ✅ Any | ✅ Any |
+| AI summary | ✅ | ✅ Own | ✅ Own | ✅ Any | ✅ Any |
+| Billing/Subscription page | ✅ | ✅ | ✅ | ❌ Redirect | ❌ Redirect |
+| Checkout page | ✅ | ✅ | ✅ | ❌ Redirect | ❌ Redirect |
+| Upgrade button (UI) | ✅ | ✅ | ✅ | ❌ Hidden | ❌ Hidden |
+| Plan limit enforced | ❌ No limit | ✅ FREE=3/mo | ✅ FREE=3/mo | ❌ No limit | ❌ No limit |
+| Admin panel | ✅ | ❌ | ❌ | ❌ | ❌ |
+| Analytics dashboard | ✅ | ❌ | ❌ | ❌ | ❌ |
+| Audit trail | ✅ | ❌ | ❌ | ❌ | ❌ |
+
+### RBAC Implementation
+
+- **Shared helper**: `com.realestate.duediligence.util.RoleUtils` — `isAdmin()`, `isPaidProfessionalRole()` (LEGAL_REVIEWER / FINANCIAL_INSTITUTION), `canViewAllProperties()`, `canAccessProperty()` (owner-or-view-all).
+- **Backend read authorization** uses `canViewAllProperties()` in: `PropertyServiceImpl`, `DashboardServiceImpl`, `PropertyAggregationService`, `ComparablePropertyServiceImpl`, `PropertyValuationServiceImpl`, `RiskAssessmentServiceImpl`, `ReportSummaryServiceImpl`.
+- **Backend write authorization**: `isAdmin()` for admin bypass; owner-only for BUYER/AGENT; LEGAL/FIN excluded from property CRUD and report deletion (`403 AccessDeniedException`).
+- **Controller guards**: class-level `@PreAuthorize("hasRole('ADMIN')")` on `AuditLogController`, `HealthCheckController`, `TestController`, `AdminController`; `PropertyController`/`PropertyLabelController` writes role-gated; `ComparablePropertyController` + `SavedComparisonController` → `isAuthenticated()` (all roles).
+- **Subscription/plan**: `enforcePlanLimit()` in `DueDiligenceReportServiceImpl` bypasses ADMIN + pro roles; `GET /api/subscription/current` reports pro roles as unlimited `PRO`.
+- **Frontend guards**: `AuthGuard.jsx` (billing/checkout redirects), `Sidebar.jsx` (menu visibility, admin platform menu), `Navbar.jsx` (upgrade button hidden), `CommandPalette.jsx` (add-property action filtered), property/report action buttons (Edit/Delete/Delete-Report gated per role). Note: there is no `middleware.ts` — `AuthGuard` is the client-side RBAC layer.
+
+---
+
+## 4. Feature List
 
 > Every feature with its implementing files and internal behaviour.
 
-### 3.1 Authentication & Authorization
+### 4.1 Authentication & Authorization
 
 | Feature | Frontend files | Backend files | How it works |
 |---|---|---|---|
@@ -204,7 +258,7 @@ POST /api/reports/generate { propertyId, title, forceRiskRecalculation }
 | Session invalidation (logout all devices) | `frontend/src/components/profile/SignOutAllModal.jsx`, `frontend/src/services/authService.js` (`logoutAllDevices`) | `AuthController.logoutAllDevices` → `users.token_valid_from = now`; `JwtAuthenticationFilter` rejects tokens with `iat < token_valid_from` | Every previously-issued JWT becomes invalid on the next request. |
 | Account ban/unban + is_active | `frontend/src/components/admin/UserManagementTable.jsx`, `UserDetailModal.jsx` (null-safe `isActive !== false`), `frontend/src/services/adminService.js` (`banUser/unbanUser`) | `UserManagementController` (`PUT /api/admin/users/{id}/ban` / `/unban`), `CustomUserDetailsService` (`.disabled(!active || banned)`) | NULL `is_active` is treated as ACTIVE everywhere (V11 migration backfills + sets NOT NULL DEFAULT true). Banned users get 401 on next token check. |
 
-### 3.2 Landing Page & Marketing
+### 4.2 Landing Page & Marketing
 
 | Feature | Files | Notes |
 |---|---|---|
@@ -219,7 +273,7 @@ POST /api/reports/generate { propertyId, title, forceRiskRecalculation }
 | Support hub | `frontend/src/app/support/page.jsx`, `frontend/src/constants/faq.js` | FAQ search + mailto tiles (`duedeligence8@gmail.com`) |
 | SEO | `frontend/src/app/layout.js` (metadata: title, description, keywords, OG, twitter, `og-image.png` 1200×630), inline JSON-LD `SoftwareApplication`, skip-to-content link, `NextTopLoader` | metadataBase `https://realestate-duediligence.com` |
 
-### 3.3 Dashboard
+### 4.3 Dashboard
 
 | Feature | Files | Notes |
 |---|---|---|
@@ -231,7 +285,7 @@ POST /api/reports/generate { propertyId, title, forceRiskRecalculation }
 | Connection status pill | `frontend/src/components/layout/ConnectionStatus.jsx` | `subscribeToConnectionState` SSE reconnecting pill with green "recovered" flash |
 | Responsive design | throughout — Tailwind breakpoints `sm/md/lg/xl` | — |
 
-### 3.4 Property Management
+### 4.4 Property Management
 
 | Feature | Files | Notes |
 |---|---|---|
@@ -244,7 +298,7 @@ POST /api/reports/generate { propertyId, title, forceRiskRecalculation }
 | Property comparison | `frontend/src/app/dashboard/property-comparison/page.jsx`, `CompareBar.jsx`, `useCompareSelection.js` (max 3, sessionStorage) | `MarketValueChart`, side-by-side table, save/reopen comparisons, comparison PDF |
 | Comparables & valuation | `frontend/src/app/properties/[id]/comparables/page.jsx`, `comparables/*` components (Leaflet `ComparableMap`, `PriceHeatmap`, `RadiusSelector`), `frontend/src/app/properties/[id]/valuation/page.jsx` | Haversine radius filtering; valuation methods chart, price trends |
 
-### 3.5 Due Diligence Reports
+### 4.5 Due Diligence Reports
 
 | Feature | Files | Notes |
 |---|---|---|
@@ -256,7 +310,7 @@ POST /api/reports/generate { propertyId, title, forceRiskRecalculation }
 | Report history + versions | `frontend/src/app/dashboard/report-history/page.jsx`, `frontend/src/app/reports/page.jsx` (paginated 20/page, sort, filter), `ReportVersionHistoryModal.jsx` | `GET /api/report-history`, versions/archive/share endpoints |
 | Report viewer + print | `frontend/src/app/reports/[reportId]/page.jsx` (TOC, sections, `HighRiskBanner`, confetti), `/reports/[reportId]/print/page.jsx` (auto `window.print()`) | — |
 
-### 3.6 Risk Assessment
+### 4.6 Risk Assessment
 
 | Feature | Files | Notes |
 |---|---|---|
@@ -265,7 +319,7 @@ POST /api/reports/generate { propertyId, title, forceRiskRecalculation }
 | Fraud alert badges | `frontend/src/components/property/FraudAlertBadge.jsx` | CRITICAL: pulsing red + rings; HIGH: amber; LOW: verified badge; MEDIUM renders nothing |
 | Risk breakdown | `RiskBreakdownRadar.jsx` (6-axis radar), `RiskFactorCard.jsx`, `RiskExplainability.jsx`, `RiskHistorySection.jsx` + timeline/chart | CSV download of breakdown |
 
-### 3.7 AI Property Assistant
+### 4.7 AI Property Assistant
 
 | Feature | Files | Notes |
 |---|---|---|
@@ -275,18 +329,32 @@ POST /api/reports/generate { propertyId, title, forceRiskRecalculation }
 | Exponential backoff | `frontend/src/services/sseService.js` (1 s → 30 s + jitter, tab-hidden pause) | For notification SSE |
 | Context-aware property questions | chat accepts `propertyId` + history (last 10 messages trimmed) | System prompt + property context |
 
-### 3.8 Payment & Billing
+### 4.8 Payment & Billing
 
 | Feature | Files | Notes |
 |---|---|---|
 | Cashfree gateway (sandbox) | `frontend/src/app/checkout/page.js`, backend `CashfreeServiceImpl` (Payment Links API, `x-api-version: 2023-08-01`, sandbox/prod switch via `cashfree.environment`) | `POST /links` with `link_meta.return_url` + `notify_url` |
 | Plan selection | `frontend/src/app/dashboard/billing/page.js` (FREE/PRO/BUSINESS/ENTERPRISE cards, usage), `frontend/src/app/pricing/page.js` | `enums/SubscriptionPlan.java` (amounts in paise) |
-| Checkout flow | `frontend/src/app/checkout/page.js` (manual token check, `createOrder(plan)`) | Order persisted as PENDING `Subscription` |
-| Success/failure handling | `frontend/src/app/checkout/success/page.js` (polls verify-order 2 s × 8; PAID/EXPIRED/FAILED/ACTIVE), `frontend/src/lib/celebrate.js` (confetti) | — |
+| Checkout flow | `frontend/src/app/checkout/page.js` (role guard: LEGAL/FIN → toast + redirect to `/dashboard` before any API call; real feature lists only) | Order persisted as PENDING `Subscription` |
+| Success/failure handling | `frontend/src/app/checkout/success/page.js` (polls verify-order 2 s × 8; PAID/EXPIRED/FAILED/ACTIVE; role guard), `frontend/src/lib/celebrate.js` (confetti) | — |
 | Webhook verification | backend `SubscriptionController.webhook` | HmacSHA256(raw body, webhook secret) vs `x-webhook-signature`; dev-mode accept if secret unset |
-| Billing history | `frontend/src/app/dashboard/billing/page.js` (upgrade/downgrade/cancel) | Re-purchase extends expiry (+1 month); admin exempt; unlimited = -1 sentinel |
+| Cancel till expiry | backend `SubscriptionController.cancel` + `getCurrent` | `status=CANCELLED`, `expires_at` unchanged; paid access + unlimited reports kept until expiry, then FREE (Netflix/Stripe pattern); billing page shows "Cancelling on {date}" banner |
+| Re-purchase | backend `SubscriptionController.activateSubscription` | Active re-purchase extends +1 month from current expiry; old row `SUPERSEDED` |
+| Usage counter + upgrade UI | `frontend/src/app/properties/[id]/generate-report/page.jsx` | "✨ Unlimited reports · {plan} plan" pill, "X of 3 free reports used" text, upgrade card replaces generate button at 0 remaining; 402 → upgrade modal |
+| Plan enforcement | backend `DueDiligenceReportServiceImpl.enforcePlanLimit` | ADMIN/pro-roles bypass; FREE = 3/month → `PlanLimitExceededException` → 402 |
 
-### 3.9 Admin Panel
+**Real features per plan (source of truth: `frontend/src/app/pricing/page.js`):**
+
+| Plan | Features |
+|---|---|
+| **FREE** (₹0/forever) | 3 due diligence reports/month · All 6 risk categories analyzed · PDF & Excel export · AI property assistant (chat) · AI-generated report summary · 1 saved property comparison · Fraud alert badges · Email support |
+| **PRO** (₹499/month) | Everything in Free · Unlimited due diligence reports · Unlimited saved comparisons · Export history with re-download · Property comparison (up to 3) · Comparable properties + valuation · Risk assessment history & trends · Multi-language reports (11 languages) |
+| **BUSINESS** (₹1,999/month) | Everything in Pro · Advanced analytics dashboard · Property portfolio insights · Notification preferences (email + in-app) · Audit trail on all actions · Bulk PDF/Excel export · Real-time updates (SSE) · Extended report history |
+| **ENTERPRISE** (Custom) | Everything in Business · Custom deployment options · Volume-based pricing · Dedicated onboarding · Priority integration support · Custom risk category weights · Extended data retention · Direct engineering access |
+
+> No white-label PDFs, priority generation/support, team seats, REST API access, custom branding, bulk CSV upload, account managers, SLAs, on-premise, or phone support are claimed anywhere in the product or docs.
+
+### 4.9 Admin Panel
 
 | Feature | Files | Notes |
 |---|---|---|
@@ -298,7 +366,7 @@ POST /api/reports/generate { propertyId, title, forceRiskRecalculation }
 | Audit logs | `frontend/src/app/dashboard/audit-logs/page.jsx` (ADMIN-only), `components/audit/*` (table, filters, detail modal, timeline, activity graph, CSV export) | `GET /api/audit-logs*` |
 | Admin dashboard | `frontend/src/app/dashboard/admin/page.jsx` + `useAdminDashboard` | `/dashboard` auto-redirects ADMINs to `/dashboard/admin` |
 
-### 3.10 UX Polish
+### 4.10 UX Polish
 
 - **Framer Motion** across 47 files: modals (AnimatePresence), `RiskSpectrum` spring gauge, `CountUp`, `CardHover`, `FraudAlertBadge` pulse, landing parallax.
 - **Confetti** (`canvas-confetti`) on payment success, report completion, account actions (`frontend/src/lib/celebrate.js`).
@@ -310,11 +378,11 @@ POST /api/reports/generate { propertyId, title, forceRiskRecalculation }
 
 ---
 
-## 4. Database Schema
+## 5. Database Schema
 
 > PostgreSQL 16. Managed by Hibernate `spring.jpa.hibernate.ddl-auto=update` (no Flyway dependency wired; `db/migration/*.sql` are manual artifacts). Seeding via `config/DataInitializer.java` (5 roles + 1 admin, idempotent, repairs wrong admin roles). All entities under `backend/src/main/java/com/realestate/duediligence/entity/`.
 
-### 4.1 Tables (entity → table → columns)
+### 5.1 Tables (entity → table → columns)
 
 **`User` → `users`**
 
@@ -380,11 +448,11 @@ Relationships: `@OneToMany(mappedBy="generatedBy", cascade=ALL, orphanRemoval=tr
 
 **`Subscription` → `subscriptions`** (indexes: user_id, status): `id` PK · `user_id` Long NOT NULL (plain column) · `plan` enum STRING NOT NULL(20) · `status` String NOT NULL(20) (ACTIVE/CANCELLED/EXPIRED/FAILED) · `cashfree_order_id`(100) · `cashfree_payment_id`(100) · `amount` Long NOT NULL · `currency`(10) NOT NULL default "INR" · `created_at` NOT NULL · `expires_at` · `cancelled_at`.
 
-### 4.2 Key relationships (foreign keys)
+### 5.2 Key relationships (foreign keys)
 
 `users.role_id → roles.id` · `properties.created_by → users.id` (ON DELETE CASCADE) · `due_diligence_reports.property_id → properties.id` (CASCADE) · `due_diligence_reports.generated_by → users.id` (CASCADE) · `due_diligence_reports.risk_assessment_id → risk_assessments.id` · `report_sections.report_id → due_diligence_reports.id` (CASCADE) · `risk_assessments.property_id → properties.id` (CASCADE) · `risk_factors.assessment_id → risk_assessments.id` (CASCADE) · `audit_logs.user_id → users.id` · `comparable_analyses.property_id → properties.id` · `comparable_properties.analysis_id → comparable_analyses.id`, `comp_property_id → properties.id` · `notifications.user_id → users.id` (CASCADE) · `notification_preferences.user_id → users.id` (1:1) · `portfolio_snapshots.user_id → users.id` (nullable) · `property_due_diligence_snapshots.property_id → properties.id` · `property_labels.property_id → properties.id` · `property_valuations.property_id → properties.id` · `saved_comparisons.user_id → users.id` (CASCADE) · `report_history.property_id → properties.id`, `user_id → users.id`.
 
-### 4.3 Enums (`enums/` package)
+### 5.3 Enums (`enums/` package)
 
 | Enum | Values / data |
 |---|---|
@@ -400,7 +468,7 @@ Relationships: `@OneToMany(mappedBy="generatedBy", cascade=ALL, orphanRemoval=tr
 | `ValuationMethod` | COMPARABLE, COST, INCOME |
 | `IntegrationStatus` | LIVE, CACHED, MOCK, NO_DATA, UNAVAILABLE, TIMEOUT, ERROR |
 
-### 4.4 Scheduled maintenance
+### 5.4 Scheduled maintenance
 
 - `scheduled/PendingRegistrationCleanupJob` — deletes pending registrations older than 24 h.
 - `scheduled/PropertyLabelAutoUpdateJob` — hourly cron (`0 0 * * * *`) auto-label recalculation.
@@ -408,11 +476,11 @@ Relationships: `@OneToMany(mappedBy="generatedBy", cascade=ALL, orphanRemoval=tr
 
 ---
 
-## 5. API Endpoints
+## 6. API Endpoints
 
 > All endpoints are under the Next.js proxy (`/api/*` → backend). Auth = `Authorization: Bearer <jwt>` unless noted. Errors are uniform JSON (`GlobalExceptionHandler`): 400 validation/argument, 401 auth, 403 access denied, 404 not found, 429 rate-limited, 500 runtime. Auth requirements below are enforced by `SecurityConfig` matchers and/or `@PreAuthorize`.
 
-### 5.1 Auth — `AuthController` (`/api/auth`)
+### 6.1 Auth — `AuthController` (`/api/auth`)
 
 | Method | Path | Auth | Request | Response |
 |---|---|---|---|---|
@@ -431,7 +499,7 @@ Relationships: `@OneToMany(mappedBy="generatedBy", cascade=ALL, orphanRemoval=tr
 | POST | `/api/auth/change-password` | authenticated | `ChangePasswordRequest` | `ApiResponse` |
 | POST | `/api/auth/logout-all-devices` | authenticated | — | `ApiResponse` |
 
-### 5.2 Properties & property data
+### 6.2 Properties & property data
 
 **`PropertyController` (`/api/properties`)** — GETs authenticated; writes `hasAnyRole('BUYER','REAL_ESTATE_AGENT','ADMIN')`; admin endpoints `hasRole('ADMIN')`.
 
@@ -474,7 +542,7 @@ Relationships: `@OneToMany(mappedBy="generatedBy", cascade=ALL, orphanRemoval=tr
 | POST | `/api/labels/recalculate-all` | — | `Map` (propertiesProcessed) |
 | POST | `/api/labels/bulk` | `List<Long>` | `Map<Long, List<PropertyLabelDto>>` |
 
-**`ComparablePropertyController` (`/api/properties`)** — GETs authenticated; POSTs `hasAnyRole('BUYER','REAL_ESTATE_AGENT','ADMIN')`.
+**`ComparablePropertyController` (`/api/properties`)** — GETs authenticated; POSTs `@PreAuthorize("isAuthenticated()")` (all roles).
 
 | Method | Path | Request | Response |
 |---|---|---|---|
@@ -488,7 +556,7 @@ Relationships: `@OneToMany(mappedBy="generatedBy", cascade=ALL, orphanRemoval=tr
 | GET | `/api/properties/{id}/valuation/methods-breakdown` | — | `ValuationBreakdownDto` |
 | GET | `/api/properties/{id}/valuation/price-history` | — | `List<PropertyValuationResponse>` |
 
-### 5.3 Reports & export
+### 6.3 Reports & export
 
 **`ReportController` (`/api/reports`)** — authenticated (ownership enforced in service).
 
@@ -517,7 +585,7 @@ Relationships: `@OneToMany(mappedBy="generatedBy", cascade=ALL, orphanRemoval=tr
 | GET | `/api/export/history?page=&size=` | `Page<ExportResponse>` |
 | GET | `/api/export/{exportId}/download` | PDF bytes (410 gone, 403, 404) |
 
-### 5.4 Dashboard & admin
+### 6.4 Dashboard & admin
 
 **`DashboardController` (`/api/dashboard`)** — authenticated: `GET /stats` → `DashboardStatsResponse`; `GET /insights` → `PortfolioInsightsResponse`; `GET /activity?limit=` (1–30, default 10); `GET /trends` → `DashboardTrendsResponse`; `GET /history?days=` (1–365, default 30; admin gets platform aggregate); `GET /recommendations` → `List<RecommendationResponse>`.
 
@@ -536,11 +604,11 @@ Relationships: `@OneToMany(mappedBy="generatedBy", cascade=ALL, orphanRemoval=tr
 | PUT | `/api/admin/users/{userId}/unban` | — | `UserManagementDto` |
 | GET | `/api/admin/system/health` | — | `SystemHealthDto {dbStatus, apiStatus, uptimeSeconds}` |
 
-**`AuditLogController` (`/api/audit-logs`)** — authenticated (ADMIN for export/stats): `GET /api/audit-logs?page=&size=&action=&userId=&from=&to=`; `GET /{id}`; `GET /user/{userId}`; `GET /property/{propertyId}`; `GET /export?format=csv` (byte[]); `GET /stats`.
+**`AuditLogController` (`/api/audit-logs`)** — **ADMIN only** (class-level `@PreAuthorize("hasRole('ADMIN')")`): `GET /api/audit-logs?page=&size=&action=&userId=&from=&to=`; `GET /{id}`; `GET /user/{userId}`; `GET /property/{propertyId}`; `GET /export?format=csv` (byte[]); `GET /stats`.
 
 **`HealthCheckController` (`/api/health`)** — `GET /api/health/integrations` `@PreAuthorize("hasRole('ADMIN')")` → `List<IntegrationHealthStatus>` (WAQI, Nominatim, GoogleOAuth).
 
-### 5.5 Notifications & SSE
+### 6.5 Notifications & SSE
 
 **`NotificationController` (`/api/notifications`)** — authenticated (`send-bulk` ADMIN).
 
@@ -558,7 +626,7 @@ Relationships: `@OneToMany(mappedBy="generatedBy", cascade=ALL, orphanRemoval=tr
 
 **`SseController` (`/api/sse`)** — permitAll in matchers, manual SecurityContext check (401 if anonymous): `GET /api/sse/notifications` → `SseEmitter` (30-min timeout, initial `ping`, `Cache-Control: no-cache`, `X-Accel-Buffering: no`).
 
-### 5.6 Subscriptions — `SubscriptionController` (`/api/subscription`)
+### 6.6 Subscriptions — `SubscriptionController` (`/api/subscription`)
 
 | Method | Path | Auth | Notes |
 |---|---|---|---|
@@ -568,21 +636,21 @@ Relationships: `@OneToMany(mappedBy="generatedBy", cascade=ALL, orphanRemoval=tr
 | GET | `/api/subscription/verify-order?orderId=` | authenticated | PAID/PENDING (polled by checkout page) |
 | POST | `/api/subscription/cancel` | authenticated | status → CANCELLED |
 
-### 5.7 AI chat — `AgentChatController` (`/api/agent`) — authenticated (any role)
+### 6.7 AI chat — `AgentChatController` (`/api/agent`) — authenticated (any role)
 
 `POST /api/agent/chat/stream` (`text/event-stream`) — body `ChatRequest(Long propertyId, String question, List<MessageDto> history)` → `SseEmitter(300 s)`; each token Base64-encoded per event; errors streamed as `[Error: …]`.
 
-### 5.8 Comparisons & contact
+### 6.8 Comparisons & contact
 
-**`SavedComparisonController` (`/api/comparisons`)** — `hasAnyRole('BUYER','REAL_ESTATE_AGENT','ADMIN')`: `POST /` (`SavedComparisonRequest {name @NotBlank 3–100, notes ≤1000, propertyIds @NotEmpty 2–3}`) → 201; `GET /`; `GET /{id}`; `PATCH /{id}`; `DELETE /{id}` — all wrap `Map(success, message, data)`.
+**`SavedComparisonController` (`/api/comparisons`)** — `@PreAuthorize("isAuthenticated()")` (all roles): `POST /` (`SavedComparisonRequest {name @NotBlank 3–100, notes ≤1000, propertyIds @NotEmpty 2–3}`) → 201; `GET /`; `GET /{id}`; `PATCH /{id}`; `DELETE /{id}` — all wrap `Map(success, message, data)`.
 
 **`ContactController` (`/api/contact`)** — `POST /api/contact/submit` permitAll, `@Valid ContactSubmitRequest {name, email, company, topic, message ≤3000}` → persists `ContactMessage` + emails inbox & auto-reply.
 
-### 5.9 Key request-validation rules (Jakarta Bean Validation)
+### 6.9 Key request-validation rules (Jakarta Bean Validation)
 
 `LoginRequest` email @NotBlank @Email + password @NotBlank · `RegisterRequest`/`SendRegistrationOtpRequest` fullName @Size(3–100), password @Size(8–20), phoneNumber @Pattern(`^[6-9]\d{9}$`), role @NotNull · OTP fields @Pattern(`^\d{6}$`) · `CompleteGoogleSignupRequest` credential @NotBlank + phone pattern · `ChangePasswordRequest` newPassword @Size(8–20) @Pattern(`^(?=.*[A-Za-z])(?=.*\d).+$`) · `UpdateProfileRequest` all optional (fullName @Size(3–100), phone pattern, profilePicture ≤500) · `PropertyRequest` address @Size(6–255), city @Size(2–100), zip @Pattern(`^\d{5,6}$|^$`), area/marketValue @Positive · `GenerateReportRequest` propertyId @NotNull · `ContactSubmitRequest` message @Size(max 3000).
 
-### 5.10 Rate limits (Bucket4j, per IP, in-memory)
+### 6.10 Rate limits (Bucket4j, per IP, in-memory)
 
 | Endpoint | Limit |
 |---|---|
@@ -596,7 +664,7 @@ Exceed → 429 + `Retry-After` header + JSON message.
 
 ---
 
-## 6. Frontend Pages & Routes
+## 7. Frontend Pages & Routes
 
 > Next.js 16 App Router under `frontend/src/app/`. All pages are `"use client"` unless noted. Guards: `AuthGuard` wraps all of `/dashboard/*` (via `dashboard/layout.js`); `GuestGuard` on login/register; `AdminGuard` only on `/dashboard/system-health`. `/reports/*` and `/properties/*` rely on API 401 handling. **No middleware.ts** — AuthGuard replaced it (Next 16 Turbopack broke `proxy.ts` redirects).
 
@@ -662,7 +730,7 @@ Exceed → 429 + `Retry-After` header + JSON message.
 
 ---
 
-## 7. Security Measures
+## 8. Security Measures
 
 | Measure | Implementation |
 |---|---|
@@ -677,19 +745,23 @@ Exceed → 429 + `Retry-After` header + JSON message.
 | SQL injection | Spring Data JPA parameterized queries exclusively; admin search uses `@Param` bindings; native heatmap query has no user input |
 | XSS | React auto-escaping; markdown in chat via react-markdown; CSP header allows only self + `blob:` images/scripts + accounts.google.com + api.groq.com |
 | Security headers | `SecurityConfig`: frame DENY, nosniff, HSTS, `Referrer-Policy: strict-origin-when-cross-origin`, CSP; Vercel adds `X-Frame-Options`, `X-Content-Type-Options`, `Referrer-Policy`, `Permissions-Policy` |
-| Rate limiting | Bucket4j per-IP buckets (see §5.5), filter runs before Spring Security |
+| Rate limiting | Bucket4j per-IP buckets (see §6.10), filter runs before Spring Security |
 | Secrets | All secrets in `.env` files (gitignored), referenced as `${ENV_VAR}`; `ad56080` moved Cashfree + all secrets out of committed files; `.env.example` templates only |
 | Error hygiene | `GlobalExceptionHandler` never leaks stack traces to clients; uniform JSON error bodies |
-| Audit trail | Every sensitive action logged to `audit_logs` with IP + user-agent (`saveAuditLog`) |
+| Audit trail | Every sensitive action logged to `audit_logs` with IP + user-agent (`saveAuditLog`); **viewable by ADMIN only** (class-level `@PreAuthorize("hasRole('ADMIN')")` on `AuditLogController`) |
 | Webhook verification | Cashfree: HmacSHA256(raw body, webhook secret) vs `x-webhook-signature` header |
 | Admin seeding | `DataInitializer` seeds admin idempotently and repairs wrong roles back to ADMIN |
 | Privacy | Account deletion (GDPR/DPDP): type "DELETE" + password/email confirmation, cascade delete, farewell email; GA4 consent gate (opt-in analytics, anonymize_ip, cookie deletion on reject) |
+| RBAC — backend | `RoleUtils` shared helper (`isAdmin`, `isPaidProfessionalRole`, `canViewAllProperties`, `canAccessProperty`); `@PreAuthorize` on all sensitive controllers (admin/audit/health/test); service-layer owner-or-view-all checks on every property/report/risk/comparable/valuation/AI-summary read; report deletion blocked for LEGAL/FIN (403); plan limits bypassed for ADMIN + pro roles |
+| RBAC — frontend | `AuthGuard` blocks unauthenticated routes and redirects LEGAL/FIN away from `/dashboard/billing` + `/checkout` (with toast); `Sidebar` hides billing for pro roles and shows the admin platform menu (incl. Property Search); `Navbar` hides Upgrade/plan badge; `CommandPalette` filters add-property; Edit/Delete/Delete-Report buttons hidden per role. Note: no `middleware.ts` — `AuthGuard` is the route guard |
+| JWT fail-fast | Missing `JWT_SECRET` fails at startup instead of producing runtime 500s; 75-char secret in `backend/.env` |
+| Session invalidation | `token_valid_from` timestamp (logout-all-devices): tokens with `iat` before it are rejected as `SESSION_INVALIDATED` |
 
 ---
 
-## 8. Testing
+## 9. Testing
 
-### 8.1 Backend — 58 tests (JUnit 5 + Mockito + AssertJ + H2)
+### 9.1 Backend — 58 tests (JUnit 5 + Mockito + AssertJ + H2)
 
 Confirmed via surefire reports: **58 tests, 0 failures, 0 errors, 0 skipped** across 13 classes. (A 14th class `DueDiligenceAgentApplicationTests.contextLoads` exists in source but is not in the last run's reports.)
 
@@ -711,7 +783,7 @@ Confirmed via surefire reports: **58 tests, 0 failures, 0 errors, 0 skipped** ac
 
 **Infrastructure**: `@WebMvcTest` slices with `@MockitoBean` + a `@TestConfiguration` wiring the real `JwtAuthenticationFilter` + `RateLimitFilter`; `@Mock`/`@InjectMocks` unit tests with `mockStatic(TransactionSynchronizationManager)` to neutralize after-commit hooks. **Test config** (`src/test/resources/application-test.yml`): H2 in-memory (`MODE=PostgreSQL;DB_CLOSE_DELAY=-1`), `ddl-auto: create-drop`, mail disabled, deterministic 64-byte JWT secret, dummy integration keys. **JaCoCo 0.8.12** reports to `target/site/jacoco` (no `check` thresholds configured; README cites 33.8% line / 15.7% branch).
 
-### 8.2 Frontend — 33 tests (Vitest + Testing Library)
+### 9.2 Frontend — 33 tests (Vitest + Testing Library)
 
 | Group | File | Tests |
 |---|---|---|
@@ -728,9 +800,9 @@ Confirmed via surefire reports: **58 tests, 0 failures, 0 errors, 0 skipped** ac
 
 ---
 
-## 9. DevOps & Deployment
+## 10. DevOps & Deployment
 
-### 9.1 Docker (repo root)
+### 10.1 Docker (repo root)
 
 | File | Details |
 |---|---|
@@ -739,7 +811,7 @@ Confirmed via surefire reports: **58 tests, 0 failures, 0 errors, 0 skipped** ac
 | `docker-compose.yml` | 3 services on `dd-network`: `postgres` (16-alpine, volume `postgres_data`, `pg_isready` healthcheck), `backend` (depends on postgres healthy; `SPRING_PROFILES_ACTIVE=docker`), `frontend` (depends on backend healthy; `API_PROXY_URL=http://backend:8080`). Ports 5432/8080/3000. `restart: unless-stopped`. |
 | `.dockerignore` | excludes node_modules, target, .env*, .git, docs, logs, Dockerfiles |
 
-### 9.2 CI/CD — `.github/workflows/ci.yml`
+### 10.2 CI/CD — `.github/workflows/ci.yml`
 
 Single workflow `CI` on push/PR to `develop` + `main`, concurrency-cancelling:
 1. **backend-tests**: Java 17 Temurin (Maven cache) → `mvn test -Dspring.profiles.active=test -B` → uploads JaCoCo artifact (`backend/target/site/jacoco/`) with `if: always()`.
@@ -748,7 +820,7 @@ Single workflow `CI` on push/PR to `develop` + `main`, concurrency-cancelling:
 
 Deploys are handled by Vercel/Render auto-deploy on push.
 
-### 9.3 Deployment (free tier)
+### 10.3 Deployment (free tier)
 
 | Target | Config | Notes |
 |---|---|---|
@@ -756,7 +828,7 @@ Deploys are handled by Vercel/Render auto-deploy on push.
 | Vercel (frontend) | `frontend/vercel.json`: framework nextjs, region `bom1` (Mumbai), `NEXT_PUBLIC_API_URL=https://dd-backend.onrender.com`, `/api/:path*` rewrite, security headers on `/(.*)`. | The rewrite host is the `YOUR-BACKEND.onrender.com` placeholder — replace after first Render deploy. |
 | Alternative DB | Neon (Postgres) per `docs/DEPLOYMENT.md` — needs `?sslmode=require` in the JDBC URL | Render free DB expires after 30 days |
 
-### 9.4 Environment variables (names only)
+### 10.4 Environment variables (names only)
 
 | Variable | Purpose |
 |---|---|
@@ -780,7 +852,7 @@ Templates: `backend/.env.example`, `frontend/.env.example`, root `.env.docker.ex
 
 ---
 
-## 10. Project Structure
+## 11. Project Structure
 
 ```
 repo/
@@ -881,7 +953,7 @@ repo/
 │       └── resources/     application.properties, application-docker.properties,
 │                          db/migration/V10__add_subscriptions_table.sql, V11__fix_is_active.sql,
 │                          fonts/ (PDF fonts incl. Indic)
-│   └── src/test/java/com/realestate/duediligence/   (13 test classes — see §8.1)
+│   └── src/test/java/com/realestate/duediligence/   (13 test classes — see §9.1)
 │       └── resources/application-test.yml
 │
 ├── frontend/                        Next.js 16 App Router (React 19, Tailwind v4)
@@ -925,7 +997,7 @@ repo/
 │       │                   validators, animations, analyticsUtils, enumTranslations,
 │       │                   exportConstants, geoUtils, labelUtils, mockAreaAverage,
 │       │                   notificationUtils, reportUtils
-│       └── __tests__/      (8 test files — see §8.2)
+│       └── __tests__/      (8 test files — see §9.2)
 │
 ├── .github/workflows/ci.yml
 ├── Dockerfile.backend · Dockerfile.frontend · docker-compose.yml · .dockerignore
@@ -937,7 +1009,7 @@ repo/
 
 ---
 
-## 11. Design System
+## 12. Design System
 
 | Token group | Values |
 |---|---|
@@ -953,7 +1025,7 @@ repo/
 
 ---
 
-## 12. Third-Party Integrations
+## 13. Third-Party Integrations
 
 | Integration | Where | Details |
 |---|---|---|
@@ -969,7 +1041,7 @@ repo/
 
 ---
 
-## 13. Known Issues & Fixes Applied
+## 14. Known Issues & Fixes Applied
 
 | Issue | Fix | Commit |
 |---|---|---|
@@ -990,7 +1062,7 @@ repo/
 
 ---
 
-## 14. Future Scope
+## 15. Future Scope
 
 | Item | Rationale |
 |---|---|
@@ -1003,6 +1075,25 @@ repo/
 | Blockchain-based property verification | Tamper-proof title-chain registry |
 | Flyway migration tooling | Wire Flyway so V10/V11-style SQL actually runs in deployments |
 | Production-hardened URLs | Configurable Cashfree return/notify URLs, Vercel rewrite host, CORS domains |
+
+---
+
+## 16. Recent Changes / Changelog
+
+### Recent Improvements (Week 4)
+
+- **Full RBAC audit + fix** across 21 files (backend + frontend): shared `RoleUtils` helper, service-layer owner-or-view-all checks on every property-data read path, `@PreAuthorize` on audit/health/test controllers, comparables/saved-comparisons opened to all roles, UI visibility per role (billing/checkout/upgrade hidden for pro roles).
+- **Netflix/Stripe-style subscription cancel**: `status=CANCELLED` keeps paid access + unlimited reports until `expires_at`, then auto-downgrades to FREE; re-purchase extends +1 month from current expiry.
+- **Removed all fake feature claims** from pricing, checkout, and billing pages (no white-label/priority/team-seats/API/SLA claims) — replaced with only real, shipped features.
+- **Property delete with ON DELETE CASCADE** (`V12__cascade_property_deletes.sql`): snapshots, labels, valuations, comparable analyses/properties, report history all cascade.
+- **`is_active` null-safe** (`V11__fix_is_active.sql`): backfill + `NOT NULL DEFAULT true`; frontend uses `isActive !== false` everywhere.
+- **LEGAL_REVIEWER + FINANCIAL_INSTITUTION treated as read-only professionals**: view all properties, unlimited reports, no plan limits, no billing UI, no add/edit/delete, no report deletion.
+- **ADMIN sidebar restored Property Search link** (admin platform menu now includes it).
+- **Dead code removed**: Property Labels UI (admin section, FEATURED badge, `PropertyLabel*.jsx`, `usePropertyLabels`, `propertyLabelService`, `labelUtils`, `constants/labels.js`, i18n `labels` keys) — backend label endpoints left intact for DB safety.
+- **Backend endpoint role reviews**: comparables/valuation/risk/AI-summary now enforce ownership or view-all role (previously readable by any authenticated user via ID).
+- **Checkout guard for professional roles**: LEGAL/FIN visiting `/checkout` get toast "Your account has unlimited access — no subscription needed." and redirect to `/dashboard` before any API call.
+- **Usage counter + upgrade UI** on the report generation page: unlimited pill, "X of 3 free reports used", upgrade card at 0 remaining, 402 upgrade modal.
+- **Frontend API resilience**: 5xx-without-JSON-body (backend restarting) auto-retries once and shows "Server is restarting" instead of a fake "Internal Server Error" (commit `9759f08`).
 
 ---
 

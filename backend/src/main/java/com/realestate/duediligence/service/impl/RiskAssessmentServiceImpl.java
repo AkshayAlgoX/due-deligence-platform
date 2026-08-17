@@ -13,6 +13,8 @@ import org.slf4j.LoggerFactory;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.cache.annotation.Caching;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -23,11 +25,14 @@ import com.realestate.duediligence.dto.RiskHistoryDto;
 import com.realestate.duediligence.entity.Property;
 import com.realestate.duediligence.entity.RiskAssessment;
 import com.realestate.duediligence.entity.RiskFactor;
+import com.realestate.duediligence.entity.User;
 import com.realestate.duediligence.repository.PropertyRepository;
 import com.realestate.duediligence.repository.RiskAssessmentRepository;
 import com.realestate.duediligence.repository.RiskFactorRepository;
+import com.realestate.duediligence.repository.UserRepository;
 import com.realestate.duediligence.service.RiskAssessmentService;
 import com.realestate.duediligence.service.RiskScoringEngine;
+import com.realestate.duediligence.util.RoleUtils;
 
 import lombok.RequiredArgsConstructor;
 
@@ -48,6 +53,7 @@ public class RiskAssessmentServiceImpl
     private final RiskFactorRepository factorRepository;
 
     private final PropertyRepository propertyRepository;
+    private final UserRepository userRepository;
 
     // ────────────────────────────────────────────────────────────────
     // Get or compute
@@ -56,11 +62,8 @@ public class RiskAssessmentServiceImpl
     @Override
     @Transactional
     public RiskAssessmentResponse getOrCompute(Long propertyId) {
-
-        log.debug(
-                "getOrCompute: propertyId={}",
-                propertyId
-        );
+        log.debug("getOrCompute: propertyId={}", propertyId);
+        authorizeProperty(propertyId);
 
         return assessmentRepository
                 .findByPropertyIdAndIsLatestTrue(propertyId)
@@ -107,6 +110,8 @@ public class RiskAssessmentServiceImpl
         }
     )
     public RiskAssessmentResponse recalculate(Long propertyId) {
+        log.info("recalculate: force re-scoring property {}", propertyId);
+        authorizeProperty(propertyId);
 
         log.info(
                 "recalculate: force re-scoring property {}",
@@ -144,11 +149,8 @@ public class RiskAssessmentServiceImpl
         key = "#propertyId"
     )
     public RiskBreakdownDto getBreakdown(Long propertyId) {
-
-        log.debug(
-                "getBreakdown: propertyId={}",
-                propertyId
-        );
+        log.debug("getBreakdown: propertyId={}", propertyId);
+        authorizeProperty(propertyId);
 
         return assessmentRepository
                 .findByPropertyIdAndIsLatestTrue(propertyId)
@@ -186,6 +188,8 @@ public class RiskAssessmentServiceImpl
         key = "#propertyId"
     )
     public RiskHistoryDto getHistory(Long propertyId) {
+        log.debug("getHistory: propertyId={}", propertyId);
+        authorizeProperty(propertyId);
 
         log.debug(
                 "getHistory: propertyId={}",
@@ -317,19 +321,31 @@ public class RiskAssessmentServiceImpl
     // Internal computation
     // ────────────────────────────────────────────────────────────────
 
-    private RiskAssessmentResponse computeAndPersist(
-            Long propertyId) {
+    /** RBAC: owner or view-all roles (ADMIN / LEGAL_REVIEWER / FINANCIAL_INSTITUTION). */
+    private void authorizeProperty(Long propertyId) {
+        Property property = propertyRepository.findById(propertyId)
+                .orElseThrow(() -> new RuntimeException("Property not found: " + propertyId));
+        User currentUser = resolveCurrentUser();
+        if (!RoleUtils.canAccessProperty(currentUser, property)) {
+            throw new RuntimeException("Property not found: " + propertyId);
+        }
+    }
 
-        Property property =
-                propertyRepository
-                        .findById(propertyId)
-                        .orElseThrow(
-                                () ->
-                                        new RuntimeException(
-                                                "Property not found: "
-                                                        + propertyId
-                                        )
-                        );
+    private User resolveCurrentUser() {
+        try {
+            Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+            if (auth == null || !auth.isAuthenticated()) return null;
+            String email = auth.getName();
+            if (email == null || email.isBlank()) return null;
+            return userRepository.findByEmail(email).orElse(null);
+        } catch (Exception e) {
+            return null;
+        }
+    }
+
+    private RiskAssessmentResponse computeAndPersist(Long propertyId) {
+        Property property = propertyRepository.findById(propertyId)
+                .orElseThrow(() -> new RuntimeException("Property not found: " + propertyId));
 
         RiskScoringEngine.EngineResult result =
                 scoringEngine.compute(propertyId);

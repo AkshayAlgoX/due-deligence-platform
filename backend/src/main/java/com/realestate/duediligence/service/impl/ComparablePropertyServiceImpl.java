@@ -4,6 +4,8 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 import com.realestate.duediligence.dto.ComparableAnalysisResponse;
@@ -13,10 +15,13 @@ import com.realestate.duediligence.dto.PriceTrendDto;
 import com.realestate.duediligence.entity.ComparableAnalysis;
 import com.realestate.duediligence.entity.ComparableProperty;
 import com.realestate.duediligence.entity.Property;
+import com.realestate.duediligence.entity.User;
 import com.realestate.duediligence.enums.SimilarityLevel;
 import com.realestate.duediligence.repository.ComparableAnalysisRepository;
 import com.realestate.duediligence.repository.PropertyRepository;
+import com.realestate.duediligence.repository.UserRepository;
 import com.realestate.duediligence.service.ComparablePropertyService;
+import com.realestate.duediligence.util.RoleUtils;
 
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
@@ -42,6 +47,7 @@ public class ComparablePropertyServiceImpl implements ComparablePropertyService 
 
     private final ComparableAnalysisRepository comparableAnalysisRepository;
     private final PropertyRepository propertyRepository;
+    private final UserRepository userRepository;
 
     @Override
     public ComparableAnalysisResponse getComparables(Long propertyId, Double radiusKm, Integer limit) {
@@ -162,8 +168,27 @@ public class ComparablePropertyServiceImpl implements ComparablePropertyService 
     // ── Helpers ─────────────────────────────────────────────────────
 
     private Property getPropertyOrThrow(Long propertyId) {
-        return propertyRepository.findById(propertyId)
+        Property property = propertyRepository.findById(propertyId)
                 .orElseThrow(() -> new EntityNotFoundException("Property not found: " + propertyId));
+
+        // RBAC: owner or view-all roles (ADMIN / LEGAL_REVIEWER / FINANCIAL_INSTITUTION)
+        User currentUser = resolveCurrentUser();
+        if (!RoleUtils.canAccessProperty(currentUser, property)) {
+            throw new EntityNotFoundException("Property not found: " + propertyId);
+        }
+        return property;
+    }
+
+    private User resolveCurrentUser() {
+        try {
+            Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+            if (auth == null || !auth.isAuthenticated()) return null;
+            String email = auth.getName();
+            if (email == null || email.isBlank()) return null;
+            return userRepository.findByEmail(email).orElse(null);
+        } catch (Exception e) {
+            return null;
+        }
     }
 
     private ComparableAnalysis buildAnalysis(Property property, double radiusKm, int limit) {

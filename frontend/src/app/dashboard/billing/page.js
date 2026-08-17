@@ -22,7 +22,7 @@ import subscriptionService from "@/services/subscriptionService";
 const PLAN_META = {
   FREE: {
     label: "Free",
-    tagline: "3 reports/month · Basic exports",
+    tagline: "3 reports/month · PDF & Excel export",
     accent: "from-slate-500/20 to-slate-600/10",
     ring: "ring-slate-500/30",
     text: "text-slate-400",
@@ -30,7 +30,7 @@ const PLAN_META = {
   },
   PRO: {
     label: "Pro",
-    tagline: "Unlimited reports · White-label PDFs",
+    tagline: "Unlimited reports · Comparables · 11 languages",
     accent: "from-emerald-500/20 to-emerald-600/10",
     ring: "ring-emerald-500/40",
     text: "text-emerald-400",
@@ -38,7 +38,7 @@ const PLAN_META = {
   },
   BUSINESS: {
     label: "Business",
-    tagline: "Team seats · API access · Custom branding",
+    tagline: "Analytics dashboard · Audit trail · SSE updates",
     accent: "from-violet-500/20 to-violet-600/10",
     ring: "ring-violet-500/40",
     text: "text-violet-400",
@@ -46,7 +46,7 @@ const PLAN_META = {
   },
   ENTERPRISE: {
     label: "Enterprise",
-    tagline: "Custom SLA · Dedicated support",
+    tagline: "Custom deployment · Volume pricing · Priority support",
     accent: "from-amber-500/20 to-amber-600/10",
     ring: "ring-amber-500/40",
     text: "text-amber-400",
@@ -68,7 +68,6 @@ export default function BillingPage() {
     try {
       const data = await subscriptionService.getCurrent();
       if (!data.success) {
-        // Backend explicitly returned success=false — treat as FREE plan
         setSubscription({
           plan: "FREE",
           planLimit: 3,
@@ -82,7 +81,6 @@ export default function BillingPage() {
       }
     } catch (err) {
       console.warn("Billing fetch failed, defaulting to FREE:", err?.message);
-      // Fallback: assume FREE plan so the page always renders
       setSubscription({
         plan: "FREE",
         planLimit: 3,
@@ -150,8 +148,6 @@ export default function BillingPage() {
 
   const meta = PLAN_META[sub.plan] || PLAN_META.FREE;
   const isFree = sub.plan === "FREE";
-  // Unlimited = backend sentinel (-1) OR the raw Integer.MAX_VALUE
-  // sentinel (defensive — protects against older backend responses)
   const isUnlimited =
     sub.planLimit < 0 ||
     sub.reportsRemaining === -1 ||
@@ -175,7 +171,7 @@ export default function BillingPage() {
 
   return (
     <div className="max-w-[1400px] mx-auto px-6 py-8 space-y-8">
-      {/* ── Header ── */}
+      {/* Header */}
       <div className="flex items-start justify-between gap-4">
         <div className="flex items-start gap-4">
           <div className="h-11 w-11 rounded-xl bg-gradient-to-br from-emerald-500/10 to-teal-500/10 border border-emerald-500/20 flex items-center justify-center flex-shrink-0">
@@ -201,7 +197,7 @@ export default function BillingPage() {
         )}
       </div>
 
-      {/* ── Success banner ── */}
+      {/* Success banner */}
       {showSuccess && (
         <div className="rounded-2xl border border-emerald-500/30 bg-emerald-500/[0.04] px-5 py-4 flex items-center gap-3">
           <div className="h-9 w-9 rounded-full bg-emerald-500/15 flex items-center justify-center flex-shrink-0">
@@ -218,7 +214,7 @@ export default function BillingPage() {
         </div>
       )}
 
-      {/* ── Cancelled banner ── */}
+      {/* Cancelled banner */}
       {isCancelled && sub.expiresAt && (
         <div className="rounded-2xl border border-amber-500/30 bg-amber-500/[0.04] px-5 py-4 flex items-center gap-3">
           <div className="h-9 w-9 rounded-full bg-amber-500/15 flex items-center justify-center flex-shrink-0">
@@ -235,14 +231,14 @@ export default function BillingPage() {
                 month: "long",
                 year: "numeric",
               })}
-              .
+              . After that your account moves to Free.
             </p>
           </div>
         </div>
       )}
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-        {/* ── Current plan card ── */}
+        {/* Current plan card */}
         <div
           className={`lg:col-span-2 rounded-2xl border border-gray-200/70 dark:border-[#30363d] bg-gradient-to-br ${meta.accent} bg-white dark:bg-[#161b22] p-6 ring-1 ${meta.ring}`}
         >
@@ -291,9 +287,23 @@ export default function BillingPage() {
               </span>
             </div>
           )}
+
+          {sub.expiresAt && isCancelled && (
+            <div className="mt-6 pt-6 border-t border-gray-200/60 dark:border-[#30363d]/60 flex items-center gap-2 text-[13px] text-amber-500/80">
+              <Calendar className="h-4 w-4" />
+              Access ends on{" "}
+              <span className="text-amber-500 font-medium">
+                {new Date(sub.expiresAt).toLocaleDateString("en-IN", {
+                  day: "numeric",
+                  month: "long",
+                  year: "numeric",
+                })}
+              </span>
+            </div>
+          )}
         </div>
 
-        {/* ── Usage card ── */}
+        {/* Usage card */}
         <div className="rounded-2xl border border-gray-200/70 dark:border-[#30363d] bg-white dark:bg-[#161b22] p-6">
           <div className="flex items-center gap-2.5 mb-4">
             <div className="h-8 w-8 rounded-lg bg-emerald-500/10 flex items-center justify-center">
@@ -350,7 +360,7 @@ export default function BillingPage() {
         </div>
       </div>
 
-      {/* ── Features included ── */}
+      {/* Features included */}
       <div className="rounded-2xl border border-gray-200/70 dark:border-[#30363d] bg-white dark:bg-[#161b22] p-6">
         <h3 className="text-sm font-bold text-gray-900 dark:text-[#e6edf3] mb-4">
           What's included in {meta.label}
@@ -386,6 +396,21 @@ export default function BillingPage() {
             </div>
           </div>
         )}
+
+        {isCancelled && (
+          <div className="mt-6 pt-6 border-t border-gray-200 dark:border-[#30363d]">
+            <p className="text-[13px] text-gray-500 dark:text-[#7d8590] mb-3">
+              Want to continue after your access ends?
+            </p>
+            <Link
+              href="/checkout?plan=pro"
+              className="inline-flex h-10 items-center gap-2 rounded-xl bg-gradient-to-br from-emerald-500 to-emerald-600 px-4 text-sm font-bold text-white shadow-[0_8px_20px_rgba(34,197,94,0.3)] hover:scale-[1.02] transition"
+            >
+              <Zap className="h-4 w-4" />
+              Resubscribe · ₹499/mo
+            </Link>
+          </div>
+        )}
       </div>
 
       {/* Mobile cancel button */}
@@ -398,7 +423,7 @@ export default function BillingPage() {
         </button>
       )}
 
-      {/* ── Cancel confirmation modal ── */}
+      {/* Cancel confirmation modal */}
       {confirmCancel && (
         <div className="fixed inset-0 z-[60] flex items-center justify-center bg-black/50 p-4">
           <div className="w-full max-w-md rounded-2xl border border-gray-100 dark:border-[#30363d] bg-white dark:bg-[#161b22] p-6 shadow-2xl">
@@ -417,7 +442,7 @@ export default function BillingPage() {
               Cancel {meta.label} subscription?
             </h3>
             <p className="mt-2 text-sm text-gray-500 dark:text-[#7d8590] leading-relaxed">
-              You'll keep full access until{" "}
+              You'll keep full {meta.label} access until{" "}
               <span className="text-gray-900 dark:text-[#e6edf3] font-medium">
                 {sub.expiresAt
                   ? new Date(sub.expiresAt).toLocaleDateString("en-IN", {
@@ -427,7 +452,7 @@ export default function BillingPage() {
                     })
                   : "the end of your billing period"}
               </span>
-              . After that, your account will move to the Free plan.
+              . After that, your account moves to the Free plan (3 reports/month).
             </p>
             <div className="mt-6 flex gap-3">
               <button
@@ -444,7 +469,7 @@ export default function BillingPage() {
               >
                 {cancelling ? (
                   <>
-                    <Loader2 className="h-4 w-4 animate-spin" /> Cancelling…
+                    <Loader2 className="h-4 w-4 animate-spin" /> Cancelling...
                   </>
                 ) : (
                   "Confirm cancel"
@@ -462,38 +487,49 @@ function getFeaturesFor(plan) {
   switch (plan) {
     case "PRO":
       return [
-        "Unlimited property reports",
-        "All export formats (PDF, Excel, CSV)",
-        "Priority report generation (< 15s)",
-        "Priority email support (12h response)",
-        "Detailed risk factor explanations",
-        "White-label PDFs (no watermark)",
+        "Unlimited due diligence reports",
+        "Unlimited saved comparisons",
+        "Export history with re-download",
+        "Property comparison (up to 3)",
+        "Comparable properties + valuation",
+        "Risk assessment history & trends",
+        "Multi-language reports (11 languages)",
+        "AI property assistant (chat)",
+        "AI-generated report summary",
+        "PDF & Excel export",
       ];
     case "BUSINESS":
       return [
         "Everything in Pro",
-        "5 team seats included",
-        "REST API access (10,000 calls/mo)",
-        "Custom branding on all reports",
-        "Bulk property upload (CSV import)",
-        "Dedicated account manager",
+        "Advanced analytics dashboard",
+        "Property portfolio insights",
+        "Notification preferences (email + in-app)",
+        "Audit trail on all actions",
+        "Bulk PDF & Excel export",
+        "Real-time SSE updates",
+        "Extended report history",
       ];
     case "ENTERPRISE":
       return [
         "Everything in Business",
-        "Unlimited team seats",
-        "Custom SLA (up to 99.99% uptime)",
-        "Dedicated infrastructure",
-        "On-premise deployment option",
-        "24/7 phone support",
+        "Custom deployment options",
+        "Volume-based pricing",
+        "Dedicated onboarding support",
+        "Priority integration support",
+        "Custom risk category weights",
+        "Extended data retention",
+        "Direct engineering access",
       ];
     default:
       return [
-        "3 property reports per month",
-        "PDF export (with watermark)",
-        "Basic risk analysis",
-        "Community support",
-        "Email notifications",
+        "3 due diligence reports per month",
+        "All 6 risk categories analyzed",
+        "PDF & Excel export",
+        "AI property assistant (chat)",
+        "AI-generated report summary",
+        "1 saved property comparison",
+        "Fraud alert badges",
+        "Email support",
       ];
   }
 }

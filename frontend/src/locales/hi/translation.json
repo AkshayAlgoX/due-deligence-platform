@@ -467,37 +467,6 @@
     "tip": "सुझाव: दबाएँ",
     "tipCancel": "रद्द करने के लिए"
   },
-  "labels": {
-    "NEW": "नया",
-    "HOT": "हॉट",
-    "PRICE_DROP": "मूल्य में कमी",
-    "FEATURED": "फीचर्ड",
-    "VERIFIED": "सत्यापित",
-    "SOLD": "बिक चुका",
-    "UNDER_OFFER": "ऑफर पर",
-    "PREMIUM": "प्रीमियम",
-    "moreCount": "+{{count}} और",
-    "admin": {
-      "title": "प्रॉपर्टी लेबल",
-      "subtitle": "इस प्रॉपर्टी पर दिखने वाले लेबल प्रबंधित करें",
-      "current": "मौजूदा लेबल",
-      "empty": "अभी तक कोई लेबल नहीं",
-      "loading": "लेबल लोड हो रहे हैं...",
-      "addNew": "नया लेबल जोड़ें",
-      "selectType": "लेबल प्रकार",
-      "selectPlaceholder": "एक लेबल चुनें...",
-      "expiresInDays": "समाप्ति (दिनों में)",
-      "expiresPlaceholder": "उदाहरण: 30",
-      "optional": "वैकल्पिक",
-      "addButton": "लेबल जोड़ें",
-      "adding": "जोड़ा जा रहा है...",
-      "remove": "लेबल हटाएं",
-      "added": "लेबल सफलतापूर्वक जोड़ा गया",
-      "removed": "लेबल हटा दिया गया",
-      "addError": "लेबल जोड़ने में विफल",
-      "removeError": "लेबल हटाने में विफल"
-    }
-  },
   "passwordStrength": {
     "weak": "कमज़ोर",
     "fair": "ठीक-ठाक",
