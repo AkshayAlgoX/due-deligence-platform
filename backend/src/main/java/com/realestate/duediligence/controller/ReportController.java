@@ -80,8 +80,9 @@ public class ReportController {
             log.warn("Plan limit exceeded: {}", e.getMessage());
             return ResponseEntity.status(402).body(Map.of(
                     "success", false,
-                    "planLimitReached", true,
-                    "message", e.getMessage()));
+                    "error", "PLAN_LIMIT_EXCEEDED",
+                    "message", e.getMessage(),
+                    "upgradeUrl", "/checkout?plan=pro"));
         } catch (RuntimeException e) {
             log.warn("Report generation failed: {}", e.getMessage());
             return ResponseEntity.notFound().build();

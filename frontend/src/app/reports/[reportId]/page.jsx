@@ -8,6 +8,7 @@ import { toast } from "sonner";
 
 import reportService from "@/services/reportService";
 import { sortSections } from "@/utils/reportUtils";
+import { getUser } from "@/utils/helpers";
 
 import ReportViewerSkeleton from "@/components/reports/ReportViewerSkeleton";
 import ReportViewerHeader from "@/components/reports/ReportViewerHeader";
@@ -108,6 +109,11 @@ export default function ReportViewerPage() {
   const { reportId } = useParams();
   const router = useRouter();
   const { t } = useTranslation();
+
+  const currentUser = getUser();
+  const isProRole =
+    currentUser?.role === "LEGAL_REVIEWER" ||
+    currentUser?.role === "FINANCIAL_INSTITUTION";
 
   const [report, setReport] = useState(null);
   const [loading, setLoading] = useState(true);
@@ -248,7 +254,9 @@ export default function ReportViewerPage() {
         <ReportViewerHeader
           report={report}
           onRegenerate={() => setRegenerateOpen(true)}
-          onDelete={() => setDeleteOpen(true)}
+          onDelete={
+            isProRole ? undefined : () => setDeleteOpen(true)
+          }
           onVersionHistory={() => setHistoryOpen(true)}
           isRegenerating={isRegenerating}
         />

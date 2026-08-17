@@ -45,7 +45,12 @@ export default function Navbar({ toggleSidebar }) {
   // no Upgrade button or plan badge for them (big-website pattern).
   useEffect(() => {
     const currentUser = getUser();
-    if (currentUser?.role === "ADMIN") return;
+    if (
+      ["ADMIN", "LEGAL_REVIEWER", "FINANCIAL_INSTITUTION"].includes(
+        currentUser?.role
+      )
+    )
+      return;
     let cancelled = false;
     subscriptionService
       .getCurrent()
@@ -119,6 +124,8 @@ export default function Navbar({ toggleSidebar }) {
     .toUpperCase();
 
   const isAdmin = user?.role === "ADMIN";
+  const isProRole =
+    user?.role === "LEGAL_REVIEWER" || user?.role === "FINANCIAL_INSTITUTION";
 
   return (
     <>
@@ -343,7 +350,7 @@ export default function Navbar({ toggleSidebar }) {
                   </button>
 
                   {/* ── PATH B: Billing in user dropdown (GitHub/Stripe pattern) ── */}
-                  {!isAdmin && (
+                  {!isAdmin && !isProRole && (
                     <button
                       type="button"
                       onClick={() => {
