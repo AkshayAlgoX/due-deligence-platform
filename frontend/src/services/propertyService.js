@@ -41,6 +41,19 @@ export async function updateProperty(id, data) {
   }
 }
 
+/**
+ * Delete a property permanently (owner or ADMIN only).
+ * Reports already generated for this property remain in history.
+ */
+export async function deleteProperty(id) {
+  try {
+    await api.delete(`/api/properties/${id}`);
+  } catch (err) {
+    const msg = err.response?.data?.message || err.message || "Failed to delete property";
+    throw new Error(msg);
+  }
+}
+
 /** Admin-only: re-verify all existing properties in the database. */
 export async function reverifyAllProperties() {
   try {

@@ -2,9 +2,10 @@
 
 import { useState, useEffect, useRef, useCallback } from "react";
 import Link from "next/link";
-import { useSearchParams } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import MarketingLayout from "@/components/landing/MarketingLayout";
 import { CheckCircle2, Loader2, LayoutDashboard, CreditCard, FileText, Mail, RefreshCw } from "lucide-react";
+import { toast } from "sonner";
 import subscriptionService from "@/services/subscriptionService";
 import { getUser } from "@/utils/helpers";
 import { celebrateOnce } from "@/lib/celebrate";
@@ -26,8 +27,22 @@ const PLAN_PRICES = {
 const MAX_ATTEMPTS = 8;   // 8 × 2s = 16s of polling before we show the "processing" state
 
 export default function CheckoutSuccessPage() {
+  const router = useRouter();
   const searchParams = useSearchParams();
   const orderId = searchParams.get("order_id");
+
+  // Professional roles have unlimited access — they should never land here
+  useEffect(() => {
+    const user = getUser();
+    if (
+      user?.role === "LEGAL_REVIEWER" ||
+      user?.role === "FINANCIAL_INSTITUTION"
+    ) {
+      toast.info("Your account has unlimited access — no subscription needed.");
+      router.replace("/dashboard");
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   const [phase, setPhase] = useState("verifying"); // verifying | paid | pending | notcompleted
   const [result, setResult] = useState(null);

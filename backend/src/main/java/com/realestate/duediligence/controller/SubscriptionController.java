@@ -27,6 +27,7 @@ import com.realestate.duediligence.repository.DueDiligenceReportRepository;
 import com.realestate.duediligence.repository.SubscriptionRepository;
 import com.realestate.duediligence.repository.UserRepository;
 import com.realestate.duediligence.service.CashfreeService;
+import com.realestate.duediligence.util.RoleUtils;
 import com.realestate.duediligence.service.EmailService;
 
 import jakarta.validation.Valid;
@@ -176,13 +177,32 @@ public class SubscriptionController {
             return ResponseEntity.status(401).body(errorMap("Not authenticated"));
         }
 
+        // Paid professional roles (LEGAL_REVIEWER / FINANCIAL_INSTITUTION)
+        // have unlimited reports and no consumer billing — report them as
+        // an unlimited "PRO" plan so the frontend never shows plan limits.
+        if (RoleUtils.isPaidProfessionalRole(user)) {
+            Map<String, Object> body = new HashMap<>();
+            body.put("success", true);
+            body.put("plan", "PRO");
+            body.put("planLimit", -1);
+            body.put("reportsThisMonth", 0);
+            body.put("reportsRemaining", -1);
+            body.put("expiresAt", null);
+            body.put("status", "ACTIVE");
+            body.put("cashfreeOrderId", null);
+            body.put("amount", 0);
+            body.put("currency", "INR");
+            return ResponseEntity.ok(body);
+        }
+
         try {
             Subscription sub = subscriptionRepository
                     .findFirstByUserIdOrderByCreatedAtDesc(user.getId())
                     .orElse(null);
 
+            // CANCELLED-but-not-expired keeps paid access (Netflix/Stripe pattern)
             boolean hasActivePaid = sub != null
-                    && "ACTIVE".equals(sub.getStatus())
+                    && ("ACTIVE".equals(sub.getStatus()) || "CANCELLED".equals(sub.getStatus()))
                     && sub.getExpiresAt() != null
                     && sub.getExpiresAt().isAfter(LocalDateTime.now())
                     && sub.getPlan() != SubscriptionPlan.FREE;

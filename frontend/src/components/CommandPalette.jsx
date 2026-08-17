@@ -27,6 +27,7 @@ import {
 
 import { searchProperties } from "@/services/propertyService";
 import { formatINR } from "@/utils/currency";
+import { getUser } from "@/utils/helpers";
 import {
   getRecentSearches,
   addRecentSearch,
@@ -63,10 +64,18 @@ export default function CommandPalette({ open, onClose, onAction }) {
   );
 
   const ACTIONS = useMemo(
-    () => [
-      { id: "action-add-property", label: t("commandPalette.actions.addProperty.label"), description: t("commandPalette.actions.addProperty.description"), icon: Plus,   kind: "add-property" },
-      { id: "action-logout",       label: t("commandPalette.actions.logout.label"),      description: t("commandPalette.actions.logout.description"),      icon: LogOut, kind: "logout", danger: true },
-    ],
+    () => {
+      const role = typeof window !== "undefined" ? getUser()?.role : null;
+      const isProRole =
+        role === "LEGAL_REVIEWER" || role === "FINANCIAL_INSTITUTION";
+      const actions = [
+        { id: "action-add-property", label: t("commandPalette.actions.addProperty.label"), description: t("commandPalette.actions.addProperty.description"), icon: Plus,   kind: "add-property" },
+        { id: "action-logout",       label: t("commandPalette.actions.logout.label"),      description: t("commandPalette.actions.logout.description"),      icon: LogOut, kind: "logout", danger: true },
+      ];
+      return isProRole
+        ? actions.filter((a) => a.kind !== "add-property")
+        : actions;
+    },
     [t]
   );
 

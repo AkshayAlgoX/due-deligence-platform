@@ -5,13 +5,18 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.realestate.duediligence.dto.AiSummaryResponse;
 import com.realestate.duediligence.entity.DueDiligenceReport;
 import com.realestate.duediligence.entity.ReportSection;
+import com.realestate.duediligence.entity.User;
 import com.realestate.duediligence.enums.ReportStatus;
 import com.realestate.duediligence.repository.DueDiligenceReportRepository;
+import com.realestate.duediligence.repository.UserRepository;
 import com.realestate.duediligence.service.ReportSummaryService;
+import com.realestate.duediligence.util.RoleUtils;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.reactive.function.client.WebClient;
@@ -33,6 +38,7 @@ public class ReportSummaryServiceImpl implements ReportSummaryService {
 
     private final DueDiligenceReportRepository reportRepository;
     private final ObjectMapper objectMapper;
+    private final UserRepository userRepository;
 
     private static final String GROQ_URL = "https://api.groq.com/openai/v1/chat/completions";
     private static final String MODEL = "llama-3.3-70b-versatile";
@@ -44,6 +50,8 @@ public class ReportSummaryServiceImpl implements ReportSummaryService {
         DueDiligenceReport report = reportRepository.findById(reportId)
                 .orElseThrow(() -> new ResponseStatusException(
                         HttpStatus.NOT_FOUND, "Report not found: " + reportId));
+
+        authorizeReportAccess(report);
 
         if (report.getStatus() != ReportStatus.COMPLETED) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST,
@@ -68,6 +76,8 @@ public class ReportSummaryServiceImpl implements ReportSummaryService {
                 .orElseThrow(() -> new ResponseStatusException(
                         HttpStatus.NOT_FOUND, "Report not found: " + reportId));
 
+        authorizeReportAccess(report);
+
         if (report.getStatus() != ReportStatus.COMPLETED) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST,
                     "Report must be COMPLETED to regenerate AI summary");
@@ -86,6 +96,31 @@ public class ReportSummaryServiceImpl implements ReportSummaryService {
 
         log.info("[ReportSummary] User {} regenerating summary for report {}", userEmail, reportId);
         return generateAndCache(report, userEmail);
+    }
+
+    /** RBAC: report owner or view-all roles (ADMIN / LEGAL_REVIEWER / FINANCIAL_INSTITUTION). */
+    private void authorizeReportAccess(DueDiligenceReport report) {
+        User currentUser = resolveCurrentUser();
+        if (RoleUtils.canViewAllProperties(currentUser)) {
+            return;
+        }
+        if (currentUser == null || report.getGeneratedBy() == null
+                || !report.getGeneratedBy().getId().equals(currentUser.getId())) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND,
+                    "Report not found: " + report.getId());
+        }
+    }
+
+    private User resolveCurrentUser() {
+        try {
+            Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+            if (auth == null || !auth.isAuthenticated()) return null;
+            String email = auth.getName();
+            if (email == null || email.isBlank()) return null;
+            return userRepository.findByEmail(email).orElse(null);
+        } catch (Exception e) {
+            return null;
+        }
     }
 
     private AiSummaryResponse generateAndCache(DueDiligenceReport report, String userEmail) {
