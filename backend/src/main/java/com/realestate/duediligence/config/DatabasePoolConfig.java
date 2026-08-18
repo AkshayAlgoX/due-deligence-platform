@@ -1,11 +1,11 @@
-﻿package com.realestate.duediligence.config;
-
-import com.zaxxer.hikari.HikariDataSource;
+package com.realestate.duediligence.config;
 
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.boot.jdbc.autoconfigure.DataSourceProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+
+import com.zaxxer.hikari.HikariDataSource;
 
 @Configuration(proxyBeanMethods = false)
 public class DatabasePoolConfig {
