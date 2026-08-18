@@ -79,6 +79,20 @@
             <scope>runtime</scope>
         </dependency>
 
+        <!-- Flyway (database migrations).
+             Spring Boot 4 moved Flyway auto-configuration out of spring-boot-autoconfigure
+             into a dedicated spring-boot-flyway module; spring-boot-starter-flyway pulls that
+             in (plus flyway-core). A raw flyway-core dependency alone no longer enables Flyway. -->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-flyway</artifactId>
+        </dependency>
+        <!-- Database-specific support is split out of flyway-core since Flyway 10 -->
+        <dependency>
+            <groupId>org.flywaydb</groupId>
+            <artifactId>flyway-database-postgresql</artifactId>
+        </dependency>
+
         <!-- Lombok -->
         <dependency>
             <groupId>org.projectlombok</groupId>
