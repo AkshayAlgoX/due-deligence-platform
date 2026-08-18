@@ -249,6 +249,7 @@
     "reports": "अहवाल",
     "notifications": "सूचना",
     "auditLogs": "ऑडिट नोंदी",
+    "reportHistory": "अहवाल इतिहास",
     "profile": "प्रोफाइल",
     "settings": "सेटिंग्ज",
     "support": "समर्थन",
@@ -2103,6 +2104,205 @@
       }
     }
   },
+
+  "audit": {
+  "title": "ऑडिट लॉग",
+  "description": "सिस्टम क्रियाकलाप, वापरकर्त्याच्या कृती आणि अहवालातील घटना ट्रॅक आणि तपासा.",
+  "search": "शोधा",
+  "detail": {
+    "title": "ऑडिट लॉग तपशील",
+    "logId": "लॉग आयडी #{{id}}",
+    "close": "बंद करा",
+    "loading": "ऑडिट लॉग तपशील लोड होत आहेत...",
+    "activity": "क्रियाकलाप",
+    "action": "कृती",
+    "createdAt": "तयार केल्याची वेळ",
+    "user": "वापरकर्ता",
+    "userId": "वापरकर्ता आयडी",
+    "entityType": "घटक प्रकार",
+    "entityId": "घटक आयडी",
+    "requestInformation": "विनंती माहिती",
+    "ipAddress": "आयपी पत्ता",
+    "userAgent": "यूजर एजंट",
+    "changes": "बदल",
+    "previousValue": "मागील मूल्य",
+    "newValue": "नवीन मूल्य / तपशील",
+    "unavailable": "ऑडिट लॉग तपशील उपलब्ध नाहीत."
+  },
+
+  "export": "निर्यात करा",
+  "loading": "ऑडिट लॉग लोड होत आहेत...",
+  "noResults": "कोणतेही ऑडिट लॉग सापडले नाहीत.",
+  "view": "पहा",
+
+  "filters": {
+    "title": "ऑडिट लॉग फिल्टर",
+    "description": "कृती, वापरकर्ता किंवा तारखेनुसार ऑडिट क्रियाकलाप फिल्टर करा.",
+    "clear": "फिल्टर साफ करा",
+    "action": "कृती",
+    "allActions": "सर्व कृती",
+    "userId": "वापरकर्ता ID",
+    "userIdPlaceholder": "वापरकर्ता ID प्रविष्ट करा",
+    "fromDate": "सुरुवातीची तारीख",
+    "toDate": "शेवटची तारीख"
+  },
+
+  "action": {
+    "LOGIN": "लॉगिन",
+    "LOGOUT": "लॉगआउट",
+    "PROPERTY_VIEW": "मालमत्ता पाहिली",
+    "PROPERTY_CREATED": "मालमत्ता तयार केली",
+    "PROPERTY_UPDATED": "मालमत्ता अपडेट केली",
+    "PROPERTY_DELETED": "मालमत्ता हटवली",
+    "REPORT_GENERATED": "अहवाल तयार केला",
+    "REPORT_DOWNLOADED": "अहवाल डाउनलोड केला",
+    "RISK_ASSESSED": "जोखमीचे मूल्यांकन केले",
+    "EXPORT_PDF": "PDF निर्यात",
+    "EXPORT_EXCEL": "EXCEL निर्यात",
+    "USER_REGISTERED": "वापरकर्ता नोंदणीकृत",
+    "PROFILE_UPDATED": "प्रोफाइल अपडेट केले",
+    "PASSWORD_CHANGED": "पासवर्ड बदलला"
+  },
+
+  "resource": {
+    "PROPERTY": "मालमत्ता",
+    "REPORT": "अहवाल",
+    "USER": "वापरकर्ता",
+    "PROFILE": "प्रोफाइल",
+    "RISK": "जोखीम",
+    "AUTHENTICATION": "प्रमाणीकरण",
+    "SYSTEM": "सिस्टम"
+  },
+
+  "columns": {
+    "user": "वापरकर्ता",
+    "action": "कृती",
+    "resource": "संसाधन",
+    "resourceId": "संसाधन ID",
+    "date": "तयार केले",
+    "ip": "IP पत्ता",
+    "details": "तपशील",
+    "view": "पहा"
+  },
+
+  "timeline": {
+    "title": "क्रियाकलाप टाइमलाइन",
+    "description": "अलीकडील सिस्टम आणि वापरकर्ता क्रियाकलाप.",
+    "performed": "केले",
+    "on": "वर",
+    "at": "येथे",
+    "by": "द्वारे",
+    "ipAddress": "IP पत्ता",
+    "noActivity": "अलीकडील कोणताही क्रियाकलाप सापडला नाही."
+  },
+
+  "activity": {
+    "title": "वापरकर्ता क्रियाकलाप",
+    "graph": {
+      "description": "मागील 7 दिवसांतील ऑडिट क्रियाकलाप.",
+      "loading": "क्रियाकलाप लोड होत आहे...",
+      "sevenDaysAgo": "7 दिवसांपूर्वी",
+      "today": "आज",
+      "activities": "क्रियाकलाप",
+      "activity": "क्रियाकलाप",
+      "days": {
+        "sun": "रवि",
+        "mon": "सोम",
+        "tue": "मंगळ",
+        "wed": "बुध",
+        "thu": "गुरु",
+        "fri": "शुक्र",
+        "sat": "शनि"
+      }
+    }
+  },
+
+  "stats": {
+    "totalLogs": "एकूण लॉग",
+    "loginEvents": "लॉगिन घटना",
+    "reportsGenerated": "तयार केलेले अहवाल",
+    "propertiesCreated": "तयार केलेल्या मालमत्ता"
+  },
+
+  "errors": {
+    "loadFailed": "ऑडिट लॉग लोड करण्यात अयशस्वी."
+  },
+
+  "exporting": "निर्यात होत आहे..."
+},
+
+"reportHistory": {
+  "title": "अहवाल इतिहास",
+  "description": "पूर्वी तयार केलेले ड्यू डिलिजन्स अहवाल पहा आणि व्यवस्थापित करा.",
+  "loading": "अहवाल इतिहास लोड होत आहे...",
+
+  "stats": {
+    "total": "एकूण",
+    "lowRisk": "कमी जोखीम",
+    "mediumRisk": "मध्यम जोखीम",
+    "highRisk": "उच्च जोखीम"
+  },
+
+  "showing": "{{count}} अहवाल दाखवले जात आहेत",
+  "empty": "कोणतेही अहवाल सापडले नाहीत",
+  "emptyDescription": "तुमचा शोध किंवा फिल्टर निकष बदलण्याचा प्रयत्न करा.",
+  "version": "आवृत्ती",
+  "download": "डाउनलोड",
+  "share": "शेअर",
+  "archive": "संग्रहित करा",
+  "delete": "हटवा",
+
+  "risk": {
+    "all": "सर्व जोखीम पातळी",
+    "LOW": "कमी",
+    "MEDIUM": "मध्यम",
+    "HIGH": "उच्च",
+    "CRITICAL": "गंभीर"
+  },
+
+  "filters": {
+    "search": "शोधा",
+    "searchPlaceholder": "अहवाल किंवा मालमत्ता शोधा...",
+    "riskLevel": "जोखीम पातळी",
+    "allRiskLevels": "सर्व जोखीम पातळी",
+    "low": "कमी",
+    "medium": "मध्यम",
+    "high": "उच्च",
+    "critical": "गंभीर",
+    "date": "तारीख",
+    "reset": "रीसेट"
+  },
+
+  "card": {
+    "defaultTitle": "मालमत्ता ड्यू डिलिजन्स अहवाल",
+    "property": "मालमत्ता",
+    "generated": "तयार केले",
+    "version": "आवृत्ती",
+    "viewReport": "अहवाल पहा",
+    "download": "डाउनलोड",
+    "share": "शेअर",
+    "archive": "संग्रहित करा",
+    "delete": "हटवा",
+    "untitled": "शीर्षक नसलेला अहवाल",
+    "risk": "जोखीम",
+    "sections": "विभाग",
+    "sections_one": "{{count}} विभाग",
+    "sections_other": "{{count}} विभाग",
+    "view": "पहा",
+    "openReport": "अहवाल उघडा",
+    "moreActions": "अधिक कृती",
+    "copyLink": "लिंक कॉपी करा",
+    "copyId": "अहवाल ID कॉपी करा",
+    "linkCopied": "लिंक क्लिपबोर्डवर कॉपी केली",
+    "idCopied": "अहवाल ID कॉपी केली",
+    "copyFailed": "कॉपी करण्यात अयशस्वी"
+  },
+
+  "errors": {
+    "loadFailed": "अहवाल इतिहास लोड करण्यात अयशस्वी. कृपया पुन्हा प्रयत्न करा."
+  }
+},
+
   "export": {
     "pdf": "पीडीएफ दस्तऐवज",
     "excel": "एक्सेल वर्कबुक",
