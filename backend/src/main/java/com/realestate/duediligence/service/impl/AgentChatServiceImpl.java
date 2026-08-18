@@ -1,28 +1,30 @@
 package com.realestate.duediligence.service.impl;
 
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.realestate.duediligence.service.AgentChatService;
-import com.realestate.duediligence.service.PropertyService;
-import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
+import java.nio.charset.StandardCharsets;
+import java.time.Duration;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatusCode;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
 import org.springframework.web.reactive.function.client.WebClientRequestException;
 import org.springframework.web.reactive.function.client.WebClientResponseException;
+
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.realestate.duediligence.service.AgentChatService;
+import com.realestate.duediligence.service.PropertyService;
+
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 import reactor.netty.http.client.HttpClient;
 import reactor.netty.resources.ConnectionProvider;
 import reactor.util.retry.Retry;
-
-import java.nio.charset.StandardCharsets;
-import java.time.Duration;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
 
 @Slf4j
 @Service
@@ -36,12 +38,11 @@ public class AgentChatServiceImpl implements AgentChatService {
     private final ObjectMapper objectMapper;
 
     private static final String GROQ_URL = "https://api.groq.com/openai/v1/chat/completions";
-    private static final String MODEL = "llama-3.3-70b-versatile";
+    private static final String MODEL = "openai/gpt-oss-120b";
 
     @Override
     public Flux<String> streamChat(Long propertyId, String question, List<MessageDto> history) {
 
-        // TASK 1: verify the key is actually loaded
         log.info("[AgentChat] Groq key present: {} (length={}, prefix={})",
                 groqApiKey != null && !groqApiKey.isBlank(),
                 groqApiKey == null ? 0 : groqApiKey.length(),
@@ -58,13 +59,11 @@ public class AgentChatServiceImpl implements AgentChatService {
         List<Map<String, String>> messages = new ArrayList<>();
         messages.add(Map.of("role", "system", "content", systemPrompt));
 
-        // Keep last 10 messages to stay within token limit
         List<MessageDto> trimmedHistory = history != null && history.size() > 10
                 ? history.subList(history.size() - 10, history.size())
                 : (history != null ? history : List.of());
 
         for (MessageDto msg : trimmedHistory) {
-            // Map.of rejects null values — guard against malformed history
             String content = msg.content() != null ? msg.content() : "";
             String role = msg.role() != null ? msg.role() : "user";
             messages.add(Map.of("role", role, "content", content));
@@ -80,10 +79,6 @@ public class AgentChatServiceImpl implements AgentChatService {
                 "temperature", 0.7
         );
 
-        // Fresh connection per request — a pooled keep-alive connection that
-        // Cloudflare has already closed gets reused otherwise and fails with
-        // "Connection reset" mid-stream. Chat requests are infrequent, so the
-        // cost of a new TLS handshake is irrelevant next to reliability.
         HttpClient httpClient = HttpClient.create(ConnectionProvider.newConnection())
                 .responseTimeout(Duration.ofSeconds(120));
 
@@ -96,7 +91,6 @@ public class AgentChatServiceImpl implements AgentChatService {
                 .header("Content-Type", "application/json")
                 .bodyValue(requestBody)
                 .retrieve()
-                // Log the HTTP status as soon as we get it
                 .onStatus(HttpStatusCode::isError, resp -> {
                     log.error("[AgentChat] Groq returned HTTP {} — response body follows",
                             resp.statusCode().value());
@@ -127,17 +121,13 @@ public class AgentChatServiceImpl implements AgentChatService {
                     }
                 })
                 .filter(text -> text != null && !text.isEmpty())
-                // Bounded wait so a hung upstream can never hold the SSE open silently
                 .timeout(Duration.ofSeconds(120))
-                // One quick retry on transient connection-level failures
-                // ("Connection reset" from firewalls/stale connections)
                 .retryWhen(Retry.backoff(1, Duration.ofMillis(400))
                         .filter(err -> err instanceof WebClientRequestException)
                         .doBeforeRetry(rs -> log.warn("[AgentChat] Retrying Groq call after connection error: {}",
                                 rs.failure().getMessage())))
                 .doOnError(err -> log.error("[AgentChat] WebClient stream error — FULL STACK:", err))
                 .onErrorResume(err -> {
-                    // TASK 2: expose the real exception instead of swallowing it
                     log.error("[AgentChat] onErrorResume — FULL STACK:", err);
                     String detail = err.getMessage() != null ? err.getMessage() : err.getClass().getSimpleName();
                     return Flux.just("\n\n[Error: Could not reach AI service. (" + detail + ")]");
