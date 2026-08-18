@@ -1,10 +1,21 @@
 // src/__tests__/components/risk/RiskSpectrum.test.jsx
 import { render, screen } from "@testing-library/react";
-import { describe, it, expect } from "vitest";
+import { describe, it, expect, beforeEach, afterEach, vi } from "vitest";
 
 import RiskSpectrum from "@/components/risk/RiskSpectrum";
 
 describe("RiskSpectrum", () => {
+  // Pin the clock so any date-derived output (relative times, dynamic labels)
+  // in the snapshot never goes stale when tests run on a different day.
+  beforeEach(() => {
+    vi.useFakeTimers();
+    vi.setSystemTime(new Date("2026-01-01T00:00:00Z"));
+  });
+
+  afterEach(() => {
+    vi.useRealTimers();
+  });
+
   it("renders the score level pill and scale labels", () => {
     // When
     render(<RiskSpectrum score={23} level="LOW" />);
