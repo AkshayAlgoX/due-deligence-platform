@@ -13,12 +13,15 @@ import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.context.SecurityContextHolder;
 
 import com.realestate.duediligence.dto.RiskAssessmentResponse;
 import com.realestate.duediligence.dto.RiskBreakdownDto;
@@ -26,11 +29,13 @@ import com.realestate.duediligence.dto.RiskHistoryDto;
 import com.realestate.duediligence.entity.Property;
 import com.realestate.duediligence.entity.RiskAssessment;
 import com.realestate.duediligence.entity.RiskFactor;
+import com.realestate.duediligence.entity.User;
 import com.realestate.duediligence.enums.RiskCategory;
 import com.realestate.duediligence.enums.RiskLevel;
 import com.realestate.duediligence.repository.PropertyRepository;
 import com.realestate.duediligence.repository.RiskAssessmentRepository;
 import com.realestate.duediligence.repository.RiskFactorRepository;
+import com.realestate.duediligence.repository.UserRepository;
 import com.realestate.duediligence.service.RiskScoringEngine;
 import com.realestate.duediligence.service.RiskScoringEngine.EngineResult;
 
@@ -45,17 +50,31 @@ class RiskAssessmentServiceImplTest {
     @Mock private RiskAssessmentRepository assessmentRepository;
     @Mock private RiskFactorRepository factorRepository;
     @Mock private PropertyRepository propertyRepository;
+    @Mock private UserRepository userRepository;
 
     @InjectMocks
     private RiskAssessmentServiceImpl service;
 
+    private User user;
     private Property property;
     private RiskAssessment assessment;
 
     @BeforeEach
     void setUp() {
+        // authorizeProperty() resolves the current user from the security context and
+        // passes only if they own the property (or hold a view-all role). Authenticate
+        // the owner so the score/compute/breakdown/history tests — which don't exercise
+        // auth — can get past the RBAC gate.
+        user = new User();
+        user.setId(5L);
+        user.setEmail("buyer@test.com");
+        SecurityContextHolder.getContext().setAuthentication(
+                new UsernamePasswordAuthenticationToken(user.getEmail(), null, List.of()));
+        lenient().when(userRepository.findByEmail(user.getEmail())).thenReturn(Optional.of(user));
+
         property = new Property();
         property.setId(1L);
+        property.setCreatedBy(user);
 
         lenient().when(propertyRepository.findById(1L)).thenReturn(Optional.of(property));
 
@@ -74,6 +93,11 @@ class RiskAssessmentServiceImplTest {
                 .build();
         assessment.setId(10L);
         assessment.setProperty(property);
+    }
+
+    @AfterEach
+    void tearDown() {
+        SecurityContextHolder.clearContext();
     }
 
     private RiskFactor factor(RiskCategory category, double score) {
@@ -137,9 +161,9 @@ class RiskAssessmentServiceImplTest {
 
     @Test
     void should_throw_whenPropertyMissingOnCompute() {
-        // Given — no cached assessment and no property
-        when(assessmentRepository.findByPropertyIdAndIsLatestTrue(1L))
-                .thenReturn(Optional.empty());
+        // Given — the property itself does not exist. authorizeProperty() throws
+        // at the property lookup, before the assessment lookup is ever reached, so
+        // only the property is stubbed (no stale assessment stub left over).
         when(propertyRepository.findById(1L)).thenReturn(Optional.empty());
 
         // When / Then

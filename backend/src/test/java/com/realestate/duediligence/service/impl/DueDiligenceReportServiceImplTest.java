@@ -73,6 +73,9 @@ class DueDiligenceReportServiceImplTest {
 
         property = new Property();
         property.setId(1L);
+        // generate() rejects properties the authenticated user doesn't own (RBAC),
+        // so mark the buyer as the owner to let should_generateReport_* pass the gate.
+        property.setCreatedBy(user);
     }
 
     @AfterEach
