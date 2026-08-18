@@ -80,12 +80,12 @@ export default function PropertyResultCard({
 
   if (!property) return null;
 
-  const {
-    address = t("property.card.unknownAddress"),
+   const {
+    address: rawAddress,
     city = "",
     state = "",
     zipCode = "",
-    propertyType = t("property.card.propertyFallback"),
+    propertyType: rawPropertyType,
     marketValue,
     area,
     bedrooms,
@@ -95,6 +95,9 @@ export default function PropertyResultCard({
     totalChecks = 7,
     imageUrl,
   } = property;
+
+  const address = rawAddress || t("property.card.unknownAddress");
+  const propertyType = rawPropertyType || t("property.card.propertyFallback");
 
   const thumbnail = getPropertyImage(property);
   const passedChecks = totalChecks - missingFields.length;
