@@ -249,6 +249,7 @@
     "reports": "ਰਿਪੋਰਟਾਂ",
     "notifications": "ਸੂਚਨਾਵਾਂ",
     "auditLogs": "ਆਡਿਟ ਲੌਗ",
+    "reportHistory": "ਰਿਪੋਰਟ ਇਤਿਹਾਸ",
     "profile": "ਪ੍ਰੋਫਾਈਲ",
     "settings": "ਸੈਟਿੰਗਜ਼",
     "support": "ਸਹਾਇਤਾ",
@@ -2103,6 +2104,205 @@
       }
     }
   },
+
+  "audit": {
+  "title": "ਆਡਿਟ ਲੌਗ",
+  "description": "ਸਿਸਟਮ ਗਤੀਵਿਧੀ, ਵਰਤੋਂਕਾਰ ਕਾਰਵਾਈਆਂ ਅਤੇ ਰਿਪੋਰਟ ਇਵੈਂਟਾਂ ਨੂੰ ਟਰੈਕ ਅਤੇ ਸਮੀਖਿਆ ਕਰੋ।",
+  "search": "ਖੋਜੋ",
+  "detail": {
+    "title": "ਆਡਿਟ ਲੌਗ ਵੇਰਵੇ",
+    "logId": "ਲੌਗ ਆਈਡੀ #{{id}}",
+    "close": "ਬੰਦ ਕਰੋ",
+    "loading": "ਆਡਿਟ ਲੌਗ ਵੇਰਵੇ ਲੋਡ ਹੋ ਰਹੇ ਹਨ...",
+    "activity": "ਗਤੀਵਿਧੀ",
+    "action": "ਕਾਰਵਾਈ",
+    "createdAt": "ਬਣਾਇਆ ਗਿਆ",
+    "user": "ਉਪਭੋਗਤਾ",
+    "userId": "ਉਪਭੋਗਤਾ ਆਈਡੀ",
+    "entityType": "ਇਕਾਈ ਦੀ ਕਿਸਮ",
+    "entityId": "ਇਕਾਈ ਆਈਡੀ",
+    "requestInformation": "ਬੇਨਤੀ ਜਾਣਕਾਰੀ",
+    "ipAddress": "ਆਈਪੀ ਪਤਾ",
+    "userAgent": "ਯੂਜ਼ਰ ਏਜੰਟ",
+    "changes": "ਤਬਦੀਲੀਆਂ",
+    "previousValue": "ਪਿਛਲਾ ਮੁੱਲ",
+    "newValue": "ਨਵਾਂ ਮੁੱਲ / ਵੇਰਵੇ",
+    "unavailable": "ਆਡਿਟ ਲੌਗ ਵੇਰਵੇ ਉਪਲਬਧ ਨਹੀਂ ਹਨ।"
+  },
+
+  "export": "ਨਿਰਯਾਤ",
+  "loading": "ਆਡਿਟ ਲੌਗ ਲੋਡ ਹੋ ਰਹੇ ਹਨ...",
+  "noResults": "ਕੋਈ ਆਡਿਟ ਲੌਗ ਨਹੀਂ ਮਿਲਿਆ।",
+  "view": "ਵੇਖੋ",
+
+  "filters": {
+    "title": "ਆਡਿਟ ਲੌਗ ਫਿਲਟਰ",
+    "description": "ਕਾਰਵਾਈ, ਵਰਤੋਂਕਾਰ ਜਾਂ ਮਿਤੀ ਦੇ ਅਨੁਸਾਰ ਆਡਿਟ ਗਤੀਵਿਧੀ ਫਿਲਟਰ ਕਰੋ।",
+    "clear": "ਫਿਲਟਰ ਸਾਫ਼ ਕਰੋ",
+    "action": "ਕਾਰਵਾਈ",
+    "allActions": "ਸਾਰੀਆਂ ਕਾਰਵਾਈਆਂ",
+    "userId": "ਵਰਤੋਂਕਾਰ ID",
+    "userIdPlaceholder": "ਵਰਤੋਂਕਾਰ ID ਦਰਜ ਕਰੋ",
+    "fromDate": "ਸ਼ੁਰੂਆਤੀ ਮਿਤੀ",
+    "toDate": "ਅੰਤਿਮ ਮਿਤੀ"
+  },
+
+  "action": {
+    "LOGIN": "ਲੌਗਇਨ",
+    "LOGOUT": "ਲੌਗਆਉਟ",
+    "PROPERTY_VIEW": "ਜਾਇਦਾਦ ਵੇਖੀ ਗਈ",
+    "PROPERTY_CREATED": "ਜਾਇਦਾਦ ਬਣਾਈ ਗਈ",
+    "PROPERTY_UPDATED": "ਜਾਇਦਾਦ ਅੱਪਡੇਟ ਕੀਤੀ ਗਈ",
+    "PROPERTY_DELETED": "ਜਾਇਦਾਦ ਮਿਟਾਈ ਗਈ",
+    "REPORT_GENERATED": "ਰਿਪੋਰਟ ਬਣਾਈ ਗਈ",
+    "REPORT_DOWNLOADED": "ਰਿਪੋਰਟ ਡਾਊਨਲੋਡ ਕੀਤੀ ਗਈ",
+    "RISK_ASSESSED": "ਜੋਖਮ ਦਾ ਮੁਲਾਂਕਣ ਕੀਤਾ ਗਿਆ",
+    "EXPORT_PDF": "PDF ਨਿਰਯਾਤ",
+    "EXPORT_EXCEL": "EXCEL ਨਿਰਯਾਤ",
+    "USER_REGISTERED": "ਵਰਤੋਂਕਾਰ ਰਜਿਸਟਰ ਕੀਤਾ ਗਿਆ",
+    "PROFILE_UPDATED": "ਪ੍ਰੋਫਾਈਲ ਅੱਪਡੇਟ ਕੀਤੀ ਗਈ",
+    "PASSWORD_CHANGED": "ਪਾਸਵਰਡ ਬਦਲਿਆ ਗਿਆ"
+  },
+
+  "resource": {
+    "PROPERTY": "ਜਾਇਦਾਦ",
+    "REPORT": "ਰਿਪੋਰਟ",
+    "USER": "ਵਰਤੋਂਕਾਰ",
+    "PROFILE": "ਪ੍ਰੋਫਾਈਲ",
+    "RISK": "ਜੋਖਮ",
+    "AUTHENTICATION": "ਪ੍ਰਮਾਣੀਕਰਨ",
+    "SYSTEM": "ਸਿਸਟਮ"
+  },
+
+  "columns": {
+    "user": "ਵਰਤੋਂਕਾਰ",
+    "action": "ਕਾਰਵਾਈ",
+    "resource": "ਸਰੋਤ",
+    "resourceId": "ਸਰੋਤ ID",
+    "date": "ਬਣਾਉਣ ਦੀ ਮਿਤੀ",
+    "ip": "IP ਪਤਾ",
+    "details": "ਵੇਰਵੇ",
+    "view": "ਵੇਖੋ"
+  },
+
+  "timeline": {
+    "title": "ਗਤੀਵਿਧੀ ਸਮਾਂਰੇਖਾ",
+    "description": "ਹਾਲੀਆ ਸਿਸਟਮ ਅਤੇ ਵਰਤੋਂਕਾਰ ਗਤੀਵਿਧੀ।",
+    "performed": "ਕੀਤਾ",
+    "on": "ਤੇ",
+    "at": "ਵਿਖੇ",
+    "by": "ਦੁਆਰਾ",
+    "ipAddress": "IP ਪਤਾ",
+    "noActivity": "ਕੋਈ ਹਾਲੀਆ ਗਤੀਵਿਧੀ ਨਹੀਂ ਮਿਲੀ।"
+  },
+
+  "activity": {
+    "title": "ਵਰਤੋਂਕਾਰ ਗਤੀਵਿਧੀ",
+    "graph": {
+      "description": "ਪਿਛਲੇ 7 ਦਿਨਾਂ ਦੀ ਆਡਿਟ ਗਤੀਵਿਧੀ।",
+      "loading": "ਗਤੀਵਿਧੀ ਲੋਡ ਹੋ ਰਹੀ ਹੈ...",
+      "sevenDaysAgo": "7 ਦਿਨ ਪਹਿਲਾਂ",
+      "today": "ਅੱਜ",
+      "activities": "ਗਤੀਵਿਧੀਆਂ",
+      "activity": "ਗਤੀਵਿਧੀ",
+      "days": {
+        "sun": "ਐਤ",
+        "mon": "ਸੋਮ",
+        "tue": "ਮੰਗਲ",
+        "wed": "ਬੁੱਧ",
+        "thu": "ਵੀਰ",
+        "fri": "ਸ਼ੁੱਕਰ",
+        "sat": "ਸ਼ਨੀ"
+      }
+    }
+  },
+
+  "stats": {
+    "totalLogs": "ਕੁੱਲ ਲੌਗ",
+    "loginEvents": "ਲੌਗਇਨ ਇਵੈਂਟ",
+    "reportsGenerated": "ਬਣਾਈਆਂ ਰਿਪੋਰਟਾਂ",
+    "propertiesCreated": "ਬਣਾਈਆਂ ਜਾਇਦਾਦਾਂ"
+  },
+
+  "errors": {
+    "loadFailed": "ਆਡਿਟ ਲੌਗ ਲੋਡ ਕਰਨ ਵਿੱਚ ਅਸਫਲ।"
+  },
+
+  "exporting": "ਨਿਰਯਾਤ ਹੋ ਰਿਹਾ ਹੈ..."
+},
+
+"reportHistory": {
+  "title": "ਰਿਪੋਰਟ ਇਤਿਹਾਸ",
+  "description": "ਪਹਿਲਾਂ ਬਣਾਈਆਂ ਗਈਆਂ ਡਿਊ ਡਿਲਿਜੈਂਸ ਰਿਪੋਰਟਾਂ ਵੇਖੋ ਅਤੇ ਪ੍ਰਬੰਧਿਤ ਕਰੋ।",
+  "loading": "ਰਿਪੋਰਟ ਇਤਿਹਾਸ ਲੋਡ ਹੋ ਰਿਹਾ ਹੈ...",
+
+  "stats": {
+    "total": "ਕੁੱਲ",
+    "lowRisk": "ਘੱਟ ਜੋਖਮ",
+    "mediumRisk": "ਦਰਮਿਆਨਾ ਜੋਖਮ",
+    "highRisk": "ਉੱਚ ਜੋਖਮ"
+  },
+
+  "showing": "{{count}} ਰਿਪੋਰਟਾਂ ਦਿਖਾਈਆਂ ਜਾ ਰਹੀਆਂ ਹਨ",
+  "empty": "ਕੋਈ ਰਿਪੋਰਟ ਨਹੀਂ ਮਿਲੀ",
+  "emptyDescription": "ਆਪਣੀ ਖੋਜ ਜਾਂ ਫਿਲਟਰ ਮਾਪਦੰਡ ਬਦਲਣ ਦੀ ਕੋਸ਼ਿਸ਼ ਕਰੋ।",
+  "version": "ਵਰਜਨ",
+  "download": "ਡਾਊਨਲੋਡ",
+  "share": "ਸਾਂਝਾ ਕਰੋ",
+  "archive": "ਆਰਕਾਈਵ",
+  "delete": "ਮਿਟਾਓ",
+
+  "risk": {
+    "all": "ਸਾਰੇ ਜੋਖਮ ਪੱਧਰ",
+    "LOW": "ਘੱਟ",
+    "MEDIUM": "ਦਰਮਿਆਨਾ",
+    "HIGH": "ਉੱਚ",
+    "CRITICAL": "ਗੰਭੀਰ"
+  },
+
+  "filters": {
+    "search": "ਖੋਜੋ",
+    "searchPlaceholder": "ਰਿਪੋਰਟਾਂ ਜਾਂ ਜਾਇਦਾਦਾਂ ਖੋਜੋ...",
+    "riskLevel": "ਜੋਖਮ ਪੱਧਰ",
+    "allRiskLevels": "ਸਾਰੇ ਜੋਖਮ ਪੱਧਰ",
+    "low": "ਘੱਟ",
+    "medium": "ਦਰਮਿਆਨਾ",
+    "high": "ਉੱਚ",
+    "critical": "ਗੰਭੀਰ",
+    "date": "ਮਿਤੀ",
+    "reset": "ਰੀਸੈਟ"
+  },
+
+  "card": {
+    "defaultTitle": "ਜਾਇਦਾਦ ਡਿਊ ਡਿਲਿਜੈਂਸ ਰਿਪੋਰਟ",
+    "property": "ਜਾਇਦਾਦ",
+    "generated": "ਬਣਾਈ ਗਈ",
+    "version": "ਵਰਜਨ",
+    "viewReport": "ਰਿਪੋਰਟ ਵੇਖੋ",
+    "download": "ਡਾਊਨਲੋਡ",
+    "share": "ਸਾਂਝਾ ਕਰੋ",
+    "archive": "ਆਰਕਾਈਵ",
+    "delete": "ਮਿਟਾਓ",
+    "untitled": "ਬਿਨਾਂ ਸਿਰਲੇਖ ਵਾਲੀ ਰਿਪੋਰਟ",
+    "risk": "ਜੋਖਮ",
+    "sections": "ਭਾਗ",
+    "sections_one": "{{count}} ਭਾਗ",
+    "sections_other": "{{count}} ਭਾਗ",
+    "view": "ਵੇਖੋ",
+    "openReport": "ਰਿਪੋਰਟ ਖੋਲ੍ਹੋ",
+    "moreActions": "ਹੋਰ ਕਾਰਵਾਈਆਂ",
+    "copyLink": "ਲਿੰਕ ਕਾਪੀ ਕਰੋ",
+    "copyId": "ਰਿਪੋਰਟ ID ਕਾਪੀ ਕਰੋ",
+    "linkCopied": "ਲਿੰਕ ਕਲਿੱਪਬੋਰਡ ਵਿੱਚ ਕਾਪੀ ਕੀਤਾ ਗਿਆ",
+    "idCopied": "ਰਿਪੋਰਟ ID ਕਾਪੀ ਕੀਤੀ ਗਈ",
+    "copyFailed": "ਕਾਪੀ ਕਰਨ ਵਿੱਚ ਅਸਫਲ"
+  },
+
+  "errors": {
+    "loadFailed": "ਰਿਪੋਰਟ ਇਤਿਹਾਸ ਲੋਡ ਕਰਨ ਵਿੱਚ ਅਸਫਲ। ਕਿਰਪਾ ਕਰਕੇ ਦੁਬਾਰਾ ਕੋਸ਼ਿਸ਼ ਕਰੋ।"
+  }
+},
+
   "export": {
     "pdf": "PDF ਦਸਤਾਵੇਜ਼",
     "excel": "Excel ਵਰਕਬੁੱਕ",
