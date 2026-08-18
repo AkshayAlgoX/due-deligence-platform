@@ -55,6 +55,19 @@ docker run -d \
 
 Hibernate `ddl-auto=update` will create all tables on first boot.
 
+**Schema migrations (Flyway).** The backend uses **Flyway** to apply incremental
+schema migrations automatically on startup. On first boot against an existing
+database that already has data (created before Flyway was wired up), it
+**baselines** at `V13` — migrations `V10`–`V13` are marked as already applied and
+are **not** re-run, so nothing breaks. New databases (or teammates with fresh DBs)
+simply run the backend and Flyway applies any pending `V*.sql` migrations for them.
+
+You'll see this in the backend logs on startup:
+```
+Flyway Community Edition ... loaded
+Successfully validated N migrations
+```
+
 ---
 
 ## 3. Backend setup
@@ -106,6 +119,10 @@ ADMIN_PASSWORD=Admin@12345
 On first run, Hibernate creates all tables and the `DataInitializer` seeds:
 - All 5 roles (`BUYER`, `REAL_ESTATE_AGENT`, `LEGAL_REVIEWER`, `FINANCIAL_INSTITUTION`, `ADMIN`)
 - The seeded admin user: `admin@duediligence.local` / `Admin@12345`
+
+**Flyway runs automatically** — no manual step. Existing databases are baselined at
+`V13` (already-applied migrations are skipped); fresh databases get pending
+migrations applied for you. There's nothing to run by hand.
 
 The backend starts on **http://localhost:8080**.
 

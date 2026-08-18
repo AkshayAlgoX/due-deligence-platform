@@ -3,6 +3,13 @@
 # Never used in production.
 
 spring:
+  # Tests build their schema via Hibernate create-drop; they never used Flyway.
+  # Keep Flyway off in tests so the V20 performance-index migration (which targets
+  # Postgres tables Hibernate hasn't created yet on a fresh in-memory DB) can't break
+  # context loading. Production/local runs still use Flyway (main application.properties).
+  flyway:
+    enabled: false
+
   datasource:
     url: jdbc:h2:mem:testdb;MODE=PostgreSQL;DB_CLOSE_DELAY=-1;DATABASE_TO_LOWER=TRUE
     driver-class-name: org.h2.Driver
