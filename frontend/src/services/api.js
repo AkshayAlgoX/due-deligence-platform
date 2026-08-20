@@ -1,17 +1,13 @@
-/**
- * Axios instance — ALWAYS hits EC2 via DuckDNS HTTPS.
- * Do NOT use relative /api paths (Vercel still routes those to dead Render).
- */
 import axios from "axios";
-import { toast } from "sonner";
 import { getToken, removeToken } from "@/utils/helpers";
 
-export const API_BASE =
-  process.env.NEXT_PUBLIC_API_URL || "https://duediligence-agent.duckdns.org";
+export const API_BASE = "https://duediligence-agent.duckdns.org";
 
 const api = axios.create({
   baseURL: API_BASE,
-  headers: { "Content-Type": "application/json" },
+  headers: {
+    "Content-Type": "application/json",
+  },
   timeout: 20000,
 });
 
@@ -22,7 +18,6 @@ const handleSessionExpired = () => {
   sessionExpiredHandled = true;
   try { removeToken(); } catch {}
   if (typeof window !== "undefined") {
-    try { toast.error("Session expired. Please sign in again."); } catch {}
     window.location.href = "/login";
   }
 };

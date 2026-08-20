@@ -100,7 +100,7 @@ function getSseUrl() {
   const baseUrl =
     process.env.NEXT_PUBLIC_API_URL ||
     process.env.NEXT_PUBLIC_BACKEND_URL ||
-    "http://localhost:8080";
+    "https://duediligence-agent.duckdns.org";
 
   const url = new URL(API_ROUTES.SSE_NOTIFICATIONS, baseUrl);
   url.searchParams.set("token", token);
