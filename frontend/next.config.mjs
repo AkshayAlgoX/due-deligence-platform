@@ -7,10 +7,6 @@ const nextConfig = {
         source: '/api/:path*',
         destination: 'https://duediligence-agent.duckdns.org/api/:path*',
       },
-      {
-        source: '/actuator/:path*',
-        destination: 'https://duediligence-agent.duckdns.org/actuator/:path*',
-      },
     ];
   },
 };
