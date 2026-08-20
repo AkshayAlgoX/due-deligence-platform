@@ -5,41 +5,26 @@ export const API_BASE = "https://duediligence-agent.duckdns.org";
 
 const api = axios.create({
   baseURL: API_BASE,
-  headers: {
-    "Content-Type": "application/json",
-  },
+  headers: { "Content-Type": "application/json" },
   timeout: 20000,
 });
 
-let sessionExpiredHandled = false;
-
-const handleSessionExpired = () => {
-  if (sessionExpiredHandled) return;
-  sessionExpiredHandled = true;
-  try { removeToken(); } catch {}
-  if (typeof window !== "undefined") {
-    window.location.href = "/login";
-  }
-};
-
 api.interceptors.request.use((config) => {
-  try {
-    const token = getToken?.();
-    if (token) config.headers.Authorization = `Bearer ${token}`;
-  } catch {}
+  const token = typeof getToken === "function" ? getToken() : null;
+  if (token) config.headers.Authorization = `Bearer ${token}`;
   return config;
 });
 
 api.interceptors.response.use(
-  (res) => res,
+  (r) => r,
   (error) => {
     const status = error?.response?.status;
-    const url = error?.config?.url || "";
-    const isAuthCall =
-      String(url).includes("/login") ||
-      String(url).includes("/register") ||
-      String(url).includes("/auth/");
-    if (status === 401 && !isAuthCall) handleSessionExpired();
+    const url = String(error?.config?.url || "");
+    const isAuth = /login|register|\/auth\//.test(url);
+    if (status === 401 && !isAuth && typeof window !== "undefined") {
+      try { removeToken(); } catch (_) {}
+      window.location.href = "/login";
+    }
     return Promise.reject(error);
   }
 );
