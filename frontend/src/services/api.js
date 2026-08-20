@@ -1,33 +1,50 @@
+/**
+ * Axios instance — ALWAYS hits EC2 via DuckDNS HTTPS.
+ * Do NOT use relative /api paths (Vercel still routes those to dead Render).
+ */
 import axios from "axios";
+import { toast } from "sonner";
 import { getToken, removeToken } from "@/utils/helpers";
 
-const API_BASE = "https://duediligence-agent.duckdns.org";
+export const API_BASE =
+  process.env.NEXT_PUBLIC_API_URL || "https://duediligence-agent.duckdns.org";
 
 const api = axios.create({
   baseURL: API_BASE,
-  headers: {
-    "Content-Type": "application/json",
-  },
-  timeout: 15000,
+  headers: { "Content-Type": "application/json" },
+  timeout: 20000,
 });
 
-api.interceptors.request.use((config) => {
-  const token = getToken();
-  if (token) {
-    config.headers.Authorization = `Bearer ${token}`;
+let sessionExpiredHandled = false;
+
+const handleSessionExpired = () => {
+  if (sessionExpiredHandled) return;
+  sessionExpiredHandled = true;
+  try { removeToken(); } catch {}
+  if (typeof window !== "undefined") {
+    try { toast.error("Session expired. Please sign in again."); } catch {}
+    window.location.href = "/login";
   }
+};
+
+api.interceptors.request.use((config) => {
+  try {
+    const token = getToken?.();
+    if (token) config.headers.Authorization = `Bearer ${token}`;
+  } catch {}
   return config;
 });
 
 api.interceptors.response.use(
-  (response) => response,
+  (res) => res,
   (error) => {
-    if (error.response?.status === 401) {
-      removeToken();
-      if (typeof window !== "undefined" && !window.location.pathname.includes("/login")) {
-        window.location.href = "/login";
-      }
-    }
+    const status = error?.response?.status;
+    const url = error?.config?.url || "";
+    const isAuthCall =
+      String(url).includes("/login") ||
+      String(url).includes("/register") ||
+      String(url).includes("/auth/");
+    if (status === 401 && !isAuthCall) handleSessionExpired();
     return Promise.reject(error);
   }
 );
