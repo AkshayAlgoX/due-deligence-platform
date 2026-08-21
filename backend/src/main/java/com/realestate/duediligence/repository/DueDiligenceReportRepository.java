@@ -18,16 +18,38 @@ import com.realestate.duediligence.enums.ReportStatus;
 public interface DueDiligenceReportRepository extends JpaRepository<DueDiligenceReport, Long> {
 
     /** Paginated reports for a specific user. */
-    Page<DueDiligenceReport> findByGeneratedByIdOrderByCreatedAtDesc(Long userId, Pageable pageable);
+    @Query(value = "SELECT r FROM DueDiligenceReport r " +
+       "JOIN FETCH r.property " +
+       "JOIN FETCH r.generatedBy " +
+       "WHERE r.generatedBy.id = :userId " +
+       "ORDER BY r.createdAt DESC",
+       countQuery = "SELECT COUNT(r) FROM DueDiligenceReport r " +
+                    "WHERE r.generatedBy.id = :userId")
+    Page<DueDiligenceReport> findByGeneratedByIdOrderByCreatedAtDesc(
+        @Param("userId") Long userId,
+        Pageable pageable);
 
     /** All reports for a specific property (version history). */
-    List<DueDiligenceReport> findByPropertyIdOrderByVersionDesc(Long propertyId);
+    @Query("SELECT r FROM DueDiligenceReport r " +
+       "JOIN FETCH r.property " +
+       "JOIN FETCH r.generatedBy " +
+       "WHERE r.property.id = :propertyId " +
+       "ORDER BY r.version DESC")
+    List<DueDiligenceReport> findByPropertyIdOrderByVersionDesc(
+        @Param("propertyId") Long propertyId);
 
     /** Latest report for a property. */
     Optional<DueDiligenceReport> findFirstByPropertyIdOrderByVersionDesc(Long propertyId);
 
     /** Public shared report lookup. */
     Optional<DueDiligenceReport> findByShareToken(String shareToken);
+
+    /** Fetch a report together with its property and generated-by user. */
+    @Query("SELECT r FROM DueDiligenceReport r " +
+       "JOIN FETCH r.property " +
+       "JOIN FETCH r.generatedBy " +
+       "WHERE r.id = :id")
+    Optional<DueDiligenceReport> findByIdWithDetails(@Param("id") Long id);
 
     /** All reports in a particular status (used by generator worker). */
     List<DueDiligenceReport> findByStatus(ReportStatus status);
@@ -43,6 +65,11 @@ public interface DueDiligenceReportRepository extends JpaRepository<DueDiligence
     long countByGeneratedByIdAndCreatedAtAfter(Long userId, LocalDateTime since);
 
     /** Admin: all reports paginated. */
+    @Query(value = "SELECT r FROM DueDiligenceReport r " +
+       "JOIN FETCH r.property " +
+       "JOIN FETCH r.generatedBy " +
+       "ORDER BY r.createdAt DESC",
+       countQuery = "SELECT COUNT(r) FROM DueDiligenceReport r")
     Page<DueDiligenceReport> findAllByOrderByCreatedAtDesc(Pageable pageable);
 
     // ── Admin analytics ──────────────────────────────────────────────────────

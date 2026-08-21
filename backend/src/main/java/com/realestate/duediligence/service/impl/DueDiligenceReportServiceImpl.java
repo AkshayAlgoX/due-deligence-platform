@@ -334,7 +334,7 @@ public class DueDiligenceReportServiceImpl implements DueDiligenceReportService 
     }
 
     private DueDiligenceReport findAndAuthorize(Long reportId) {
-        DueDiligenceReport report = reportRepository.findById(reportId)
+        DueDiligenceReport report = reportRepository.findByIdWithDetails(reportId)
                 .orElseThrow(() -> new RuntimeException("Report not found: " + reportId));
 
         User user = requireCurrentUser();
@@ -429,20 +429,34 @@ public class DueDiligenceReportServiceImpl implements DueDiligenceReportService 
     }
 
     private ReportSummaryDto toSummaryDto(DueDiligenceReport r) {
-        return ReportSummaryDto.builder()
-                .id(r.getId())
-                .propertyId(r.getProperty() != null ? r.getProperty().getId() : null)
-                .propertyAddress(r.getProperty() != null
-                        ? r.getProperty().getAddress() : null)
-                .title(r.getTitle())
-                .status(r.getStatus())
-                .version(r.getVersion())
-                .riskScoreSnapshot(r.getRiskScoreSnapshot())
-                .errorMessage(r.getErrorMessage())
-                .createdAt(toInstant(r.getCreatedAt()))
-                .completedAt(toInstant(r.getCompletedAt()))
-                .generatedByEmail(r.getGeneratedBy() != null
-                        ? r.getGeneratedBy().getEmail() : null)
-                .build();
+    String riskLevel = null;
+
+    if (r.getRiskAssessmentSnapshot() != null
+            && r.getRiskAssessmentSnapshot().getOverallLevel() != null) {
+        riskLevel = r.getRiskAssessmentSnapshot()
+                .getOverallLevel()
+                .name();
     }
-}
+
+    return ReportSummaryDto.builder()
+            .id(r.getId())
+            .propertyId(r.getProperty() != null
+                    ? r.getProperty().getId()
+                    : null)
+            .propertyAddress(r.getProperty() != null
+                    ? r.getProperty().getAddress()
+                    : null)
+            .title(r.getTitle())
+            .status(r.getStatus())
+            .version(r.getVersion())
+            .riskScoreSnapshot(r.getRiskScoreSnapshot())
+            .riskLevelSnapshot(riskLevel)
+            .errorMessage(r.getErrorMessage())
+            .createdAt(toInstant(r.getCreatedAt()))
+            .completedAt(toInstant(r.getCompletedAt()))
+            .generatedByEmail(r.getGeneratedBy() != null
+                    ? r.getGeneratedBy().getEmail()
+                    : null)
+            .build();
+       }
+ }

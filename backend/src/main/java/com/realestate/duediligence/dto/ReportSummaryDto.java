@@ -34,6 +34,9 @@ public class ReportSummaryDto {
     /** Snapshot of risk score at generation time (not live). */
     private Double riskScoreSnapshot;
 
+    /** Snapshot of risk level at generation time (not live). */
+    private String riskLevelSnapshot;
+
     /** Set when status=FAILED — surfaced in UI as inline error. */
     private String errorMessage;
 

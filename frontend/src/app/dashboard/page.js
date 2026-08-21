@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { lazy, Suspense, useEffect, useState } from "react";
 import Link from "next/link";
 import { useSearchParams, useRouter } from "next/navigation";
 import { useTranslation } from "react-i18next";
@@ -17,11 +17,7 @@ import {
 import { fadeInUp } from "@/utils/animations";
 
 import StatsCard from "@/components/dashboard/StatsCard";
-import RecentPropertiesTable from "@/components/dashboard/RecentPropertiesTable";
 import HeroStrip from "@/components/dashboard/HeroStrip";
-import PortfolioBreakdown from "@/components/dashboard/PortfolioBreakdown";
-import ActivityFeed from "@/components/dashboard/ActivityFeed";
-import AddPropertyModal from "@/components/property/AddPropertyModal";
 import { getUser } from "@/utils/helpers";
 import ErrorBoundary from "@/components/ErrorBoundary";
 import { StatsCardSkeleton } from "@/components/ui/Skeleton";
@@ -31,9 +27,35 @@ import {
   getDashboardTrends,
 } from "@/services/dashboardService";
 import { getCurrentUser } from "@/services/authService";
-import PortfolioTrendChart from "@/components/dashboard/PortfolioTrendChart";
-import RecommendationsPanel from "@/components/dashboard/RecommendationsPanel";
-import PortfolioMap from "@/components/dashboard/PortfolioMap";
+
+// Lazy-loaded dashboard components
+const RecentPropertiesTable = lazy(
+  () => import("@/components/dashboard/RecentPropertiesTable")
+);
+
+const PortfolioBreakdown = lazy(
+  () => import("@/components/dashboard/PortfolioBreakdown")
+);
+
+const ActivityFeed = lazy(
+  () => import("@/components/dashboard/ActivityFeed")
+);
+
+const PortfolioTrendChart = lazy(
+  () => import("@/components/dashboard/PortfolioTrendChart")
+);
+
+const RecommendationsPanel = lazy(
+  () => import("@/components/dashboard/RecommendationsPanel")
+);
+
+const PortfolioMap = lazy(
+  () => import("@/components/dashboard/PortfolioMap")
+);
+
+const AddPropertyModal = lazy(
+  () => import("@/components/property/AddPropertyModal")
+);
 
 export default function DashboardPage() {
   const { t } = useTranslation();
@@ -132,6 +154,10 @@ export default function DashboardPage() {
 
   const isEmpty = stats && stats.totalProperties === 0;
 
+  const componentFallback = (
+    <div className="h-64 w-full animate-pulse rounded-2xl bg-gray-100 dark:bg-[#161b22]" />
+  );
+
     // Guard: redirect admin to /dashboard/admin, show skeleton until role known
   if (!userRole || userRole === "ADMIN") {
     return (
@@ -220,27 +246,36 @@ export default function DashboardPage() {
       {/* ── Portfolio trend chart ──────────────────────────────────── */}
       {!isEmpty && (
         <ErrorBoundary>
-          <PortfolioTrendChart
-            key={`trend-${refreshKey}`}
-            refreshKey={refreshKey}
-          />
-        </ErrorBoundary>
+          <Suspense fallback={componentFallback}>
+            <PortfolioTrendChart
+              key={`trend-${refreshKey}`}
+              refreshKey={refreshKey}
+            />
+          </Suspense>
+         </ErrorBoundary>
       )}
 
       {/* ── Recommendations ────────────────────────────────────────── */}
       {!isEmpty && (
         <ErrorBoundary>
-          <RecommendationsPanel
-            key={`rec-${refreshKey}`}
-            refreshKey={refreshKey}
-          />
+          <Suspense fallback={componentFallback}>
+           <RecommendationsPanel
+             key={`rec-${refreshKey}`}
+             refreshKey={refreshKey}
+           />
+         </Suspense>
         </ErrorBoundary>
       )}
 
       {/* ── Portfolio map ──────────────────────────────────────────── */}
       {!isEmpty && (
         <ErrorBoundary>
-          <PortfolioMap key={`map-${refreshKey}`} refreshKey={refreshKey} />
+          <Suspense fallback={componentFallback}>
+           <PortfolioMap
+             key={`map-${refreshKey}`}
+             refreshKey={refreshKey}
+           />
+         </Suspense>
         </ErrorBoundary>
       )}
 
@@ -349,12 +384,16 @@ export default function DashboardPage() {
         <div className="grid grid-cols-1 gap-6 lg:grid-cols-5">
           <div className="lg:col-span-3">
             <ErrorBoundary>
-              <RecentPropertiesTable />
+              <Suspense fallback={componentFallback}>
+                <RecentPropertiesTable />
+              </Suspense>
             </ErrorBoundary>
           </div>
           <div className="lg:col-span-2">
             <ErrorBoundary>
-              <PortfolioBreakdown key={`chart-${refreshKey}`} />
+              <Suspense fallback={componentFallback}>
+                <PortfolioBreakdown key={`chart-${refreshKey}`} />
+              </Suspense>
             </ErrorBoundary>
           </div>
         </div>
@@ -363,7 +402,9 @@ export default function DashboardPage() {
       {/* ── Activity feed ──────────────────────────────────────────── */}
       {!loading && !isEmpty && (
         <ErrorBoundary>
-          <ActivityFeed key={`activity-${refreshKey}`} />
+          <Suspense fallback={componentFallback}>
+           <ActivityFeed key={`activity-${refreshKey}`} />
+          </Suspense>
         </ErrorBoundary>
       )}
 
@@ -372,11 +413,15 @@ export default function DashboardPage() {
         <EmptyState onAddClick={() => setModalOpen(true)} canAdd={canAddProperty} role={currentUser?.role} />
       )}
 
-      <AddPropertyModal
-        isOpen={modalOpen}
-        onClose={() => setModalOpen(false)}
-        onSuccess={handleAddSuccess}
-      />
+      <Suspense fallback={null}>
+        {modalOpen && (
+          <AddPropertyModal
+            isOpen={modalOpen}
+            onClose={() => setModalOpen(false)}
+            onSuccess={handleAddSuccess}
+         />
+        )}
+      </Suspense>
     </div>
   );
 }

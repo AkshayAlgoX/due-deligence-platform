@@ -7,6 +7,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
@@ -37,6 +38,10 @@ public class DashboardServiceImpl implements DashboardService {
     // ────────────────────────────────────────────────────────────────
 
     @Override
+    @Cacheable(
+       value = "dashboardStats",
+       key = "T(org.springframework.security.core.context.SecurityContextHolder).getContext().getAuthentication().getName()"
+    )
     public DashboardStatsResponse getStats() {
         User currentUser = resolveCurrentUser();
         boolean admin = canViewAll();
@@ -80,6 +85,10 @@ public class DashboardServiceImpl implements DashboardService {
     // ────────────────────────────────────────────────────────────────
 
     @Override
+    @Cacheable(
+       value = "portfolioInsights",
+       key = "T(org.springframework.security.core.context.SecurityContextHolder).getContext().getAuthentication().getName()"
+    )
     public PortfolioInsightsResponse getPortfolioInsights() {
         User currentUser = resolveCurrentUser();
         boolean admin = canViewAll();
@@ -156,6 +165,10 @@ public class DashboardServiceImpl implements DashboardService {
     // ────────────────────────────────────────────────────────────────
 
     @Override
+    @Cacheable(
+       value = "recentActivity",
+       key = "T(org.springframework.security.core.context.SecurityContextHolder).getContext().getAuthentication().getName() + '_' + #limit"
+    )
     public List<ActivityItemResponse> getRecentActivity(int limit) {
         User currentUser = resolveCurrentUser();
         List<Property> recent = (canViewAll() || currentUser == null)
@@ -214,6 +227,10 @@ public class DashboardServiceImpl implements DashboardService {
     // ────────────────────────────────────────────────────────────────
 
     @Override
+    @Cacheable(
+       value = "dashboardTrends",
+       key = "T(org.springframework.security.core.context.SecurityContextHolder).getContext().getAuthentication().getName()"
+    )
     public DashboardTrendsResponse getTrends() {
         User currentUser = resolveCurrentUser();
         boolean admin = canViewAll();
@@ -258,6 +275,10 @@ public class DashboardServiceImpl implements DashboardService {
     // ────────────────────────────────────────────────────────────────
 
     @Override
+    @Cacheable(
+       value = "dashboardRecommendations",
+       key = "T(org.springframework.security.core.context.SecurityContextHolder).getContext().getAuthentication().getName()"
+    )
     public List<RecommendationResponse> getRecommendations() {
 
         User currentUser = resolveCurrentUser();
@@ -467,5 +488,16 @@ public class DashboardServiceImpl implements DashboardService {
         String email = auth.getName();
         if (email == null || email.isBlank()) return null;
         return userRepository.findByEmail(email).orElse(null);
+    }
+
+    /**
+     * Returns a user-specific cache key.
+     * Prevents dashboard data from being shared between users.
+     */
+   public String getCurrentUserIdForCache() {
+      User user = resolveCurrentUser();
+      return user != null && user.getId() != null
+            ? user.getId().toString()
+            : "anonymous";
     }
 }

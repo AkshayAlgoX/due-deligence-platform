@@ -16,8 +16,12 @@ import com.realestate.duediligence.enums.RiskLevel;
 @Repository
 public interface RiskAssessmentRepository extends JpaRepository<RiskAssessment, Long> {
 
-    /** Get the currently active (latest) assessment for a property. */
-    Optional<RiskAssessment> findByPropertyIdAndIsLatestTrue(Long propertyId);
+    /** Get the currently active assessment with its property fetched in the same query. */
+    @Query("SELECT r FROM RiskAssessment r " +
+       "JOIN FETCH r.property " +
+       "WHERE r.property.id = :propertyId " +
+       "AND r.isLatest = true")
+    Optional<RiskAssessment> findByPropertyIdAndIsLatestTrue(@Param("propertyId") Long propertyId);
 
     /** Full assessment history for a property (newest first). */
     List<RiskAssessment> findByPropertyIdOrderByCalculatedAtDesc(Long propertyId);
