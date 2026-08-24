@@ -138,7 +138,7 @@ class PropertyServiceImplTest {
         authenticateAsBuyer();
         Property existing = ownedProperty(1L);
         when(userRepository.findByEmail("buyer@test.com")).thenReturn(Optional.of(user));
-        when(propertyRepository.findById(1L)).thenReturn(Optional.of(existing));
+        when(propertyRepository.findByIdWithCreatedBy(1L)).thenReturn(Optional.of(existing));
         when(propertyRepository.save(any(Property.class))).thenAnswer(inv -> inv.getArgument(0));
 
         // When
@@ -153,7 +153,7 @@ class PropertyServiceImplTest {
     void should_throw_whenUpdatingMissingProperty() {
         // Given — no property with that id (lookup happens before auth resolution)
         authenticateAsBuyer();
-        when(propertyRepository.findById(99L)).thenReturn(Optional.empty());
+        when(propertyRepository.findByIdWithCreatedBy(99L)).thenReturn(Optional.empty());
 
         // When / Then
         assertThatThrownBy(() ->
@@ -169,7 +169,7 @@ class PropertyServiceImplTest {
         // Given
         authenticateAsBuyer();
         when(userRepository.findByEmail("buyer@test.com")).thenReturn(Optional.of(user));
-        when(propertyRepository.findById(1L)).thenReturn(Optional.of(ownedProperty(1L)));
+        when(propertyRepository.findByIdWithCreatedBy(1L)).thenReturn(Optional.of(ownedProperty(1L)));
 
         // When
         PropertyResponse response = service.getPropertyById(1L);
@@ -186,7 +186,7 @@ class PropertyServiceImplTest {
         // Given — non-admin buyer with one property
         authenticateAsBuyer();
         when(userRepository.findByEmail("buyer@test.com")).thenReturn(Optional.of(user));
-        when(propertyRepository.findByCreatedById(5L)).thenReturn(List.of(ownedProperty(1L)));
+        when(propertyRepository.findByCreatedByIdWithCreatedBy(5L)).thenReturn(List.of(ownedProperty(1L)));
 
         // When
         List<PropertyResponse> result = service.getAllProperties();
@@ -194,7 +194,7 @@ class PropertyServiceImplTest {
         // Then — user-scoped repository used
         assertThat(result).hasSize(1);
         assertThat(result.get(0).getAddress()).isEqualTo("42 MG Road");
-        verify(propertyRepository).findByCreatedById(5L);
+        verify(propertyRepository).findByCreatedByIdWithCreatedBy(5L);
     }
 
     // ── searchProperties ────────────────────────────────────────────
@@ -223,7 +223,7 @@ class PropertyServiceImplTest {
         authenticateAsBuyer();
         Property existing = ownedProperty(1L);
         when(userRepository.findByEmail("buyer@test.com")).thenReturn(Optional.of(user));
-        when(propertyRepository.findById(1L)).thenReturn(Optional.of(existing));
+        when(propertyRepository.findByIdWithCreatedBy(1L)).thenReturn(Optional.of(existing));
 
         // When
         service.deleteProperty(1L);

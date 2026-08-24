@@ -166,7 +166,7 @@ class DueDiligenceReportServiceImplTest {
         // Given — an owned report
         authenticateAsBuyer();
         DueDiligenceReport report = ownedReport(5L, ReportStatus.PENDING);
-        when(reportRepository.findById(5L)).thenReturn(Optional.of(report));
+        when(reportRepository.findByIdWithDetails(5L)).thenReturn(Optional.of(report));
         when(userRepository.findByEmail("buyer@test.com")).thenReturn(Optional.of(user));
 
         // When
@@ -181,7 +181,7 @@ class DueDiligenceReportServiceImplTest {
         // Given — an owned report without sections
         authenticateAsBuyer();
         DueDiligenceReport report = ownedReport(5L, ReportStatus.COMPLETED);
-        when(reportRepository.findById(5L)).thenReturn(Optional.of(report));
+        when(reportRepository.findByIdWithDetails(5L)).thenReturn(Optional.of(report));
         when(userRepository.findByEmail("buyer@test.com")).thenReturn(Optional.of(user));
         when(sectionRepository.findByReportIdOrderByOrderIndexAsc(5L)).thenReturn(List.of());
 
@@ -219,7 +219,7 @@ class DueDiligenceReportServiceImplTest {
         // Given — an owned report
         authenticateAsBuyer();
         DueDiligenceReport report = ownedReport(5L, ReportStatus.COMPLETED);
-        when(reportRepository.findById(5L)).thenReturn(Optional.of(report));
+        when(reportRepository.findByIdWithDetails(5L)).thenReturn(Optional.of(report));
         when(userRepository.findByEmail("buyer@test.com")).thenReturn(Optional.of(user));
 
         // When
