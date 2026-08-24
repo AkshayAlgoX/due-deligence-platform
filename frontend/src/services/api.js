@@ -16,7 +16,12 @@ import axios from "axios";
 import { toast } from "sonner";
 import { getToken, removeToken } from "@/utils/helpers";
 
+// Direct backend base URL. Overridable per-environment via NEXT_PUBLIC_API_URL
+// (e.g. Vercel env or a local backend); defaults to the deployed backend.
+const API_URL = process.env.NEXT_PUBLIC_API_URL || "https://54-66-38-92.sslip.io";
+
 const api = axios.create({
+  baseURL: API_URL,
   headers: {
     "Content-Type": "application/json",
   },
