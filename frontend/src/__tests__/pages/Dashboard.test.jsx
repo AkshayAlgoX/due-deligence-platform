@@ -32,6 +32,12 @@ vi.mock("@/components/dashboard/PortfolioMap", () => ({
   default: () => <div data-testid="portfolio-map">Portfolio Map</div>,
 }));
 
+// AddPropertyModal is lazy-loaded via React.lazy + Suspense, so mock it
+vi.mock("@/components/property/AddPropertyModal", () => ({
+  __esModule: true,
+  default: ({ isOpen }) => (isOpen ? <div>property.addModal.title</div> : null),
+}));
+
 describe("Dashboard Page", () => {
   const mockStats = {
     totalProperties: 42,
@@ -74,6 +80,7 @@ describe("Dashboard Page", () => {
     const addBtn = screen.getByText("property.addProperty");
     fireEvent.click(addBtn);
 
-    expect(screen.getByText("property.addModal.title")).toBeInTheDocument();
+    // Lazy-loaded modal suspends on first render, so await its appearance
+    expect(await screen.findByText("property.addModal.title")).toBeInTheDocument();
   });
 });
