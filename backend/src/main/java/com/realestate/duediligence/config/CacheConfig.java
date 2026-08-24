@@ -23,6 +23,7 @@ public class CacheConfig {
                 "recentActivity",
                 "dashboardTrends",
                 "dashboardRecommendations",
+                "riskAssessment",
                 "riskAssessmentHistory",
                 "riskBreakdown",
                 "propertyAggregation"

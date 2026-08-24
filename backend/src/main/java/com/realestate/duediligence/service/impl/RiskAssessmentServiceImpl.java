@@ -10,6 +10,8 @@ import java.util.stream.Collectors;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
@@ -43,7 +45,8 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class RiskAssessmentServiceImpl implements RiskAssessmentService {
 
-    private static final Logger log = LoggerFactory.getLogger(RiskAssessmentServiceImpl.class);
+    private static final Logger log =
+            LoggerFactory.getLogger(RiskAssessmentServiceImpl.class);
 
     private final RiskScoringEngine scoringEngine;
     private final RiskAssessmentRepository assessmentRepository;
@@ -55,34 +58,78 @@ public class RiskAssessmentServiceImpl implements RiskAssessmentService {
 
     @Override
     @Transactional
+    @Cacheable(
+        value = "riskAssessment",
+        key = "#propertyId + '_' + T(org.springframework.security.core.context.SecurityContextHolder).getContext().getAuthentication().getName()"
+    )
     public RiskAssessmentResponse getOrCompute(Long propertyId) {
+
         log.debug("getOrCompute: propertyId={}", propertyId);
+
         authorizeProperty(propertyId);
 
         return assessmentRepository
                 .findByPropertyIdAndIsLatestTrue(propertyId)
                 .map(existing -> {
-                    log.debug("Returning existing assessment {} for property {}",
-                            existing.getId(), propertyId);
+
+                    log.debug(
+                            "Returning existing assessment {} for property {}",
+                            existing.getId(),
+                            propertyId
+                    );
+
                     return toSummaryResponse(existing, false);
                 })
                 .orElseGet(() -> {
-                    log.info("No existing assessment — computing for property {}", propertyId);
+
+                    log.info(
+                            "No existing assessment — computing for property {}",
+                            propertyId
+                    );
+
                     return computeAndPersist(propertyId);
                 });
     }
 
     // ── recalculate ───────────────────────────────────────────────
 
+    /**
+     * Force recalculates the risk assessment.
+     *
+     * Since a recalculation changes the underlying assessment data,
+     * all cached risk assessment/breakdown/history entries are cleared.
+     *
+     * allEntries=true is intentional here because the same property
+     * can be accessible to multiple authorized users, each having
+     * a user-specific cache key.
+     */
     @Override
     @Transactional
+    @CacheEvict(
+        value = {
+            "riskAssessment",
+            "riskAssessmentHistory",
+            "riskBreakdown"
+        },
+        allEntries = true
+    )
     public RiskAssessmentResponse recalculate(Long propertyId) {
-        log.info("recalculate: force re-scoring property {}", propertyId);
+
+        log.info(
+                "recalculate: force re-scoring property {}",
+                propertyId
+        );
+
         authorizeProperty(propertyId);
 
         if (assessmentRepository.existsByPropertyIdAndIsLatestTrue(propertyId)) {
+
             assessmentRepository.markPreviousAsNotLatest(propertyId);
-            log.debug("Marked previous assessment as not-latest for property {}", propertyId);
+
+            log.debug(
+                    "Marked previous assessment as not-latest for property {}",
+                    propertyId
+            );
         }
 
         return computeAndPersist(propertyId);
@@ -92,21 +139,40 @@ public class RiskAssessmentServiceImpl implements RiskAssessmentService {
 
     @Override
     @Transactional
+    @Cacheable(
+        value = "riskBreakdown",
+        key = "#propertyId + '_' + T(org.springframework.security.core.context.SecurityContextHolder).getContext().getAuthentication().getName()"
+    )
     public RiskBreakdownDto getBreakdown(Long propertyId) {
-        log.debug("getBreakdown: propertyId={}", propertyId);
+
+        log.debug(
+                "getBreakdown: propertyId={}",
+                propertyId
+        );
+
         authorizeProperty(propertyId);
 
         return assessmentRepository
                 .findByPropertyIdAndIsLatestTrue(propertyId)
                 .map(this::buildBreakdownFromEntity)
                 .orElseGet(() -> {
-                    log.info("No assessment for breakdown — computing for property {}", propertyId);
+
+                    log.info(
+                            "No assessment for breakdown — computing for property {}",
+                            propertyId
+                    );
+
                     computeAndPersist(propertyId);
+
                     return assessmentRepository
                             .findByPropertyIdAndIsLatestTrue(propertyId)
                             .map(this::buildBreakdownFromEntity)
-                            .orElseThrow(() -> new RuntimeException(
-                                    "Assessment not found after compute for property: " + propertyId));
+                            .orElseThrow(() ->
+                                    new RuntimeException(
+                                            "Assessment not found after compute for property: "
+                                                    + propertyId
+                                    )
+                            );
                 });
     }
 
@@ -114,14 +180,25 @@ public class RiskAssessmentServiceImpl implements RiskAssessmentService {
 
     @Override
     @Transactional(readOnly = true)
+    @Cacheable(
+        value = "riskAssessmentHistory",
+        key = "#propertyId + '_' + T(org.springframework.security.core.context.SecurityContextHolder).getContext().getAuthentication().getName()"
+    )
     public RiskHistoryDto getHistory(Long propertyId) {
-        log.debug("getHistory: propertyId={}", propertyId);
+
+        log.debug(
+                "getHistory: propertyId={}",
+                propertyId
+        );
+
         authorizeProperty(propertyId);
 
-        List<RiskAssessment> all = assessmentRepository
-                .findByPropertyIdOrderByCalculatedAtDesc(propertyId);
+        List<RiskAssessment> all =
+                assessmentRepository
+                        .findByPropertyIdOrderByCalculatedAtDesc(propertyId);
 
         if (all.isEmpty()) {
+
             return RiskHistoryDto.builder()
                     .propertyId(propertyId)
                     .history(List.of())
@@ -130,35 +207,57 @@ public class RiskAssessmentServiceImpl implements RiskAssessmentService {
         }
 
         // Chronological order (oldest first) for trend chart
-        List<RiskAssessment> chronological = all.stream()
-                .sorted(Comparator.comparing(RiskAssessment::getCalculatedAt))
-                .collect(Collectors.toList());
+        List<RiskAssessment> chronological =
+                all.stream()
+                        .sorted(
+                                Comparator.comparing(
+                                        RiskAssessment::getCalculatedAt
+                                )
+                        )
+                        .collect(Collectors.toList());
 
-        List<RiskHistoryDto.HistoryEntry> entries = chronological.stream()
-                .map(a -> RiskHistoryDto.HistoryEntry.builder()
-                        .assessmentId(a.getId())
-                        .overallScore(a.getOverallScore())
-                        .overallLevel(a.getOverallLevel())
-                        .floodScore(nvl(a.getFloodScore()))
-                        .legalScore(nvl(a.getLegalScore()))
-                        .taxScore(nvl(a.getTaxScore()))
-                        .zoningScore(nvl(a.getZoningScore()))
-                        .environmentalScore(nvl(a.getEnvironmentalScore()))
-                        .marketScore(nvl(a.getMarketScore()))
-                        .summary(a.getSummary())
-                        .dataIncomplete(false)
-                        .calculatedAt(toInstant(a.getCalculatedAt()))
-                        .isLatest(Boolean.TRUE.equals(a.getIsLatest()))
-                        .build())
-                .collect(Collectors.toList());
+        List<RiskHistoryDto.HistoryEntry> entries =
+                chronological.stream()
+                        .map(a ->
+                                RiskHistoryDto.HistoryEntry.builder()
+                                        .assessmentId(a.getId())
+                                        .overallScore(a.getOverallScore())
+                                        .overallLevel(a.getOverallLevel())
+                                        .floodScore(nvl(a.getFloodScore()))
+                                        .legalScore(nvl(a.getLegalScore()))
+                                        .taxScore(nvl(a.getTaxScore()))
+                                        .zoningScore(nvl(a.getZoningScore()))
+                                        .environmentalScore(
+                                                nvl(a.getEnvironmentalScore())
+                                        )
+                                        .marketScore(nvl(a.getMarketScore()))
+                                        .summary(a.getSummary())
+                                        .dataIncomplete(false)
+                                        .calculatedAt(
+                                                toInstant(
+                                                        a.getCalculatedAt()
+                                                )
+                                        )
+                                        .isLatest(
+                                                Boolean.TRUE.equals(
+                                                        a.getIsLatest()
+                                                )
+                                        )
+                                        .build()
+                        )
+                        .collect(Collectors.toList());
 
         // newest = first in DESC-sorted list
-        RiskAssessment latest   = all.get(0);
-        RiskAssessment oldest   = chronological.get(0);
+        RiskAssessment latest = all.get(0);
 
-        Double scoreDelta = all.size() > 1
-                ? latest.getOverallScore() - oldest.getOverallScore()
-                : null;
+        // oldest = first in chronological list
+        RiskAssessment oldest = chronological.get(0);
+
+        Double scoreDelta =
+                all.size() > 1
+                        ? latest.getOverallScore()
+                                - oldest.getOverallScore()
+                        : null;
 
         return RiskHistoryDto.builder()
                 .propertyId(propertyId)
@@ -175,96 +274,215 @@ public class RiskAssessmentServiceImpl implements RiskAssessmentService {
     // INTERNAL HELPERS
     // ══════════════════════════════════════════════════════════════
 
-    /** RBAC: owner or view-all roles (ADMIN / LEGAL_REVIEWER / FINANCIAL_INSTITUTION). */
+    /**
+     * RBAC:
+     * Owner or roles allowed to view all properties
+     * such as ADMIN / LEGAL_REVIEWER / FINANCIAL_INSTITUTION.
+     */
     private void authorizeProperty(Long propertyId) {
-        Property property = propertyRepository.findById(propertyId)
-                .orElseThrow(() -> new RuntimeException("Property not found: " + propertyId));
+
+        Property property =
+                propertyRepository.findById(propertyId)
+                        .orElseThrow(
+                                () -> new RuntimeException(
+                                        "Property not found: " + propertyId
+                                )
+                        );
+
         User currentUser = resolveCurrentUser();
+
         if (!RoleUtils.canAccessProperty(currentUser, property)) {
-            throw new RuntimeException("Property not found: " + propertyId);
+
+            throw new RuntimeException(
+                    "Property not found: " + propertyId
+            );
         }
     }
 
+    /**
+     * Resolve currently authenticated user.
+     */
     private User resolveCurrentUser() {
+
         try {
-            Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-            if (auth == null || !auth.isAuthenticated()) return null;
+
+            Authentication auth =
+                    SecurityContextHolder
+                            .getContext()
+                            .getAuthentication();
+
+            if (auth == null || !auth.isAuthenticated()) {
+                return null;
+            }
+
             String email = auth.getName();
-            if (email == null || email.isBlank()) return null;
-            return userRepository.findByEmail(email).orElse(null);
+
+            if (email == null || email.isBlank()) {
+                return null;
+            }
+
+            return userRepository
+                    .findByEmail(email)
+                    .orElse(null);
+
         } catch (Exception e) {
+
+            log.warn(
+                    "Unable to resolve current user",
+                    e
+            );
+
             return null;
         }
     }
 
+    /**
+     * Computes and persists a new risk assessment.
+     */
     private RiskAssessmentResponse computeAndPersist(Long propertyId) {
-        Property property = propertyRepository.findById(propertyId)
-                .orElseThrow(() -> new RuntimeException("Property not found: " + propertyId));
 
-        RiskScoringEngine.EngineResult result = scoringEngine.compute(propertyId);
+        Property property =
+                propertyRepository.findById(propertyId)
+                        .orElseThrow(
+                                () -> new RuntimeException(
+                                        "Property not found: " + propertyId
+                                )
+                        );
 
-        RiskAssessment assessment = result.assessment();
+        RiskScoringEngine.EngineResult result =
+                scoringEngine.compute(propertyId);
+
+        RiskAssessment assessment =
+                result.assessment();
+
         assessment.setProperty(property);
-        assessment.setCalculatedAt(LocalDateTime.now());
 
-        // Persist assessment first — factors need the FK
-        RiskAssessment saved = assessmentRepository.save(assessment);
-        log.info("Persisted risk assessment id={} for property {}",
-                saved.getId(), propertyId);
+        assessment.setCalculatedAt(
+                LocalDateTime.now()
+        );
 
-        // Wire and persist factors
-        List<RiskFactor> factors = result.factorEntities();
-        factors.forEach(f -> f.setRiskAssessment(saved));
+        // Persist assessment first because risk factors
+        // require the assessment foreign key.
+        RiskAssessment saved =
+                assessmentRepository.save(assessment);
+
+        log.info(
+                "Persisted risk assessment id={} for property {}",
+                saved.getId(),
+                propertyId
+        );
+
+        // Wire and persist risk factors.
+        List<RiskFactor> factors =
+                result.factorEntities();
+
+        factors.forEach(
+                factor -> factor.setRiskAssessment(saved)
+        );
+
         factorRepository.saveAll(factors);
-        log.debug("Persisted {} risk factors for assessment {}", factors.size(), saved.getId());
 
-        return toSummaryResponse(saved, true);
+        log.debug(
+                "Persisted {} risk factors for assessment {}",
+                factors.size(),
+                saved.getId()
+        );
+
+        return toSummaryResponse(
+                saved,
+                true
+        );
     }
 
     // ── DTO mappers ───────────────────────────────────────────────
 
-    private RiskAssessmentResponse toSummaryResponse(RiskAssessment a, boolean freshlyComputed) {
+    private RiskAssessmentResponse toSummaryResponse(
+            RiskAssessment a,
+            boolean freshlyComputed
+    ) {
+
         return RiskAssessmentResponse.builder()
                 .assessmentId(a.getId())
-                .propertyId(a.getProperty() != null ? a.getProperty().getId() : null)
+                .propertyId(
+                        a.getProperty() != null
+                                ? a.getProperty().getId()
+                                : null
+                )
                 .overallScore(a.getOverallScore())
                 .overallLevel(a.getOverallLevel())
                 .floodScore(nvl(a.getFloodScore()))
                 .legalScore(nvl(a.getLegalScore()))
                 .taxScore(nvl(a.getTaxScore()))
                 .zoningScore(nvl(a.getZoningScore()))
-                .environmentalScore(nvl(a.getEnvironmentalScore()))
+                .environmentalScore(
+                        nvl(a.getEnvironmentalScore())
+                )
                 .marketScore(nvl(a.getMarketScore()))
                 .summary(a.getSummary())
                 .freshlyComputed(freshlyComputed)
                 .dataIncomplete(false)
-                .calculatedAt(toInstant(a.getCalculatedAt()))
+                .calculatedAt(
+                        toInstant(
+                                a.getCalculatedAt()
+                        )
+                )
                 .version(0)
                 .build();
     }
 
-    private RiskBreakdownDto buildBreakdownFromEntity(RiskAssessment a) {
-        List<RiskFactor> factors = factorRepository.findByRiskAssessmentId(a.getId());
+    private RiskBreakdownDto buildBreakdownFromEntity(
+            RiskAssessment a
+    ) {
 
-        List<RiskFactorDto> factorDtos = factors.stream()
-                .map(f -> RiskFactorDto.builder()
-                        .category(f.getCategory())
-                        .score(f.getScore())
-                        .level(f.getLevel())
-                        .weight(f.getWeight() != null ? f.getWeight() : 0.0)
-                        .explanation(f.getExplanation())
-                        .recommendation(f.getRecommendation())
-                        .dataSource(f.getDataSource())
-                        .dataUncertain(false)
-                        .build())
-                .sorted(Comparator.comparingDouble(RiskFactorDto::getScore).reversed())
-                .collect(Collectors.toList());
+        List<RiskFactor> factors =
+                factorRepository.findByRiskAssessmentId(
+                        a.getId()
+                );
 
-        boolean dataIncomplete = factorDtos.stream()
-                .anyMatch(RiskFactorDto::isDataUncertain);
+        List<RiskFactorDto> factorDtos =
+                factors.stream()
+                        .map(
+                                f ->
+                                        RiskFactorDto.builder()
+                                                .category(f.getCategory())
+                                                .score(f.getScore())
+                                                .level(f.getLevel())
+                                                .weight(
+                                                        f.getWeight() != null
+                                                                ? f.getWeight()
+                                                                : 0.0
+                                                )
+                                                .explanation(
+                                                        f.getExplanation()
+                                                )
+                                                .recommendation(
+                                                        f.getRecommendation()
+                                                )
+                                                .dataSource(
+                                                        f.getDataSource()
+                                                )
+                                                .dataUncertain(false)
+                                                .build()
+                        )
+                        .sorted(
+                                Comparator.comparingDouble(
+                                        RiskFactorDto::getScore
+                                ).reversed()
+                        )
+                        .collect(Collectors.toList());
+
+        boolean dataIncomplete =
+                factorDtos.stream()
+                        .anyMatch(
+                                RiskFactorDto::isDataUncertain
+                        );
 
         return RiskBreakdownDto.builder()
-                .propertyId(a.getProperty() != null ? a.getProperty().getId() : null)
+                .propertyId(
+                        a.getProperty() != null
+                                ? a.getProperty().getId()
+                                : null
+                )
                 .assessmentId(a.getId())
                 .overallScore(a.getOverallScore())
                 .overallLevel(a.getOverallLevel())
@@ -272,12 +490,18 @@ public class RiskAssessmentServiceImpl implements RiskAssessmentService {
                 .legalScore(nvl(a.getLegalScore()))
                 .taxScore(nvl(a.getTaxScore()))
                 .zoningScore(nvl(a.getZoningScore()))
-                .environmentalScore(nvl(a.getEnvironmentalScore()))
+                .environmentalScore(
+                        nvl(a.getEnvironmentalScore())
+                )
                 .marketScore(nvl(a.getMarketScore()))
                 .factors(factorDtos)
                 .dataIncomplete(dataIncomplete)
                 .unavailableProviderCount(0)
-                .calculatedAt(toInstant(a.getCalculatedAt()))
+                .calculatedAt(
+                        toInstant(
+                                a.getCalculatedAt()
+                        )
+                )
                 .build();
     }
 
@@ -285,16 +509,29 @@ public class RiskAssessmentServiceImpl implements RiskAssessmentService {
 
     /**
      * Converts LocalDateTime (entity) → Instant (DTO).
-     * Assumes UTC. If your app uses a different timezone,
-     * replace ZoneOffset.UTC with ZoneId.systemDefault().getRules().getOffset(ldt)
+     *
+     * Assumes UTC.
      */
     private Instant toInstant(LocalDateTime ldt) {
-        if (ldt == null) return null;
-        return ldt.toInstant(ZoneOffset.UTC);
+
+        if (ldt == null) {
+            return null;
+        }
+
+        return ldt.toInstant(
+                ZoneOffset.UTC
+        );
     }
 
-    /** Null-safe double — returns 0.0 for null entity fields. */
+    /**
+     * Null-safe double.
+     *
+     * Returns 0.0 when the entity field is null.
+     */
     private double nvl(Double value) {
-        return value != null ? value : 0.0;
+
+        return value != null
+                ? value
+                : 0.0;
     }
 }

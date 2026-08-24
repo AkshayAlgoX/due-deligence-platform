@@ -8,6 +8,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.cache.annotation.CacheEvict;
 
 import com.realestate.duediligence.dto.GeoPropertyResponse;
 import com.realestate.duediligence.dto.PropertyRequest;
@@ -42,6 +43,16 @@ public class PropertyServiceImpl implements PropertyService {
     // ── Add property ──────────────────────────────────────────────
     @Override
     @Transactional
+    @CacheEvict(
+        value = {
+                "dashboardStats",
+                "portfolioInsights",
+                "recentActivity",
+                "dashboardTrends",
+                "dashboardRecommendations"
+        },
+        allEntries = true
+    )
     public PropertyResponse addProperty(PropertyRequest request) {
         if (!addressValidationService.validateAddress(request.getAddress())) {
             throw new RuntimeException("Invalid property address");
@@ -88,8 +99,18 @@ public class PropertyServiceImpl implements PropertyService {
     // ── Update property ───────────────────────────────────────────
     @Override
     @Transactional
+    @CacheEvict(
+        value = {
+                "dashboardStats",
+                "portfolioInsights",
+                "recentActivity",
+                "dashboardTrends",
+                "dashboardRecommendations"
+        },
+        allEntries = true
+    )
     public PropertyResponse updateProperty(Long id, PropertyRequest request) {
-        Property property = propertyRepository.findById(id)
+        Property property = propertyRepository.findByIdWithCreatedBy(id)
                 .orElseThrow(() -> new RuntimeException("Property not found"));
 
         // Ownership check — admin bypasses, others must own it
@@ -140,14 +161,14 @@ public class PropertyServiceImpl implements PropertyService {
 
         // ⭐ ADMIN / LEGAL_REVIEWER / FINANCIAL_INSTITUTION see ALL properties
         if (canViewAllProperties(currentUser)) {
-            return propertyRepository.findAll()
+            return propertyRepository.findAllWithCreatedBy()
                     .stream()
                     .map(this::mapToResponse)
                     .collect(Collectors.toList());
         }
 
         // Regular users see only their own
-        return propertyRepository.findByCreatedById(currentUser.getId())
+        return propertyRepository.findByCreatedByIdWithCreatedBy(currentUser.getId())
                 .stream()
                 .map(this::mapToResponse)
                 .collect(Collectors.toList());
@@ -156,7 +177,7 @@ public class PropertyServiceImpl implements PropertyService {
     @Override
     public PropertyResponse getPropertyById(Long id) {
         User currentUser = resolveCurrentUser();
-        Property property = propertyRepository.findById(id)
+        Property property = propertyRepository.findByIdWithCreatedBy(id)
                 .orElseThrow(() -> new RuntimeException("Property not found"));
 
         // ⭐ ADMIN / LEGAL_REVIEWER / FINANCIAL_INSTITUTION can view ANY property
@@ -202,7 +223,7 @@ public class PropertyServiceImpl implements PropertyService {
 
         // ⭐ ADMIN / LEGAL_REVIEWER / FINANCIAL_INSTITUTION search across ALL properties
         if (canViewAllProperties(currentUser)) {
-            return propertyRepository.findAll()
+            return propertyRepository.findAllWithCreatedBy()
                     .stream()
                     .filter(p -> matchesQuery(p, q))
                     .map(this::mapToResponse)
@@ -223,7 +244,7 @@ public class PropertyServiceImpl implements PropertyService {
 
         // ⭐ ADMIN / LEGAL_REVIEWER / FINANCIAL_INSTITUTION see 5 most recent across ALL users
         if (canViewAllProperties(currentUser)) {
-            return propertyRepository.findAll()
+            return propertyRepository.findAllWithCreatedBy()
                     .stream()
                     .sorted((a, b) -> {
                         LocalDateTime aTime = a.getCreatedAt();
@@ -370,7 +391,7 @@ public class PropertyServiceImpl implements PropertyService {
 
         // ⭐ ADMIN / LEGAL_REVIEWER / FINANCIAL_INSTITUTION see ALL properties on map
         if (canViewAllProperties(currentUser)) {
-            return propertyRepository.findAll()
+            return propertyRepository.findAllWithCreatedBy()
                     .stream()
                     .filter(p -> p.getLatitude() != null && p.getLongitude() != null)
                     .map(this::mapToGeoResponse)
@@ -401,8 +422,18 @@ public class PropertyServiceImpl implements PropertyService {
     // ── Delete property ────────────────────────────────────────────
     @Override
     @Transactional
+    @CacheEvict(
+        value = {
+                "dashboardStats",
+                "portfolioInsights",
+                "recentActivity",
+                "dashboardTrends",
+                "dashboardRecommendations"
+        },
+        allEntries = true
+    )
     public void deleteProperty(Long id) {
-        Property property = propertyRepository.findById(id)
+        Property property = propertyRepository.findByIdWithCreatedBy(id)
                 .orElseThrow(() -> new RuntimeException("Property not found"));
 
         User currentUser = resolveCurrentUser();

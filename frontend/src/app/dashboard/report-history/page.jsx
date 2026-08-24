@@ -101,28 +101,77 @@ export default function ReportHistoryPage() {
   /*
    * Normalize the risk value.
    */
+  /*
+ * Normalize the risk value.
+ */
   const getRiskKey = (report) => {
-    const value = String(
-      report?.riskLevelSnapshot ||
-        report?.riskLevel ||
-        "LOW"
-    ).toUpperCase();
+  if (!report) {
+    return "";
+  }
 
-    if (value === "MODERATE") {
-      return "MEDIUM";
-    }
+  const rawRisk =
+    report?.riskLevelSnapshot ??
+    report?.riskLevel ??
+    report?.risk_level ??
+    report?.riskLevelName ??
+    report?.risk_level_name ??
+    report?.risk?.level ??
+    report?.risk?.riskLevel ??
+    "";
 
-    if (
-      value === "LOW" ||
-      value === "MEDIUM" ||
-      value === "HIGH" ||
-      value === "CRITICAL"
-    ) {
-      return value;
-    }
+  const normalized = String(rawRisk)
+    .trim()
+    .toUpperCase()
+    .replace(/[\s-]+/g, "_");
 
+  if (
+    normalized === "LOW" ||
+    normalized === "LOW_RISK"
+  ) {
     return "LOW";
-  };
+  }
+
+  if (
+    normalized === "MEDIUM" ||
+    normalized === "MEDIUM_RISK" ||
+    normalized === "MODERATE" ||
+    normalized === "MODERATE_RISK"
+  ) {
+    return "MEDIUM";
+  }
+
+  if (
+    normalized === "HIGH" ||
+    normalized === "HIGH_RISK"
+  ) {
+    return "HIGH";
+  }
+
+  if (
+    normalized === "CRITICAL" ||
+    normalized === "CRITICAL_RISK"
+  ) {
+    return "CRITICAL";
+  }
+
+  const score = Number(
+    report?.riskScoreSnapshot ??
+      report?.riskScore ??
+      report?.risk_score ??
+      report?.score ??
+      report?.risk?.score ??
+      report?.risk?.riskScore
+  );
+
+  if (Number.isFinite(score)) {
+    if (score <= 25) return "LOW";
+    if (score <= 50) return "MEDIUM";
+    if (score <= 75) return "HIGH";
+    if (score <= 100) return "CRITICAL";
+  }
+
+  return "";
+};
 
   /*
    * Report History statistics.
