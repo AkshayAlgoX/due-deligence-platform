@@ -112,9 +112,9 @@
         "regenerate": "Regenerate",
         "regenerating": "Regenerating...",
         "print": "Print",
-        "printShortcut": "Print (âŒ˜P)",
+        "printShortcut": "Print (⌘P)",
         "share": "Share",
-        "shareShortcut": "Copy link (âŒ˜K)",
+        "shareShortcut": "Copy link (⌘K)",
         "download": "Download PDF",
         "downloadSoon": "PDF export - coming soon",
         "downloadToast": "PDF export is coming soon",
@@ -200,7 +200,7 @@
       "eyebrow": "Property Overview",
       "unavailable": "Property overview data unavailable.",
       "marketValue": "Market Value",
-      "pricePerSqFt": "â‚¹{{value}}/sq ft",
+      "pricePerSqFt": "₹{{value}}/sq ft",
       "details": "Property Details",
       "specs": "Specifications",
       "labels": {
@@ -870,7 +870,7 @@
       "subtitle": "Join the platform to begin secure due diligence.",
       "createAccount": "Create account",
       "pleaseWait": "Please wait...",
-      "welcomeCheck": "Welcome âœ“",
+      "welcomeCheck": "Welcome ✓",
       "alreadyHaveAccount": "Already have an account?",
       "signIn": "Sign in",
       "secureByDesign": "Secure by design",
@@ -1102,7 +1102,7 @@
       "pendingCount_one": "{{count}} pending",
       "pendingCount_other": "{{count}} pending"
     },
-    "zoomHint": "Use +/âˆ’ to zoom",
+    "zoomHint": "Use +/− to zoom",
     "retryGeocoding": "Retry geocoding",
     "geocoding": "Geocoding...",
     "viewDetails": "View details",
@@ -1615,8 +1615,8 @@
       "chipRemove": "Remove {{label}}",
       "noTypesYet": "No types in data yet",
       "noCitiesYet": "No cities in data yet",
-      "minPrice": "Min (â‚¹)",
-      "maxPrice": "Max (â‚¹)",
+      "minPrice": "Min (₹)",
+      "maxPrice": "Max (₹)",
       "anyPrice": "Any",
       "highestInDb": "Highest in database: {{amount}}",
       "verifiedOnly": "Verified only",
@@ -1627,8 +1627,8 @@
       "toggleHighRisk": "Toggle high-risk filter",
       "sortOptions": {
         "recent": "Recently Added",
-        "priceAsc": "Price: Low â†’ High",
-        "priceDesc": "Price: High â†’ Low",
+        "priceAsc": "Price: Low → High",
+        "priceDesc": "Price: High → Low",
         "alpha": "Alphabetical (A-Z)",
         "riskDesc": "Highest risk first"
       }
@@ -2213,7 +2213,7 @@
     "loading": "Loading saved comparisons...",
     "emptyHint": "Compare properties and click \"Save comparison\" to keep them here.",
     "load": "Load",
-    "viewAll": "View all saved comparisons â†’"
+    "viewAll": "View all saved comparisons →"
   },
   "marketChart": {
     "title": "Market value trend",
@@ -2350,7 +2350,7 @@
     "subtitle": "We sent a 6-digit code to",
     "verifyAndCreate": "Verify & create account",
     "verifying": "Verifying...",
-    "changeEmail": "â† Change email",
+    "changeEmail": "← Change email",
     "resendCode": "Resend code",
     "resendIn": "Resend in {{n}}s",
     "resending": "Resending...",

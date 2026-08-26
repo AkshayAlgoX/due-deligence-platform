@@ -1,8 +1,9 @@
 "use client";
 
 import { useState, useRef, useCallback } from "react";
+import { getToken } from "@/utils/helpers";
 
-const API_BASE = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8080";
+const API_BASE = process.env.NEXT_PUBLIC_API_URL || "";
 
 export function useAgentChat(propertyId = null) {
   const [messages, setMessages] = useState([]);
@@ -28,11 +29,7 @@ export function useAgentChat(propertyId = null) {
       setIsStreaming(true);
 
       try {
-        const token =
-          localStorage.getItem("auth_token") ||
-          sessionStorage.getItem("auth_token") ||
-          localStorage.getItem("token") ||
-          sessionStorage.getItem("token");
+        const token = getToken();
 
         if (!token) {
           throw new Error("Not logged in. Please log in and try again.");

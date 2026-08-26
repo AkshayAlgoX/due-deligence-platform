@@ -34,11 +34,6 @@ const nextConfig = {
   },
 
   async rewrites() {
-    // When deployed (Vercel) or pointed at a direct API URL, api.js uses the
-    // backend base URL directly — no proxy needed. Locally, proxy to Spring.
-    if (process.env.VERCEL || process.env.NEXT_PUBLIC_API_URL) {
-      return [];
-    }
     return [
       {
         source: '/api/:path*',

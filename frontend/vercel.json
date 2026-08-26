@@ -7,7 +7,9 @@
   "devCommand": "npm run dev",
   "regions": ["bom1"],
   "env": {
-    "NEXT_PUBLIC_API_URL": "https://54-66-38-92.sslip.io"
+    "NEXT_PUBLIC_API_URL": "https://54-66-38-92.sslip.io",
+    "NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME": "fvmqhbvj",
+    "NEXT_PUBLIC_CLOUDINARY_UPLOAD_PRESET": "due_diligence_properties"
   },
   "rewrites": [
     {

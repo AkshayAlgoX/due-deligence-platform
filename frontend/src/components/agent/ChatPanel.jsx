@@ -203,7 +203,7 @@ export default function ChatPanel({ isOpen, onClose, propertyId = null, property
                 )}
               </div>
               <p className="mt-1.5 text-[10px] text-gray-400 dark:text-white/20 text-center">
-                Powered by Llama 3.3 70B · Not financial advice
+                Powered by AI · Not financial advice
               </p>
             </div>
           </motion.div>

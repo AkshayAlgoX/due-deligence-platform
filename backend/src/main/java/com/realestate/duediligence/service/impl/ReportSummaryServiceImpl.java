@@ -41,7 +41,7 @@ public class ReportSummaryServiceImpl implements ReportSummaryService {
     private final UserRepository userRepository;
 
     private static final String GROQ_URL = "https://api.groq.com/openai/v1/chat/completions";
-    private static final String MODEL = "llama-3.3-70b-versatile";
+    private static final String MODEL = "openai/gpt-oss-120b";
     private static final long REGENERATE_COOLDOWN_SECONDS = 60;
 
     @Override

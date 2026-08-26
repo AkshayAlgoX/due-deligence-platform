@@ -28,6 +28,7 @@ const ROUTE_ROLES = {
     "ADMIN",
   ],
   "/dashboard/admin": ["ADMIN"],
+  "/dashboard/system-health": ["ADMIN"],
   // Pro roles don't see consumer pricing — billing is for buyers/agents only
   "/dashboard/billing": ["BUYER", "REAL_ESTATE_AGENT", "ADMIN"],
 };

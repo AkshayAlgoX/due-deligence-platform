@@ -89,6 +89,7 @@ public class AgentChatServiceImpl implements AgentChatService {
                 .post()
                 .header("Authorization", "Bearer " + groqApiKey)
                 .header("Content-Type", "application/json")
+                .header("Accept", "text/event-stream, application/json, */*")
                 .bodyValue(requestBody)
                 .retrieve()
                 .onStatus(HttpStatusCode::isError, resp -> {
@@ -107,20 +108,32 @@ public class AgentChatServiceImpl implements AgentChatService {
                             });
                 })
                 .bodyToFlux(String.class)
-                .filter(chunk -> chunk != null && !chunk.isBlank() && !chunk.equals("[DONE]"))
-                .mapNotNull(chunk -> {
-                    try {
-                        String data = chunk.startsWith("data: ") ? chunk.substring(6) : chunk;
-                        if (data.equals("[DONE]") || data.isBlank()) return null;
-                        JsonNode node = objectMapper.readTree(data);
-                        JsonNode delta = node.path("choices").path(0).path("delta").path("content");
-                        return delta.isMissingNode() || delta.isNull() ? null : delta.asText();
-                    } catch (Exception e) {
-                        log.debug("[AgentChat] Skipping non-JSON chunk: {}", chunk);
-                        return null;
+                .flatMap(chunk -> {
+                    if (chunk == null || chunk.isBlank()) return Flux.empty();
+                    String[] lines = chunk.split("\n");
+                    List<String> tokens = new ArrayList<>();
+                    for (String line : lines) {
+                        String trimmed = line.trim();
+                        if (trimmed.isEmpty()) continue;
+                        String payload = trimmed.startsWith("data:") ? trimmed.substring(5).trim() : trimmed;
+                        if (payload.isEmpty() || "[DONE]".equals(payload)) {
+                            continue;
+                        }
+                        try {
+                            JsonNode node = objectMapper.readTree(payload);
+                            JsonNode delta = node.path("choices").path(0).path("delta").path("content");
+                            if (!delta.isMissingNode() && !delta.isNull()) {
+                                String text = delta.asText();
+                                if (text != null && !text.isEmpty()) {
+                                    tokens.add(text);
+                                }
+                            }
+                        } catch (Exception e) {
+                            log.debug("[AgentChat] Skipping non-JSON chunk: {}", payload);
+                        }
                     }
+                    return Flux.fromIterable(tokens);
                 })
-                .filter(text -> text != null && !text.isEmpty())
                 .timeout(Duration.ofSeconds(120))
                 .retryWhen(Retry.backoff(1, Duration.ofMillis(400))
                         .filter(err -> err instanceof WebClientRequestException)

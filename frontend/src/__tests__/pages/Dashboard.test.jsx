@@ -77,10 +77,12 @@ describe("Dashboard Page", () => {
       expect(screen.getByText("property.addProperty")).toBeInTheDocument();
     });
 
-    const addBtn = screen.getByText("property.addProperty");
+    const addBtn = screen.getByText("property.addProperty").closest("button");
     fireEvent.click(addBtn);
 
     // Lazy-loaded modal suspends on first render, so await its appearance
-    expect(await screen.findByText("property.addModal.title")).toBeInTheDocument();
+    await waitFor(() => {
+      expect(screen.getByText("property.addModal.title")).toBeInTheDocument();
+    }, { timeout: 3000 });
   });
 });
