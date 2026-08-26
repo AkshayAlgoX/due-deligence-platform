@@ -66,7 +66,6 @@ export function useAgentChat(propertyId = null) {
         let accumulated = "";
         let buffer = "";
 
-        // Helper: base64 decode with proper UTF-8 handling
         const decodeToken = (b64) => {
           try {
             const binary = atob(b64);
@@ -76,7 +75,7 @@ export function useAgentChat(propertyId = null) {
             }
             return new TextDecoder("utf-8").decode(bytes);
           } catch (e) {
-            return "";
+            return b64;
           }
         };
 

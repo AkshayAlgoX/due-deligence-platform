@@ -64,6 +64,7 @@ public class SecurityConfig {
                     "/api/public/**",
                     "/api/contact/**",
                     "/api/webhooks/**",
+                    "/api/subscription/webhook",
                     "/api/subscriptions/plans",
                     "/api/payments/webhook/**",
                     "/v3/api-docs/**",
@@ -82,9 +83,11 @@ public class SecurityConfig {
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();
         configuration.setAllowedOriginPatterns(List.of(
-            "http://localhost:3000",
-            "http://127.0.0.1:3000",
-            "https://*.vercel.app"
+            "http://localhost:*",
+            "http://127.0.0.1:*",
+            "https://*.vercel.app",
+            "https://*.sslip.io",
+            "https://*.onrender.com"
         ));
         configuration.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "OPTIONS", "PATCH"));
         configuration.setAllowedHeaders(List.of("*"));

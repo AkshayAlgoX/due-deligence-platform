@@ -39,6 +39,12 @@ public class CashfreeServiceImpl implements com.realestate.duediligence.service.
     @Value("${cashfree.webhook-secret:}")
     private String webhookSecret;
 
+    @Value("${app.frontend.url:http://localhost:3000}")
+    private String frontendUrl;
+
+    @Value("${app.backend.url:http://localhost:8080}")
+    private String backendUrl;
+
     public CashfreeServiceImpl(
             @Value("${cashfree.app-id:}") String appId,
             @Value("${cashfree.secret-key:}") String secretKey,
@@ -68,6 +74,12 @@ public class CashfreeServiceImpl implements com.realestate.duediligence.service.
         // payment link in the sandbox; the link is the Stripe-style flow.)
         String linkId = "order_" + UUID.randomUUID().toString().replace("-", "");
 
+        String baseFront = (frontendUrl != null && !frontendUrl.isBlank()) ? frontendUrl.replaceAll("/+$", "") : "http://localhost:3000";
+        String baseBack = (backendUrl != null && !backendUrl.isBlank()) ? backendUrl.replaceAll("/+$", "") : "http://localhost:8080";
+
+        String returnUrl = baseFront + "/checkout/success?order_id=" + linkId;
+        String notifyUrl = baseBack + "/api/subscription/webhook";
+
         Map<String, Object> payload = Map.of(
                 "link_id", linkId,
                 "link_amount", plan.getPricePaise() / 100.0,
@@ -79,8 +91,8 @@ public class CashfreeServiceImpl implements com.realestate.duediligence.service.
                         "customer_phone", "9999999999"
                 ),
                 "link_meta", Map.of(
-                        "return_url", "http://localhost:3000/checkout/success?order_id=" + linkId,
-                        "notify_url", "http://localhost:8080/api/subscription/webhook"
+                        "return_url", returnUrl,
+                        "notify_url", notifyUrl
                 )
         );
 

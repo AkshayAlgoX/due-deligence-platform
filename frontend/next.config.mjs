@@ -9,6 +9,11 @@ const nextConfig = {
   output: 'standalone',
   reactStrictMode: true,
 
+  env: {
+    NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME: process.env.NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME,
+    NEXT_PUBLIC_CLOUDINARY_UPLOAD_PRESET: process.env.NEXT_PUBLIC_CLOUDINARY_UPLOAD_PRESET,
+  },
+
   images: {
     formats: ['image/avif', 'image/webp'],
     remotePatterns: [

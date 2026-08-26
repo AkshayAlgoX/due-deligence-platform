@@ -34,11 +34,14 @@ public class AgentChatServiceImpl implements AgentChatService {
     @Value("${groq.api.key:}")
     private String groqApiKey;
 
+    @Value("${groq.model:llama-3.3-70b-versatile}")
+    private String groqModel;
+
     private final PropertyService propertyService;
     private final ObjectMapper objectMapper;
 
     private static final String GROQ_URL = "https://api.groq.com/openai/v1/chat/completions";
-    private static final String MODEL = "openai/gpt-oss-120b";
+    private static final String DEFAULT_MODEL = "llama-3.3-70b-versatile";
 
     @Override
     public Flux<String> streamChat(Long propertyId, String question, List<MessageDto> history) {
@@ -53,6 +56,8 @@ public class AgentChatServiceImpl implements AgentChatService {
             log.warn("[AgentChat] GROQ_API_KEY not configured");
             return Flux.just("AI assistant is not configured. Please add GROQ_API_KEY to your .env file.");
         }
+
+        String activeModel = (groqModel != null && !groqModel.isBlank()) ? groqModel.trim() : DEFAULT_MODEL;
 
         String systemPrompt = buildSystemPrompt(propertyId);
 
@@ -72,7 +77,7 @@ public class AgentChatServiceImpl implements AgentChatService {
         messages.add(Map.of("role", "user", "content", question != null ? question : ""));
 
         Map<String, Object> requestBody = Map.of(
-                "model", MODEL,
+                "model", activeModel,
                 "messages", messages,
                 "stream", true,
                 "max_tokens", 1024,

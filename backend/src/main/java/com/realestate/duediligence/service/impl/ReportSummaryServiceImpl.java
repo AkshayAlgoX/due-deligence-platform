@@ -36,12 +36,15 @@ public class ReportSummaryServiceImpl implements ReportSummaryService {
     @Value("${groq.api.key:}")
     private String groqApiKey;
 
+    @Value("${groq.model:llama-3.3-70b-versatile}")
+    private String groqModel;
+
     private final DueDiligenceReportRepository reportRepository;
     private final ObjectMapper objectMapper;
     private final UserRepository userRepository;
 
     private static final String GROQ_URL = "https://api.groq.com/openai/v1/chat/completions";
-    private static final String MODEL = "openai/gpt-oss-120b";
+    private static final String DEFAULT_MODEL = "llama-3.3-70b-versatile";
     private static final long REGENERATE_COOLDOWN_SECONDS = 60;
 
     @Override
@@ -132,8 +135,10 @@ public class ReportSummaryServiceImpl implements ReportSummaryService {
         try {
             String prompt = buildPrompt(report);
 
+            String activeModel = (groqModel != null && !groqModel.isBlank()) ? groqModel.trim() : DEFAULT_MODEL;
+
             Map<String, Object> requestBody = Map.of(
-                    "model", MODEL,
+                    "model", activeModel,
                     "messages", List.of(
                             Map.of("role", "system", "content", getSystemPrompt()),
                             Map.of("role", "user", "content", prompt)

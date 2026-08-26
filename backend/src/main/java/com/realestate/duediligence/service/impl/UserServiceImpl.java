@@ -578,6 +578,11 @@ public class UserServiceImpl implements UserService {
         User user = userRepository.findByEmail(email)
                 .orElseThrow(() -> new RuntimeException("Account not found"));
 
+        // Safeguard: Administrator accounts cannot be deleted via the user profile deletion modal
+        if (user.getRole() != null && "ADMIN".equalsIgnoreCase(user.getRole().getRoleName().name())) {
+            return new ApiResponse(false, "Administrator accounts cannot be deleted through this interface.");
+        }
+
         // 2. Password / email verification
         boolean isGoogleOnly = "GOOGLE".equals(user.getAuthProvider());
 
