@@ -62,7 +62,7 @@ backend runs on AWS EC2, and PostgreSQL is hosted on Neon.
 ## Live Demo
 
 - **Frontend:** https://due-deligence-platform.vercel.app/
-- **Backend API:** https://54.66.38.92
+- **Backend API:** AWS EC2 — Spring Boot
 - **Health Check:** https://54.66.38.92/actuator/health
 - **Swagger UI:** https://54.66.38.92/swagger-ui/index.html
 - **Database:** Neon PostgreSQL
