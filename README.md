@@ -341,6 +341,6 @@ Developed as an enterprise software engineering project during the **Infosys Spr
   * **tanishaalone-lab**
   * **subashs0411**
   * **DempRepo**
-  * **2311cs010477**
+  * **[NalamothuLokesh](https://github.com/NalamothuLokesh)**
 * **Project Mentorship:** springboardmentor198 (Infosys Springboard)
 * **License:** MIT License. See [LICENSE](LICENSE) for details.
