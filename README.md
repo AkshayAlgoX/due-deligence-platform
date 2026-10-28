@@ -244,7 +244,7 @@ Team 03 — contributors (from commit history):
 
 - **Akshaya R** (lead) — backend, auth/security, deployment
 - **MelvinBritto**, **Bhavana-Bhat-528**, **tanishaalone-lab**, **subashs0411**,
-  **DempRepo**, **2311cs010477** — features across backend and frontend
+  **DempRepo**, **Lokesh Chowdary Nalamothu** — features across backend and frontend
 - Mentored by **springboardmentor198** (Springboard)
 
 Workflow: branch off `develop`, open a PR, CI runs tests + Docker builds,
