@@ -336,11 +336,12 @@ Developed as an enterprise software engineering project during the **Infosys Spr
 * **Akshaya R** ([@AkshayAlgoX](https://github.com/AkshayAlgoX)) — **Team Lead**
   * *Core Contributions:* Backend architecture, Spring Security / JWT authentication, multi-source service aggregation pipeline, six-category risk scoring engine, and deployment orchestration.
 * **Team Members (Team 03):**
-  * **MelvinBritto**
-  * **Bhavana-Bhat-528**
-  * **tanishaalone-lab**
-  * **subashs0411**
-  * **DempRepo**
+  * **[MelvinBritto](https://github.com/MelvinBritto)**
+  * **[Bhavana-Bhat-528](https://github.com/Bhavana-Bhat-528)**
+  * **[tanishaalone30](https://github.com/tanishaalone30)** (commits authored as `tanishaalone-lab`)
+  * **[SubashS0411](https://github.com/SubashS0411)**
+  * **DempRepo** (git author name; no linked GitHub account)
   * **[NalamothuLokesh](https://github.com/NalamothuLokesh)**
-* **Project Mentorship:** springboardmentor198 (Infosys Springboard)
+* **Project Mentorship:** [springboardmentor198](https://github.com/springboardmentor198) (Infosys Springboard)
+* **Team record:** the program repository is [springboardmentor198/team-03](https://github.com/springboardmentor198/team-03). Commit history shows who committed, not official team membership.
 * **License:** MIT License. See [LICENSE](LICENSE) for details.
