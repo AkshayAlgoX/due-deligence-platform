@@ -119,7 +119,7 @@ $$\text{Composite Risk} = \sum_{i=1}^{6} w_i \times R_i \quad \text{where} \quad
 | **2. Zoning & Regulatory** | Permitted land use, Floor Area Ratio (FAR), setback compliance | Unauthorized commercial activity, non-conforming structures |
 | **3. Flood & Hazard** | FEMA zone classification, elevation delta, historical inundation | FEMA Zone A/V, 100-year flood zone overlap |
 | **4. Tax & Financial** | Property tax delinquency history, special municipal levies | Consecutive overdue tax cycles, pending municipal auction |
-| **5. Valuation & Market** | Price-per-sqft variance vs neighborhood median, comps deviation | $> 25\%$ deviation from historical fair-market cluster |
+| **5. Valuation & Market** | Price-per-sqft variance vs neighborhood median, comps deviation | More than 25% deviation from the historical fair-market cluster |
 | **6. Environmental** | Air quality index (WAQI), industrial proximity, soil hazards | Proximity to hazardous industrial dump or brownfield site |
 
 #### Investment Verdict Logic
