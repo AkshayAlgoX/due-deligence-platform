@@ -4,6 +4,7 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 import org.slf4j.Logger;
+import org.hibernate.Hibernate;
 import org.slf4j.LoggerFactory;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Component;
@@ -22,6 +23,7 @@ import com.realestate.duediligence.enums.ReportStatus;
 import com.realestate.duediligence.repository.DueDiligenceReportRepository;
 import com.realestate.duediligence.repository.ReportSectionRepository;
 import com.realestate.duediligence.repository.RiskAssessmentRepository;
+import com.realestate.duediligence.service.AfterCommit;
 import com.realestate.duediligence.service.NotificationEventListener;
 import com.realestate.duediligence.service.NotificationService;
 import com.realestate.duediligence.service.RiskAssessmentService;
@@ -258,10 +260,17 @@ public class ReportGenerationExecutor {
      * Fires in-app + email notification after a report completes.
      * Failures are swallowed and logged — a notification failure must never
      * roll back a successfully generated report.
+     *
+     * The in-app notification is written in the report transaction. The
+     * email is dispatched only after that transaction commits, so it is
+     * never sent for a report that rolled back and its listener does not
+     * contend with this transaction's uncommitted preference row.
      */
     private void fireCompletionNotification(DueDiligenceReport report) {
         try {
-            User owner = report.getGeneratedBy();
+            // Initialise the owner while the session is open; the email
+            // listener reads its name and address on another thread.
+            User owner = (User) Hibernate.unproxy(report.getGeneratedBy());
             if (owner == null) return;
 
             String propertyAddress = report.getProperty() != null
@@ -280,8 +289,9 @@ public class ReportGenerationExecutor {
             );
 
             // Email notification (respects user preferences internally)
-            notificationEventListener.onReportReady(
-                    owner, reportTitle, propertyAddress, report.getId());
+            Long reportId = report.getId();
+            AfterCommit.run(() -> notificationEventListener.onReportReady(
+                    owner, reportTitle, propertyAddress, reportId));
 
         } catch (Exception e) {
             log.warn("[async] Failed to fire completion notification for report {}: {}",

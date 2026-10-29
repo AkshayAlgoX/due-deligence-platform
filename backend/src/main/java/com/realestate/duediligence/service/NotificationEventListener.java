@@ -4,12 +4,10 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Component;
-import org.springframework.transaction.annotation.Transactional;
 
 import com.realestate.duediligence.entity.NotificationPreference;
 import com.realestate.duediligence.entity.User;
 import com.realestate.duediligence.enums.NotificationType;
-import com.realestate.duediligence.repository.NotificationPreferenceRepository;
 
 import lombok.RequiredArgsConstructor;
 
@@ -29,7 +27,7 @@ import lombok.RequiredArgsConstructor;
  *
  *   Instead it injects only what it actually needs:
  *     - EmailService (sends the email)
- *     - NotificationPreferenceRepository (checks preferences directly)
+ *     - NotificationPreferenceProvisioner (reads or creates preferences)
  *
  * All methods are @Async so email delivery never blocks the caller.
  * Email failures are logged and swallowed — they must not propagate
@@ -42,25 +40,9 @@ public class NotificationEventListener {
     private static final Logger log = LoggerFactory.getLogger(NotificationEventListener.class);
 
     private final EmailService emailService;
-    private final NotificationPreferenceRepository preferenceRepository;
+    private final NotificationPreferenceProvisioner preferenceProvisioner;
 
     // ── Private helpers ───────────────────────────────────────────
-
-    /**
-     * Get or create default preferences for a user.
-     * Isolated transaction so it can run on the async thread.
-     */
-    @Transactional
-    private NotificationPreference getOrCreatePreference(User user) {
-        return preferenceRepository.findByUserId(user.getId())
-                .orElseGet(() -> {
-                    com.realestate.duediligence.entity.NotificationPreference defaults =
-                            com.realestate.duediligence.entity.NotificationPreference.builder()
-                                    .user(user)
-                                    .build();
-                    return preferenceRepository.save(defaults);
-                });
-    }
 
     private boolean isEmailEnabled(NotificationPreference prefs, NotificationType type) {
         return switch (type) {
@@ -85,7 +67,7 @@ public class NotificationEventListener {
     @Async
     public void onReportReady(User user, String reportTitle, String propertyAddress, Long reportId) {
         try {
-            NotificationPreference prefs = getOrCreatePreference(user);
+            NotificationPreference prefs = preferenceProvisioner.getOrCreate(user);
 
             if (isEmailEnabled(prefs, NotificationType.REPORT_READY)) {
                 emailService.sendReportReadyEmail(
@@ -95,7 +77,7 @@ public class NotificationEventListener {
                         propertyAddress,
                         reportId
                 );
-                log.info("NotificationListener: report-ready email sent to {}", user.getEmail());
+                log.info("NotificationListener: report-ready email dispatched for user {}", user.getId());
             } else {
                 log.debug("NotificationListener: report-ready email disabled for user {}",
                         user.getId());
@@ -112,7 +94,7 @@ public class NotificationEventListener {
     @Async
     public void onRiskAlert(User user, String propertyAddress, String riskLevel, Long propertyId) {
         try {
-            NotificationPreference prefs = getOrCreatePreference(user);
+            NotificationPreference prefs = preferenceProvisioner.getOrCreate(user);
 
             if (isEmailEnabled(prefs, NotificationType.RISK_ALERT)) {
                 emailService.sendRiskAlertEmail(
@@ -122,7 +104,7 @@ public class NotificationEventListener {
                         riskLevel,
                         propertyId
                 );
-                log.info("NotificationListener: risk-alert email sent to {}", user.getEmail());
+                log.info("NotificationListener: risk-alert email dispatched for user {}", user.getId());
             }
         } catch (Exception e) {
             log.error("NotificationListener: failed to send risk-alert email for user {}: {}",
