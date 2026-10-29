@@ -23,6 +23,7 @@ import com.realestate.duediligence.repository.NotificationPreferenceRepository;
 import com.realestate.duediligence.repository.NotificationRepository;
 import com.realestate.duediligence.repository.UserRepository;
 import com.realestate.duediligence.service.NotificationEventPublisher;
+import com.realestate.duediligence.service.NotificationPreferenceProvisioner;
 import com.realestate.duediligence.service.NotificationService;
 
 import lombok.RequiredArgsConstructor;
@@ -51,6 +52,7 @@ public class NotificationServiceImpl implements NotificationService {
     private final NotificationPreferenceRepository preferenceRepository;
     private final UserRepository userRepository;
     private final NotificationEventPublisher eventPublisher;
+    private final NotificationPreferenceProvisioner preferenceProvisioner;
 
     // ══════════════════════════════════════════════════════════════
     // CREATION
@@ -259,16 +261,10 @@ public class NotificationServiceImpl implements NotificationService {
 
     /**
      * Get existing preference or create a default one.
-     * Saves the default immediately so the row exists for future calls.
+     * Delegates to the provisioner, which is safe under concurrent first access.
      */
     private NotificationPreference getOrCreatePreference(User user) {
-        return preferenceRepository.findByUserId(user.getId())
-                .orElseGet(() -> {
-                    NotificationPreference defaults = NotificationPreference.builder()
-                            .user(user)
-                            .build();
-                    return preferenceRepository.save(defaults);
-                });
+        return preferenceProvisioner.getOrCreate(user);
     }
 
     /**
