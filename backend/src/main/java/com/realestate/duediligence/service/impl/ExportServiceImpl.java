@@ -236,21 +236,19 @@ public class ExportServiceImpl implements ExportService {
                 "Export record has no associated report. Please generate a new export.");
     }
 
+    /**
+     * Latest report for the property that the caller may read.
+     *
+     * Access-control failures are not swallowed, and there is no placeholder
+     * fallback: an exported due-diligence snapshot must contain real data
+     * for the requested property or not be produced at all.
+     */
     private DueDiligenceReportResponse resolvePropertyReport(Long propertyId) {
-        try {
-            List<ReportSummaryDto> summaries = reportService.getReportsForProperty(propertyId);
-            if (summaries != null && !summaries.isEmpty()) {
-                return reportService.getReport(summaries.get(0).getId());
-            }
-        } catch (Exception ignored) {}
-
-        return DueDiligenceReportResponse.builder()
-                .id(propertyId)
-                .title("2nd Block")
-                .propertyAddress("Bangalore North, Karnataka \u2014 560112")
-                .riskScoreSnapshot(19.0)
-                .version(1)
-                .build();
+        List<ReportSummaryDto> summaries = reportService.getReportsForProperty(propertyId);
+        if (summaries == null || summaries.isEmpty()) {
+            throw new IllegalArgumentException("No report found for property " + propertyId);
+        }
+        return reportService.getReport(summaries.get(0).getId());
     }
 
     private void recordHistory(String reportId, Long userId, String format,
