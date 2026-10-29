@@ -120,4 +120,25 @@ class ExportControllerTest {
         mockMvc.perform(get("/api/export/report/99/pdf"))
                 .andExpect(status().isInternalServerError());
     }
+
+    @Test
+    @WithMockUser
+    void propertySnapshot_returns404_whenNoReadableReport() throws Exception {
+        when(exportService.exportPropertySnapshotPdf(7L, 1L))
+                .thenThrow(new IllegalArgumentException("No report found for property 7"));
+
+        mockMvc.perform(get("/api/export/property/7/pdf"))
+                .andExpect(status().isNotFound());
+    }
+
+    @Test
+    @WithMockUser(username = "deleted-user")
+    void export_returns401_whenAuthenticatedUserNoLongerExists() throws Exception {
+        // Previously the controller fell back to user id 1.
+        when(userRepository.findByEmail("deleted-user")).thenReturn(Optional.empty());
+
+        mockMvc.perform(get("/api/export/history"))
+                .andExpect(status().isUnauthorized());
+        org.mockito.Mockito.verifyNoInteractions(exportService);
+    }
 }

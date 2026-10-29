@@ -9,6 +9,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.authentication.AuthenticationCredentialsNotFoundException;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -107,6 +108,9 @@ public class ExportController {
                     .contentType(MediaType.APPLICATION_PDF)
                     .contentLength(pdfBytes.length)
                     .body(pdfBytes);
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.status(404).body(
+                java.util.Map.of("success", false, "message", "No report found for this property."));
         } catch (Exception e) {
             org.slf4j.LoggerFactory.getLogger(ExportController.class)
                 .error("Property PDF export failed for property {}: {}", propertyId, e.getMessage(), e);
@@ -132,6 +136,9 @@ public class ExportController {
                     .contentType(excelMediaType)
                     .contentLength(excelBytes.length)
                     .body(excelBytes);
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.status(404).body(
+                java.util.Map.of("success", false, "message", "No report found for this property."));
         } catch (Exception e) {
             org.slf4j.LoggerFactory.getLogger(ExportController.class)
                 .error("Property Excel export failed for property {}: {}", propertyId, e.getMessage(), e);
@@ -227,18 +234,16 @@ public class ExportController {
 
     // ── Helpers ──────────────────────────────────────────────────────────────
 
+    /**
+     * Id of the authenticated caller. Fails closed: there is no default user.
+     */
     private Long getUserId(Authentication authentication) {
         if (authentication == null || authentication.getName() == null) {
-            org.slf4j.LoggerFactory.getLogger(ExportController.class)
-                .warn("[AUTHZ-DEBUG] getUserId: authentication is null or name is null → defaulting to 1");
-            return 1L;
+            throw new AuthenticationCredentialsNotFoundException("Authentication required");
         }
-        User user = userRepository.findByEmail(authentication.getName()).orElse(null);
-        Long resolvedId = user != null ? user.getId() : 1L;
-        org.slf4j.LoggerFactory.getLogger(ExportController.class)
-            .info("[AUTHZ-DEBUG] getUserId: authName={} | resolvedId={} | userFound={}",
-                authentication.getName(), resolvedId, user != null);
-        return resolvedId;
+        return userRepository.findByEmail(authentication.getName())
+                .map(User::getId)
+                .orElseThrow(() -> new AuthenticationCredentialsNotFoundException("Authenticated user not found"));
     }
 
     private String formatReportFileName(DueDiligenceReportResponse report, String extension) {
