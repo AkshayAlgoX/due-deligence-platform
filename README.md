@@ -157,17 +157,23 @@ The backend exposes RESTful endpoints and SSE streams documented via Springdoc O
 
 | Method | Path | Purpose | Access |
 | :--- | :--- | :--- | :--- |
-| `GET` | `/actuator/health` | Service health probe and component status | Public |
-| `POST` | `/api/auth/register` | Register new user account | Public |
+| `GET` | `/actuator/health` | Service health probe (only `health` and `info` are exposed) | Public |
+| `POST` | `/api/auth/register/send-otp` | Start registration; emails a one-time code | Public |
+| `POST` | `/api/auth/register/verify-otp` | Complete registration with the code | Public |
 | `POST` | `/api/auth/login` | Authenticate with email/password; returns JWT | Public |
 | `POST` | `/api/auth/google` | Authenticate with Google OAuth2 ID token | Public |
-| `GET` | `/api/properties` | Search and filter aggregated properties | Public |
-| `GET` | `/api/properties/{id}` | Retrieve property details and public record data | Public |
-| `POST` | `/api/properties/{id}/assess` | Run six-factor risk scoring engine | Authenticated |
-| `GET` | `/api/reports/{propertyId}` | Retrieve generated due diligence risk report | Authenticated |
-| `GET` | `/api/agent/chat/stream` | Streaming AI due diligence assistant (SSE) | Authenticated |
-| `GET` | `/api/export/{propertyId}/pdf` | Compile and download formal iText 7 PDF report | Authenticated |
-| `GET` | `/api/export/{propertyId}/excel`| Compile and download structured Excel workbook | Authenticated |
+| `GET` | `/api/properties` | List and filter the caller's properties | Authenticated |
+| `GET` | `/api/properties/{id}` | Property details and public record data | Authenticated |
+| `GET` | `/api/properties/{propertyId}/risk` | Latest six-factor risk assessment | Authenticated |
+| `POST` | `/api/properties/{propertyId}/risk/recalculate` | Re-run the risk scoring engine | Authenticated |
+| `POST` | `/api/reports/generate` | Start asynchronous report generation | Authenticated |
+| `GET` | `/api/reports/{reportId}` | Generated due diligence report (owner or admin) | Authenticated |
+| `GET` | `/api/reports/property/{propertyId}` | Reports for a property (owner or admin) | Authenticated |
+| `POST` | `/api/agent/chat/stream` | Streaming AI due diligence assistant (SSE) | Authenticated |
+| `GET` | `/api/export/report/{reportId}/pdf` | Full iText 7 PDF report | Authenticated (owner or admin) |
+| `GET` | `/api/export/report/{reportId}/excel` | Structured Excel workbook | Authenticated (owner or admin) |
+| `GET` | `/api/export/property/{propertyId}/pdf` | Snapshot of the caller's latest report for a property; 404 if none | Authenticated |
+| `GET` | `/api/notifications/preferences` | Notification channel preferences | Authenticated |
 | `GET` | `/api/admin/dashboard` | Administrative audit logs and system telemetry | Admin |
 
 *(Interactive Swagger UI is available locally at `http://localhost:8080/swagger-ui/index.html` when running the backend).*
@@ -182,6 +188,8 @@ The repository includes test suites covering backend services, integrations, and
 Located in [`backend/src/test/java/`](backend/src/test/java/):
 * **Unit Tests**: Verifies risk assessment scoring thresholds, verdict mapping (`RiskAssessmentServiceImplTest`), and document compilation (`PdfExportServiceImplTest`, `ExcelExportServiceImplTest`).
 * **Integration Tests**: Executes end-to-end evaluation workflows using an in-memory H2 database under the `test` Spring profile (`EndToEndWorkflowTest`).
+* **PostgreSQL Concurrency Tests**: `NotificationPreferenceConcurrencyIT` starts PostgreSQL 16 with Testcontainers (skipped when Docker is unavailable). Latches reproduce the report-transaction / email-listener race on first preference creation. The tests also check exactly one in-app notification and one email per completed report, sent after commit, plus rollback and SMTP-failure behaviour.
+* **Export Authorization Tests**: `ExportServiceImplTest` and `ExportControllerTest` check that property snapshots never fall back to placeholder data and that an unresolvable caller gets 401.
 * **External Provider Tests**: Validates geocoding and environmental API integration contracts (`NominatimIntegrationTest`, `WAQIIntegrationTest`).
 
 To execute the backend test matrix:
