@@ -1,261 +1,355 @@
-<div align="center">
-
 # Real Estate Due Diligence Platform
+### Automated Multi-Source Property Risk Assessment, Public Record Aggregation & Investment Verdict Engine
 
-**Property risk, uncovered in seconds.**
+[![Java](https://img.shields.io/badge/Java-17_LTS-ED8B00?logo=openjdk&logoColor=white)](https://www.oracle.com/java/)
+[![Spring Boot](https://img.shields.io/badge/Spring_Boot-4.1.0-6DB33F?logo=springboot&logoColor=white)](https://spring.io/projects/spring-boot)
+[![Next.js](https://img.shields.io/badge/Next.js-16.1_App_Router-black?logo=next.js&logoColor=white)](https://nextjs.org/)
+[![PostgreSQL](https://img.shields.io/badge/PostgreSQL-16_Neon-4169E1?logo=postgresql&logoColor=white)](https://www.postgresql.org/)
+[![Groq AI](https://img.shields.io/badge/AI_Engine-Groq_LLaMA_3.3_70B-F05A28)](https://groq.com/)
+[![iText 7](https://img.shields.io/badge/PDF_Engine-iText_7_+_JFreeChart-red)](https://itextpdf.com/)
+[![Rate Limiting](https://img.shields.io/badge/Security-Bucket4j_+_JWT-blueviolet)](https://github.com/bucket4j/bucket4j)
+[![Tests](https://img.shields.io/badge/Testing-JUnit_5_+_Vitest-success)](backend/src/test/)
 
-[![CI](https://github.com/springboardmentor198/team-03/actions/workflows/ci.yml/badge.svg)](https://github.com/springboardmentor198/team-03/actions/workflows/ci.yml)
-[![Backend tests](https://img.shields.io/badge/backend%20tests-58%20passing-brightgreen)](https://github.com/springboardmentor198/team-03/tree/develop/backend)
-[![Frontend tests](https://img.shields.io/badge/frontend%20tests-33%20total-yellow)](https://github.com/springboardmentor198/team-03/tree/develop/frontend)
-[![Coverage](https://img.shields.io/badge/coverage-33.8%25%20lines-orange)](https://github.com/springboardmentor198/team-03/tree/develop/backend)
-[![License](https://img.shields.io/badge/license-MIT-blue)](./LICENSE)
-
-[![Spring Boot](https://img.shields.io/badge/Spring%20Boot-4.1-6DB33F?logo=springboot)](https://spring.io/projects/spring-boot)
-[![Java](https://img.shields.io/badge/Java-17-007396?logo=openjdk)](https://adoptium.net/)
-[![Next.js](https://img.shields.io/badge/Next.js-16-000000?logo=nextdotjs)](https://nextjs.org/)
-[![PostgreSQL](https://img.shields.io/badge/PostgreSQL-16-4169E1?logo=postgresql)](https://www.postgresql.org/)
-[![Tailwind](https://img.shields.io/badge/Tailwind-4-38B2AC?logo=tailwindcss)](https://tailwindcss.com/)
-[![Docker](https://img.shields.io/badge/Docker-✓-2496ED?logo=docker)](https://www.docker.com/)
-[![Groq](https://img.shields.io/badge/Groq-Llama%203.3%2070B-orange)](https://groq.com/)
-[![Cashfree](https://img.shields.io/badge/payments-Cashfree-8A2BE2)](https://www.cashfree.com/)
-
-</div>
+> **An automated property intelligence platform that aggregates legal, zoning, environmental, flood, and tax data to calculate multi-factor risk scores and deliver actionable investment verdicts: BUY, NEGOTIATE, or AVOID.**
 
 ---
 
-## Screenshots
+## Project Overview
 
-<table>
-  <tr>
-    <td align="center">
-      <strong>Landing Page</strong><br><br>
-      <img src="docs/screenshots/DD LANDING PAGE.png" alt="Landing page" width="700">
-    </td>
-    <td align="center">
-      <strong>AI Due Diligence Assistant</strong><br><br>
-      <img src="docs/screenshots/DD AI ASSISTANT.png" alt="AI Due Diligence Assistant" width="400">
-    </td>
-  </tr>
-  <tr>
-    <td colspan="2" align="center">
-      <strong>Risk Report</strong><br><br>
-      <img src="docs/screenshots/DD RISK REPORT 1.png" alt="Risk report" width="850">
-    </td>
-  </tr>
-</table>
+Real estate acquisitions often conceal critical liabilities: unrecorded municipal tax liens, restrictive zoning setbacks, FEMA flood hazard boundary expansions, unpermitted building modifications, and title encumbrances. In traditional property transactions, conducting due diligence requires manually navigating siloed government registries, environmental databases, and tax assessors—a process taking weeks and leaving investors vulnerable to hidden expenses.
 
-## What is this?
+The **Real Estate Due Diligence Platform** automates property evaluation. Given a property identifier, geographic coordinate, or address, the engine aggregates multi-source public records, evaluates cross-category risk factors, compiles interactive maps and charts, and delivers an algorithmic investment verdict (**BUY**, **NEGOTIATE**, or **AVOID**) accompanied by a streaming AI assistant and publication-grade PDF/Excel reports.
 
-Buying property in India means wading through flood maps, zoning laws, tax
-records, and registry fraud — usually across a dozen government portals.
-This platform compresses that into one flow: add an address, and an AI agent
-pulls data from multiple sources, scores six risk categories with weighted,
-traceable evidence, and produces a due diligence report with a plain-English
-verdict: **BUY, NEGOTIATE, or AVOID**.
+### Core Engineering Highlights
 
-Built as a Spring Boot backend with a Next.js frontend, it includes a
-streaming AI chat that answers property questions with cited sources, fraud
-badges that flag high-risk assets, PDF/Excel exports, Cashfree UPI payments,
-and an English/Hindi i18n layer. The frontend is deployed on Vercel, the
-backend runs on AWS EC2, and PostgreSQL is hosted on Neon.
+1. **Six-Factor Algorithmic Risk Engine**: Aggregates disparate public datasets across six distinct risk dimensions (Legal, Zoning, Flood/Hazard, Tax, Valuation, and Environmental), generating a normalized composite risk score ($0 - 100$) mapped to strict investment recommendations.
+2. **Streaming AI Due Diligence Assistant**: Integrates Groq's high-throughput LLaMA 3.3 70B model (`llama-3.3-70b-versatile`) via Spring WebFlux Server-Sent Events (SSE) streaming at ~500 tokens/sec, injecting retrieved property dossiers into model prompts for source-grounded answers.
+3. **Stateless Dual-Authentication Security**: Implements Spring Security with stateless JSON Web Tokens (`jjwt` 0.12) and Google OAuth2 ID token verification, backed by Bucket4j token bucket rate limiting on sensitive evaluation endpoints.
+4. **Automated Document Generation Pipeline**: Programmatically compiles multi-page due diligence dossiers utilizing iText 7 layout engines and embedded JFreeChart vector charts (financial donuts, risk spectrum bars) alongside Apache POI Excel exports.
+5. **Decoupled Architecture**: Designed around a Spring Boot 4 / Java 17 backend and a Next.js 16 (App Router) / React 19 frontend with Leaflet mapping and Recharts telemetry.
 
-## Live Demo
+---
 
-- **Frontend:** https://due-deligence-platform.vercel.app/
-- **Backend API:** AWS EC2 — Spring Boot
-- **Health Check:** https://54.66.38.92/actuator/health
-- **Swagger UI:** https://54.66.38.92/swagger-ui/index.html
-- **Database:** Neon PostgreSQL
+## Deployment Status
 
-## Features
+> [!NOTE]
+> **Deployment State Disclosure (October 2026):**
+> * **Frontend Client**: Deployed on Vercel at [**https://due-deligence-platform.vercel.app**](https://due-deligence-platform.vercel.app) (accessible). The landing page, UI navigation, and static components remain interactive.
+> * **Backend API Service**: Previously hosted on an AWS EC2 demo instance. The cloud host is currently offline following expiration of the evaluation server.
+> * **Local Evaluation**: Full end-to-end functionality—including PostgreSQL database persistence, live Groq AI streaming chat, PDF export, and risk scoring—can be evaluated locally using the [Docker Compose Setup](#docker-compose-setup) or the [Local Development Setup](#local-development-setup) detailed below.
 
-- 🛡️ **6-category risk scoring** — Flood, Legal, Tax, Zoning, Environment,
-  Market, each with a weighted score and traceable sources
-- 🤖 **AI chat** — streaming answers from Groq Llama 3.3 70B with cited sources
-- 📄 **AI executive summary** — 3-sentence summary + BUY/NEGOTIATE/AVOID verdict
-- 🚨 **Fraud detection** — rule-based flags with a pulsing red badge on
-  high-risk properties
-- 📊 **PDF + Excel export** — charts in the PDF, 3 sheets (summary, risk
-  factors, chronology) in the XLSX
-- ⚡ **Command palette** — Ctrl+K to jump anywhere in the app
-- 💳 **Cashfree payments** — UPI, cards, and netbanking for premium reports
-- 🌐 **i18n ready** — English + Hindi via react-i18next
+---
 
-## Tech Stack
+## Application Walkthrough & Visual Evidence
 
-| Layer | Technology |
-|---|---|
-| Frontend | Next.js 16 (App Router), React 19, Tailwind 4, shadcn-style UI, Leaflet maps, Recharts |
-| Backend | Spring Boot 4.1, Java 17, Spring Security (JWT + OAuth2), Bucket4j rate limiting |
-| Database | PostgreSQL (Neon), JSONB report sections; H2 for tests |
-| AI | Groq API — `llama-3.3-70b-versatile` (streaming, ~500 tok/s) |
-| Payments | Cashfree (sandbox) |
-| Infra | Docker Compose (local), GitHub Actions CI, Vercel, AWS EC2, Neon PostgreSQL |
+| Landing Page & Property Search | AI Due Diligence Assistant | Consolidated Risk Report |
+|---|---|---|
+| ![Landing Page](docs/screenshots/dd-landing-page.png) | ![AI Assistant](docs/screenshots/dd-ai-assistant.png) | ![Risk Report](docs/screenshots/dd-risk-report.png) |
+| *Property search portal with geographic filtering and quick-lookup features.* | *Streaming AI chat powered by Groq LLaMA 3.3, citing verified property records.* | *Multi-category risk breakdown with normalized score and BUY/NEGOTIATE/AVOID verdict.* |
 
-## Getting Started (Local)
+---
+
+## System Architecture
+
+```mermaid
+flowchart TD
+    subgraph CLIENT["Frontend (Next.js 16 + React 19)"]
+        UI_SEARCH[Property Search & Filter<br/>Leaflet Map Integration]
+        UI_DASH[Executive Dashboard<br/>Recharts Risk Visualizations]
+        UI_CHAT[AI Due Diligence Chat<br/>SSE EventSource Listener]
+        UI_REPORT[Report Center<br/>PDF & Excel Downloader]
+    end
+
+    subgraph SECURITY["Security & Interception Boundary"]
+        CORS[CORS Policy Filter<br/>Vercel Domain Whitelist]
+        RATE[Bucket4j Rate Limiter<br/>Token Bucket IP Throttling]
+        JWT[JwtAuthFilter<br/>Stateless Bearer Validation]
+    end
+
+    subgraph BACKEND["Backend Services (Spring Boot 4 · Java 17)"]
+        AUTH_CTRL[AuthController<br/>Local JWT + Google OAuth2]
+        PROP_SVC[PropertyAggregationService<br/>Public Record Synthesizer]
+        RISK_ENG[RiskAssessmentService<br/>Six-Category Weighted Scoring]
+        AI_SVC[GroqAiService<br/>Streaming SSE WebClient]
+        DOC_SVC[Pdf & Excel Export Service<br/>iText 7 + JFreeChart + POI]
+    end
+
+    subgraph EXTERNAL["External Data & AI Providers"]
+        NOMINATIM[OpenStreetMap / Nominatim<br/>Geocoding & Reverse Lookup]
+        AIR_ENV[WAQI & Environmental APIs<br/>Air Quality & Hazard Indices]
+        GROQ_API[Groq Cloud API<br/>llama-3.3-70b-versatile]
+        CASHFREE_API[Cashfree Payment Gateway<br/>Report Unlocking Sandbox]
+    end
+
+    subgraph PERSISTENCE["Data Storage"]
+        DB[(PostgreSQL 16 / Neon<br/>Flyway Migration Schema)]
+        CACHE[(Caffeine Cache<br/>In-Memory TTL Store)]
+    end
+
+    CLIENT --> CORS --> RATE --> JWT
+    JWT --> AUTH_CTRL
+    JWT --> PROP_SVC
+    JWT --> RISK_ENG
+    JWT --> AI_SVC
+    JWT --> DOC_SVC
+
+    PROP_SVC <--> NOMINATIM
+    PROP_SVC <--> AIR_ENV
+    PROP_SVC <--> CACHE
+    PROP_SVC --> DB
+    RISK_ENG --> DB
+    AI_SVC <--> GROQ_API
+    DOC_SVC --> DB
+    AUTH_CTRL --> DB
+```
+
+---
+
+## Core Engineering Implementations
+
+### 1. Six-Factor Risk Scoring Engine ([`RiskAssessmentServiceImpl.java`](backend/src/main/java/com/realestate/duediligence/service/impl/RiskAssessmentServiceImpl.java))
+
+The platform computes an objective risk assessment by aggregating evaluations across six core domain pillars:
+
+$$\text{Composite Risk} = \sum_{i=1}^{6} w_i \times R_i \quad \text{where} \quad \sum w_i = 1.0$$
+
+| Risk Category | Key Signals Evaluated | Critical Risk Flags |
+| :--- | :--- | :--- |
+| **1. Legal & Title Risk** | Encumbrances, lien registry, title clear flags, boundary litigation | Unresolved court disputes, ambiguous heirship claims |
+| **2. Zoning & Regulatory** | Permitted land use, Floor Area Ratio (FAR), setback compliance | Unauthorized commercial activity, non-conforming structures |
+| **3. Flood & Hazard** | FEMA zone classification, elevation delta, historical inundation | FEMA Zone A/V, 100-year flood zone overlap |
+| **4. Tax & Financial** | Property tax delinquency history, special municipal levies | Consecutive overdue tax cycles, pending municipal auction |
+| **5. Valuation & Market** | Price-per-sqft variance vs neighborhood median, comps deviation | More than 25% deviation from the historical fair-market cluster |
+| **6. Environmental** | Air quality index (WAQI), industrial proximity, soil hazards | Proximity to hazardous industrial dump or brownfield site |
+
+#### Investment Verdict Logic
+The final investment verdict is mapped deterministically from the composite risk score:
+* **BUY** ($0 \le \text{Score} \le 30$): Low overall risk. Property records are clean, zoning is compliant, and no severe liabilities exist.
+* **NEGOTIATE** ($31 \le \text{Score} \le 65$): Moderate risk. Identified liabilities (e.g. minor tax arrears or zoning variances) should be leveraged for purchase price deductions.
+* **AVOID** ($66 \le \text{Score} \le 100$): Severe risk. Disqualifying defects detected (e.g. unresolvable title disputes, flood zone exposure, or structural regulatory violations).
+
+### 2. Streaming AI Agent with Retrieval Context ([`AgentChatController.java`](backend/src/main/java/com/realestate/duediligence/controller/AgentChatController.java))
+
+Rather than generating generic conversational answers, the platform's AI Assistant grounds responses strictly in aggregated property records:
+1. **Dossier Context Assembly**: When a buyer queries the AI assistant, the backend retrieves the property's legal history, tax status, zoning classification, and risk factors from PostgreSQL.
+2. **System Prompt Enclosure**: The assembled context is formatted into a system prompt instructing the model to cite verified record attributes and flag unknown data rather than hallucinating.
+3. **High-Throughput Streaming**: Dispatches requests to Groq Cloud (`llama-3.3-70b-versatile`) via Spring WebFlux `WebClient`, streaming chunks back to the Next.js client via Server-Sent Events (`text/event-stream`).
+
+### 3. Headless Document Compilation Pipeline ([`PdfExportServiceImpl.java`](backend/src/main/java/com/realestate/duediligence/service/impl/PdfExportServiceImpl.java))
+
+Due diligence reports can be compiled on-demand into publication-grade documents:
+* **iText 7 Layout Engine**: Generates multi-page PDF documents with running headers, footers, page numbering, dynamic table layouts, and automated risk color badges.
+* **Embedded Vector Visualizations**: Generates JFreeChart in-memory buffered images (financial distribution donuts, risk breakdown bar charts) and embeds them directly into PDF document streams.
+* **Spreadsheet Generation**: Apache POI compiles complete structured workbooks with formula cells, styling, and multi-tab categorization for financial analysts.
+
+### 4. Security & Access Control ([`backend/src/main/java/com/realestate/duediligence/security/`](backend/src/main/java/com/realestate/duediligence/security/))
+
+* **Stateless JWT Filter**: `JwtAuthFilter` extracts and validates Bearer tokens on incoming requests, verifying HMAC signatures before setting the Spring Security context.
+* **Google OAuth2 ID Token Verification**: Validates Google identity tokens server-side via `google-api-client`, creating or linking accounts idempotently.
+* **Rate Limiting**: Protects assessment and generation endpoints using Bucket4j token buckets, preventing automated scraper abuse.
+* **Input Validation**: Spring Validation (`@Valid`, `@NotNull`, `@Size`) prevents malformed property submissions.
+
+---
+
+## API Overview & Endpoints
+
+The backend exposes RESTful endpoints and SSE streams documented via Springdoc OpenAPI / Swagger UI:
+
+| Method | Path | Purpose | Access |
+| :--- | :--- | :--- | :--- |
+| `GET` | `/actuator/health` | Service health probe (only `health` and `info` are exposed) | Public |
+| `POST` | `/api/auth/register/send-otp` | Start registration; emails a one-time code | Public |
+| `POST` | `/api/auth/register/verify-otp` | Complete registration with the code | Public |
+| `POST` | `/api/auth/login` | Authenticate with email/password; returns JWT | Public |
+| `POST` | `/api/auth/google` | Authenticate with Google OAuth2 ID token | Public |
+| `GET` | `/api/properties` | List and filter the caller's properties | Authenticated |
+| `GET` | `/api/properties/{id}` | Property details and public record data | Authenticated |
+| `GET` | `/api/properties/{propertyId}/risk` | Latest six-factor risk assessment | Authenticated |
+| `POST` | `/api/properties/{propertyId}/risk/recalculate` | Re-run the risk scoring engine | Authenticated |
+| `POST` | `/api/reports/generate` | Start asynchronous report generation | Authenticated |
+| `GET` | `/api/reports/{reportId}` | Generated due diligence report (owner or admin) | Authenticated |
+| `GET` | `/api/reports/property/{propertyId}` | Reports for a property (owner or admin) | Authenticated |
+| `POST` | `/api/agent/chat/stream` | Streaming AI due diligence assistant (SSE) | Authenticated |
+| `GET` | `/api/export/report/{reportId}/pdf` | Full iText 7 PDF report | Authenticated (owner or admin) |
+| `GET` | `/api/export/report/{reportId}/excel` | Structured Excel workbook | Authenticated (owner or admin) |
+| `GET` | `/api/export/property/{propertyId}/pdf` | Snapshot of the caller's latest report for a property; 404 if none | Authenticated |
+| `GET` | `/api/notifications/preferences` | Notification channel preferences | Authenticated |
+| `GET` | `/api/admin/dashboard` | Administrative audit logs and system telemetry | Admin |
+
+*(Interactive Swagger UI is available locally at `http://localhost:8080/swagger-ui/index.html` when running the backend).*
+
+---
+
+## Testing & Quality Assurance
+
+The repository includes test suites covering backend services, integrations, and frontend components:
+
+### 1. Backend Automated Testing (JUnit 5 + Spring Boot Test)
+Located in [`backend/src/test/java/`](backend/src/test/java/):
+* **Unit Tests**: Verifies risk assessment scoring thresholds, verdict mapping (`RiskAssessmentServiceImplTest`), and document compilation (`PdfExportServiceImplTest`, `ExcelExportServiceImplTest`).
+* **Integration Tests**: Executes end-to-end evaluation workflows using an in-memory H2 database under the `test` Spring profile (`EndToEndWorkflowTest`).
+* **PostgreSQL Concurrency Tests**: `NotificationPreferenceConcurrencyIT` starts PostgreSQL 16 with Testcontainers (skipped when Docker is unavailable). Latches reproduce the report-transaction / email-listener race on first preference creation. The tests also check exactly one in-app notification and one email per completed report, sent after commit, plus rollback and SMTP-failure behaviour.
+* **Export Authorization Tests**: `ExportServiceImplTest` and `ExportControllerTest` check that property snapshots never fall back to placeholder data and that an unresolvable caller gets 401.
+* **External Provider Tests**: Validates geocoding and environmental API integration contracts (`NominatimIntegrationTest`, `WAQIIntegrationTest`).
+
+To execute the backend test matrix:
+```bash
+cd backend
+./mvnw test
+```
+
+### 2. Frontend Component & E2E Testing (Vitest + Playwright)
+Located in [`frontend/src/__tests__/`](frontend/src/__tests__/):
+* **Component Suites**: Tests rendering and interaction across risk cards, map components, and report viewers.
+* **E2E User Journeys**: Validates login flows, report generation, and property management (`auth-flow.spec.js`, `report-generation.spec.js`).
+
+To execute the frontend tests:
+```bash
+cd frontend
+npm test
+```
+
+---
+
+## Local Development & Reproduction
 
 ### Prerequisites
+* **Java**: OpenJDK 17 LTS (`java -version`)
+* **Maven**: 3.9+ (or use included `./mvnw` wrapper)
+* **Node.js**: v20.x or v22.x LTS (`node -v`)
+* **Database**: PostgreSQL 15+ (or Docker Compose)
 
-- JDK 17+ ([Temurin](https://adoptium.net/))
-- Node.js 20+
-- PostgreSQL 16 running on `localhost:5432`
-- (or skip all three and use Docker — see below)
+---
 
-### 1. Backend
+### Method A: Quickstart via Docker Compose (Recommended)
 
-```cmd
+The fastest way to spin up the entire application stack (PostgreSQL, Spring Boot backend, and Next.js frontend):
+
+```bash
+# 1. Clone repository
+git clone https://github.com/AkshayAlgoX/due-deligence-platform.git
+cd due-deligence-platform
+
+# 2. Configure root environment variables
+cp .env.docker.example .env
+
+# 3. Launch the container stack
+docker compose up -d
+```
+
+* Frontend: `http://localhost:3000`
+* Backend API: `http://localhost:8080`
+* Swagger UI: `http://localhost:8080/swagger-ui/index.html`
+
+---
+
+### Method B: Manual Local Setup
+
+#### 1. Backend Setup (Spring Boot)
+```bash
 cd backend
-copy .env.example .env
+
+# Configure environment variables
+cp .env.example .env
 ```
 
-Fill in `backend/.env` (DB password, Gmail SMTP, Groq/Cashfree/Google keys).
-Create the database the app expects:
+Key environment variables in `backend/.env`:
+* `SPRING_DATASOURCE_URL`: PostgreSQL JDBC URL (`jdbc:postgresql://localhost:5432/duediligence`)
+* `SPRING_DATASOURCE_USERNAME` / `SPRING_DATASOURCE_PASSWORD`: Database credentials
+* `JWT_SECRET`: Random 256-bit secret string for token signing
+* `GROQ_API_KEY`: API key for Groq LLaMA 3.3 streaming assistant (optional)
+* `CASHFREE_APP_ID` / `CASHFREE_SECRET_KEY`: Payment sandbox keys (optional)
 
-```sql
-CREATE DATABASE real_estate_due_diligence;
+Run database migrations and launch the backend:
+```bash
+# Compile and start Spring Boot
+./mvnw spring-boot:run
 ```
+Backend starts on `http://localhost:8080`.
 
-Then run:
-
-```cmd
-mvnw.cmd spring-boot:run
-```
-
-Backend starts on http://localhost:8080 — Swagger at
-http://localhost:8080/swagger-ui/index.html.
-
-### 2. Frontend
-
-```cmd
+#### 2. Frontend Setup (Next.js)
+In a separate terminal:
+```bash
 cd frontend
-copy .env.example .env.local
-npm ci
+
+# Install dependencies
+npm install
+
+# Configure environment variables
+cp .env.example .env.local
+```
+
+Set `frontend/.env.local`:
+```env
+NEXT_PUBLIC_API_URL=http://localhost:8080
+```
+
+Start development server:
+```bash
 npm run dev
 ```
+Open [**http://localhost:3000**](http://localhost:3000) to access the application.
 
-Frontend starts on http://localhost:3000 and proxies `/api/*` to
-`localhost:8080` via `next.config.mjs`.
+---
 
-## Getting Started (Docker)
+## Repository Structure
 
-One command for the full stack (Postgres + backend + frontend):
-
-```cmd
-copy .env.docker.example .env
-docker-compose up --build
-```
-
-Fill in the root `.env` first. Details, ports, and troubleshooting:
-[docs/DOCKER.md](docs/DOCKER.md).
-
-## Testing
-
-- **Backend:** `cd backend && mvnw.cmd test -Dspring.profiles.active=test`
-  → **58 tests, 0 failures** (H2 in-memory DB, no external calls).
-  JaCoCo: 33.8% line / 15.7% branch coverage.
-- **Frontend:** `cd frontend && npm run test:run`
-  → **33 tests** (32 passing; one RiskSpectrum snapshot needs a one-time
-  refresh with `npx vitest run -u` — see
-  [docs/SUBMISSION_CHECKLIST.md](docs/SUBMISSION_CHECKLIST.md)).
-- **CI:** GitHub Actions runs both suites + Docker builds on every push/PR
-  ([`.github/workflows/ci.yml`](.github/workflows/ci.yml)).
-
-## Deployment
-
-The production stack is deployed as follows:
-
-- **Frontend:** Vercel
-- **Backend:** AWS EC2 running Spring Boot
-- **Database:** Neon PostgreSQL
-
-Deployment documentation:
-[docs/DEPLOYMENT.md](docs/DEPLOYMENT.md)
-
-## Project Structure
-```
-.
-├── backend/                Spring Boot 4.1 API (Java 17)
+```text
+due-deligence-platform/
+├── .github/
+│   └── workflows/
+│       └── ci.yml              # GitHub Actions build and test workflow
+├── backend/                    # Spring Boot 4.1.0 API (Java 17)
 │   ├── src/main/java/com/realestate/duediligence/
-│   │   ├── actuator/       
-│   │   ├── aggregation/    
-│   │   ├── config/         
-│   │   ├── controller/
-│   │   ├── dto/            
-│   │   ├── DueDiligenceAgentApplication.java  
-│   │   ├── entity/         
-│   │   ├── enums/          
-│   │   ├── exception/      
-│   │   ├── export/
-│   │   ├── integration/
-│   │   ├── pdf/
-│   │   ├── repository/     
-│   │   ├── scheduled/
-│   │   ├── security/
-│   │   ├── service/
-│   │   ├── templates/      
-│   │   └── util/           
-│   └── src/test/           (java + resources)
-├── frontend/               Next.js 16 (App Router)
-│   └── src/
-│       ├── app/
-│       ├── components/
-│       ├── constants/      
-│       ├── hooks/          
-│       ├── i18n/           
-│       ├── lib/            
-│       ├── locales/        
-│       ├── services/       
-│       ├── test/           
-│       ├── utils/          
-│       └── __tests__/
-├── docs/                   api.md, DOCKER.md, DEPLOYMENT.md, SECURITY.md, ... (many more)
-├── postman/                (globals)
-├── .postman/                (resources.yaml)
-├── docker-compose.yml
-└── .github/workflows/ci.yml
+│   │   ├── actuator/           # Custom health indicator & monitoring
+│   │   ├── aggregation/        # Multi-source public record aggregation service
+│   │   ├── config/             # Security, Async, Cache, OpenAPI configuration
+│   │   ├── controller/         # REST endpoints (properties, reports, risk, auth)
+│   │   ├── dto/                # Request & response data transfer objects
+│   │   ├── entity/             # JPA entities (Property, Report, User, AuditLog)
+│   │   ├── export/             # Apache POI Excel workbook generators
+│   │   ├── integration/        # External API connectors (Nominatim, WAQI)
+│   │   ├── pdf/                # iText 7 report compiler & JFreeChart renderers
+│   │   ├── repository/         # Spring Data JPA repositories
+│   │   ├── security/           # JWT authentication filter & token provider
+│   │   ├── service/            # Business logic (RiskAssessment, Report, Property)
+│   │   └── DueDiligenceAgentApplication.java
+│   ├── src/main/resources/     # Application YAML, Flyway database migrations
+│   ├── src/test/               # JUnit 5 integration & unit test suites
+│   ├── pom.xml                 # Maven project configuration
+│   └── mvnw                    # Maven wrapper script
+├── frontend/                   # Next.js 16 (App Router) + React 19 Client
+│   ├── src/
+│   │   ├── app/                # App router pages (dashboard, reports, search, auth)
+│   │   ├── components/         # Reusable UI components, risk cards, charts
+│   │   ├── hooks/              # Custom React hooks (chat, risk, valuation)
+│   │   ├── services/           # Axios REST API connectors & SSE listeners
+│   │   └── __tests__/          # Vitest component & Playwright E2E suites
+│   ├── public/                 # Static assets and icons
+│   └── package.json
+├── docs/                       # Architectural documentation & technical specifications
+│   ├── ARCHITECTURE.md         # System design, scoring models, and integration specs
+│   ├── DEPLOYMENT.md           # Multi-tier deployment blueprints
+│   └── screenshots/            # Authentic application walkthrough screenshots
+├── docker-compose.yml          # Container configuration for local stack reproduction
+└── README.md
 ```
 
-## API Documentation
+---
 
-- **Swagger UI (Production):**
-  https://54.66.38.92/swagger-ui/index.html
-- **Health Check:**
-  https://54.66.38.92/actuator/health
-- **Swagger UI (Local):**
-  http://localhost:8080/swagger-ui/index.html
-- **Markdown reference:** [docs/api.md](docs/api.md)
-- **Postman collection:** [`postman/`](postman/)
+## Authorship & Project Attribution
 
-## E2E Demo
+Developed as an enterprise software engineering project during the **Infosys Springboard** program by **Team 03**:
 
-A 15-step, ~5-minute demo script for judges — every step with expected UI
-state, API endpoint, and screenshot target:
-[docs/E2E_DEMO_SCRIPT.md](docs/E2E_DEMO_SCRIPT.md).
-
-## Architecture
-
-System architecture, technology decisions, security model, and deployment
-design:
-[docs/ARCHITECTURE.md](docs/ARCHITECTURE.md).
-
-## Contributing
-
-Team 03 — contributors (from commit history):
-
-- **Akshaya R** (lead) — backend, auth/security, deployment
-- **MelvinBritto**, **Bhavana-Bhat-528**, **tanishaalone-lab**, **subashs0411**,
-  **DempRepo**, **Lokesh Chowdary Nalamothu** — features across backend and frontend
-- Mentored by **springboardmentor198** (Springboard)
-
-Workflow: branch off `develop`, open a PR, CI runs tests + Docker builds,
-and Vercel handles frontend deployments. The production backend runs on AWS
-EC2.
-
-## License
-
-[MIT](./LICENSE) © 2026 springboardmentor198
-
-## Credits
-
-- Springboard mentor and reviewers
-- Security contact: duedeligence8@gmail.com (see [docs/SECURITY.md](docs/SECURITY.md))
+* **Akshaya R** ([@AkshayAlgoX](https://github.com/AkshayAlgoX)) — **Team Lead**
+  * *Core Contributions:* Backend architecture, Spring Security / JWT authentication, multi-source service aggregation pipeline, six-category risk scoring engine, and deployment orchestration.
+* **Team Members (Team 03):**
+  * **[MelvinBritto](https://github.com/MelvinBritto)**
+  * **[Bhavana-Bhat-528](https://github.com/Bhavana-Bhat-528)**
+  * **[tanishaalone30](https://github.com/tanishaalone30)** (commits authored as `tanishaalone-lab`)
+  * **[SubashS0411](https://github.com/SubashS0411)**
+  * **DempRepo** (git author name; no linked GitHub account)
+  * **[NalamothuLokesh](https://github.com/NalamothuLokesh)**
+* **Project Mentorship:** [springboardmentor198](https://github.com/springboardmentor198) (Infosys Springboard)
+* **Team record:** the program repository is [springboardmentor198/team-03](https://github.com/springboardmentor198/team-03). Commit history shows who committed, not official team membership.
+* **License:** MIT License. See [LICENSE](LICENSE) for details.
